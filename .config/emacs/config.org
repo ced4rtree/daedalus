@@ -48,6 +48,7 @@
   - [[#corfu][Corfu]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#dashboard][Dashboard]]
+  - [[#indent-guides][Indent guides]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#electric-pairing][Electric Pairing]]
   - [[#tabbing][Tabbing]]
@@ -71,6 +72,7 @@
   - [[#reload-emacs][Reload Emacs]]
   - [[#which-key][Which-key]]
   - [[#kill-alll-buffers][kill-alll-buffers]]
+  - [[#scroll][Scroll]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -104,7 +106,7 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Source Code Pro-13"))
+               '(font . "JetBrainsMono Nerd Font-13"))
 #+end_src
 
 ** Theme
@@ -174,6 +176,17 @@ Adds rainbow parentheses and color to hex values and such
 Tree sitter is a parsing library that gives us good, fast syntax highlighting
 Tree sitter is now built into emacs as of Emacs 29
 #+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
+	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+	  (c "https://github.com/tree-sitter/tree-sitter-c")
+	  (c++ "https://github.com/tree-sitter/tree-sitter-c++")
+	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
+	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+	  (java "https://github.com/tree-sitter/tree-sitter-java")
+	  (markdown "https://github.com/tree-sitter/tree-sitter-md")
+	  (make "https://github.com/tree-sitter/tree-sitter-make")))
+
   (add-hook 'java-mode-hook 'java-ts-mode)
   (add-hook 'c-mode-hook 'c-ts-mode)
   (add-hook 'c++-mode-hook 'c++-ts-mode)
@@ -238,8 +251,7 @@ Here, I set up auto tangle, which will do that compilation automatically upon sa
 ** Org agenda
 Org agenda is a full blown scheduling application with all the power of org mode built into it
 #+begin_src emacs-lisp
-  (setq org-agenda-files (list "~/org/agenda/schedule.org"
-                               "~/org/agenda/daily.org"))
+  (setq org-agenda-files (list "~/org/agenda/schedule.org"))
 #+end_src
 
 ** Org Bullets
@@ -364,8 +376,8 @@ This will go though your project and let you do some pretty neat things, like re
   (add-hook 'c++-ts-mode-hook #'eglot-ensure)
   (add-hook 'rust-ts-mode #'eglot-ensure)
   (add-hook 'haskell-mode #'eglot-ensure)
-  (use-package eglot-java
-    :hook (java-ts-mode . eglot-ensure))
+;;  (use-package eglot-java
+;;    :hook (java-ts-mode . eglot-ensure))
 #+end_src
 ** Magit
 A git porcelain for emacs to let you use the power of emacs within git
@@ -468,7 +480,7 @@ Show the recent files
     (setq dashboard-page-separator "
   
   " ;; tell dashboard to use nice looking lines for section seperation
-          
+
           initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")) ;; tell emacs to use dashboard as startup screen
           dashboard-items '((recents . 5)
                             (projects . 5)
@@ -483,6 +495,14 @@ Show the recent files
     (advice-add #'dashboard-replace-displayable :override #'identity)
     :config
     (dashboard-setup-startup-hook))
+#+end_src
+** Indent guides
+Lines to mark indentation levels
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :ensure t
+    :config
+    (setq highlight-indent-guides-method 'character))
 #+end_src
 ** Keeping emacs clean
 Some things ,*cough cough auto-save-list,* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
@@ -511,6 +531,13 @@ Some tab settings to use 4 spaces for tabs
   (defvaralias 'c-basic-offset 'tab-width)
   (defvaralias 'c-ts-mode-indent-offset 'tab-width)
   (indent-tabs-mode nil)
+  (defun bugger/change-tab-width (WIDTH)
+    "Set the width of a tab to WIDTH in the current buffer"
+    (setq-local tab-width WIDTH
+                c-basic-offset WIDTH
+                c-ts-mode-indent-offset WIDTH
+                java-ts-mode-indent-offset WIDTH))
+  ;; (add-hook 'java-ts-mode-hook #'(lambda () (interactive) (bugger/change-tab-width 2)))
 #+end_src
 
 ** Too lazy to type yes
@@ -830,6 +857,17 @@ It can be useful to kill all of the buffers to clean up your buffer list. This f
     (interactive)
     (mapc 'kill-buffer (buffer-list)))
   (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+#+end_src
+** Scroll
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-M-n") #'(lambda ()
+                                    (interactive)
+                                    (next-line 1)
+                                    (scroll-up-line 1)))
+  (global-set-key (kbd "C-M-p") #'(lambda ()
+                                    (interactive)
+                                    (previous-line 1)
+                                    (scroll-down-line 1)))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init

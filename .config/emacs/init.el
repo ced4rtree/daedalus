@@ -15,7 +15,7 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "Source Code Pro-13"))
+             '(font . "JetBrainsMono Nerd Font-13"))
 
 (use-package catppuccin-theme
   :ensure t
@@ -58,6 +58,17 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(setq treesit-language-source-alist
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+	(cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+	(c "https://github.com/tree-sitter/tree-sitter-c")
+	(c++ "https://github.com/tree-sitter/tree-sitter-c++")
+	(rust "https://github.com/tree-sitter/tree-sitter-rust")
+	(haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+	(java "https://github.com/tree-sitter/tree-sitter-java")
+	(markdown "https://github.com/tree-sitter/tree-sitter-md")
+	(make "https://github.com/tree-sitter/tree-sitter-make")))
+
 (add-hook 'java-mode-hook 'java-ts-mode)
 (add-hook 'c-mode-hook 'c-ts-mode)
 (add-hook 'c++-mode-hook 'c++-ts-mode)
@@ -92,8 +103,7 @@
       org-confirm-babel-evaluate nil ;; don't ask to evaluate code
       org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
-(setq org-agenda-files (list "~/org/agenda/schedule.org"
-                             "~/org/agenda/daily.org"))
+(setq org-agenda-files (list "~/org/agenda/schedule.org"))
 
 (use-package org-bullets
   :ensure t
@@ -160,16 +170,16 @@
 (use-package haskell-mode :ensure t)
 
 (when (< emacs-major-version 29)
-  (use-package eglot
-    :ensure t
-    :init
-    (setq eglot-autoshutdown t)))
-(add-hook 'c-ts-mode-hook #'eglot-ensure)
-(add-hook 'c++-ts-mode-hook #'eglot-ensure)
-(add-hook 'rust-ts-mode #'eglot-ensure)
-(add-hook 'haskell-mode #'eglot-ensure)
-(use-package eglot-java
-  :hook (java-ts-mode . eglot-ensure))
+    (use-package eglot
+      :ensure t
+      :init
+      (setq eglot-autoshutdown t)))
+  (add-hook 'c-ts-mode-hook #'eglot-ensure)
+  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+  (add-hook 'rust-ts-mode #'eglot-ensure)
+  (add-hook 'haskell-mode #'eglot-ensure)
+;;  (use-package eglot-java
+;;    :hook (java-ts-mode . eglot-ensure))
 
 (use-package magit
   :defer t
@@ -246,6 +256,11 @@
   :config
   (dashboard-setup-startup-hook))
 
+(use-package highlight-indent-guides
+  :ensure t
+  :config
+  (setq highlight-indent-guides-method 'character))
+
 (use-package no-littering
   :ensure t)
 
@@ -263,6 +278,13 @@
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (indent-tabs-mode nil)
+(defun bugger/change-tab-width (WIDTH)
+  "Set the width of a tab to WIDTH in the current buffer"
+  (setq-local tab-width WIDTH
+              c-basic-offset WIDTH
+              c-ts-mode-indent-offset WIDTH
+              java-ts-mode-indent-offset WIDTH))
+;; (add-hook 'java-ts-mode-hook #'(lambda () (interactive) (bugger/change-tab-width 2)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -507,5 +529,14 @@ If TEXT does not have a range, return nil."
   (interactive)
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+
+(global-set-key (kbd "C-M-n") #'(lambda ()
+                                  (interactive)
+                                  (next-line 1)
+                                  (scroll-up-line 1)))
+(global-set-key (kbd "C-M-p") #'(lambda ()
+                                  (interactive)
+                                  (previous-line 1)
+                                  (scroll-down-line 1)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
