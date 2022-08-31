@@ -10,10 +10,6 @@ Not much has changed here, other than the font2 patch to allow emojis and the dr
 
 Optionally dependent on Noto Color Emoji font pack for emoji support in st
 
-### dmenu
-
-Literally nothing has changed here, just the default dmenu build.
-
 ### dwmblocks
 
 Includes battery, internet speed, brightness and sound level (both have live updates on button press), cpu and ram usage, as well as the date.
