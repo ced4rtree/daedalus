@@ -12,9 +12,9 @@ Optionally dependent on Noto Color Emoji font pack for emoji support in st
 
 ### dwmblocks
 
-Includes battery, internet speed, brightness and sound level (both have live updates on button press), cpu and ram usage, as well as the date.
+Includes internet speed, brightness, sound, and battery level (all have live updates on button press), cpu (inaccurate, but fairly ok estimate) and ram usage, as well as the date.
 
-The brightness, sound, and net functions are dependent on some scripts from my scripts repo
+The brightness, sound, and net functions are dependent on some scripts from my scripts repo, in conjunction with buttons specified in my dwm build
 
 ### zsh
 
