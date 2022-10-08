@@ -1,30 +1,24 @@
-" Numbers on the side
+" Set numbers on the side
 set number relativenumber
-" Color scheme
-set bg=light
-" Auto completion
+" Set autocompletion
 set wildmode=longest,list,full
-" Open a split window to the right instead of below
-set splitbelow splitright
-" Highlight my searches
+" Set highlight while and after searching
 set hlsearch
-" Highlight my searches as I'm searching
 set incsearch
-" Don't care about capitalization when searching
+" Ignore case, so D is the same as d
 set ic
-" Set default clipboard to system clipboard
-set clipboard=unnamedplus
-
-"tabs
+" Set clipboard to system clipboard
+set clipboard=unnamed,unnamedplus
+" Tab width is 4
 set tabstop=4
+set autoindent
 set softtabstop=4
 set shiftwidth=4
-
-" Guarantee file format is correct
+" Guarantees proper file formats
 set fileformat=unix
-
-" Color various words by default, e.g. functions names can be orange
-syntax on
-
-" Basically spellcheck for shell scripts
+" Define leader character as ,
+let mapleader = ","
+" Like spellchecker for shell scripts
 map <leader>s :!clear && shellcheck %<CR>
+" Turns on syntax highlighting
+syntax on
