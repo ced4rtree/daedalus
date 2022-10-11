@@ -65,8 +65,8 @@ static const char *termcmd[]  = { "st", NULL };
 /* user defined functions */
 static const char *volumeup[] = { "snd", "up", NULL };
 static const char *volumedown[] = { "snd", "down", NULL };
-static const char *brightup[] = { "brightness up", NULL };
-static const char *brightdwn[] = { "brightntess down", NULL };
+static const char *brightup[] = { "brightness", "up", NULL };
+static const char *brightdwn[] = { "brightntess", "down", NULL };
 static const char *browser[] = { "/bin/firefox", NULL };
 static const char *slock[] = { "slock", NULL };
 static const char *bat[] = { "pkill", "-RTMIN+12", "dwmblocks", NULL };
