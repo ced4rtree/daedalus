@@ -1,6 +1,6 @@
 /* user and group to drop privileges to */
 static const char *user  = "${USER}";
-static const char *group = "$(groups)";
+static const char *group = "$(groups | awk '{print $1}')";
 
 static const char *colorname[NUMCOLS] = {
 	[INIT] =   "black",     /* after initialization */
