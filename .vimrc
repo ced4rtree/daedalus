@@ -1,3 +1,5 @@
+" Disable vi compatibility
+set nocompatible
 " Set numbers on the side
 set number relativenumber
 " Set autocompletion
@@ -22,3 +24,17 @@ let mapleader = ","
 map <leader>s :!clear && shellcheck %<CR>
 " Turns on syntax highlighting
 syntax on
+" Completes {, (, [, ", '
+inoremap { {}<left>
+inoremap {{ {
+inoremap {} {}
+inoremap [ []<left>
+inoremap [[ [
+inoremap [] []
+inoremap ( ()<left>
+inoremap (( (
+inoremap () ()
+inoremap " ""<left>
+inoremap "" ""
+inoremap ' ''<left>
+inoremap '' ''
