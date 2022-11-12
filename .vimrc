@@ -26,15 +26,21 @@ map <leader>s :!clear && shellcheck %<CR>
 syntax on
 " Completes {, (, [, ", '
 inoremap { {}<left>
+inoremap }} <right>
 inoremap {{ {
 inoremap {} {}
 inoremap [ []<left>
+inoremap ]] <right>
 inoremap [[ [
 inoremap [] []
 inoremap ( ()<left>
+inoremap )) <right>
 inoremap (( (
 inoremap () ()
-inoremap " ""<left>
-inoremap "" ""
-inoremap ' ''<left>
-inoremap '' ''
+inoremap {<CR> {<CR><CR>}<up><tab>
+inoremap sout System.out.println();<left><left>
+inoremap /* /*<CR><CR>*/<up>
+map ;; <esc>A;<esc>
+imap ;; <esc>A;<esc>
+map <leader>c <ins>#include<space><stdio.h><CR>#include<space><stdlib.h><CR><CR>int<space>main()<space>{<CR><CR><CR>return<space>0;<up><up>
+map <leader>j <ins>public<space>class<space><esc>"%p<left><left><left><left>xxxxxA<space>{<CR>public<space>static<space>void<space>main((String[]<space>args)<space>{<CR><tab>
