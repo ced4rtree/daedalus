@@ -32,6 +32,7 @@ static const Rule rules[] = {
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,			 0,			 -1,		-1 },
 	{ "st",		  NULL,		  NULL,		  0,			0,			 1,			 0,			-1 },
 	{ NULL,		  NULL,		  "Event Tester", 0,		0,			 0,			 1,			-1 },
+	{ NULL,		  NULL,		  "Display Image", 0,		0,			 0,			 1,			-1 },
 };
 
 /* layout(s) */
@@ -66,11 +67,12 @@ static const char *termcmd[]  = { "st", NULL };
 static const char *volumeup[] = { "snd", "up", NULL };
 static const char *volumedown[] = { "snd", "down", NULL };
 static const char *brightup[] = { "brightness", "up", NULL };
-static const char *brightdwn[] = { "brightntess", "down", NULL };
+static const char *brightdwn[] = { "brightness", "down", NULL };
 static const char *browser[] = { "/bin/firefox", NULL };
 static const char *slock[] = { "slock", NULL };
 static const char *bat[] = { "pkill", "-RTMIN+12", "dwmblocks", NULL };
-static const char *shut[] = { "doas", "shutdown", "now", NULL };
+static const char *scrot[] = { "scrot", "-s", NULL};
+static const char *pauseMus[] = { "kill", "-9", "$(pidof", "mpv)", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -83,7 +85,8 @@ static Key keys[] = {
 	{ ShiftMask,			0xff1b,		spawn,	   {.v = slock } },
 	{ 0,					0xffc0,		spawn,	   {.v = bat }},
 	{ MODKEY|ShiftMask,		XK_b,	    spawn,	   {.v = browser } },
-	{ MODKEY|ShiftMask,		XK_s,		spawn,     {.v = shut } },
+	{ 0,					0xff61,		spawn,	   {.v = scrot} },
+	{ 0,					0xff13,		spawn,	   {.v = pauseMus} },
 	/* end of user defined functions */
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },

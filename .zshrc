@@ -15,8 +15,6 @@ HISTFILE=~/.cache/zsh/history
 # Opacity in the terminal
 if [[ $(cat /proc/$PPID/comm) = "st" ]]; then
 	transset-df "0.80" --id "$WINDOWID" >/dev/null
-else
-	2=2
 fi
 
 # Basic auto/tab complete:
