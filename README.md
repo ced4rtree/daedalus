@@ -1,5 +1,13 @@
 # My Configuration files for Slock, dwm, st, dwmblocks, dmenu, and zsh
 
+## Auto configuration
+
+To move everything to a good place that's not wherever you cloned this repository, run
+
+./setup.sh
+
+All files/folders will be placed in ~/.config or your home directory (only hidden files go into home)
+
 ### dwm
 
 My dwm config includes a button to open firefox, volume buttons, and brightness buttons. The keys for these buttons must be edited by the end user or they will not work.
