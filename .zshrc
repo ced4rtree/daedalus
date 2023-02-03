@@ -1,21 +1,33 @@
+# Show fetch at top of screen
+if [ where fetch != "" ]; then
+	fetch
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Luke's config for the Zoomer Shell
 
 # Enable colors and change prompt:
 autoload -U colors && colors
-PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 
-# Aliases
+setopt PROMPT_SUBST
+#$vcs_info_msg_0_$%b
+alias kee='keepassxc-cli'
 alias ls='ls --color=auto'
-
+alias music='mpv --ao=alsa --shuffle --loop-playlist ${HOME}/music/*.*'
+alias wp='feh --bg-scale ~/photos/$(ls ~/photos --format=single-column | shuf)'
+alias grep='grep --color=auto'
+alias wifi='doas rfkill unblock wifi'
+alias emacs='emacsclient -a vim -c'
 # History in cache directory:
 HISTSIZE=10000
 SAVEHIST=10000
-HISTFILE=~/.cache/zsh/history
-
-# Opacity in the terminal
-if [[ $(cat /proc/$PPID/comm) = "st" ]]; then
-	transset-df "0.80" --id "$WINDOWID" >/dev/null
-fi
+HISTFILE=${HOME}/.cache/zsh/history
 
 # Basic auto/tab complete:
 autoload -U compinit
@@ -72,9 +84,21 @@ bindkey -s '^o' 'lfcd\n'
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
-# Load aliases and shortcuts if existent.
-[ -f "$HOME/.config/shortcutrc" ] && source "$HOME/.config/shortcutrc"
-[ -f "$HOME/.config/aliasrc" ] && source "$HOME/.config/aliasrc"
+if test -f "${HOME}/.p10k.zsh"; then
+	if [[ $(pidof Xorg) != "" ]]; then
+		source ~/powerlevel10k/powerlevel10k.zsh-theme
+		
+		# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+		[[ ! -f ~/p10k.zsh ]] || source ~/p10k.zsh
+		
+		# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+		[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+	fi
+else
+	PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+	PROMPT="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+	RPROMPT=""
+fi
 
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null

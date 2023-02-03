@@ -1,50 +1,92 @@
 !! Colorscheme
-
 ! special
-URxvt.foreground: #93a1a1
-URxvt.background: #000000
-URxvt.cursorColor: #afbfbf
+*.foreground: #93a1a1
+*.background: #141c21
+*.cursorColor: #afbfbf
 
 ! black
-URxvt.color0: #263640
-URxvt.color8: #4a697d
+!*.color0: #263640
+*.color0: #141c21
+!*.color8: #4a697d
+color8: #141c21
 
 ! red
-URxvt.color1: #d12f2c
-URxvt.color9: #fa3935
+*.color1: #d12f2c
+*.color9: #fa3935
 
 ! green
-URxvt.color2: #00cc00
-URxvt.color10: #00e600
+*.color2: #00cc00
+*.color10: #00e600
 
 ! yellow
-URxvt.color3: #b08500
-URxvt.color11: #d9a400
+*.color3: #b08500
+*.color11: #d9a400
 
 ! blue
-URxvt.color4: #2587cc
-URxvt.color12: #2ca2f5
+*.color4: #2587cc
+*.color12: #2ca2f5
 
 ! magenta
-URxvt.color5: #696ebf
-URxvt.color13: #8086e8
+*.color5: #696ebf
+*.color13: #8086e8
 
 ! cyan
-URxvt.color6: #289c93
-URxvt.color14: #33c5ba
+*.color6: #289c93
+*.color14: #33c5ba
 
 ! white
-URxvt.color7: #bfbaac
-URxvt.color15: #fdf6e3
+*.color7: #bfbaac
+*.color15: #fdf6e3
+
+! special
+!URxvt.foreground: #93a1a1
+!URxvt.background: #1C1E1E
+!URxvt.cursorColor: #afbfbf
+!
+!! black
+!URxvt.color0: #000000
+!URxvt.color8: #000000
+!
+!! red
+!URxvt.color1: #d12f2c
+!URxvt.color9: #fa3935
+!
+!! green
+!URxvt.color2: #00cc00
+!URxvt.color10: #00e600
+!
+!! yellow
+!URxvt.color3: #b08500
+!URxvt.color11: #d9a400
+!
+!! blue
+!URxvt.color4: #2587cc
+!URxvt.color12: #2ca2f5
+!
+!! magenta
+!URxvt.color5: #696ebf
+!URxvt.color13: #8086e8
+!
+!! cyan
+!URxvt.color6: #289c93
+!URxvt.color14: #33c5ba
+!
+!! white
+!URxvt.color7: #ffffff
+!URxvt.color15: #ffffff
 
 !! URxvt Appearance
-URxvt.font: xft:Liberation Mono:size=13
-URxvt.boldFont: xft:Liberation Mono:style=Bold:size=13
-URxvt.italicFont: xft:Liberation Mono:style=Italic:size=13
-URxvt.boldItalicfont: xft:Liberation Mono:style=BoldItalic:size=13
+!URxvt.font: xft:DejaVu Sans Mono:size=14,xft:Inconsolata LGC for Powerline:size=19:pixelsize=19
+!URxvt.boldFont: xft:DejaVu Sans Mono:style=Bold:size=14,xft:Inconsolata LGC for Powerline:size=19:pixelsize=19
+!URxvt.italicFont: xft:DejaVu Sans Mono:style=Italic:size=14,xft:Inconsolata LGC for Powerline:size=19:pixelsize=19
+!URxvt.boldItalicFont: xft:DejaVu Sans Mono:style=BoldItalic:size=14,xft:Inconsolata LGC for Powerline:size=19:pixelsize=19
+URxvt.font: xft:MesloLGS NF:size=14
+URxvt.boldFont: xft:MesloLGS NF:size=14:style=Bold
+URxvt.italicFont: xft:MesloLGS NF:size=14:style=Italic
+URxvt.boldItalicFont: xft:MesloLGS NF:size=14:style=BoldItalic
 URxvt.letterSpace: 0
 URxvt.lineSpace: 0
-!URxvt.geometry: 92x24
+URxvt.geometry: 400x400
 URxvt.cursorBlink: false
 URxvt.cursorUnderline: false
 URxvt.saveline: 2048
@@ -55,6 +97,6 @@ URxvt.depth: 24
 URxvt.iso14755: false
 
 !! Copy Paste & Other Extensions
-URxvt.perl-ext-common: default,clipboard,url-select,keyboard-select
+URxvt.perl-ext-common: resize-font,default,clipboard,url-select,keyboard-select
 URxvt.copyCommand: xclip -i -selection clipboard
 URxvt.pasteCommand: xclip -o -selection clipboard

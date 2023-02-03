@@ -1,5 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
+/* Adds some weird keys like sound keys */
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -62,7 +65,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "urxvt", NULL };
 /* user defined functions */
 static const char *volumeup[] = { "snd", "up", NULL };
 static const char *volumedown[] = { "snd", "down", NULL };
@@ -78,8 +81,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	/* user defined functions */
-	{ 0,		      		0xffc8,		spawn,	   {.v = volumeup } },
-	{ 0,			        0xffc7,		spawn,	   {.v = volumedown } },
+	{ 0,		      		XF86XK_AudioRaiseVolume,		spawn,	   {.v = volumeup } },
+	{ 0,			        XF86XK_AudioLowerVolume,		spawn,	   {.v = volumedown } },
 	{ 0,					0xff57,		spawn,	   {.v = brightdwn } },
 	{ 0,					0xff50,		spawn,	   {.v = brightup } },
 	{ ShiftMask,			0xff1b,		spawn,	   {.v = slock } },
