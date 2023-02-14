@@ -1,8 +1,14 @@
+" Define leader character as " "
+let mapleader = " "
+
 " Disable vi compatibility
 set nocompatible
 
 " Set numbers on the side
 set number relativenumber
+
+" Turn on syntax
+syntax on
 
 " Set autocompletion
 set wildmode=longest,list,full
@@ -29,14 +35,8 @@ set mouse=
 " Guarantees proper file formats
 set fileformat=unix
 
-" Define leader character as ,
-let mapleader = " "
-
 " Like spellchecker for shell scripts
 map <leader>s :!clear && shellcheck %<CR>
-
-" Turns on syntax highlighting
-syntax on
 
 " Visualizes tabs in similar way to how vscode does
 set listchars=tab:\ \ \|
@@ -70,10 +70,16 @@ map <leader>L :tablast<CR>
 map <C-c> :w<CR>:!gcc<space>%<space>-o<space>%<
 
 " Builds C++ files
-map <C-p> :w<CR>:!g++<space>%<space>-o<space>%<
+map <C-p> :wall<CR>:!g++<space>%<space>-o<space>%<
 
 " Builds Java files
-map <C-j> :w<CR>:!javac<space>%
+map <C-j> :wall<CR>:!javac<space>%
+
+" Compiles groff
+map <C-g> :w<CR>:!tbl % \| pic \| groff -e -ms -T pdf > %<.pdf<CR>
+
+" Looks at a pdf of the current of current doc (must be compiled first)
+map <C-P> :!mupdf %<.pdf & disown<CR><CR>
 
 " Puts a tab before every highlighted line
-vmap <tab> :'<,'>norm<space>I<tab><CR>
+vmap <tab> :norm<space>I<tab><CR>
