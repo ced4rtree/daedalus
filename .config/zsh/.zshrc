@@ -33,6 +33,8 @@ zmodload zsh/complist
 compinit
 _comp_options+=(globdots)		# Include hidden files.
 
+transset-df "0.80" --id "$WINDOWID" >/dev/null
+
 # vi mode
 bindkey -v
 export KEYTIMEOUT=1

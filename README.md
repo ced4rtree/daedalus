@@ -2,13 +2,7 @@
 
 ### dwm
 
-My dwm config includes a button to open firefox, volume buttons, and brightness buttons. The keys for these buttons must be edited by the end user or they will not work.
-
-### st
-
-Not much has changed here, other than the font2 patch to allow emojis and the dracula patch for a little ricing.
-
-Optionally dependent on Noto Color Emoji font pack for emoji support in st
+My dwm config includes a button to open firefox, volume buttons, and brightness buttons, among others. The keys for a lot of these buttons must be edited by the end user or they will not work. I'll fix that some afternoon when I've got nothing going on.
 
 ### dwmblocks
 
