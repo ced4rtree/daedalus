@@ -20,7 +20,7 @@ Optional dependencies include a compositor like xcompmgr or picom for opacity in
 
 My .vimrc includes support for relative line numbers, window splitting to the right rather than below, search highlighting, shellcheck, vim command autocompletion, and 4 wide tabs.
 
-The init.vim (for use with neovim) includes syntax completion, better highlighting, and all the features contained in the standard .vimrc
+The init.vim (for use with neovim) includes syntax completion, better highlighting, and all the features contained in the standard .vimrc 
 
 ### urxvt
 
