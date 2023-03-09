@@ -93,6 +93,14 @@ URxvt.depth: 24
 URxvt.iso14755: false
 
 !! Copy Paste & Other Extensions
-URxvt.perl-ext-common: resize-font,default,clipboard,url-select,keyboard-select
+URxvt.perl-ext-common: resize-font,default,clipboard-osc
 URxvt.copyCommand: xclip -i -selection clipboard
 URxvt.pasteCommand: xclip -o -selection clipboard
+
+URxvt.keysym.C-minus:		resize-font:smaller
+URxvt.keysym.C-equal:		resize-font:bigger
+URxvt.keysym.C-plus:		resize-font:reset
+URxvt.keysym.C-question:	resize-font:show
+
+URxvt.keysym.C-S-y:			copyCommand
+URxvt.keysym.C-S-p:			pasteCommand

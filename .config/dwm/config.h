@@ -13,7 +13,7 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int usealtbar          = 1;        /* 1 means use non-dwm status bar */
 static const char *altbarclass      = "Polybar"; /* Alternate bar class name */
 static const char *alttrayname      = "main";    /* Polybar tray instance name */
-static const char *altbarcmd        = "$HOME/.config/polybar/launch.sh"; /* Alternate bar launch command */
+static const char *altbarcmd        = "/home/some-guy/.config/polybar/launch.sh"; /* Alternate bar launch command */
 static const char *fonts[]          = { "monospace:size=10", "notocoloremoji:size=10" };
 static const char dmenufont[]       = "MesloLGS NF:size=10";
 static const char col_gray1[]       = "#222222";
@@ -71,31 +71,44 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", NULL };
-static const char *termcmd[]  = { "urxvt", "--perl-lib", "${HOME}/.config/urxvt", NULL };
+static const char *termcmd[]  = { "urxvtc", "--perl-lib", "/home/some-guy/.config/urxvt", NULL };
 /* user defined functions */
-static const char *volumeup[] = { "snd", "up", NULL };
-static const char *volumedown[] = { "snd", "down", NULL };
 static const char *brightup[] = { "brightness", "up", NULL };
 static const char *brightdwn[] = { "brightness", "down", NULL };
-static const char *browser[] = { "/bin/firefox", NULL };
 static const char *slock[] = { "slock", NULL };
 static const char *scrot[] = { "scrot", "-s", NULL};
-static const char *pauseMus[] = { "kill", "-9", "$(pidof", "mpv)", NULL };
-static const char *background[] = { "feh", "--bg-scale", "${HOME}/photos/$(ls", "${HOME}/photos", "|", "shuf)", NULL};
+static const char *background[] = { "feh", "--bg-scale", "/home/some-guy/photos/$(ls", "/home/some-guy/photos", "|", "shuf)", NULL};
+static const char *emacs[] = { "emacsclient", "-c", "-s", "/home/some-guy/.config/emacs/server-dir/server", NULL };
+    /* Music */
+static const char *volumeup[] = { "snd", "up", NULL };
+static const char *volumedown[] = { "snd", "down", NULL };
+static const char *nextSong[] = { "cmus-remote", "--next", NULL };
+static const char *prevSong[] = { "cmus-remote", "--prev", NULL };
+static const char *pauseMus[] = { "cmus-remote", "--pause", NULL };
+static const char *killMus[] = { "cmus-remote", "--stop", ";", "killall", "cmus", NULL };
+static const char *startMus[] = { "cmus-remote", "--play", "&&", "cmus-remote", "--shuffle", NULL };
+static const char *shuffleMus[] = { "cmus-remote", "--shuffle", NULL };
+/* End of user defined functions */
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	/* user defined functions */
-	{ 0,		      		XF86XK_AudioRaiseVolume,		spawn,	   {.v = volumeup } },
-	{ 0,			        XF86XK_AudioLowerVolume,		spawn,	   {.v = volumedown } },
-	{ 0,					0xff57,		spawn,	   {.v = brightdwn } },
-	{ 0,					0xff50,		spawn,	   {.v = brightup } },
-	{ ShiftMask,			0xff1b,		spawn,	   {.v = slock } },
-	{ MODKEY|ShiftMask,		XK_b,	    spawn,	   {.v = browser } },
-	{ 0,					0xff61,		spawn,	   {.v = scrot} },
-	{ 0,					0xff13,		spawn,	   {.v = pauseMus} },
-	{ MODKEY,				XK_w,		spawn,	   {.v = background} },
+	{ 0,							0xff57,    spawn,	       {.v = brightdwn } },
+	{ 0,							0xff50,    spawn,	       {.v = brightup } },
+	{ MODKEY,						XK_grave,  spawn,	       {.v = slock } },
+	{ MODKEY,		        		XK_s,	   spawn,	  	   {.v = scrot} },
+	{ MODKEY,			        	XK_w,	   spawn,	 	   {.v = background} },
+	{ MODKEY,  	    	            XK_e,      spawn,   	   {.v = emacs } },
+	    /* Music */
+	{ 0,		      				XF86XK_AudioRaiseVolume,		spawn,	   {.v = volumeup } },
+	{ 0,			       			XF86XK_AudioLowerVolume,		spawn,	   {.v = volumedown } },
+	{ MODKEY|ShiftMask,             XK_h,      spawn,          { .v = prevSong } },
+	{ MODKEY|ShiftMask,             XK_l,      spawn,          { .v = nextSong } },
+	{ MODKEY|ShiftMask,             XK_j,      spawn,          { .v = pauseMus } },
+	{ MODKEY|ShiftMask,             XK_k,      spawn,          { .v = killMus  } },
+	{ MODKEY|ShiftMask,             XK_g,      spawn,          { .v = startMus } },
+	{ MODKEY|ShiftMask,				XK_s,	   spawn,		   { .v = shuffleMus } },
 	/* end of user defined functions */
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },

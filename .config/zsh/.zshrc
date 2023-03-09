@@ -1,7 +1,7 @@
+#!/usr/bin/env zsh
+
 # Show fetch at top of screen
-if ! where fetch; then
-	fetch
-fi
+fetch
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -10,6 +10,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Luke's config for the Zoomer Shell
+
 # Enable colors and change prompt:
 autoload -U colors && colors
 
@@ -17,10 +19,16 @@ setopt PROMPT_SUBST AUTO_CD CDABLE_VARS CHASE_DOTS AUTO_LIST AUTO_MENU COMPLETE_
 unsetopt BEEP HIST_BEEP CHASE_LINKS
 zle_highlight=('paste:none')
 
+alias kee='keepassxc-cli'
 alias ls='ls --color=auto'
 alias music='mpv --ao=alsa --shuffle --loop-playlist ${HOME}/music/*.*'
 alias wp='feh --bg-scale ~/photos/$(ls ~/photos --format=single-column | shuf)'
 alias grep='grep --color=auto'
+alias wifi='doas rfkill unblock wifi && iwctl station wlan0 scan'
+alias emacs='emacsclient -a vim -c -s ~/.config/emacs/server-dir/server & disown'
+alias vim='nvim'
+alias n='nvim'
+
 # History in cache directory:
 HISTSIZE=10000
 SAVEHIST=10000
@@ -32,8 +40,6 @@ zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots)		# Include hidden files.
-
-transset-df "0.80" --id "$WINDOWID" >/dev/null
 
 # vi mode
 bindkey -v
@@ -79,6 +85,9 @@ lfcd () {
 }
 bindkey -s '^o' 'lfcd\n'
 
+# Bind ctrl-e to emacs + kill the terminal
+bindkey -s '^e' 'emacsclient -c & disown && exit\n'
+
 # Insult me
 . /etc/bash.command-not-found
 
@@ -99,21 +108,15 @@ function zsh_add_plugin() {
 
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 
-# Edit line in vim with ctrl-e:
-autoload edit-command-line; zle -N edit-command-line
-bindkey '^e' edit-command-line
-
 if [[ $(pidof Xorg) != "" ]]; then
-	if [ -f ~/.p10k.zsh ]; then
-		source ~/powerlevel10k/powerlevel10k.zsh-theme
-		export brightdisp=$(xrandr | awk 'NR==2 {print $1}')
-		
-		# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-		[[ ! -f ~/p10k.zsh ]] || source ~/p10k.zsh
-		
-		# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-		[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-	fi
+	source ~/powerlevel10k/powerlevel10k.zsh-theme
+	export brightdisp=$(xrandr | awk 'NR==2 {print $1}')
+	
+	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+	[[ ! -f ~/p10k.zsh ]] || source ~/p10k.zsh
+	
+	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+	[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 else
 	PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 	PROMPT="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
