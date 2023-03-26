@@ -1,0 +1,82 @@
+* {
+    all: unset; //Unsets everything so you can style everything from scratch
+}
+
+//Global Styles
+.bar0 {
+    background-color: #3a3a3a;
+    color: #b0b4bc;
+}
+
+// Styles on classes (see eww.yuck for more information)
+
+.sidestuff slider {
+    all: unset;
+    color: #ffd5cd;
+}
+
+.metric scale trough highlight {
+    all: unset;
+    background-color: #a1a1e8;
+    color: #000000;
+    border-radius: 10px;
+}
+
+.metric scale trough {
+    all: unset;
+    background-color: #4e4e4e;
+    border-radius: 50px;
+    min-height: 5px;
+    min-width: 50px;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+.label-ram {
+    font-size: large;
+}
+.time {
+    margin-right: 30px;
+}
+
+.0 , .01, .02, .03, .04, .05, .06,
+.011, .022, .033, .044, .055, .066{
+  padding: 0px 7px 0px 7px;
+}
+
+/* Unoccupied */
+.0 {
+	color: #606060;
+}
+
+/* Occupied */
+.01, .02, .03, .04, .05, .06, .07, .08, .09 {
+	color:#959595;
+}
+
+
+/* Focused */
+.011, .022, .033, .044, .055, .066, .077, .088, .099 {
+	color: #ffffff;
+	font-weight:bold;
+}
+
+.works button {
+	transition: 0.5s;
+}
+
+.works button:hover {
+	transition: 0.5s;
+	color: #000000;
+}
+
+.ram {
+	padding-right: 15px;
+}
+.cpu {
+	padding-right : 15px;
+}
+
+/* Music */
+.musicButton {
+	margin-left: 6px;
+}

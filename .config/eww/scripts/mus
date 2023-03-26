@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+while [ 2 -eq 2 ]
+do
+	mpc idle 1>/dev/null
+	mpc | sed -n '1p'
+done

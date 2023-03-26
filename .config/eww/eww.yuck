@@ -1,0 +1,113 @@
+(defwidget bar []
+  (centerbox :orientation "h"
+	(left)
+    (music)
+    (sidestuff)))
+(defwidget sidestuff []
+  (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+	(label  :text "  ${EWW_RAM.used_mem_perc}%"
+			:limit-width 7
+			:justify "center"
+			:show-truncated false
+			:xalign 0.5
+			:class "ram")
+	(label  :text "  ${EWW_CPU.avg}"
+		    :limit-width 7
+			:justfy "center"
+			:show-truncated false
+			:xalign 0.5
+			:class "cpu")
+    (metric :label "🔊"
+            :value volume
+            :onchange "amixer sset Master -c 1 {}%")
+    (metric :label "💾"
+            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+            :onchange "")
+    (time)))
+
+(defwidget left []
+	(box :orientation "h"
+		 :space-evenly "false"
+		 :halign "start"
+		 :valign "center"
+		 :class "left_modules"
+		 (workspaces)))
+
+; Workspaces
+(deflisten workspace "scripts/workspaces")
+(defwidget workspaces []
+  (literal :content workspace))
+
+; Music
+(defwidget music []
+  (eventbox :class "music"
+			:orientation "h"
+			:space-evenly false
+			:halign "center"
+			:onhover "eww update showMus=true"
+			:onhoverlost "eww update showMus=false"
+			(box :space-evenly false
+				 :orientation "h"
+				 {music != "" ? "🎵 ${music}": ""}
+				 (button :onclick "mpc toggle && scripts/muspaused"
+						 :class "musicButton"
+					"${musPaused}"))))
+(deflisten music "scripts/mus")
+(defvar musPaused "▶")
+
+(defvar showMus false)
+(defwidget musWidget []
+  (eventbox :class "musInfoContainer"
+			:valign "fill"
+			:halign "fill"
+			:active true
+			:visible "${showMus}"))
+
+(defwidget metric [label value onchange]
+  (box :orientation "h"
+       :class "metric"
+       :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+           :max 101
+           :active {onchange != ""}
+           :value value
+           :onchange onchange)))
+
+(defwidget time []
+  (box :class "time" {time}))
+
+(defvar volume "50")
+
+(defpoll time :interval "10s"
+  "date '+%I:%M %b %d, %Y'")
+
+(defwindow bar0
+  :monitor 0
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "100%"
+                      :height "30px"
+                      :anchor "top center")
+  :exclusive true
+  :focusable false
+  :stacking "fg"
+  :windowtype "dock"
+  :wm-ignore false
+  :class "bar0"
+
+  (bar))
+
+(defwindow showMus
+  :monitor 0
+  :geometry (geometry :x "50%"
+					  :y "10%"
+					  :width "15%"
+					  :height "100px"
+					  :anchor "top center")
+  :exclusive false
+  :focusable true
+  :stacking "fg"
+  :class "musInfo"
+
+  (musWidget))

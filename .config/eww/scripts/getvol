@@ -1,0 +1,2 @@
+#!/bin/sh
+amixer sget Master -c 1 | sed -e 's/\[//' -e 's/\%]//' | awk '/\[/ { if ($5 >= 0 && $5 <= 100) print $5; else print $4 }' | awk 'NR==1 {print $1}'
