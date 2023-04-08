@@ -1,2 +1,0 @@
-;;; Generated package description from ibuffer-tramp.el  -*- no-byte-compile: t -*-
-(define-package "ibuffer-tramp" "20180127.2122" "Group ibuffer's list by TRAMP connection" 'nil :commit "bcad0bda3a67f55d1be936bf8fa9ef735fe1e3f3" :authors '(("Svend Sorensen" . "svend@ciffer.net")) :maintainer '("Svend Sorensen" . "svend@ciffer.net") :keywords '("convenience") :url "http://github.com/svend/ibuffer-tramp")

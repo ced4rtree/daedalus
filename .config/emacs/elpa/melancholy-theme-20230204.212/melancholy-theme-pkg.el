@@ -1,2 +1,0 @@
-;;; Generated package description from melancholy-theme.el  -*- no-byte-compile: t -*-
-(define-package "melancholy-theme" "20230204.212" "A dark theme that's pretty sad -*- lexical-binding: t; -" '((emacs "27.1")) :commit "c29f9c70787f75749a8f5af4b1a650eec5bbf689" :authors '(("@baaash" . "bleat@baaa.sh")) :maintainer '("@baaash" . "bleat@baaa.sh") :keywords '("faces" "frames") :url "https://gitlab.com/baaash/melancholy-theme")

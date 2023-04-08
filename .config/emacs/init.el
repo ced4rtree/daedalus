@@ -61,12 +61,7 @@
 
 ;; Smartparens
 (require 'smartparens-config)
-(add-hook 'c-mode-hook #'smartparens-mode)
-(add-hook 'cpp-mode-hook #'smartparens-mode)
-(add-hook 'cxx-mode-hook #'smartparens-mode)
-(add-hook 'cc-mode-hook #'smartparens-mode)
-(add-hook 'java-mode-hook #'smartparens-mode)
-(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
+(smartparens-global-mode)
 
 ;; Misc
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -84,28 +79,43 @@
 (define-key evil-normal-state-map (kbd "<remap> <evil-scroll-page-down>") 'find-file)
 
 ; kill the current buffer with 'q'
-(defun killBind ()
-	(interactive)
-	(when (buffer-modified-p)
-		(when (y-or-n-p "Buffer modified. Save?")
-	      (save-buffer)))
-	(kill-buffer (buffer-name)))
-
-(define-key evil-normal-state-map (kbd "<remap> <evil-record-macro>") 'killBind)
+(define-key evil-normal-state-map (kbd "<remap> <evil-record-macro>") #'(lambda ()
+																		 (interactive)
+																		 (when (buffer-modified-p)
+																		   (when (y-or-n-p "Buffer modified. Save?")
+																			 (save-buffer)))
+																		 (kill-buffer (buffer-name))))
 (global-set-key (kbd "DEL") 'backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
 
 ; Better scrolling
-(defun betterScrollingDown ()
-  (interactive)
-  (evil-ret 1)
-  (evil-scroll-line-down 1))
-(defun betterScrollingUp ()
-  (interactive)
-  (evil-ret -1)
-  (evil-scroll-line-up 1))
-(define-key evil-normal-state-map (kbd "<remap> <electric-newline-and-maybe-indent>") 'betterScrollingDown)
-(define-key evil-normal-state-map (kbd "<remap> <kill-line>") 'betterScrollingUp)
+(define-key evil-normal-state-map (kbd "<remap> <electric-newline-and-maybe-indent>") #'(lambda ()
+																						  (interactive)
+																						  (evil-ret 1)
+																						  (evil-scroll-line-down 1)))
+(define-key evil-normal-state-map (kbd "<remap> <kill-line>") #'(lambda ()
+																  (interactive)
+																  (evil-ret -1)
+																  (evil-scroll-line-up 1)))
+; Doom-like bindings
+(require 'key-chord)
+(key-chord-mode 1)
+(add-to-list 'load-path "~/.config/emacs/plugins")
+(add-hook 'org-bullets-mode-hook #'(lambda () (require 'space-chord)
+
+	(space-chord-define evil-normal-state-map "." 'find-file)
+	(space-chord-define evil-normal-state-map "i" 'ibuffer)
+	(space-chord-define evil-normal-state-map "b" 'pop-to-buffer-same-window)
+	(space-chord-define evil-normal-state-map "B" 'pop-to-buffer)
+	(space-chord-define evil-normal-state-map "q" '#(lambda ()
+													  (interactive)
+													  (when (buffer-modified-p)
+														(when (y-or-n-p "Buffer modified. Save?")
+														  (save-buffer)))
+													  evil-window-delete))
+	(space-chord-define evil-normal-state-map "w" 'evil-window-next)
+	(space-chord-define evil-normal-state-map "v" 'evil-window-vsplit)
+	(space-chord-define evil-normal-state-map "n" 'evil-window-new)))
 
 ;; Autocompletion
 (require 'lsp-mode)
@@ -129,6 +139,7 @@
 	      tab-width 4
 	      indent-tabs-mode t)
 (defvaralias 'c-basic-offset 'tab-width)
+(add-hook 'haskell-indentation-mode-hook #'(lambda () (interactive) (setq-default indent-tabs-mode t)))
 (global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <indent-for-tab-command>") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <c-indent-line-or-region>") 'tab-to-tab-stop)
@@ -165,7 +176,7 @@
 ;; Pretty theme
 (use-package doom-themes
 	:ensure t)
-(add-hook 'org-bullets-mode-hook (lambda () (load-theme 'doom-dark+)))
+(add-hook 'org-bullets-mode-hook (lambda () (load-theme 'doom-molokai)))
  ;'(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 135 :width normal :foundry "ADBO" :family "JetBrainsMono")))))
 
 ; Spaceline
@@ -197,14 +208,14 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(doom-dark+))
  '(custom-safe-themes
-   '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
+   '("be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(evil-undo-system 'undo-redo)
  '(package-selected-packages
-   '(powerline-evil nyan-mode flymake-elisp-config spaceline haskell-mode haskell-emacs emms mu4e-conversation mu4easy org-bullets org-present centaur-tabs 2048-game typit pacmacs lsp-intellij tree-sitter-langs tree-sitter-indent tree-sitter company-box company-jedi ibuffer-tramp company-fuzzy company-irony lsp-ivy magit treemacs-evil company flycheck lsp-java yasnippet-snippets yasnippet el-autoyas fd-dired dired-ranger dired-rainbow use-package package+))
+   '(key-chord hasklig-mode haskell-emacs-base yuck-mode powerline-evil nyan-mode flymake-elisp-config spaceline haskell-mode haskell-emacs emms mu4e-conversation mu4easy org-bullets org-present centaur-tabs 2048-game typit pacmacs lsp-intellij tree-sitter-langs tree-sitter-indent tree-sitter company-box company-jedi ibuffer-tramp company-fuzzy company-irony lsp-ivy magit treemacs-evil company flycheck lsp-java yasnippet-snippets yasnippet el-autoyas fd-dired dired-ranger dired-rainbow use-package package+))
  '(warning-suppress-types '((lsp-mode) (lsp-mode) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 135 :width normal :foundry "ADBO" :family "JetBrainsMono")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#1c1e1f" :foreground "#d6d6d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 115 :width normal :foundry "ADBO" :family "JetBrains Mono")))))
