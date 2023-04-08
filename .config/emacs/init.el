@@ -19,19 +19,26 @@
 
 ;; Packages
 (betterInstall 'use-package)
-
 (betterInstall 'evil)
 (evil-mode)
-
 (betterInstall 'which-key)
 (use-package which-key
 	:ensure t
 	:init
 	(which-key-mode))
-
 (betterInstall 'doom-themes)
-
 (betterInstall 'smartparens)
+(betterInstall 'rainbow-mode)
+(betterInstall 'rainbow-delimiters)
+(betterInstall 'rainbow-identifiers)
+(betterInstall 'lsp-mode)
+(betterInstall 'lsp-haskell)
+(betterInstall 'lsp-treemacs)
+(betterInstall 'lsp-intellij)
+(betterInstall 'org-bullets)
+(betterInstall 'key-chord)
+(betterInstall 'vterm)
+(betterInstall 'treemacs)
 
 ;; Rainbows
 (require 'rainbow-mode)
@@ -97,25 +104,29 @@
 																  (interactive)
 																  (evil-ret -1)
 																  (evil-scroll-line-up 1)))
-; Doom-like bindings
+
+;; Doom-like bindings
 (require 'key-chord)
+(add-to-list 'load-path "/home/some-guy/.config/emacs/plugins")
+(require 'space-chord)
 (key-chord-mode 1)
-(add-to-list 'load-path "~/.config/emacs/plugins")
-(add-hook 'org-bullets-mode-hook #'(lambda () (require 'space-chord)
+(add-hook 'org-bullets-mode-hook #'(lambda ()
 
 	(space-chord-define evil-normal-state-map "." 'find-file)
 	(space-chord-define evil-normal-state-map "i" 'ibuffer)
 	(space-chord-define evil-normal-state-map "b" 'pop-to-buffer-same-window)
 	(space-chord-define evil-normal-state-map "B" 'pop-to-buffer)
-	(space-chord-define evil-normal-state-map "q" '#(lambda ()
-													  (interactive)
+	(space-chord-define evil-normal-state-map "q" '(lambda ()
+													  ;(interactive)
 													  (when (buffer-modified-p)
 														(when (y-or-n-p "Buffer modified. Save?")
 														  (save-buffer)))
-													  evil-window-delete))
+													  (evil-window-delete)))
 	(space-chord-define evil-normal-state-map "w" 'evil-window-next)
 	(space-chord-define evil-normal-state-map "v" 'evil-window-vsplit)
 	(space-chord-define evil-normal-state-map "n" 'evil-window-new)))
+; space-chord just kinda decides to not work sometimes, but restarting key-chord-mode fixes it
+(global-set-key (kbd "C-<return>") #'(lambda () (interactive) (key-chord-mode 1)))
 
 ;; Autocompletion
 (require 'lsp-mode)
@@ -125,6 +136,7 @@
   (add-hook 'cc-mode-hook #'lsp)
   (add-hook 'java-mode-hook #'lsp)
   (add-hook 'sh-mode-hook #'lsp)
+  (add-hook 'haskell-mode-hook #'lsp)
 
 (use-package company
   :ensure t
@@ -169,9 +181,32 @@
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (setq org-hide-leading-stars t)
+(add-hook 'org-mode-hook #'(lambda ()
+							(interactive)
+							(local-unset-key (kbd "RET"))
+							(local-set-key (kbd "RET") (org-open-at-point))))
 
-; Disable elisp confirmation
+; Some QOL for link handling
 (setq-default org-link-elisp-confirm-function nil)
+(add-hook 'org-mode-hook #'(lambda () (setq-default org-return-follows-link t)))
+
+(defun some-guy/org-colors-molokai ()
+(dolist
+	(face
+	 '((org-level-1       1.7 "#fb2874" ultra-bold)
+	   (org-level-2       1.6 "#fd971f" extra-bold)
+	   (org-level-3       1.5 "#9c91e4" bold)
+	   (org-level-4       1.4 "#268bd2" semi-bold)
+	   (org-level-5       1.3 "#e74c3c" normal)
+	   (org-level-6       1.2 "#b6e63e" normal)
+	   (org-level-7       1.1 "#66d9ef" normal)
+	   (org-level-8       1.0 "#e2c770" normal)
+	   (org-table         1.0 "#d4d4d4" normal)
+	   (org-table-header  1.0 "#d4d4d4" normal)
+	   (org-link          1.3 "#9c91e4" normal)))
+	(set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
+	(set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#d4d4d4"))
+(some-guy/org-colors-molokai)
 
 ;; Pretty theme
 (use-package doom-themes
@@ -210,12 +245,13 @@
  '(custom-safe-themes
    '("be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(evil-undo-system 'undo-redo)
+ '(org-return-follows-link t)
  '(package-selected-packages
-   '(key-chord hasklig-mode haskell-emacs-base yuck-mode powerline-evil nyan-mode flymake-elisp-config spaceline haskell-mode haskell-emacs emms mu4e-conversation mu4easy org-bullets org-present centaur-tabs 2048-game typit pacmacs lsp-intellij tree-sitter-langs tree-sitter-indent tree-sitter company-box company-jedi ibuffer-tramp company-fuzzy company-irony lsp-ivy magit treemacs-evil company flycheck lsp-java yasnippet-snippets yasnippet el-autoyas fd-dired dired-ranger dired-rainbow use-package package+))
+   '(helm ivy key-chord hasklig-mode haskell-emacs-base yuck-mode powerline-evil nyan-mode flymake-elisp-config spaceline haskell-mode haskell-emacs emms mu4e-conversation mu4easy org-bullets org-present centaur-tabs 2048-game typit pacmacs lsp-intellij tree-sitter-langs tree-sitter-indent tree-sitter company-box company-jedi ibuffer-tramp company-fuzzy company-irony lsp-ivy magit treemacs-evil company flycheck lsp-java yasnippet-snippets yasnippet el-autoyas fd-dired dired-ranger dired-rainbow use-package package+))
  '(warning-suppress-types '((lsp-mode) (lsp-mode) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#1c1e1f" :foreground "#d6d6d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 115 :width normal :foundry "ADBO" :family "JetBrains Mono")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#1c1e1f" :foreground "#d6d6d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "JB" :family "JetBrains Mono")))))

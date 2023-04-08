@@ -1,14 +1,7 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Show fetch at top of screen
 fetch
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
 # Luke's config for the Zoomer Shell
 
@@ -22,11 +15,9 @@ zle_highlight=('paste:none')
 alias kee='keepassxc-cli'
 alias ls='ls --color=auto'
 alias music='mpv --ao=alsa --shuffle --loop-playlist ${HOME}/music/*.*'
-alias wp='feh --bg-scale ~/photos/$(ls ~/photos --format=single-column | shuf)'
+alias wp='swaybg -i wallpapers/$(ls wallpapers | shuf | head -n 1) -m stretch & disown'
 alias grep='grep --color=auto'
 alias wifi='doas rfkill unblock wifi && iwctl station wlan0 scan'
-alias emacs='emacsclient -a vim -c -s ~/.config/emacs/server-dir/server & disown'
-alias vim='nvim'
 alias n='nvim'
 
 # History in cache directory:
@@ -89,7 +80,9 @@ bindkey -s '^o' 'lfcd\n'
 bindkey -s '^e' 'emacsclient -c & disown && exit\n'
 
 # Insult me
-. /etc/bash.command-not-found
+if [ -f /etc/bash.command-not-found ]; then
+    . /etc/bash.command-not-found
+fi
 
 function zsh_add_file() {
 	[ -f "$ZDOTDIR/$1" ] && source "$ZDOTDIR/$1"
@@ -108,20 +101,8 @@ function zsh_add_plugin() {
 
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 
-if [[ $(pidof Xorg) != "" ]]; then
-	source ~/powerlevel10k/powerlevel10k.zsh-theme
-	export brightdisp=$(xrandr | awk 'NR==2 {print $1}')
-	
-	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-	[[ ! -f ~/p10k.zsh ]] || source ~/p10k.zsh
-	
-	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-	[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-else
-	PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
-	PROMPT="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
-	RPROMPT=""
-fi
+# Cool prompt
+source <(/usr/bin/starship init zsh --print-full-init)
 
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null

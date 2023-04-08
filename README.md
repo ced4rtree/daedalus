@@ -5,6 +5,6 @@
 ### Includes configuration for lots of different programs. The ones currently being maintained are:
  - Polybar
  - XMonad
- - Hyprland
  - Zsh
  - GNU Emacs
+ - Alacritty

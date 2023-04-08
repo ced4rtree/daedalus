@@ -37,7 +37,7 @@ myStartupHook = do
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
-        [ ((modm .|. shiftMask, xK_Return), spawn "urxvt")
+        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
 
         -- application launcher
         , ((modm, xK_p), spawn "rofi -show run")
@@ -53,7 +53,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((0, xF86XK_AudioLowerVolume), spawn "snd down")
 
         -- Brightness adjustment
-        , ((modm, xK_F10), spawn "brightness up")
+        , ((modm, xK_F10), spawn "brightness down")
         , ((modm, xK_F11), spawn "brightness up")
         --, ((0, xF86XK_MonBrightnessUp), spawn "brightness up")
         --, ((0, xF86XK_MonBrightnessDown), spawn "brightness down")
@@ -64,6 +64,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_h), sendMessage Shrink)
         , ((modm, xK_l), sendMessage Expand)
         , ((modm, xK_Return), windows W.swapMaster)
+        , ((modm, xK_m), windows W.focusMaster)
 
         -- Exit XMonad
         , ((modm .|. shiftMask, xK_q), io (exitWith ExitSuccess))
