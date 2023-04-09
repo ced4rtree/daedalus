@@ -7,6 +7,7 @@ import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
+import XMonad.Util.SpawnOnce
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import Graphics.X11.ExtraTypes.XF86
@@ -32,7 +33,15 @@ myLayout = avoidStruts $
 
 myStartupHook :: X ()
 myStartupHook = do
-        spawn "/home/some-guy/.config/polybar/launch.sh"
+  spawnOnce "mpv /opt/sounds/startup-01.mp3"
+  spawn "/home/some-guy/.config/polybar/launch.sh"
+  spawnOnce "feh --randomize --bg-scale /home/some-guy/wallpapers"
+  spawnOnce "xset r rate 200 65"
+  spawnOnce "setxkbmap -option caps:escape"
+  spawnOnce "mpd"
+  spawnOnce "mpc pause"
+  spawnOnce "emacs --daemon"
+  spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
     
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
@@ -40,7 +49,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
 
         -- application launcher
-        , ((modm, xK_p), spawn "rofi -show run")
+        , ((modm, xK_p), spawn "rofi -show run" >> spawn "mpv --volume=160 /opt/sounds/menu-01.mp3")
 
         -- Close the focused window
         , ((modm .|. shiftMask, xK_x), kill)
@@ -67,7 +76,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_m), windows W.focusMaster)
 
         -- Exit XMonad
-        , ((modm .|. shiftMask, xK_q), io (exitWith ExitSuccess))
+        , ((modm .|. shiftMask, xK_q), io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
         -- Restart XMonad
         , ((modm .|. shiftMask, xK_r), spawn "xmonad --recompile; xmonad --restart")
 
