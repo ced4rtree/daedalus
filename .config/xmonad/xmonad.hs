@@ -33,7 +33,9 @@ myLayout = avoidStruts $
 
 myStartupHook :: X ()
 myStartupHook = do
+  spawnOnce "export PATH=${PATH}:/home/some-guy/scripts"
   spawnOnce "mpv /opt/sounds/startup-01.mp3"
+  spawnOnce "xsetroot -cursor_name left_ptr"
   spawn "/home/some-guy/.config/polybar/launch.sh"
   spawnOnce "feh --randomize --bg-scale /home/some-guy/wallpapers"
   spawnOnce "xset r rate 200 65"
@@ -49,7 +51,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
 
         -- application launcher
-        , ((modm, xK_p), spawn "rofi -show run" >> spawn "mpv --volume=160 /opt/sounds/menu-01.mp3")
+        , ((modm, xK_p), spawn "rofi -show run" >> spawn "mpv /opt/sounds/menu-01.mp3")
 
         -- Close the focused window
         , ((modm .|. shiftMask, xK_x), kill)
@@ -58,14 +60,17 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm .|. shiftMask, xK_j), spawn "mpc toggle")
         , ((modm .|. shiftMask, xK_h), spawn "mpc prev")
         , ((modm .|. shiftMask, xK_l), spawn "mpc next")
-        , ((0, xF86XK_AudioRaiseVolume), spawn "snd up")
-        , ((0, xF86XK_AudioLowerVolume), spawn "snd down")
+        , ((0, xF86XK_AudioRaiseVolume), spawn "~/scripts/snd up")
+        , ((0, xF86XK_AudioLowerVolume), spawn "~/scripts/snd down")
 
         -- Brightness adjustment
-        , ((modm, xK_F10), spawn "brightness down")
-        , ((modm, xK_F11), spawn "brightness up")
+        , ((modm, xK_F10), spawn "~/scripts/brightness down")
+        , ((modm, xK_F11), spawn "~/scripts/brightness up")
         --, ((0, xF86XK_MonBrightnessUp), spawn "brightness up")
         --, ((0, xF86XK_MonBrightnessDown), spawn "brightness down")
+
+        -- Change the background
+        , ((modm, xK_w), spawn "feh --bg-scale --randomize ~/wallpapers")
 
         -- Moving around windows
         , ((modm, xK_j), windows W.focusDown)
