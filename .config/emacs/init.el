@@ -11,34 +11,65 @@
 '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
-(defun betterInstall (package)
-  (interactive)
-  (unless (package-installed-p package)
-	(package-refresh-contents)
-	(package-install package)))
-
 ;; Packages
-(betterInstall 'use-package)
-(betterInstall 'evil)
-(evil-mode)
-(betterInstall 'which-key)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(setq use-package-always-ensure t)
+
+; Evil mode with evil in every buffer
+(setq evil-want-keybinding nil)
+(use-package evil
+	:init
+	(evil-mode))
+(use-package evil-collection
+	:after evil
+	:config
+	(setq evil-collection-mode-list '(dashboard dired ibuffer))
+	(evil-collection-init))
+
+; General lets us use space for a prefix, very ergonomic
+(use-package general
+	:config
+	(general-evil-setup t))
+
+; Display some help for forgetting keybindings
 (use-package which-key
 	:ensure t
 	:init
 	(which-key-mode))
-(betterInstall 'doom-themes)
-(betterInstall 'smartparens)
-(betterInstall 'rainbow-mode)
-(betterInstall 'rainbow-delimiters)
-(betterInstall 'rainbow-identifiers)
-(betterInstall 'lsp-mode)
-(betterInstall 'lsp-haskell)
-(betterInstall 'lsp-treemacs)
-(betterInstall 'lsp-intellij)
-(betterInstall 'org-bullets)
-(betterInstall 'key-chord)
-(betterInstall 'vterm)
-(betterInstall 'treemacs)
+
+; Autocompletion
+(use-package company
+  :ensure t
+  :config
+  (progn
+    (add-hook 'after-init-hook 'global-company-mode)))
+(use-package lsp-mode)
+(use-package lsp-haskell)
+(use-package lsp-treemacs)
+(use-package lsp-java)
+(use-package lsp-ui)
+
+; Dired
+(use-package all-the-icons-dired)
+(use-package dired-open)
+(use-package peep-dired)
+
+; Prettification
+(use-package doom-themes)
+(use-package smartparens)
+(use-package rainbow-mode)
+(use-package rainbow-delimiters)
+(use-package rainbow-identifiers)
+(use-package all-the-icons)
+(use-package org-bullets)
+(use-package doom-modeline :ensure t)
+
+; Misc
+(use-package vterm)
+(use-package treemacs)
+(use-package sudo-edit)
 
 ;; Rainbows
 (require 'rainbow-mode)
@@ -62,9 +93,7 @@
 
 (use-package smex
 	:ensure t
-	:init (smex-initialize)
-	:bind
-	("M-x" . smex))
+	:init (smex-initialize))
 
 ;; Smartparens
 (require 'smartparens-config)
@@ -81,10 +110,6 @@
 (beacon-mode 1)
 
 ;; Keybindings
-(define-key evil-normal-state-map (kbd "<remap> <evil-jump-forward>") 'ibuffer-jump)
-(define-key evil-normal-state-map (kbd "<remap> <evil-scroll-page-up>") 'pop-to-buffer)
-(define-key evil-normal-state-map (kbd "<remap> <evil-scroll-page-down>") 'find-file)
-
 ; kill the current buffer with 'q'
 (define-key evil-normal-state-map (kbd "<remap> <evil-record-macro>") #'(lambda ()
 																		 (interactive)
@@ -92,58 +117,84 @@
 																		   (when (y-or-n-p "Buffer modified. Save?")
 																			 (save-buffer)))
 																		 (kill-buffer (buffer-name))))
+
 (global-set-key (kbd "DEL") 'backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
 
-; Better scrolling
-(define-key evil-normal-state-map (kbd "<remap> <electric-newline-and-maybe-indent>") #'(lambda ()
-																						  (interactive)
-																						  (evil-ret 1)
-																						  (evil-scroll-line-down 1)))
-(define-key evil-normal-state-map (kbd "<remap> <kill-line>") #'(lambda ()
-																  (interactive)
-																  (evil-ret -1)
-																  (evil-scroll-line-up 1)))
+(defun bugger/killBuffer ()
+	(interactive)
+  (when (buffer-modified-p)
+    (when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer (buffer-name)))
+(defun bugger/killBufferAndWindow ()
+	(interactive)
+  (when (buffer-modified-p)
+    (when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer (buffer-name)))
 
-;; Doom-like bindings
-(require 'key-chord)
-(add-to-list 'load-path "/home/some-guy/.config/emacs/plugins")
-(require 'space-chord)
-(key-chord-mode 1)
-(add-hook 'org-bullets-mode-hook #'(lambda ()
+; Doom-like bindings
+(nvmap :prefix "SPC"
+	   ; Buffers
+	   "b i" '(ibuffer :which-key "Ibuffer")
+	   "b c" '(bugger/killBuffer :which-key "Close the current buffer")
+	   "b k" '(bugger/killBufferAndWindow :which-key "Close the current buffer and window")
+	   "b b" '(pop-to-buffer :which-key "Open a buffer in a new window")
 
-	(space-chord-define evil-normal-state-map "." 'find-file)
-	(space-chord-define evil-normal-state-map "i" 'ibuffer)
-	(space-chord-define evil-normal-state-map "b" 'pop-to-buffer-same-window)
-	(space-chord-define evil-normal-state-map "B" 'pop-to-buffer)
-	(space-chord-define evil-normal-state-map "q" '(lambda ()
-													  ;(interactive)
-													  (when (buffer-modified-p)
-														(when (y-or-n-p "Buffer modified. Save?")
-														  (save-buffer)))
-													  (evil-window-delete)))
-	(space-chord-define evil-normal-state-map "w" 'evil-window-next)
-	(space-chord-define evil-normal-state-map "v" 'evil-window-vsplit)
-	(space-chord-define evil-normal-state-map "n" 'evil-window-new)))
-; space-chord just kinda decides to not work sometimes, but restarting key-chord-mode fixes it
-(global-set-key (kbd "C-<return>") #'(lambda () (interactive) (key-chord-mode 1)))
+	   ; Windows
+	   "w v" '(evil-window-vsplit :which-key "Open a vertical split")
+	   "w w" '(evil-window-next :which-key "Switch to the next window")
+	   "w n" '(evil-window-new :which-key "Open a horizontal split")
+	   "w c" '(evil-window-delete :which-key "Close the current window")
+	   "w k" '(bugger/killBufferAndWindow :which-key "Close the current buffer and window")
 
-;; Autocompletion
-(require 'lsp-mode)
-  (setq lsp-keymap-prefix "c-l")
-  (add-hook 'c++-mode-hook #'lsp)
-  (add-hook 'c-mode-hook #'lsp)
-  (add-hook 'cc-mode-hook #'lsp)
-  (add-hook 'java-mode-hook #'lsp)
-  (add-hook 'sh-mode-hook #'lsp)
-  (add-hook 'haskell-mode-hook #'lsp)
+	   ; Dired
+	   "d d" '(dired :which-key "Open dired")
+	   "d j" '(dired-jump :which-key "Open dired in the current directory")
+	   "d p" '(peep-dired :which-key "Activate peep-dired")
 
-(use-package company
-  :ensure t
-  :config
-  (progn
-    (add-hook 'after-init-hook 'global-company-mode)))
+	   ; Files
+	   "."   '(find-file :which-key "Open a file")
+	   "f s" '(save-buffer :which-key "Save file")
+	   "f r" '(recentf-open-files :which-key "List recent files to open")
+	   "f u" '(sudo-edit-find-file :which-key "Find file as root")
+	   "f U" '(sudo-edit :which-key "Edit as root")
+	   )
 
+; Nice to have pager-like scrolling
+(global-set-key (kbd "C-j") #'(lambda ()
+								(interactive)
+								(evil-scroll-down 1)))
+(global-set-key (kbd "C-j") #'(lambda ()
+								(interactive)
+								(evil-scroll-up 1)))
+
+; Dired keybindings
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
+  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
+  (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
+  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+
+; Miscellaneous keybindings
+(global-set-key (kbd "M-x") 'smex)
+
+;; LSP
+(setq lsp-keymap-prefix "c-l")
+(add-hook 'c++-mode-hook #'lsp)
+(add-hook 'c-mode-hook #'lsp)
+(add-hook 'cc-mode-hook #'lsp)
+(add-hook 'java-mode-hook #'lsp)
+(add-hook 'sh-mode-hook #'lsp)
+(add-hook 'haskell-mode-hook #'lsp)
+
+; Performance improvement
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1 mb
+(setq lsp-use-plists t)
+(setq lsp-idle-delay 0.500)
+(setq lsp-log-io nil)
 
 ;; Tabs
 (setq-default c-default-style "stroustrup"
@@ -167,7 +218,18 @@
 (setq initial-buffer-choice "~/.config/emacs/start.org")
 (define-minor-mode start-mode
   "Defines a custom mode for the start page"
-  :lighter " start")
+  :lighter " start"
+  :keymap (let ((map (make-sparse-keymap)))
+          ;;(define-key map (kbd "M-z") 'eshell)
+            (evil-define-key 'normal start-mode-map
+              (kbd "e") #'(lambda () (interactive) (find-file "~/.config/emacs/init.el"))
+              (kbd "z") #'(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
+              (kbd "p") #'(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
+              (kbd "a") #'(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
+              (kbd "x") #'(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "f") 'find-file
+              (kbd "d") 'dired)
+          map))
 
 (add-hook 'start-mode-hook 'read-only-mode)
 (provide 'start-mode)
@@ -208,33 +270,24 @@
 	(set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#d4d4d4"))
 (some-guy/org-colors-molokai)
 
+;; Dired
+; Previews
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+; Pretty icons
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+; Open things nicely
+(setq dired-open-extensions '(("gif" . "mpv")
+							  ("jpg" . "feh")
+							  ("png" . "feh")
+							  ("mkv" . "mpv")
+							  ("mp4" . "mpv")
+							  ("mp3" . "mpv")))
+
 ;; Pretty theme
 (use-package doom-themes
 	:ensure t)
 (add-hook 'org-bullets-mode-hook (lambda () (load-theme 'doom-molokai)))
  ;'(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 135 :width normal :foundry "ADBO" :family "JetBrainsMono")))))
-
-; Spaceline
-(use-package spaceline :ensure t
-  :config
-  (use-package spaceline-config
-    :config
-    (spaceline-toggle-minor-modes-off)
-    (spaceline-toggle-buffer-encoding-off)
-    (spaceline-toggle-buffer-encoding-abbrev-off)
-    (setq powerline-default-separator 'rounded)
-    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-    (spaceline-define-segment line-column
-      "The current line and column numbers."
-      "l:%l c:%2c")
-    (spaceline-define-segment time
-      "The current time."
-      (format-time-string "%H:%M"))
-    (spaceline-define-segment date
-      "The current date."
-      (format-time-string "%h %d"))
-    (spaceline-toggle-time-on)
-    (spaceline-emacs-theme 'date 'time)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -247,8 +300,8 @@
  '(evil-undo-system 'undo-redo)
  '(org-return-follows-link t)
  '(package-selected-packages
-   '(helm ivy key-chord hasklig-mode haskell-emacs-base yuck-mode powerline-evil nyan-mode flymake-elisp-config spaceline haskell-mode haskell-emacs emms mu4e-conversation mu4easy org-bullets org-present centaur-tabs 2048-game typit pacmacs lsp-intellij tree-sitter-langs tree-sitter-indent tree-sitter company-box company-jedi ibuffer-tramp company-fuzzy company-irony lsp-ivy magit treemacs-evil company flycheck lsp-java yasnippet-snippets yasnippet el-autoyas fd-dired dired-ranger dired-rainbow use-package package+))
- '(warning-suppress-types '((lsp-mode) (lsp-mode) (comp))))
+   '(spaceline-config which-key vterm use-package sudo-edit spaceline smex smartparens rainbow-mode rainbow-identifiers rainbow-delimiters peep-dired org-bullets key-chord ido-vertical-mode general evil-collection emojify-logos doom-themes dired-open company beacon all-the-icons-dired))
+ '(warning-suppress-types '((use-package) (use-package) (lsp-mode) (lsp-mode) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
