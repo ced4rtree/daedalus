@@ -27,49 +27,6 @@
 (setq use-package-always-ensure t)
 #+end_src
 
-* UI Setup
-** Get rid of ugly bars
-#+begin_src emacs-lisp
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-(global-display-line-numbers-mode)
-#+end_src
-
-** Rainbows!
-#+begin_src emacs-lisp
-(require 'rainbow-mode)
-(require 'rainbow-delimiters)
-(require 'rainbow-identifiers)
-
-(add-hook 'prog-mode-hook 'rainbow-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
-#+end_src
-
-** Epic theme
-#+begin_src emacs-lisp
-(use-package doom-themes)
-(use-package doom-modeline
-  :ensure t
-  :config (doom-modeline-mode 1))
-#+end_src
-
-** Indent guides
-#+begin_src emacs-lisp
-(use-package highlight-indent-guides)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-#+end_src
-
-** Misc
-#+begin_src emacs-lisp
-(use-package all-the-icons) ; Neat little icons everywhere
-(use-package all-the-icons-dired) ; And in dired too
-(use-package beacon ; Neat little light for your cursor
-  :config (beacon-mode 1))
-(global-hl-line-mode 1)
-#+end_src
-
 * Global Keybindings
 ** Evil setup for every buffer
 #+begin_src emacs-lisp
@@ -92,41 +49,61 @@
 	(general-evil-setup t))
 #+end_src
 
+*** We need non-anonymous functions for which-key to work
+#+begin_src emacs-lisp
+(defun bugger/kill-buffer ()
+  (interactive)
+  (when (buffer-modified-p)
+	(when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer (buffer-name)))
+
+(defun bugger/kill-buffer-and-window ()
+  (interactive)
+  (when (buffer-modified-p)
+	(when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer-and-window))
+
+(defun bugger/edit-src ()
+  (interactive)
+  (if (org-src-edit-buffer-p)
+	  (org-edit-src-exit)
+	(org-edit-special)))
+#+end_src
+
 *** Buffers
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC"
-	   ; Buffers
-	    "b i" '(ibuffer :which-key "Ibuffer")
-		"b c" #'(lambda ()
-					 (interactive)
-				   (when (buffer-modified-p)
-					 (when (y-or-n-p "Buffer modified. Save?")
-					   (save-buffer)))
-				   (kill-buffer (buffer-name)) :which-key "Close the current buffer")
-		"b k" #'(lambda ()
-					 (interactive)
-				   (when (buffer-modified-p)
-					 (when (y-or-n-p "Buffer modified. Save?")
-					   (save-buffer)))
-				   (kill-buffer-and-window) :which-key "Close the current buffer and window")
-		"b b" '(pop-to-buffer :which-key "Open a buffer in a new window")
-		"b s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
+  "b i" '(ibuffer :which-key "Ibuffer")
+  "b c" '(bugger/kill-buffer :which-key "Close the current buffer")
+  "b k" '(bugger/kill-buffer-and-window :which-key "Close the current buffer and window")
+  "b b" '(pop-to-buffer :which-key "Open a buffer in a new window")
+  "b r" '(revert-buffer :which-key "Reload the buffer")
+  "b s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
+#+end_src
 
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC"
+  "t e" '(bugger/edit-src :which-key "Start/Finish editing a code block")
+  "t a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
+  "t t" '(org-babel-tangle :which-key "Tangle the current file")
+  "t k" '(org-edit-src-abort :which-key "Abort editing a code block"))
 #+end_src
 
 *** Windows
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC"
-		"w v" '(evil-window-vsplit :which-key "Open a vertical split")
-		"w w" '(evil-window-next :which-key "Switch to the next window")
-		"w n" '(evil-window-new :which-key "Open a horizontal split")
-		"w c" '(evil-window-delete :which-key "Close the current window")
-		"w k" #'(lambda ()
-					 (interactive)
-				   (when (buffer-modified-p)
-					 (when (y-or-n-p "Buffer modified. Save?")
-					   (save-buffer)))
-				   (kill-buffer-and-window) :which-key "Close the current buffer and window"))
+  "w v" '(evil-window-vsplit :which-key "Open a vertical split")
+  "w w" '(evil-window-next :which-key "Switch to the next window")
+  "w n" '(evil-window-new :which-key "Open a horizontal split")
+  "w c" '(evil-window-delete :which-key "Close the current window")
+  "w k" #'(lambda ()
+			(interactive)
+			(when (buffer-modified-p)
+			  (when (y-or-n-p "Buffer modified. Save?")
+				(save-buffer)))
+			(kill-buffer-and-window) :which-key "Close the current buffer and window"))
 #+end_src
 
 *** Dired
@@ -140,11 +117,46 @@
 *** Files
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC"
-		"."	  '(find-file :which-key "Open a file")
-		"f s" '(save-buffer :which-key "Save file")
-		"f r" '(recentf-open-files :which-key "List recent files to open")
-		"f u" '(sudo-edit-find-file :which-key "Find file as root")
-		"f U" '(sudo-edit :which-key "Edit as root"))
+  "."	  '(find-file :which-key "Open a file")
+  "f s" '(save-buffer :which-key "Save file")
+  "f r" '(recentf-open-files :which-key "List recent files to open")
+  "f u" '(sudo-edit-find-file :which-key "Find file as root")
+  "f U" '(sudo-edit :which-key "Edit as root"))
+#+end_src
+
+*** Babel
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC"
+  "t e" '(lambda ()
+		   (interactive)
+		   (if (org-src-edit-buffer-p)
+			   (org-edit-src-exit)
+			 (org-edit-special)) :which-key "Edit a code block")
+  "t a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
+  "t t" '(org-babel-tangle :which-key "Tangle the current file")
+  "t k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+#+end_src
+
+*** Helpful functions
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC"
+  "h f" '(describe-function :which-key "Describe a function")
+  "h v" '(describe-variable :which-key "Describe a variable")
+  "h k" '(descirbe-key :which-key "Describe what a key does"))
+#+end_src
+
+*** Evaluations
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC"
+  "e b" '(eval-buffer (current-buffer) :which-key "Evaluate current buffer")
+  "e r" '(eval-region :which-key "Evaluate region"))
+#+end_src
+
+*** Bookmarks
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC"
+  "m m" '(bookmark-set :which-key "Set a bookmark")
+  "m o" '(bookmark-jump :which-key "Jump to a bookmark"))
 #+end_src
 
 ** Miscellaneous nice-to-haves
@@ -208,6 +220,14 @@
 #+begin_src emacs-lisp
 #+end_src
 
+*** Folding
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
+#+end_src
+
+#+RESULTS:
+: evil-toggle-fold
+
 ** Enable which-key to remind us what key does what
 #+begin_src emacs-lisp
 ; Display some help for forgetting keybindings
@@ -215,6 +235,95 @@
 	:ensure t
 	:init
 	(which-key-mode))
+#+end_src
+
+* UI Setup
+** Get rid of ugly bars
+#+begin_src emacs-lisp
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(global-display-line-numbers-mode)
+#+end_src
+
+** Rainbows!
+#+begin_src emacs-lisp
+(require 'rainbow-mode)
+(require 'rainbow-delimiters)
+(require 'rainbow-identifiers)
+
+(add-hook 'prog-mode-hook 'rainbow-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+#+end_src
+
+** Epic theme
+#+begin_src emacs-lisp
+(use-package doom-themes)
+(use-package doom-modeline
+  :ensure t
+  :config (doom-modeline-mode 1))
+#+end_src
+
+** Indent guides
+#+begin_src emacs-lisp
+(use-package highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character)
+#+end_src
+
+** Dashboard
+#+begin_src emacs-lisp
+(require 'dashboard)
+(dashboard-setup-startup-hook)
+;; Or if you use use-package
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+(setq dashboard-center-content t)
+(setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
+
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+#+end_src
+
+*** Icons
+#+begin_src emacs-lisp
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(add-hook 'server-after-make-frame-hook 'revert-buffer)
+#+end_src
+
+*** Defining a minor mode lets us do some things
+**** Define keymaps + read only mode for e.g.
+#+begin_src emacs-lisp
+(define-minor-mode start-mode
+  "Provide functions for custom start page."
+  :lighter " start"
+  :keymap (let ((map (make-sparse-keymap)))
+            (evil-define-key 'normal start-mode-map
+              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
+              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
+              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
+              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
+              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "f") 'find-file
+              (kbd "d") 'dired)
+          map))
+
+(add-hook 'start-mode-hook 'read-only-mode)
+(provide 'start-mode)
+(add-hook 'dashboard-mode-hook 'start-mode)
+#+end_src
+
+** Misc
+#+begin_src emacs-lisp
+(use-package all-the-icons) ; Neat little icons everywhere
+(use-package all-the-icons-dired) ; And in dired too
+(use-package beacon ; Neat little light for your cursor
+  :config (beacon-mode 1))
+(global-hl-line-mode 1)
 #+end_src
 
 * Dired
@@ -308,12 +417,12 @@
 (use-package lsp-ui)
 
 (setq lsp-keymap-prefix "c-l")
-(add-hook 'c++-mode-hook #'lsp)
-(add-hook 'c-mode-hook #'lsp)
-(add-hook 'cc-mode-hook #'lsp)
-(add-hook 'java-mode-hook #'lsp)
-(add-hook 'sh-mode-hook #'lsp)
-(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'prog-mode-hook #'lsp-deferred)
+#+end_src
+
+** Flycheck
+#+begin_src emacs-lisp
+(use-package flycheck)
 #+end_src
 
 * Miscellaneous packages
@@ -329,6 +438,7 @@
 (use-package vterm)
 (use-package treemacs)
 (use-package sudo-edit)
+(use-package origami)
 #+end_src
 
 * Interactive minibuffers, but better
@@ -391,14 +501,24 @@
 #+end_src
 
 ** Babel (org compiler)
+*** Some good settings to have
 #+begin_src emacs-lisp
 (setq org-src-fontify-natively t
     org-src-tab-acts-natively t
     org-confirm-babel-evaluate nil
-    org-edit-src-content-indentation 0)
+	org-src-window-setup 'current-window
+	org-src-preserve-indentation t)
+#+end_src
+
+*** Aloow use to tangle files on save
+#+begin_src emacs-lisp
 (use-package org-auto-tangle
   :ensure t)
-(add-hook 'org-mode-hook 'org-auto-tangle-mode)
+(add-hook 'org-mode-hook (lambda () (interactive) (org-auto-tangle-mode 1)))
+#+end_src
+
+*** Allow us to use <s for code blocks, etc.
+#+begin_src emacs-lisp
 (use-package org-tempo
   :ensure nil)
 #+end_src
@@ -627,34 +747,10 @@ Executes `org-table-copy-down' if in table."
 (dt/org-colors-doom-one)
 #+end_src
 
-* Start page
+** Miscellaneous Variables
 #+begin_src emacs-lisp
-(setq initial-buffer-choice "~/.config/emacs/start.org")
-(setq inhibit-startup-screen t)
-(setq inhibit-splash-screen t)
+(setq org-ellipsis " ▼ ")
 #+end_src
-
-** Defining a minor mode lets us do some things
-*** Define keymaps + read only mode for e.g.
-#+begin_src emacs-lisp
-(define-minor-mode start-mode
-  "Provide functions for custom start page."
-  :lighter " start"
-  :keymap (let ((map (make-sparse-keymap)))
-            (evil-define-key 'normal start-mode-map
-              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
-              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
-              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
-              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
-              (kbd "f") 'find-file
-              (kbd "d") 'dired)
-          map))
-
-(add-hook 'start-mode-hook 'read-only-mode)
-(provide 'start-mode)
-#+end_src
-
 * Custom
 #+begin_src emacs-lisp
 (custom-set-variables

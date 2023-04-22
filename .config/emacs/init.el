@@ -11,33 +11,6 @@
   (package-install 'use-package))
 (setq use-package-always-ensure t)
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-(global-display-line-numbers-mode)
-
-(require 'rainbow-mode)
-(require 'rainbow-delimiters)
-(require 'rainbow-identifiers)
-
-(add-hook 'prog-mode-hook 'rainbow-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
-
-(use-package doom-themes)
-(use-package doom-modeline
-  :ensure t
-  :config (doom-modeline-mode 1))
-
-(use-package highlight-indent-guides)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-
-(use-package all-the-icons) ; Neat little icons everywhere
-(use-package all-the-icons-dired) ; And in dired too
-(use-package beacon ; Neat little light for your cursor
-  :config (beacon-mode 1))
-(global-hl-line-mode 1)
-
 ; Evil mode with evil in every buffer
 (setq evil-want-keybinding nil)
 (use-package evil
@@ -53,35 +26,51 @@
 	:config
 	(general-evil-setup t))
 
-(nvmap :prefix "SPC"
-	   ; Buffers
-	    "b i" '(ibuffer :which-key "Ibuffer")
-		"b c" #'(lambda ()
-					 (interactive)
-				   (when (buffer-modified-p)
-					 (when (y-or-n-p "Buffer modified. Save?")
-					   (save-buffer)))
-				   (kill-buffer (buffer-name)) :which-key "Close the current buffer")
-		"b k" #'(lambda ()
-					 (interactive)
-				   (when (buffer-modified-p)
-					 (when (y-or-n-p "Buffer modified. Save?")
-					   (save-buffer)))
-				   (kill-buffer-and-window) :which-key "Close the current buffer and window")
-		"b b" '(pop-to-buffer :which-key "Open a buffer in a new window")
-		"b s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
+(defun bugger/kill-buffer ()
+  (interactive)
+  (when (buffer-modified-p)
+	(when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer (buffer-name)))
+
+(defun bugger/kill-buffer-and-window ()
+  (interactive)
+  (when (buffer-modified-p)
+	(when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer-and-window))
+
+(defun bugger/edit-src ()
+  (interactive)
+  (if (org-src-edit-buffer-p)
+	  (org-edit-src-exit)
+	(org-edit-special)))
 
 (nvmap :prefix "SPC"
-		"w v" '(evil-window-vsplit :which-key "Open a vertical split")
-		"w w" '(evil-window-next :which-key "Switch to the next window")
-		"w n" '(evil-window-new :which-key "Open a horizontal split")
-		"w c" '(evil-window-delete :which-key "Close the current window")
-		"w k" #'(lambda ()
-					 (interactive)
-				   (when (buffer-modified-p)
-					 (when (y-or-n-p "Buffer modified. Save?")
-					   (save-buffer)))
-				   (kill-buffer-and-window) :which-key "Close the current buffer and window"))
+  "b i" '(ibuffer :which-key "Ibuffer")
+  "b c" '(bugger/kill-buffer :which-key "Close the current buffer")
+  "b k" '(bugger/kill-buffer-and-window :which-key "Close the current buffer and window")
+  "b b" '(pop-to-buffer :which-key "Open a buffer in a new window")
+  "b r" '(revert-buffer :which-key "Reload the buffer")
+  "b s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
+
+(nvmap :prefix "SPC"
+  "t e" '(bugger/edit-src :which-key "Start/Finish editing a code block")
+  "t a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
+  "t t" '(org-babel-tangle :which-key "Tangle the current file")
+  "t k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+
+(nvmap :prefix "SPC"
+  "w v" '(evil-window-vsplit :which-key "Open a vertical split")
+  "w w" '(evil-window-next :which-key "Switch to the next window")
+  "w n" '(evil-window-new :which-key "Open a horizontal split")
+  "w c" '(evil-window-delete :which-key "Close the current window")
+  "w k" #'(lambda ()
+			(interactive)
+			(when (buffer-modified-p)
+			  (when (y-or-n-p "Buffer modified. Save?")
+				(save-buffer)))
+			(kill-buffer-and-window) :which-key "Close the current buffer and window"))
 
 (nvmap :prefix "SPC"
 		"d d" '(dired :which-key "Open dired")
@@ -89,11 +78,34 @@
 		"d p" '(peep-dired :which-key "Activate peep-dired"))
 
 (nvmap :prefix "SPC"
-		"."	  '(find-file :which-key "Open a file")
-		"f s" '(save-buffer :which-key "Save file")
-		"f r" '(recentf-open-files :which-key "List recent files to open")
-		"f u" '(sudo-edit-find-file :which-key "Find file as root")
-		"f U" '(sudo-edit :which-key "Edit as root"))
+  "."	  '(find-file :which-key "Open a file")
+  "f s" '(save-buffer :which-key "Save file")
+  "f r" '(recentf-open-files :which-key "List recent files to open")
+  "f u" '(sudo-edit-find-file :which-key "Find file as root")
+  "f U" '(sudo-edit :which-key "Edit as root"))
+
+(nvmap :prefix "SPC"
+  "t e" '(lambda ()
+		   (interactive)
+		   (if (org-src-edit-buffer-p)
+			   (org-edit-src-exit)
+			 (org-edit-special)) :which-key "Edit a code block")
+  "t a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
+  "t t" '(org-babel-tangle :which-key "Tangle the current file")
+  "t k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+
+(nvmap :prefix "SPC"
+  "h f" '(describe-function :which-key "Describe a function")
+  "h v" '(describe-variable :which-key "Describe a variable")
+  "h k" '(descirbe-key :which-key "Describe what a key does"))
+
+(nvmap :prefix "SPC"
+  "e b" '(eval-buffer (current-buffer) :which-key "Evaluate current buffer")
+  "e r" '(eval-region :which-key "Evaluate region"))
+
+(nvmap :prefix "SPC"
+  "m m" '(bookmark-set :which-key "Set a bookmark")
+  "m o" '(bookmark-jump :which-key "Jump to a bookmark"))
 
 (global-set-key (kbd "<escape>") 'abort-minibuffers)
 
@@ -134,11 +146,76 @@
 
 
 
+(define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
+
 ; Display some help for forgetting keybindings
 (use-package which-key
 	:ensure t
 	:init
 	(which-key-mode))
+
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(global-display-line-numbers-mode)
+
+(require 'rainbow-mode)
+(require 'rainbow-delimiters)
+(require 'rainbow-identifiers)
+
+(add-hook 'prog-mode-hook 'rainbow-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+
+(use-package doom-themes)
+(use-package doom-modeline
+  :ensure t
+  :config (doom-modeline-mode 1))
+
+(use-package highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character)
+
+(require 'dashboard)
+(dashboard-setup-startup-hook)
+;; Or if you use use-package
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+(setq dashboard-center-content t)
+(setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
+
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(add-hook 'server-after-make-frame-hook 'revert-buffer)
+
+(define-minor-mode start-mode
+  "Provide functions for custom start page."
+  :lighter " start"
+  :keymap (let ((map (make-sparse-keymap)))
+            (evil-define-key 'normal start-mode-map
+              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
+              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
+              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
+              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
+              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "f") 'find-file
+              (kbd "d") 'dired)
+          map))
+
+(add-hook 'start-mode-hook 'read-only-mode)
+(provide 'start-mode)
+(add-hook 'dashboard-mode-hook 'start-mode)
+
+(use-package all-the-icons) ; Neat little icons everywhere
+(use-package all-the-icons-dired) ; And in dired too
+(use-package beacon ; Neat little light for your cursor
+  :config (beacon-mode 1))
+(global-hl-line-mode 1)
 
 (use-package peep-dired)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
@@ -201,12 +278,9 @@
 (use-package lsp-ui)
 
 (setq lsp-keymap-prefix "c-l")
-(add-hook 'c++-mode-hook #'lsp)
-(add-hook 'c-mode-hook #'lsp)
-(add-hook 'cc-mode-hook #'lsp)
-(add-hook 'java-mode-hook #'lsp)
-(add-hook 'sh-mode-hook #'lsp)
-(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'prog-mode-hook #'lsp-deferred)
+
+(use-package flycheck)
 
 (use-package smartparens)
 (require 'smartparens-config)
@@ -215,6 +289,7 @@
 (use-package vterm)
 (use-package treemacs)
 (use-package sudo-edit)
+(use-package origami)
 
 (use-package smex
 	:ensure t
@@ -254,10 +329,13 @@
 (setq org-src-fontify-natively t
     org-src-tab-acts-natively t
     org-confirm-babel-evaluate nil
-    org-edit-src-content-indentation 0)
+	org-src-window-setup 'current-window
+	org-src-preserve-indentation t)
+
 (use-package org-auto-tangle
   :ensure t)
-(add-hook 'org-mode-hook 'org-auto-tangle-mode)
+(add-hook 'org-mode-hook (lambda () (interactive) (org-auto-tangle-mode 1)))
+
 (use-package org-tempo
   :ensure nil)
 
@@ -459,26 +537,7 @@ Executes `org-table-copy-down' if in table."
     (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#bfafdf"))
 (dt/org-colors-doom-one)
 
-(setq initial-buffer-choice "~/.config/emacs/start.org")
-(setq inhibit-startup-screen t)
-(setq inhibit-splash-screen t)
-
-(define-minor-mode start-mode
-  "Provide functions for custom start page."
-  :lighter " start"
-  :keymap (let ((map (make-sparse-keymap)))
-            (evil-define-key 'normal start-mode-map
-              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
-              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
-              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
-              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
-              (kbd "f") 'find-file
-              (kbd "d") 'dired)
-          map))
-
-(add-hook 'start-mode-hook 'read-only-mode)
-(provide 'start-mode)
+(setq org-ellipsis " ▼ ")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -491,7 +550,12 @@ Executes `org-table-copy-down' if in table."
  '(evil-undo-system 'undo-redo)
  '(org-return-follows-link t)
  '(package-selected-packages
- '(warning-suppress-types '((use-package) (use-package) (lsp-mode) (lsp-mode) (comp)))))
+   '(warning-suppress-types
+	 '((use-package)
+	   (use-package)
+	   (lsp-mode)
+	   (lsp-mode)
+	   (comp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
