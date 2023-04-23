@@ -31,9 +31,9 @@
 (require 'rainbow-delimiters)
 (require 'rainbow-identifiers)
 
-(add-hook 'prog-mode-hook 'rainbow-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-delimiters-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-identifiers-mode 1)))
 
 (use-package doom-themes
   :hook (after-init . (lambda () (interactive) (load-theme 'doom-molokai))))
@@ -57,6 +57,31 @@
 (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
 
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+(use-package nyan-mode)
+(setq nyan-animate-nyancat t)
+(setq nyan-wavy-trail t)
+(setq nyan-bar-length 30)
+
+(use-package zone)
+(zone-when-idle 120)
+
+(use-package zone-sl)
+(use-package zone-rainbow)
+(use-package zone-nyan)
+
+(eval-after-load "zone"
+  '(unless (memq 'zone-nyan (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-nyan]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-pgm-sl (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-pgm-sl]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-rainbow (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-rainbow]))))
 
 (use-package tree-sitter)
 (use-package tree-sitter-langs)
@@ -150,11 +175,13 @@
 (use-package lsp-treemacs)
 (use-package lsp-java)
 (use-package lsp-ui)
+(add-hook 'prog-mode-hook (lambda () (interactive) (lsp-ui-mode 1)))
 
-(setq lsp-keymap-prefix "s-c")
+(setq lsp-keymap-prefix "C-l")
 (add-hook 'prog-mode-hook #'lsp-deferred)
 
-(use-package flycheck)
+(use-package flycheck
+  :hook (prog-mode . 'global-flycheck-mode))
 
 (use-package smartparens)
 (require 'smartparens-config)

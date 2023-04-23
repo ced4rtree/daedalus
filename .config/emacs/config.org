@@ -56,9 +56,9 @@
 (require 'rainbow-delimiters)
 (require 'rainbow-identifiers)
 
-(add-hook 'prog-mode-hook 'rainbow-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-delimiters-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-identifiers-mode 1)))
 #+end_src
 
 ** Epic theme
@@ -91,6 +91,42 @@
 (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
 
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+#+end_src
+
+** Nyan mode
+This puts a little nyan cat in the modeline to indicate our position in the document
+#+begin_src emacs-lisp
+(use-package nyan-mode)
+(setq nyan-animate-nyancat t)
+(setq nyan-wavy-trail t)
+(setq nyan-bar-length 30)
+#+end_src
+
+** Zones
+Screensavers for emacs
+#+begin_src emacs-lisp
+(use-package zone)
+(zone-when-idle 120)
+#+end_src
+
+*** Plus a few extra ones
+#+begin_src emacs-lisp
+(use-package zone-sl)
+(use-package zone-rainbow)
+(use-package zone-nyan)
+
+(eval-after-load "zone"
+  '(unless (memq 'zone-nyan (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-nyan]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-pgm-sl (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-pgm-sl]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-rainbow (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-rainbow]))))
 #+end_src
 
 ** Better syntax highlighting
@@ -229,14 +265,16 @@ Tree-sitter provides some better syntax highlighting, among other things
 (use-package lsp-treemacs)
 (use-package lsp-java)
 (use-package lsp-ui)
+(add-hook 'prog-mode-hook (lambda () (interactive) (lsp-ui-mode 1)))
 
-(setq lsp-keymap-prefix "s-c")
+(setq lsp-keymap-prefix "C-l")
 (add-hook 'prog-mode-hook #'lsp-deferred)
 #+end_src
 
 ** Flycheck
 #+begin_src emacs-lisp
-(use-package flycheck)
+(use-package flycheck
+  :hook (prog-mode . 'global-flycheck-mode))
 #+end_src
 
 * Miscellaneous packages
