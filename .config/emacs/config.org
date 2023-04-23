@@ -56,9 +56,9 @@
 (require 'rainbow-delimiters)
 (require 'rainbow-identifiers)
 
-(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-mode 1)))
-(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-delimiters-mode 1)))
-(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-identifiers-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (rainbow-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (rainbow-delimiters-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (rainbow-identifiers-mode 1)))
 #+end_src
 
 ** Epic theme
@@ -100,6 +100,7 @@ This puts a little nyan cat in the modeline to indicate our position in the docu
 (setq nyan-animate-nyancat t)
 (setq nyan-wavy-trail t)
 (setq nyan-bar-length 30)
+(add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
 #+end_src
 
 ** Zones
@@ -133,9 +134,10 @@ Screensavers for emacs
 Tree-sitter provides some better syntax highlighting, among other things
 #+begin_src emacs-lisp
 (use-package tree-sitter)
-(use-package tree-sitter-langs)
+(use-package tree-sitter-langs
+  :after tree-sitter)
 (global-tree-sitter-mode)
-(add-hook 'prog-mode-hook 'tree-sitter-hl-mode)
+(add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
 #+end_src
 
 *** Icons
@@ -793,17 +795,10 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
 #+end_src
 
-*** Bind M-x to a better version of itself
-#+begin_src emacs-lisp
-#+end_src
-
 *** Folding
 #+begin_src emacs-lisp
 (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
 #+end_src
-
-#+RESULTS:
-: evil-toggle-fold
 
 ** Enable which-key to remind us what key does what
 #+begin_src emacs-lisp

@@ -31,9 +31,9 @@
 (require 'rainbow-delimiters)
 (require 'rainbow-identifiers)
 
-(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-mode 1)))
-(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-delimiters-mode 1)))
-(add-hook 'prog-mode-hook (lambda () (interactive) (rainbow-identifiers-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (rainbow-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (rainbow-delimiters-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (rainbow-identifiers-mode 1)))
 
 (use-package doom-themes
   :hook (after-init . (lambda () (interactive) (load-theme 'doom-molokai))))
@@ -62,6 +62,7 @@
 (setq nyan-animate-nyancat t)
 (setq nyan-wavy-trail t)
 (setq nyan-bar-length 30)
+(add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
 
 (use-package zone)
 (zone-when-idle 120)
@@ -84,9 +85,10 @@
            (vconcat zone-programs [zone-rainbow]))))
 
 (use-package tree-sitter)
-(use-package tree-sitter-langs)
+(use-package tree-sitter-langs
+  :after tree-sitter)
 (global-tree-sitter-mode)
-(add-hook 'prog-mode-hook 'tree-sitter-hl-mode)
+(add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
 
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
@@ -570,8 +572,6 @@ Executes `org-table-copy-down' if in table."
 
 (with-eval-after-load 'ibuffer
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
-
-
 
 (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
 
