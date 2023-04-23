@@ -22,138 +22,6 @@
 	(setq evil-collection-mode-list '(dashboard dired ibuffer))
 	(evil-collection-init))
 
-(use-package general
-	:config
-	(general-evil-setup t))
-
-(defun bugger/kill-buffer ()
-  (interactive)
-  (when (buffer-modified-p)
-	(when (y-or-n-p "Buffer modified. Save?")
-	  (save-buffer)))
-  (kill-buffer (buffer-name)))
-
-(defun bugger/kill-buffer-and-window ()
-  (interactive)
-  (when (buffer-modified-p)
-	(when (y-or-n-p "Buffer modified. Save?")
-	  (save-buffer)))
-  (kill-buffer-and-window))
-
-(defun bugger/edit-src ()
-  (interactive)
-  (if (org-src-edit-buffer-p)
-	  (org-edit-src-exit)
-	(org-edit-special)))
-
-(nvmap :prefix "SPC"
-  "b i" '(ibuffer :which-key "Ibuffer")
-  "b c" '(bugger/kill-buffer :which-key "Close the current buffer")
-  "b k" '(bugger/kill-buffer-and-window :which-key "Close the current buffer and window")
-  "b b" '(pop-to-buffer :which-key "Open a buffer in a new window")
-  "b r" '(revert-buffer :which-key "Reload the buffer")
-  "b s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
-
-(nvmap :prefix "SPC"
-  "t e" '(bugger/edit-src :which-key "Start/Finish editing a code block")
-  "t a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
-  "t t" '(org-babel-tangle :which-key "Tangle the current file")
-  "t k" '(org-edit-src-abort :which-key "Abort editing a code block"))
-
-(nvmap :prefix "SPC"
-  "w v" '(evil-window-vsplit :which-key "Open a vertical split")
-  "w w" '(evil-window-next :which-key "Switch to the next window")
-  "w n" '(evil-window-new :which-key "Open a horizontal split")
-  "w c" '(evil-window-delete :which-key "Close the current window")
-  "w k" #'(lambda ()
-			(interactive)
-			(when (buffer-modified-p)
-			  (when (y-or-n-p "Buffer modified. Save?")
-				(save-buffer)))
-			(kill-buffer-and-window) :which-key "Close the current buffer and window"))
-
-(nvmap :prefix "SPC"
-		"d d" '(dired :which-key "Open dired")
-		"d j" '(dired-jump :which-key "Open dired in the current directory")
-		"d p" '(peep-dired :which-key "Activate peep-dired"))
-
-(nvmap :prefix "SPC"
-  "."	  '(find-file :which-key "Open a file")
-  "f s" '(save-buffer :which-key "Save file")
-  "f r" '(recentf-open-files :which-key "List recent files to open")
-  "f u" '(sudo-edit-find-file :which-key "Find file as root")
-  "f U" '(sudo-edit :which-key "Edit as root"))
-
-(nvmap :prefix "SPC"
-  "t e" '(lambda ()
-		   (interactive)
-		   (if (org-src-edit-buffer-p)
-			   (org-edit-src-exit)
-			 (org-edit-special)) :which-key "Edit a code block")
-  "t a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
-  "t t" '(org-babel-tangle :which-key "Tangle the current file")
-  "t k" '(org-edit-src-abort :which-key "Abort editing a code block"))
-
-(nvmap :prefix "SPC"
-  "h f" '(describe-function :which-key "Describe a function")
-  "h v" '(describe-variable :which-key "Describe a variable")
-  "h k" '(descirbe-key :which-key "Describe what a key does"))
-
-(nvmap :prefix "SPC"
-  "e b" '(eval-buffer (current-buffer) :which-key "Evaluate current buffer")
-  "e r" '(eval-region :which-key "Evaluate region"))
-
-(nvmap :prefix "SPC"
-  "m m" '(bookmark-set :which-key "Set a bookmark")
-  "m o" '(bookmark-jump :which-key "Jump to a bookmark"))
-
-(global-set-key (kbd "<escape>") 'abort-minibuffers)
-
-(define-key evil-normal-state-map (kbd "q") #'(lambda ()
-								 (interactive)
-								 (when (buffer-modified-p)
-								   (when (y-or-n-p "Buffer modified. Save?")
-									 (save-buffer)))
-								 (kill-buffer (buffer-name))))
-(define-key evil-normal-state-map (kbd "Q") #'(lambda ()
-								 (interactive)
-								 (when (buffer-modified-p)
-								   (when (y-or-n-p "Buffer modified. Save?")
-									 (save-buffer)))
-								 (kill-buffer-and-window)))
-
-(global-set-key (kbd "DEL") 'backward-delete-char)
-(setq c-backspace-function 'backward-delete-char)
-
-(global-set-key (kbd "C-j") #'(lambda ()
-								(interactive)
-								(evil-scroll-down 1)))
-(define-key evil-normal-state-map (kbd "<remap> <org-return-and-maybe-indent") #'(lambda ()
-								(interactive)
-								(evil-scroll-down 1)))
-(global-set-key (kbd "C-k") #'(lambda ()
-								(interactive)
-								(evil-scroll-up 1)))
-
-(with-eval-after-load 'dired
-  (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-  (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
-
-(with-eval-after-load 'ibuffer
-  (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
-
-
-
-(define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
-
-; Display some help for forgetting keybindings
-(use-package which-key
-	:ensure t
-	:init
-	(which-key-mode))
-
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
@@ -167,7 +35,8 @@
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
 
-(use-package doom-themes)
+(use-package doom-themes
+  :hook (after-init . (lambda () (interactive) (load-theme 'doom-molokai))))
 (use-package doom-modeline
   :ensure t
   :config (doom-modeline-mode 1))
@@ -188,6 +57,11 @@
 (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
 
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+(use-package tree-sitter)
+(use-package tree-sitter-langs)
+(global-tree-sitter-mode)
+(add-hook 'prog-mode-hook 'tree-sitter-hl-mode)
 
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
@@ -277,7 +151,7 @@
 (use-package lsp-java)
 (use-package lsp-ui)
 
-(setq lsp-keymap-prefix "c-l")
+(setq lsp-keymap-prefix "s-c")
 (add-hook 'prog-mode-hook #'lsp-deferred)
 
 (use-package flycheck)
@@ -535,9 +409,150 @@ Executes `org-table-copy-down' if in table."
          (org-level-8 1.0 "#ff6c6b" normal)))
     (set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
     (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#bfafdf"))
-(dt/org-colors-doom-one)
+(bugger/org-colors-doom-molokai)
+
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/notes")
+  (org-roam-completion-everywhere t)
+  :config
+  (org-roam-setup))
 
 (setq org-ellipsis " ▼ ")
+
+(use-package general
+	:config
+	(general-evil-setup t))
+
+(defun bugger/kill-buffer ()
+  (interactive)
+  (when (buffer-modified-p)
+	(when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer (buffer-name)))
+
+(defun bugger/kill-buffer-and-window ()
+  (interactive)
+  (when (buffer-modified-p)
+	(when (y-or-n-p "Buffer modified. Save?")
+	  (save-buffer)))
+  (kill-buffer-and-window))
+
+(defun bugger/edit-src ()
+  (interactive)
+  (if (org-src-edit-buffer-p)
+	  (org-edit-src-exit)
+	(org-edit-special)))
+
+(nvmap :prefix "SPC b"
+  "i" '(ibuffer :which-key "Ibuffer")
+  "c" '(bugger/kill-buffer :which-key "Close the current buffer")
+  "k" '(bugger/kill-buffer-and-window :which-key "Close the current buffer and window")
+  "b" '(pop-to-buffer :which-key "Open a buffer in a new window")
+  "r" '(revert-buffer :which-key "Reload the buffer")
+  "s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
+(define-key evil-normal-state-map (kbd "q") 'bugger/kill-buffer)
+(define-key evil-normal-state-map (kbd "Q") 'bugger/kill-buffer-and-window)
+
+(nvmap :prefix "SPC t"
+  "e" '(bugger/edit-src :which-key "Start/Finish editing a code block")
+  "a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
+  "t" '(org-babel-tangle :which-key "Tangle the current file")
+  "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+
+(nvmap :prefix "SPC w"
+  "v" '(evil-window-vsplit :which-key "Open a vertical split")
+  "w" '(evil-window-next :which-key "Switch to the next window")
+  "n" '(evil-window-new :which-key "Open a horizontal split")
+  "c" '(evil-window-delete :which-key "Close the current window")
+  "k" #'(lambda ()
+			(interactive)
+			(when (buffer-modified-p)
+			  (when (y-or-n-p "Buffer modified. Save?")
+				(save-buffer)))
+			(kill-buffer-and-window) :which-key "Close the current buffer and window"))
+
+(nvmap :prefix "SPC d"
+		"d" '(dired :which-key "Open dired")
+		"j" '(dired-jump :which-key "Open dired in the current directory")
+		"p" '(peep-dired :which-key "Activate peep-dired"))
+
+(nvmap :prefix "SPC"
+  "."	  '(find-file :which-key "Open a file")
+  "f s" '(save-buffer :which-key "Save file")
+  "f r" '(recentf-open-files :which-key "List recent files to open")
+  "f u" '(sudo-edit-find-file :which-key "Find file as root")
+  "f U" '(sudo-edit :which-key "Edit as root"))
+
+(nvmap :prefix "SPC t"
+  "e" '(lambda ()
+		   (interactive)
+		   (if (org-src-edit-buffer-p)
+			   (org-edit-src-exit)
+			 (org-edit-special)) :which-key "Edia code block")
+  "a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
+  "t" '(org-babel-tangle :which-key "Tangle the current file")
+  "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+
+(nvmap :prefix "SPC r"
+  "f" '(org-roam-node-find :which-key "Open a note file")
+  "i" '(org-roam-node-insert :which-key "Insert a roam node")
+  "r" '(org-roam-buffer-toggle :which-key "Toggle org roam")
+  "v" '(org-roam-node-visit :which-key "Visit an org node")
+  "u" '(org-roam-db-sync :which-key "Update roam database")
+  "c" '(org-capture-finalize :which-key "Finish roam capture")
+  "a" '(org-capture-kill :which-key "Abort roam capture")
+  "n" '(org-capture-refile :which-key "Refile roam capture"))
+
+(nvmap :prefix "SPC h"
+  "f" '(describe-function :which-key "Describe a function")
+  "v" '(describe-variable :which-key "Describe a variable")
+  "k" '(descirbe-key :which-key "Describe what a key does"))
+
+(nvmap :prefix "SPC e"
+  "b" '(eval-buffer (current-buffer) :which-key "Evaluate current buffer")
+  "r" '(eval-region :which-key "Evaluate region"))
+
+(nvmap :prefix "SPC m"
+  "m" '(bookmark-set :which-key "Set a bookmark")
+  "o" '(bookmark-jump :which-key "Jump to a bookmark"))
+
+(global-set-key (kbd "<escape>") 'abort-minibuffers)
+
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+
+(global-set-key (kbd "C-j") #'(lambda ()
+								(interactive)
+								(evil-scroll-down 1)))
+(define-key evil-normal-state-map (kbd "<remap> <org-return-and-maybe-indent") #'(lambda ()
+								(interactive)
+								(evil-scroll-down 1)))
+(global-set-key (kbd "C-k") #'(lambda ()
+								(interactive)
+								(evil-scroll-up 1)))
+
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
+  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
+  (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
+  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+
+(with-eval-after-load 'ibuffer
+  (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
+
+
+
+(define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
+
+; Display some help for forgetting keybindings
+(use-package which-key
+	:ensure t
+	:init
+	(which-key-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -550,12 +565,7 @@ Executes `org-table-copy-down' if in table."
  '(evil-undo-system 'undo-redo)
  '(org-return-follows-link t)
  '(package-selected-packages
-   '(warning-suppress-types
-	 '((use-package)
-	   (use-package)
-	   (lsp-mode)
-	   (lsp-mode)
-	   (comp)))))
+ '(warning-suppress-types '((use-package) (use-package) (lsp-mode) (lsp-mode) (comp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
