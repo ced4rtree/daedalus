@@ -1,26 +1,55 @@
+#+TITLE: My Emacs Config, Now Literate!
+#+AUTHOR: bugger
+#+PROPERTY: header-args :tangle config.el
+#+auto_tangle: t
+#+STARTUP: showeverything
+
+* Basic setup
+** Define where the server should be
+#+begin_src emacs-lisp
 (setq server-socket-dir (substitute-in-file-name "$HOME/.config/emacs/server-dir"))
+#+end_src
 
+* UI Setup
+** Line numbers
+#+begin_src emacs-lisp
 (global-display-line-numbers-mode)
+#+end_src
 
+** Rainbows!
+#+begin_src emacs-lisp
 (add-hook 'prog-mode-hook (lambda () (rainbow-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (rainbow-delimiters-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (rainbow-identifiers-mode 1)))
+#+end_src
 
+** Epic theme
+#+begin_src emacs-lisp
 (setq doom-theme 'doom-one)
 (setq doom-font (font-spec :family "JetBrains Mono" :size 15 :weight 'semi-light)
       doom-variable-pitch-font (font-spec :family "Jetbrains Mono" :size 15))
 (setq doom-unicode-font (font-spec :family "MesloLGS NF" :size 13))
+#+end_src
 
+** Dashboard
+#+begin_src emacs-lisp
 (dashboard-setup-startup-hook)
 (setq dashboard-center-content t)
 (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
 
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+#+end_src
 
+*** Icons
+#+begin_src emacs-lisp
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
 (add-hook 'server-after-make-frame-hook 'revert-buffer)
+#+end_src
 
+*** Defining a minor mode lets us do some things
+**** Define keymaps + read only mode for e.g.
+#+begin_src emacs-lisp
 ;;(define-minor-mode start-mode
   ;;"Provide functions for custom start page."
   ;;:lighter " start"
@@ -38,14 +67,25 @@
 ;;(add-hook 'start-mode-hook 'read-only-mode)
 ;;(provide 'start-mode)
 ;;(add-hook 'dashboard-mode-hook 'start-mode)
+#+end_src
 
+** Nyan mode
+This puts a little nyan cat in the modeline to indicate our position in the document
+#+begin_src emacs-lisp
 (setq nyan-animate-nyancat t)
 (setq nyan-wavy-trail t)
 (setq nyan-bar-length 30)
 (add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
+#+end_src
 
+** Zones
+Screensavers for emacs
+#+begin_src emacs-lisp
 (setq zone-timer (run-with-idle-timer 120 t 'zone))
+#+end_src
 
+*** Plus a few extra ones
+#+begin_src emacs-lisp
 (eval-after-load "zone"
   '(unless (memq 'zone-nyan (append zone-programs nil))
      (setq zone-programs
@@ -58,30 +98,49 @@
   '(unless (memq 'zone-rainbow (append zone-programs nil))
      (setq zone-programs
            (vconcat zone-programs [zone-rainbow]))))
+#+end_src
 
+** Better syntax highlighting
+Tree-sitter provides some better syntax highlighting, among other things
+#+begin_src emacs-lisp
 (use-package tree-sitter)
 (use-package tree-sitter-langs
   :after tree-sitter)
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
+#+end_src
 
+** Misc
+#+begin_src emacs-lisp
 (beacon-mode 1)
 (setq display-line-numbers-type t)
+#+end_src
 
+* Dired
+** Neat little file opening handling
+#+begin_src emacs-lisp
 (setq dired-open-extensions '(("gif" . "mpv")
 							  ("jpg" . "feh")
 							  ("png" . "feh")
 							  ("mkv" . "mpv")
 							  ("mp4" . "mpv")
 							  ("mp3" . "mpv")))
+#+end_src
 
+* Variables
+** Miscellaneous
+#+begin_src emacs-lisp
 (setq scroll-conservatively 10000)
 (setq scroll-step 1)
 (setq auto-window-vscroll nil)
 (setq ring-bell-function 'ignore)
 (setq visible-bell t)
 (setq-default evil-cross-lines nil)
+#+end_src
 
+* Text handling
+** Making tabs great again
+#+begin_src emacs-lisp
 (setq-default c-default-style "stroustrup"
 	      c-basic-offset 4
 	      tab-width 4
@@ -91,23 +150,41 @@
 (global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <indent-for-tab-command>") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <c-indent-line-or-region>") 'tab-to-tab-stop)
+#+end_src
 
+** Logical lines? No thanks.
+#+begin_src emacs-lisp
 (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
 (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
 (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+#+end_src
 
+* Org Mode
+** Bullets, no yucky asterisks
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq org-hide-leading-stars t)
+#+end_src
 
+** Babel (org compiler)
+*** Some good settings to have
+#+begin_src emacs-lisp
 (setq org-src-fontify-natively t
     org-src-tab-acts-natively t
     org-confirm-babel-evaluate nil
 	org-src-window-setup 'current-window
 	org-src-preserve-indentation t)
+#+end_src
 
+*** Allow use to tangle files on save
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook (lambda () (interactive) (org-auto-tangle-mode 1)))
+#+end_src
 
+** Colors and header sizes
+*** Doom-molokai colors and header sizes
+#+begin_src emacs-lisp
 ; Pretty colors and sizes for org mode
 (defun bugger/org-colors-doom-molokai ()
   (interactive)
@@ -126,7 +203,10 @@
 	     (org-link          1.3 "#9c91e4" normal)))
 	  (set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
 	  (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#d4d4d4"))
+#+end_src
 
+*** Doom-one colors and header sizes
+#+begin_src emacs-lisp
 ; thanks dt for this one
 (defun dt/org-colors-doom-one ()
   "Enable Doom One colors for Org headers."
@@ -144,9 +224,16 @@
     (set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
     (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#bfafdf"))
 (dt/org-colors-doom-one)
+#+end_src
 
+** Miscellaneous Variables
+#+begin_src emacs-lisp
 (setq org-ellipsis " ▼ ")
+#+end_src
 
+* Global Keybindings
+** We need non-anonymous functions for which-key to work
+#+begin_src emacs-lisp
 (defun bugger/kill-buffer ()
   (interactive)
   (when (buffer-modified-p)
@@ -166,7 +253,10 @@
   (if (org-src-edit-buffer-p)
 	  (org-edit-src-exit)
 	(org-edit-special)))
+#+end_src
 
+** Buffers
+#+begin_src emacs-lisp
 (map! :prefix "SPC b"
   "i" '(ibuffer :which-key "Ibuffer")
   "c" '(bugger/kill-buffer :which-key "Close the current buffer")
@@ -176,37 +266,55 @@
   "s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
 (define-key evil-normal-state-map (kbd "q") 'bugger/kill-buffer)
 (define-key evil-normal-state-map (kbd "Q") 'bugger/kill-buffer-and-window)
+#+end_src
 
+** Babel
+#+begin_src emacs-lisp
 (map! :prefix "SPC t"
   "e" '(bugger/edit-src :which-key "Start/Finish editing a code block")
   "a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
   "t" '(org-babel-tangle :which-key "Tangle the current file")
   "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+#+end_src
 
+** Windows
+#+begin_src emacs-lisp
 (map! :prefix "SPC w"
   "v" '(evil-window-vsplit :which-key "Open a vertical split")
   "w" '(evil-window-next :which-key "Switch to the next window")
   "n" '(evil-window-new :which-key "Open a horizontal split")
   "c" '(evil-window-delete :which-key "Close the current window")
   "k" '(bugger/kill-buffer-and-window))
+#+end_src
 
+** Dired
+#+begin_src emacs-lisp
 (map! :prefix "SPC d"
 		"d" '(dired :which-key "Open dired")
 		"j" '(dired-jump :which-key "Open dired in the current directory"))
+#+end_src
 
+** Files
+#+begin_src emacs-lisp
 (map! :prefix "SPC"
   "."	'(find-file :which-key "Open a file")
   "f s" '(save-buffer :which-key "Save file")
   "f r" '(recentf-open-files :which-key "List recent files to open")
   "f u" '(sudo-edit-find-file :which-key "Find file as root")
   "f U" '(sudo-edit :which-key "Edit as root"))
+#+end_src
 
+** Babel
+#+begin_src emacs-lisp
 (map! :prefix "SPC t"
   "e" '(bugger/edit-src :which-key "Edit a code block")
   "a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
   "t" '(org-babel-tangle :which-key "Tangle the current file")
   "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+#+end_src
 
+** Org Roam
+#+begin_src emacs-lisp
 (map! :prefix "SPC r"
   "f" '(org-roam-node-find :which-key "Open a note file")
   "i" '(org-roam-node-insert :which-key "Insert a roam node")
@@ -216,11 +324,18 @@
   "c" '(org-capture-finalize :which-key "Finish roam capture")
   "a" '(org-capture-kill :which-key "Abort roam capture")
   "n" '(org-capture-refile :which-key "Refile roam capture"))
+#+end_src
 
+** Evaluations
+#+begin_src emacs-lisp
 (map! :prefix "SPC e"
   "b" '(eval-buffer (current-buffer) :which-key "Evaluate current buffer")
   "r" '(eval-region :which-key "Evaluate region"))
+#+end_src
 
+** Miscellaneous nice-to-haves
+*** Scroll the page like a pager with C-j and C-k
+#+begin_src emacs-lisp
 (global-set-key (kbd "C-j") #'(lambda ()
 								(interactive)
 								(evil-scroll-down 1)))
@@ -230,10 +345,17 @@
 (global-set-key (kbd "C-k") #'(lambda ()
 								(interactive)
 								(evil-scroll-up 1)))
+#+end_src
 
+*** Navigate dired evilly
+#+begin_src emacs-lisp
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
   (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file)) ; use dired-find-file instead if not using dired-open package
+#+end_src
 
+*** For Ibuffer, too
+#+begin_src emacs-lisp
 (with-eval-after-load 'ibuffer
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
+#+end_src
