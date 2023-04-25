@@ -1,0 +1,18 @@
+* My Emacs Config explained
+** This is my config for emacs, and includes some of the following:
+- Evil Keybindings
+- Cool Dashboard
+- Autocompletion
+- Org Roam for Epic Notetaking
+- Doom-like Bindings (not the exact same, if you want to use them, look at their definitions in the config)
+- It Just Plain Looks Good.
+- Literasy
+- Plus More!
+
+** Why the 2 configs?
+I own two computers. One is a beast with a 5700X, a 3070, and 16GB of RAM. The other is a Thinkpad T500 that is almost 15 years old at this point. Thus, I maintain two config files. One that has a ton of niceties I don't have to worry about that make things a little nicer, and one that has most of those niceties, but without the ones that slow down my laptop.
+
+If you want to use my emacs config, I would recommend using the `config-heavy.org` file as your config for most people. If you are like me and have ancient hardware that lags when using Firefox and Discord at the same time, you should probably use the `config-light.org` config.
+
+*** Directions for config-heavy.org
+By default, init.el is based on *`config-light.org`*. To use `config-heavy.org` (a small bit more feature packed), run the command 'M-x org-babel-tangle-file' and select wherever `config-heavy.org` is located.

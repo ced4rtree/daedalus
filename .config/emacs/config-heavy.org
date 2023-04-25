@@ -1,16 +1,34 @@
-(setq server-socket-dir (substitute-in-file-name "$HOME/.config/emacs/server-dir"))
+#+TITLE: My Emacs Config, Now Literate!
+#+AUTHOR: bugger
+#+PROPERTY: header-args :tangle init.el
+#+auto_tangle: t
+#+STARTUP: showeverything
 
+* Basic setup
+** Define where the server should be
+#+begin_src emacs-lisp
+(setq server-socket-dir (substitute-in-file-name "$HOME/.config/emacs/server-dir"))
+#+end_src
+
+** Enable melpa repository
+#+begin_src emacs-lisp
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
 '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
+#+end_src
 
+** Enable use-package for better package management
+#+begin_src emacs-lisp
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 (setq use-package-always-ensure t)
+#+end_src
 
+** Evil setup for every buffer
+#+begin_src emacs-lisp
 ; Evil mode with evil in every buffer
 (setq evil-want-keybinding nil)
 (use-package evil
@@ -21,12 +39,19 @@
 	:config
 	(setq evil-collection-mode-list '(dashboard dired ibuffer))
 	(evil-collection-init))
+#+end_src
 
+* UI Setup
+** Get rid of ugly bars
+#+begin_src emacs-lisp
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 (global-display-line-numbers-mode)
+#+end_src
 
+** Rainbows!
+#+begin_src emacs-lisp
 (require 'rainbow-mode)
 (require 'rainbow-delimiters)
 (require 'rainbow-identifiers)
@@ -34,17 +59,26 @@
 (add-hook 'prog-mode-hook (lambda () (rainbow-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (rainbow-delimiters-mode 1)))
 (add-hook 'prog-mode-hook (lambda () (rainbow-identifiers-mode 1)))
+#+end_src
 
+** Epic theme
+#+begin_src emacs-lisp
 (use-package doom-themes
   :hook (after-init . (lambda () (interactive) (load-theme 'doom-molokai))))
 (use-package doom-modeline
   :ensure t
   :config (doom-modeline-mode 1))
+#+end_src
 
+** Indent guides
+#+begin_src emacs-lisp
 (use-package highlight-indent-guides)
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
+#+end_src
 
+** Dashboard
+#+begin_src emacs-lisp
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Or if you use use-package
@@ -57,16 +91,27 @@
 (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
 
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+#+end_src
 
+** Nyan mode
+This puts a little nyan cat in the modeline to indicate our position in the document
+#+begin_src emacs-lisp
 (use-package nyan-mode)
 (setq nyan-animate-nyancat t)
 (setq nyan-wavy-trail t)
 (setq nyan-bar-length 30)
 (add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
+#+end_src
 
+** Zones
+Screensavers for emacs
+#+begin_src emacs-lisp
 (use-package zone)
 (zone-when-idle 120)
+#+end_src
 
+*** Plus a few extra ones
+#+begin_src emacs-lisp
 (use-package zone-sl)
 (use-package zone-rainbow)
 (use-package zone-nyan)
@@ -83,17 +128,28 @@
   '(unless (memq 'zone-rainbow (append zone-programs nil))
      (setq zone-programs
            (vconcat zone-programs [zone-rainbow]))))
+#+end_src
 
+** Better syntax highlighting
+Tree-sitter provides some better syntax highlighting, among other things
+#+begin_src emacs-lisp
 (use-package tree-sitter)
 (use-package tree-sitter-langs
   :after tree-sitter)
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
+#+end_src
 
+*** Icons
+#+begin_src emacs-lisp
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
 (add-hook 'server-after-make-frame-hook 'revert-buffer)
+#+end_src
 
+*** Defining a minor mode lets us do some things
+**** Define keymaps + read only mode for e.g.
+#+begin_src emacs-lisp
 (define-minor-mode start-mode
   "Provide functions for custom start page."
   :lighter " start"
@@ -111,33 +167,53 @@
 (add-hook 'start-mode-hook 'read-only-mode)
 (provide 'start-mode)
 (add-hook 'dashboard-mode-hook 'start-mode)
+#+end_src
 
+** Misc
+#+begin_src emacs-lisp
 (use-package all-the-icons) ; Neat little icons everywhere
 (use-package all-the-icons-dired) ; And in dired too
 (use-package beacon ; Neat little light for your cursor
   :config (beacon-mode 1))
 (global-hl-line-mode 1)
+#+end_src
 
+* Dired
+** Neat little previews
+#+begin_src emacs-lisp
 (use-package peep-dired)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+#+end_src
 
+** Neat little icons
+#+begin_src emacs-lisp
 (use-package dired-open)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+#+end_src
 
+** Neat little file opening handling
+#+begin_src emacs-lisp
 (setq dired-open-extensions '(("gif" . "mpv")
 							  ("jpg" . "feh")
 							  ("png" . "feh")
 							  ("mkv" . "mpv")
 							  ("mp4" . "mpv")
 							  ("mp3" . "mpv")))
+#+end_src
 
+* Ivy
+** Counsel (neat little functions)
+#+begin_src emacs-lisp
 (use-package counsel
   :after ivy
   :config (counsel-mode))
 
 (setq ivy-initial-inputs-alist nil) ; Disable the "^" in interactive counsel commands like M-x
 (add-hook 'ivy-mode-hook #'(lambda () (define-key counsel-find-file-map (kbd "DEL") 'counsel-up-directory))) ; Just hit backspace to go up a directory in counsel-find-file and such
+#+end_src
 
+** Ivy setup
+#+begin_src emacs-lisp
 (use-package ivy
   :defer 0.1
   :diminish
@@ -150,7 +226,11 @@
   (setq enable-recursive-minibuffers t)
   :config
   (ivy-mode))
+#+end_src
 
+** Ivy-rich
+*** Command descriptions in M-x
+#+begin_src emacs-lisp
 (use-package ivy-rich
   :after ivy
   :custom
@@ -161,17 +241,27 @@
   (ivy-set-display-transformer 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer)
   (ivy-rich-mode 1))
+#+end_src
 
+** Swiper, no swiping, only searching!
+#+begin_src emacs-lisp
 (use-package swiper
   :after ivy)
 (define-key evil-normal-state-map (kbd "/") 'swiper)
+#+end_src
 
+* Autocompletion
+** Set up company
+#+begin_src emacs-lisp
 (use-package company
   :ensure t
   :config
   (progn
     (add-hook 'after-init-hook 'global-company-mode)))
+#+end_src
 
+** LSP
+#+begin_src emacs-lisp
 (use-package lsp-mode)
 (use-package lsp-haskell)
 (use-package lsp-treemacs)
@@ -181,23 +271,43 @@
 
 (setq lsp-keymap-prefix "C-l")
 (add-hook 'prog-mode-hook #'lsp-deferred)
+#+end_src
 
+** Flycheck
+#+begin_src emacs-lisp
 (use-package flycheck
   :hook (prog-mode . 'global-flycheck-mode))
+#+end_src
 
+* Miscellaneous packages
+** Smartparens
+#+begin_src emacs-lisp
 (use-package smartparens)
 (require 'smartparens-config)
 (smartparens-global-mode)
+#+end_src
 
+** Rest
+#+begin_src emacs-lisp
 (use-package vterm)
 (use-package treemacs)
 (use-package sudo-edit)
 (use-package origami)
+#+end_src
 
+* Interactive minibuffers, but better
+
+** Smex
+*** Remembers our history from M-x
+#+begin_src emacs-lisp
 (use-package smex
 	:ensure t
 	:init (smex-initialize))
+#+end_src
 
+* Variables
+** Miscellaneous
+#+begin_src emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p) ; Screw typing "yes", all my homies type 'y'
 (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
 (setq scroll-conservatively 10000)
@@ -206,10 +316,17 @@
 (setq ring-bell-function 'ignore)
 (setq visible-bell t)
 (setq-default evil-cross-lines nil)
+#+end_src
 
+** Performance improvement
+#+begin_src emacs-lisp
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1 mb
+#+end_src
 
+* Text handling
+** Making tabs great again
+#+begin_src emacs-lisp
 (setq-default c-default-style "stroustrup"
 	      c-basic-offset 4
 	      tab-width 4
@@ -219,38 +336,68 @@
 (global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <indent-for-tab-command>") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <c-indent-line-or-region>") 'tab-to-tab-stop)
+#+end_src
 
+** Logical lines? No thanks.
+#+begin_src emacs-lisp
 (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
 (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
 (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+#+end_src
 
+* Org Mode
+** Bullets, no yucky asterisks
+#+begin_src emacs-lisp
 (use-package org-bullets)
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq org-hide-leading-stars t)
+#+end_src
 
+** Babel (org compiler)
+*** Some good settings to have
+#+begin_src emacs-lisp
 (setq org-src-fontify-natively t
     org-src-tab-acts-natively t
     org-confirm-babel-evaluate nil
 	org-src-window-setup 'current-window
 	org-src-preserve-indentation t)
+#+end_src
 
+*** Allow us to tangle files on save
+#+begin_src emacs-lisp
 (use-package org-auto-tangle
   :ensure t)
 (add-hook 'org-mode-hook (lambda () (interactive) (org-auto-tangle-mode 1)))
+#+end_src
 
+*** Allow us to use <s for code blocks, etc.
+#+begin_src emacs-lisp
 (use-package org-tempo
   :ensure nil)
+#+end_src
 
+** Better link handling (be wary of ginormous stolen code)
+*** Some settings to make things easier
+#+begin_src emacs-lisp
 (setq-default org-link-elisp-confirm-function nil)
 (setq-default org-return-follows-link t)
 (setq org-link-elisp-skip-confirm-regexp "\\`find-file*\\'")
+#+end_src
 
+*** Function definitions for using <return> to follow links
+**** I stole these from doom emacs btw
+
+**** Insert with some easy indentation on <return>
+#+begin_src emacs-lisp
 (defun org/return ()
   "Call `org-return' then indent (if `electric-indent-mode' is on)."
   (interactive)
   (org-return electric-indent-mode))
+#+end_src
 
+**** Follow some links and stuff on <return> in normal mode
+#+begin_src emacs-lisp
 (defun org/dwim-at-point (&optional arg)
   "Do-what-I-mean at point.
 
@@ -390,7 +537,10 @@ If on a:
            (+org--toggle-inline-images-in-subtree
             (org-element-property :begin context)
             (org-element-property :end context))))))))
+#+end_src
 
+**** Do a regular return on S-<return>
+#+begin_src emacs-lisp
 (defun org/shift-return (&optional arg)
   "Insert a literal newline, or dwim in tables.
 Executes `org-table-copy-down' if in table."
@@ -398,12 +548,19 @@ Executes `org-table-copy-down' if in table."
   (if (org-at-table-p)
       (org-table-copy-down arg)
     (org-return nil arg)))
+#+end_src
 
+*** Function implementation
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook (lambda ()
 							 (evil-local-set-key 'insert (kbd "<return>") 'org/return)
 							 (evil-local-set-key 'insert (kbd "S-<return>") 'org/shift-return)
 							 (evil-local-set-key 'normal (kbd "<return>") 'org/dwim-at-point)))
+#+end_src
 
+** Colors and header sizes
+*** Doom-molokai colors and header sizes
+#+begin_src emacs-lisp
 ; Pretty colors and sizes for org mode
 (defun bugger/org-colors-doom-molokai ()
 (dolist
@@ -421,7 +578,10 @@ Executes `org-table-copy-down' if in table."
 	   (org-link          1.3 "#9c91e4" normal)))
 	(set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
 	(set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#d4d4d4"))
+#+end_src
 
+*** Doom-one colors and header sizes
+#+begin_src emacs-lisp
 ; thanks dt for this one
 (defun dt/org-colors-doom-one ()
   "Enable Doom One colors for Org headers."
@@ -439,7 +599,12 @@ Executes `org-table-copy-down' if in table."
     (set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
     (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#bfafdf"))
 (bugger/org-colors-doom-molokai)
+#+end_src
 
+** Org roam
+*** My second brain in emacs
+Org roam is a package that allows us to store large amounts of notes and keep track of them very efficiently
+#+begin_src emacs-lisp
 (use-package org-roam
   :ensure t
   :init
@@ -449,13 +614,23 @@ Executes `org-table-copy-down' if in table."
   (org-roam-completion-everywhere t)
   :config
   (org-roam-setup))
+#+end_src
 
+** Miscellaneous Variables
+#+begin_src emacs-lisp
 (setq org-ellipsis " ▼ ")
+#+end_src
 
+* Global Keybindings
+** General lets us use space for a prefix, very ergonomic!
+#+begin_src emacs-lisp
 (use-package general
 	:config
 	(general-evil-setup t))
+#+end_src
 
+** We need non-anonymous functions for which-key to work
+#+begin_src emacs-lisp
 (defun bugger/kill-buffer ()
   (interactive)
   (when (buffer-modified-p)
@@ -475,7 +650,10 @@ Executes `org-table-copy-down' if in table."
   (if (org-src-edit-buffer-p)
 	  (org-edit-src-exit)
 	(org-edit-special)))
+#+end_src
 
+** Buffers
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC b"
   "i" '(ibuffer :which-key "Ibuffer")
   "c" '(bugger/kill-buffer :which-key "Close the current buffer")
@@ -485,13 +663,19 @@ Executes `org-table-copy-down' if in table."
   "s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
 (define-key evil-normal-state-map (kbd "q") 'bugger/kill-buffer)
 (define-key evil-normal-state-map (kbd "Q") 'bugger/kill-buffer-and-window)
+#+end_src
 
+** Babel
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC t"
   "e" '(bugger/edit-src :which-key "Start/Finish editing a code block")
   "a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
   "t" '(org-babel-tangle :which-key "Tangle the current file")
   "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+#+end_src
 
+** Windows
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC w"
   "v" '(evil-window-vsplit :which-key "Open a vertical split")
   "w" '(evil-window-next :which-key "Switch to the next window")
@@ -503,19 +687,28 @@ Executes `org-table-copy-down' if in table."
 			  (when (y-or-n-p "Buffer modified. Save?")
 				(save-buffer)))
 			(kill-buffer-and-window) :which-key "Close the current buffer and window"))
+#+end_src
 
+** Dired
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC d"
 		"d" '(dired :which-key "Open dired")
 		"j" '(dired-jump :which-key "Open dired in the current directory")
 		"p" '(peep-dired :which-key "Activate peep-dired"))
+#+end_src
 
+** Files
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC"
   "."	  '(find-file :which-key "Open a file")
   "f s" '(save-buffer :which-key "Save file")
   "f r" '(recentf-open-files :which-key "List recent files to open")
   "f u" '(sudo-edit-find-file :which-key "Find file as root")
   "f U" '(sudo-edit :which-key "Edit as root"))
+#+end_src
 
+** Babel
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC t"
   "e" '(lambda ()
 		   (interactive)
@@ -525,7 +718,10 @@ Executes `org-table-copy-down' if in table."
   "a" '(org-auto-tangle-mode :which-key "Toggle auto tangle mode")
   "t" '(org-babel-tangle :which-key "Tangle the current file")
   "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
+#+end_src
 
+** Org Roam
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC r"
   "f" '(org-roam-node-find :which-key "Open a note file")
   "i" '(org-roam-node-insert :which-key "Insert a roam node")
@@ -535,25 +731,44 @@ Executes `org-table-copy-down' if in table."
   "c" '(org-capture-finalize :which-key "Finish roam capture")
   "a" '(org-capture-kill :which-key "Abort roam capture")
   "n" '(org-capture-refile :which-key "Refile roam capture"))
+#+end_src
 
+** Helpful functions
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC h"
   "f" '(describe-function :which-key "Describe a function")
   "v" '(describe-variable :which-key "Describe a variable")
   "k" '(describe-key :which-key "Describe what a key does"))
+#+end_src
 
+** Evaluations
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC e"
   "b" '(eval-buffer (current-buffer) :which-key "Evaluate current buffer")
   "r" '(eval-region :which-key "Evaluate region"))
+#+end_src
 
+** Bookmarks
+#+begin_src emacs-lisp
 (nvmap :prefix "SPC m"
   "m" '(bookmark-set :which-key "Set a bookmark")
   "o" '(bookmark-jump :which-key "Jump to a bookmark"))
+#+end_src
 
+** Miscellaneous nice-to-haves
+*** C-g is for the weak, ESC for the true emacs elites
+#+begin_src emacs-lisp
 (global-set-key (kbd "<escape>") 'abort-minibuffers)
+#+end_src
 
+*** I want to delete a tab, not 4 spaces
+#+begin_src emacs-lisp
 (global-set-key (kbd "DEL") 'backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
+#+end_src
 
+*** Scroll the page like a pager with C-j and C-k
+#+begin_src emacs-lisp
 (global-set-key (kbd "C-j") #'(lambda ()
 								(interactive)
 								(evil-scroll-down 1)))
@@ -563,24 +778,39 @@ Executes `org-table-copy-down' if in table."
 (global-set-key (kbd "C-k") #'(lambda ()
 								(interactive)
 								(evil-scroll-up 1)))
+#+end_src
 
+*** Navigate dired evilly
+#+begin_src emacs-lisp
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
   (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
   (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
   (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+#+end_src
 
+*** For Ibuffer, too
+#+begin_src emacs-lisp
 (with-eval-after-load 'ibuffer
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
+#+end_src
 
+*** Folding
+#+begin_src emacs-lisp
 (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
+#+end_src
 
+** Enable which-key to remind us what key does what
+#+begin_src emacs-lisp
 ; Display some help for forgetting keybindings
 (use-package which-key
 	:ensure t
 	:init
 	(which-key-mode))
+#+end_src
 
+* Custom
+#+begin_src emacs-lisp
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -599,3 +829,4 @@ Executes `org-table-copy-down' if in table."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :extend nil :stipple nil :background "#1c1e1f" :foreground "#d6d6d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "JB" :family "JetBrains Mono")))))
+#+end_src

@@ -27,18 +27,19 @@
 (setq use-package-always-ensure t)
 #+end_src
 
-** Evil setup for every buffer
+** Evil setup
 #+begin_src emacs-lisp
-; Evil mode with evil in every buffer
 (setq evil-want-keybinding nil)
 (use-package evil
 	:init
 	(evil-mode))
-(use-package evil-collection
-	:after evil
-	:config
-	(setq evil-collection-mode-list '(dashboard dired ibuffer))
-	(evil-collection-init))
+#+end_src
+
+* Performance improvement
+#+begin_src emacs-lisp
+(use-package gcmh :ensure t)
+(gcmh-mode 1)
+(setq read-process-output-max (* 1024 1024)) ;; 1 mb
 #+end_src
 
 * UI Setup
@@ -64,17 +65,10 @@
 ** Epic theme
 #+begin_src emacs-lisp
 (use-package doom-themes
-  :hook (after-init . (lambda () (interactive) (load-theme 'doom-molokai))))
+  :hook (after-init . (lambda () (interactive) (load-theme 'doom-one))))
 (use-package doom-modeline
   :ensure t
   :config (doom-modeline-mode 1))
-#+end_src
-
-** Indent guides
-#+begin_src emacs-lisp
-(use-package highlight-indent-guides)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-(setq highlight-indent-guides-method 'character)
 #+end_src
 
 ** Dashboard
@@ -130,16 +124,6 @@ Screensavers for emacs
            (vconcat zone-programs [zone-rainbow]))))
 #+end_src
 
-** Better syntax highlighting
-Tree-sitter provides some better syntax highlighting, among other things
-#+begin_src emacs-lisp
-(use-package tree-sitter)
-(use-package tree-sitter-langs
-  :after tree-sitter)
-(global-tree-sitter-mode)
-(add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
-#+end_src
-
 *** Icons
 #+begin_src emacs-lisp
 (setq dashboard-set-heading-icons t)
@@ -179,12 +163,6 @@ Tree-sitter provides some better syntax highlighting, among other things
 #+end_src
 
 * Dired
-** Neat little previews
-#+begin_src emacs-lisp
-(use-package peep-dired)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-#+end_src
-
 ** Neat little icons
 #+begin_src emacs-lisp
 (use-package dired-open)
@@ -201,55 +179,6 @@ Tree-sitter provides some better syntax highlighting, among other things
 							  ("mp3" . "mpv")))
 #+end_src
 
-* Ivy
-** Counsel (neat little functions)
-#+begin_src emacs-lisp
-(use-package counsel
-  :after ivy
-  :config (counsel-mode))
-
-(setq ivy-initial-inputs-alist nil) ; Disable the "^" in interactive counsel commands like M-x
-(add-hook 'ivy-mode-hook #'(lambda () (define-key counsel-find-file-map (kbd "DEL") 'counsel-up-directory))) ; Just hit backspace to go up a directory in counsel-find-file and such
-#+end_src
-
-** Ivy setup
-#+begin_src emacs-lisp
-(use-package ivy
-  :defer 0.1
-  :diminish
-  :bind
-  (("C-c C-r" . ivy-resume)
-   ("C-x B" . ivy-switch-buffer-other-window))
-  :custom
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  :config
-  (ivy-mode))
-#+end_src
-
-** Ivy-rich
-*** Command descriptions in M-x
-#+begin_src emacs-lisp
-(use-package ivy-rich
-  :after ivy
-  :custom
-  (ivy-virtual-abbreviate 'full
-   ivy-rich-switch-buffer-align-virtual-buffer t
-   ivy-rich-path-style 'abbrev)
-  :config
-  (ivy-set-display-transformer 'ivy-switch-buffer
-                               'ivy-rich-switch-buffer-transformer)
-  (ivy-rich-mode 1))
-#+end_src
-
-** Swiper, no swiping, only searching!
-#+begin_src emacs-lisp
-(use-package swiper
-  :after ivy)
-(define-key evil-normal-state-map (kbd "/") 'swiper)
-#+end_src
-
 * Autocompletion
 ** Set up company
 #+begin_src emacs-lisp
@@ -257,7 +186,7 @@ Tree-sitter provides some better syntax highlighting, among other things
   :ensure t
   :config
   (progn
-    (add-hook 'after-init-hook 'global-company-mode)))
+    (add-hook 'prog-mode-hook 'company-mode)))
 #+end_src
 
 ** LSP
@@ -266,8 +195,6 @@ Tree-sitter provides some better syntax highlighting, among other things
 (use-package lsp-haskell)
 (use-package lsp-treemacs)
 (use-package lsp-java)
-(use-package lsp-ui)
-(add-hook 'prog-mode-hook (lambda () (interactive) (lsp-ui-mode 1)))
 
 (setq lsp-keymap-prefix "C-l")
 (add-hook 'prog-mode-hook #'lsp-deferred)
@@ -292,11 +219,9 @@ Tree-sitter provides some better syntax highlighting, among other things
 (use-package vterm)
 (use-package treemacs)
 (use-package sudo-edit)
-(use-package origami)
 #+end_src
 
 * Interactive minibuffers, but better
-
 ** Smex
 *** Remembers our history from M-x
 #+begin_src emacs-lisp
@@ -305,23 +230,68 @@ Tree-sitter provides some better syntax highlighting, among other things
 	:init (smex-initialize))
 #+end_src
 
-* Variables
-** Miscellaneous
+
+** Ivy
+*** Counsel (neat little functions)
+#+begin_src emacs-lisp
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
+
+(setq ivy-initial-inputs-alist nil) ; Disable the "^" in interactive counsel commands like M-x
+(add-hook 'ivy-mode-hook #'(lambda () (define-key counsel-find-file-map (kbd "DEL") 'counsel-up-directory))) ; Just hit backspace to go up a directory in counsel-find-file and such
+#+end_src
+
+*** Ivy setup
+#+begin_src emacs-lisp
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :bind
+  (("C-c C-r" . ivy-resume)
+   ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  :config
+  (ivy-mode))
+#+end_src
+
+*** Ivy-rich
+This gives us command descriptions in M-x
+#+begin_src emacs-lisp
+(use-package ivy-rich
+  :after ivy
+  :custom
+  (ivy-virtual-abbreviate 'full
+   ivy-rich-switch-buffer-align-virtual-buffer t
+   ivy-rich-path-style 'abbrev)
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer
+                               'ivy-rich-switch-buffer-transformer)
+  (ivy-rich-mode 1))
+#+end_src
+
+*** Swiper, no swiping, only searching!
+#+begin_src emacs-lisp
+(use-package swiper
+  :after ivy)
+(define-key evil-normal-state-map (kbd "/") 'swiper)
+#+end_src
+
+* Miscellaneous Variables
 #+begin_src emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p) ; Screw typing "yes", all my homies type 'y'
-(setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+(setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes)) ; Lets us use these buffers evilly
+; Scrolling stuff
 (setq scroll-conservatively 10000)
 (setq scroll-step 1)
 (setq auto-window-vscroll nil)
-(setq ring-bell-function 'ignore)
-(setq visible-bell t)
-(setq-default evil-cross-lines nil)
-#+end_src
 
-** Performance improvement
-#+begin_src emacs-lisp
-(setq gc-cons-threshold 100000000)
-(setq read-process-output-max (* 1024 1024)) ;; 1 mb
+(setq ring-bell-function 'ignore) ; Not a big fan of my IDE yelling at me
+(setq visible-bell t) ; But I AM a big fan of my IDE flashing its lights at me
+(setq-default evil-cross-lines nil) ; Vim style behavior when you reach the end of a line
 #+end_src
 
 * Text handling
@@ -364,7 +334,7 @@ Tree-sitter provides some better syntax highlighting, among other things
 	org-src-preserve-indentation t)
 #+end_src
 
-*** Aloow use to tangle files on save
+*** Allow us to tangle files on save
 #+begin_src emacs-lisp
 (use-package org-auto-tangle
   :ensure t)
@@ -598,7 +568,10 @@ Executes `org-table-copy-down' if in table."
          (org-level-8 1.0 "#ff6c6b" normal)))
     (set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
     (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#bfafdf"))
-(bugger/org-colors-doom-molokai)
+#+end_src
+
+#+begin_src emacs-lisp
+(dt/org-colors-doom-one)
 #+end_src
 
 ** Org roam
@@ -622,6 +595,14 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 #+end_src
 
 * Global Keybindings
+** Evil in every buffer
+#+begin_src emacs-lisp
+(use-package evil-collection
+	:after evil
+	:config
+	(setq evil-collection-mode-list '(dashboard dired ibuffer))
+	(evil-collection-init))
+#+end_src
 ** General lets us use space for a prefix, very ergonomic!
 #+begin_src emacs-lisp
 (use-package general
@@ -693,8 +674,7 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC d"
 		"d" '(dired :which-key "Open dired")
-		"j" '(dired-jump :which-key "Open dired in the current directory")
-		"p" '(peep-dired :which-key "Activate peep-dired"))
+		"j" '(dired-jump :which-key "Open dired in the current directory"))
 #+end_src
 
 ** Files
@@ -738,7 +718,7 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 (nvmap :prefix "SPC h"
   "f" '(describe-function :which-key "Describe a function")
   "v" '(describe-variable :which-key "Describe a variable")
-  "k" '(descirbe-key :which-key "Describe what a key does"))
+  "k" '(describe-key :which-key "Describe what a key does"))
 #+end_src
 
 ** Evaluations
@@ -772,7 +752,7 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 (global-set-key (kbd "C-j") #'(lambda ()
 								(interactive)
 								(evil-scroll-down 1)))
-(define-key evil-normal-state-map (kbd "<remap> <org-return-and-maybe-indent") #'(lambda ()
+(define-key evil-normal-state-map (kbd "<remap> <org-return-and-maybe-indent>") #'(lambda ()
 								(interactive)
 								(evil-scroll-down 1)))
 (global-set-key (kbd "C-k") #'(lambda ()
@@ -784,9 +764,7 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 #+begin_src emacs-lisp
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-  (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file)) ; use dired-find-file instead if not using dired-open package
 #+end_src
 
 *** For Ibuffer, too
