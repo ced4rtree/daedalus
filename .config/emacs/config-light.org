@@ -87,6 +87,28 @@
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
 
+*** Defining a minor mode lets us do some things
+**** Define keymaps + read only mode for e.g.
+#+begin_src emacs-lisp
+(define-minor-mode start-mode
+  "Provide functions for custom start page."
+  :lighter " start"
+  :keymap (let ((map (make-sparse-keymap)))
+            (evil-define-key 'normal start-mode-map
+              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
+              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
+              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
+              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
+              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "f") 'find-file
+              (kbd "d") 'dired)
+          map))
+
+(add-hook 'start-mode-hook 'read-only-mode)
+(provide 'start-mode)
+(add-hook 'dashboard-mode-hook 'start-mode)
+#+end_src
+
 ** Nyan mode
 This puts a little nyan cat in the modeline to indicate our position in the document
 #+begin_src emacs-lisp
@@ -129,28 +151,6 @@ Screensavers for emacs
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
 (add-hook 'server-after-make-frame-hook 'revert-buffer)
-#+end_src
-
-*** Defining a minor mode lets us do some things
-**** Define keymaps + read only mode for e.g.
-#+begin_src emacs-lisp
-(define-minor-mode start-mode
-  "Provide functions for custom start page."
-  :lighter " start"
-  :keymap (let ((map (make-sparse-keymap)))
-            (evil-define-key 'normal start-mode-map
-              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
-              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
-              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
-              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
-              (kbd "f") 'find-file
-              (kbd "d") 'dired)
-          map))
-
-(add-hook 'start-mode-hook 'read-only-mode)
-(provide 'start-mode)
-(add-hook 'dashboard-mode-hook 'start-mode)
 #+end_src
 
 ** Misc
@@ -219,15 +219,6 @@ Screensavers for emacs
 (use-package vterm)
 (use-package treemacs)
 (use-package sudo-edit)
-#+end_src
-
-* Interactive minibuffers, but better
-** Smex
-*** Remembers our history from M-x
-#+begin_src emacs-lisp
-(use-package smex
-	:ensure t
-	:init (smex-initialize))
 #+end_src
 
 
@@ -679,12 +670,14 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 
 ** Files
 #+begin_src emacs-lisp
+(nvmap :prefix "SPC f"
+  "s" '(save-buffer :which-key "Save file")
+  "r" '(recentf-open-files :which-key "List recent files to open")
+  "u" '(sudo-edit-find-file :which-key "Find file as root")
+  "U" '(sudo-edit :which-key "Edit as root"))
+
 (nvmap :prefix "SPC"
-  "."	  '(find-file :which-key "Open a file")
-  "f s" '(save-buffer :which-key "Save file")
-  "f r" '(recentf-open-files :which-key "List recent files to open")
-  "f u" '(sudo-edit-find-file :which-key "Find file as root")
-  "f U" '(sudo-edit :which-key "Edit as root"))
+  "." '(find-file :which-key "Open a file"))
 #+end_src
 
 ** Babel
@@ -778,7 +771,7 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
 #+end_src
 
-** Enable which-key to remind us what key does what
+** Enable which-key to remind us which key does what
 #+begin_src emacs-lisp
 ; Display some help for forgetting keybindings
 (use-package which-key

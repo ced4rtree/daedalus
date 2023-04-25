@@ -11,16 +11,14 @@
   (package-install 'use-package))
 (setq use-package-always-ensure t)
 
-; Evil mode with evil in every buffer
 (setq evil-want-keybinding nil)
 (use-package evil
 	:init
 	(evil-mode))
-(use-package evil-collection
-	:after evil
-	:config
-	(setq evil-collection-mode-list '(dashboard dired ibuffer))
-	(evil-collection-init))
+
+(use-package gcmh :ensure t)
+(gcmh-mode 1)
+(setq read-process-output-max (* 1024 1024)) ;; 1 mb
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -36,14 +34,10 @@
 (add-hook 'prog-mode-hook (lambda () (rainbow-identifiers-mode 1)))
 
 (use-package doom-themes
-  :hook (after-init . (lambda () (interactive) (load-theme 'doom-molokai))))
+  :hook (after-init . (lambda () (interactive) (load-theme 'doom-one))))
 (use-package doom-modeline
   :ensure t
   :config (doom-modeline-mode 1))
-
-(use-package highlight-indent-guides)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-(setq highlight-indent-guides-method 'character)
 
 (require 'dashboard)
 (dashboard-setup-startup-hook)
@@ -57,6 +51,24 @@
 (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
 
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+(define-minor-mode start-mode
+  "Provide functions for custom start page."
+  :lighter " start"
+  :keymap (let ((map (make-sparse-keymap)))
+            (evil-define-key 'normal start-mode-map
+              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
+              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
+              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
+              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
+              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "f") 'find-file
+              (kbd "d") 'dired)
+          map))
+
+(add-hook 'start-mode-hook 'read-only-mode)
+(provide 'start-mode)
+(add-hook 'dashboard-mode-hook 'start-mode)
 
 (use-package nyan-mode)
 (setq nyan-animate-nyancat t)
@@ -84,42 +96,15 @@
      (setq zone-programs
            (vconcat zone-programs [zone-rainbow]))))
 
-(use-package tree-sitter)
-(use-package tree-sitter-langs
-  :after tree-sitter)
-(global-tree-sitter-mode)
-(add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
-
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
 (add-hook 'server-after-make-frame-hook 'revert-buffer)
-
-(define-minor-mode start-mode
-  "Provide functions for custom start page."
-  :lighter " start"
-  :keymap (let ((map (make-sparse-keymap)))
-            (evil-define-key 'normal start-mode-map
-              (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
-              (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
-              (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
-              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
-              (kbd "f") 'find-file
-              (kbd "d") 'dired)
-          map))
-
-(add-hook 'start-mode-hook 'read-only-mode)
-(provide 'start-mode)
-(add-hook 'dashboard-mode-hook 'start-mode)
 
 (use-package all-the-icons) ; Neat little icons everywhere
 (use-package all-the-icons-dired) ; And in dired too
 (use-package beacon ; Neat little light for your cursor
   :config (beacon-mode 1))
 (global-hl-line-mode 1)
-
-(use-package peep-dired)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 (use-package dired-open)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
@@ -130,6 +115,31 @@
 							  ("mkv" . "mpv")
 							  ("mp4" . "mpv")
 							  ("mp3" . "mpv")))
+
+(use-package company
+  :ensure t
+  :config
+  (progn
+    (add-hook 'prog-mode-hook 'company-mode)))
+
+(use-package lsp-mode)
+(use-package lsp-haskell)
+(use-package lsp-treemacs)
+(use-package lsp-java)
+
+(setq lsp-keymap-prefix "C-l")
+(add-hook 'prog-mode-hook #'lsp-deferred)
+
+(use-package flycheck
+  :hook (prog-mode . 'global-flycheck-mode))
+
+(use-package smartparens)
+(require 'smartparens-config)
+(smartparens-global-mode)
+
+(use-package vterm)
+(use-package treemacs)
+(use-package sudo-edit)
 
 (use-package counsel
   :after ivy
@@ -166,49 +176,16 @@
   :after ivy)
 (define-key evil-normal-state-map (kbd "/") 'swiper)
 
-(use-package company
-  :ensure t
-  :config
-  (progn
-    (add-hook 'after-init-hook 'global-company-mode)))
-
-(use-package lsp-mode)
-(use-package lsp-haskell)
-(use-package lsp-treemacs)
-(use-package lsp-java)
-(use-package lsp-ui)
-(add-hook 'prog-mode-hook (lambda () (interactive) (lsp-ui-mode 1)))
-
-(setq lsp-keymap-prefix "C-l")
-(add-hook 'prog-mode-hook #'lsp-deferred)
-
-(use-package flycheck
-  :hook (prog-mode . 'global-flycheck-mode))
-
-(use-package smartparens)
-(require 'smartparens-config)
-(smartparens-global-mode)
-
-(use-package vterm)
-(use-package treemacs)
-(use-package sudo-edit)
-(use-package origami)
-
-(use-package smex
-	:ensure t
-	:init (smex-initialize))
-
 (defalias 'yes-or-no-p 'y-or-n-p) ; Screw typing "yes", all my homies type 'y'
-(setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+(setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes)) ; Lets us use these buffers evilly
+; Scrolling stuff
 (setq scroll-conservatively 10000)
 (setq scroll-step 1)
 (setq auto-window-vscroll nil)
-(setq ring-bell-function 'ignore)
-(setq visible-bell t)
-(setq-default evil-cross-lines nil)
 
-(setq gc-cons-threshold 100000000)
-(setq read-process-output-max (* 1024 1024)) ;; 1 mb
+(setq ring-bell-function 'ignore) ; Not a big fan of my IDE yelling at me
+(setq visible-bell t) ; But I AM a big fan of my IDE flashing its lights at me
+(setq-default evil-cross-lines nil) ; Vim style behavior when you reach the end of a line
 
 (setq-default c-default-style "stroustrup"
 	      c-basic-offset 4
@@ -438,7 +415,8 @@ Executes `org-table-copy-down' if in table."
          (org-level-8 1.0 "#ff6c6b" normal)))
     (set-face-attribute (nth 0 face) nil :family 'JetBrainsMono :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
     (set-face-attribute 'org-table nil :family 'JetBrainsMono :weight 'normal :height 1.0 :foreground "#bfafdf"))
-(bugger/org-colors-doom-molokai)
+
+(dt/org-colors-doom-one)
 
 (use-package org-roam
   :ensure t
@@ -451,6 +429,12 @@ Executes `org-table-copy-down' if in table."
   (org-roam-setup))
 
 (setq org-ellipsis " ▼ ")
+
+(use-package evil-collection
+	:after evil
+	:config
+	(setq evil-collection-mode-list '(dashboard dired ibuffer))
+	(evil-collection-init))
 
 (use-package general
 	:config
@@ -506,15 +490,16 @@ Executes `org-table-copy-down' if in table."
 
 (nvmap :prefix "SPC d"
 		"d" '(dired :which-key "Open dired")
-		"j" '(dired-jump :which-key "Open dired in the current directory")
-		"p" '(peep-dired :which-key "Activate peep-dired"))
+		"j" '(dired-jump :which-key "Open dired in the current directory"))
+
+(nvmap :prefix "SPC f"
+  "s" '(save-buffer :which-key "Save file")
+  "r" '(recentf-open-files :which-key "List recent files to open")
+  "u" '(sudo-edit-find-file :which-key "Find file as root")
+  "U" '(sudo-edit :which-key "Edit as root"))
 
 (nvmap :prefix "SPC"
-  "."	  '(find-file :which-key "Open a file")
-  "f s" '(save-buffer :which-key "Save file")
-  "f r" '(recentf-open-files :which-key "List recent files to open")
-  "f u" '(sudo-edit-find-file :which-key "Find file as root")
-  "f U" '(sudo-edit :which-key "Edit as root"))
+  "." '(find-file :which-key "Open a file"))
 
 (nvmap :prefix "SPC t"
   "e" '(lambda ()
@@ -566,9 +551,7 @@ Executes `org-table-copy-down' if in table."
 
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-  (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file)) ; use dired-find-file instead if not using dired-open package
 
 (with-eval-after-load 'ibuffer
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
