@@ -37,8 +37,6 @@
 
 * Performance improvement
 #+begin_src emacs-lisp
-(use-package gcmh :ensure t)
-(gcmh-mode 1)
 (setq read-process-output-max (* 1024 1024)) ;; 1 mb
 #+end_src
 
@@ -65,30 +63,55 @@
 ** Epic theme
 #+begin_src emacs-lisp
 (use-package doom-themes
-  :hook (after-init . (lambda () (interactive) (load-theme 'doom-one))))
+  :hook (after-init . (lambda () (load-theme 'doom-one))))
 (use-package doom-modeline
   :ensure t
-  :config (doom-modeline-mode 1))
+  :config (doom-modeline-mode 1)
+  (setq doom-modeline-height 35)
+  (setq doom-dark+-blue-modeline t)
+  (setq doom-molokai-brighter-modeline t))
+#+end_src
+
+** Fix some startup warnings
+#+begin_src emacs-lisp
+(setq native-comp-async-report-warnings-errors nil)
+#+end_src
+
+** Indent guides
+#+begin_src emacs-lisp
+(use-package highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character)
 #+end_src
 
 ** Dashboard
 #+begin_src emacs-lisp
-(require 'dashboard)
-(dashboard-setup-startup-hook)
-;; Or if you use use-package
+(use-package recentf :ensure t) ; just required to remove some stuff from the 'recent files' section in dashboard
+
 (use-package dashboard
   :ensure t
+  :after recentf
+  :init
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/schedule.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/todo.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/emacs.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/homework.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/.config/emacs/bookmarks"))
+
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq dashboard-center-content t)
+  (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
+  (setq dashboard-startup-banner 2)
+  (setq dashboard-items '((recents . 5)
+						  (bookmarks . 5)
+						  (agenda . 5)))
   :config
   (dashboard-setup-startup-hook))
-
-(setq dashboard-center-content t)
-(setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
-
-(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
 
-*** Defining a minor mode lets us do some things
-**** Define keymaps + read only mode for e.g.
+*** Start mode
+this lets us do some stuff, like add keybindings to dashboard because 'dashboard-mode-map' decided to not work at all
+
 #+begin_src emacs-lisp
 (define-minor-mode start-mode
   "Provide functions for custom start page."
@@ -98,8 +121,9 @@
               (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
               (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
               (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
               (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "a") 'org-agenda
+			  (kbd "s") 'org-show-todo-tree
               (kbd "f") 'find-file
               (kbd "d") 'dired)
           map))
@@ -115,7 +139,7 @@ This puts a little nyan cat in the modeline to indicate our position in the docu
 (use-package nyan-mode)
 (setq nyan-animate-nyancat t)
 (setq nyan-wavy-trail t)
-(setq nyan-bar-length 30)
+(setq nyan-bar-length 80)
 (add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
 #+end_src
 
@@ -150,7 +174,6 @@ Screensavers for emacs
 #+begin_src emacs-lisp
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
-(add-hook 'server-after-make-frame-hook 'revert-buffer)
 #+end_src
 
 ** Misc
@@ -259,7 +282,7 @@ This gives us command descriptions in M-x
    ivy-rich-switch-buffer-align-virtual-buffer t
    ivy-rich-path-style 'abbrev)
   :config
-  (ivy-set-display-transformer 'ivy-switch-buffer
+  (ivy-configure :display-transformer-fn 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer)
   (ivy-rich-mode 1))
 #+end_src
@@ -349,7 +372,7 @@ This gives us command descriptions in M-x
 *** Function definitions for using <return> to follow links
 **** I stole these from doom emacs btw
 
-**** Insert with some easy indentation on <return>
+**** Insert with some easy indentation on S-<return>
 #+begin_src emacs-lisp
 (defun org/return ()
   "Call `org-return' then indent (if `electric-indent-mode' is on)."
@@ -378,8 +401,7 @@ If on a:
 - statistics-cookie: update it.
 - src block: execute it
 - latex fragment: toggle it.
-- link: follow it
-- otherwise, refresh all inline images in current tree."
+- link: follow it"
   (interactive "P")
   (if (button-at (point))
       (call-interactively #'push-button)
@@ -396,7 +418,7 @@ If on a:
         (`headline
          (cond ((memq (bound-and-true-p org-goto-map)
                       (current-active-maps))
-                (org-goto-ret))
+                (org-goto))
                ((and (fboundp 'toc-org-insert-toc)
                      (member "TOC" (org-get-tags)))
                 (toc-org-insert-toc)
@@ -407,8 +429,7 @@ If on a:
                     (org-element-property :scheduled context))
                 (org-todo
                  (if (eq (org-element-property :todo-type context) 'done)
-                     (or (car (+org-get-todo-keywords-for (org-element-property :todo-keyword context)))
-                         'todo)
+                     (ignore)
                    'done))))
          ;; Update any metadata or inline previews in this subtree
          (org-update-checkbox-count)
@@ -430,7 +451,6 @@ If on a:
                 (image-overlays
                  (cl-find-if (lambda (o) (overlay-get o 'org-image-overlay))
                              overlays)))
-           (+org--toggle-inline-images-in-subtree beg end)
            (if (or image-overlays latex-overlays)
                (org-clear-latex-preview beg end)
              (org--latex-preview-region beg end))))
@@ -478,13 +498,11 @@ If on a:
                 (path (org-element-property :path lineage)))
            (if (or (equal (org-element-property :type lineage) "img")
                    (and path (image-type-from-file-name path)))
-               (+org--toggle-inline-images-in-subtree
-                (org-element-property :begin lineage)
-                (org-element-property :end lineage))
+               (ignore)
              (org-open-at-point arg))))
 
         (`paragraph
-         (+org--toggle-inline-images-in-subtree))
+         (ignore))
 
         ((guard (org-element-property :checkbox (org-element-lineage context '(item) t)))
          (let ((match (and (org-at-item-checkbox-p) (match-string 1))))
@@ -495,12 +513,13 @@ If on a:
                  (org-in-regexp org-tsr-regexp-both nil  t)
                  (org-in-regexp org-link-any-re nil t))
              (call-interactively #'org-open-at-point)
-           (+org--toggle-inline-images-in-subtree
-            (org-element-property :begin context)
-            (org-element-property :end context))))))))
+           (ignore)))))))
 #+end_src
 
-**** Do a regular return on S-<return>
+#+RESULTS:
+: org/dwim-at-point
+
+**** Do a regular return on <return>
 #+begin_src emacs-lisp
 (defun org/shift-return (&optional arg)
   "Insert a literal newline, or dwim in tables.
@@ -514,8 +533,8 @@ Executes `org-table-copy-down' if in table."
 *** Function implementation
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook (lambda ()
-							 (evil-local-set-key 'insert (kbd "<return>") 'org/return)
-							 (evil-local-set-key 'insert (kbd "S-<return>") 'org/shift-return)
+							 (evil-local-set-key 'insert (kbd "S-<return>") 'org/return)
+							 (evil-local-set-key 'insert (kbd "<return>") 'org/shift-return)
 							 (evil-local-set-key 'normal (kbd "<return>") 'org/dwim-at-point)))
 #+end_src
 
@@ -574,15 +593,25 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory "~/notes")
+  (org-roam-directory "~/org/notes")
   (org-roam-completion-everywhere t)
   :config
-  (org-roam-setup))
+  (org-roam-db-autosync-enable))
+#+end_src
+
+** Org agenda
+My calendar in emacs
+#+begin_src emacs-lisp
+(setq org-agenda-files (list "~/org/agenda/todo.org"
+							 "~/org/agenda/homework.org"
+							 "~/org/agenda/emacs.org"
+							 "~/org/agenda/schedule.org"))
 #+end_src
 
 ** Miscellaneous Variables
 #+begin_src emacs-lisp
 (setq org-ellipsis " ▼ ")
+(setq org-directory "~/org")
 #+end_src
 
 * Global Keybindings
@@ -591,9 +620,10 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 (use-package evil-collection
 	:after evil
 	:config
-	(setq evil-collection-mode-list '(dashboard dired ibuffer))
+	(setq evil-collection-mode-list '(dashboard dired ibuffer search agenda))
 	(evil-collection-init))
 #+end_src
+
 ** General lets us use space for a prefix, very ergonomic!
 #+begin_src emacs-lisp
 (use-package general
@@ -630,12 +660,15 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
   "i" '(ibuffer :which-key "Ibuffer")
   "c" '(bugger/kill-buffer :which-key "Close the current buffer")
   "k" '(bugger/kill-buffer-and-window :which-key "Close the current buffer and window")
-  "b" '(pop-to-buffer :which-key "Open a buffer in a new window")
+  "b" '(counsel-switch-buffer :which-key "Open a buffer in a new window")
   "r" '(revert-buffer :which-key "Reload the buffer")
   "s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
 (define-key evil-normal-state-map (kbd "q") 'bugger/kill-buffer)
 (define-key evil-normal-state-map (kbd "Q") 'bugger/kill-buffer-and-window)
 #+end_src
+
+#+RESULTS:
+: bugger/kill-buffer-and-window
 
 ** Babel
 #+begin_src emacs-lisp
@@ -672,7 +705,7 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC f"
   "s" '(save-buffer :which-key "Save file")
-  "r" '(recentf-open-files :which-key "List recent files to open")
+  "r" '(counsel-recentf :which-key "List recent files to open")
   "u" '(sudo-edit-find-file :which-key "Find file as root")
   "U" '(sudo-edit :which-key "Edit as root"))
 
@@ -693,6 +726,12 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
   "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
 #+end_src
 
+** Org mode
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC o"
+  "t t" '(org-todo :which-key "Toggle todo"))
+#+end_src
+
 ** Org Roam
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC r"
@@ -704,6 +743,14 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
   "c" '(org-capture-finalize :which-key "Finish roam capture")
   "a" '(org-capture-kill :which-key "Abort roam capture")
   "n" '(org-capture-refile :which-key "Refile roam capture"))
+#+end_src
+
+** Org agenda
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC a"
+  "t" '(org-todo-list :which-key "List TODO entries")
+  "a" '(org-agenda :which-key "Open org agenda")
+  "s" '(org-schedule :which-key "Schedule something"))
 #+end_src
 
 ** Helpful functions
@@ -793,7 +840,13 @@ Org roam is a package that allows us to store large amounts of notes and keep tr
  '(evil-undo-system 'undo-redo)
  '(org-return-follows-link t)
  '(package-selected-packages
- '(warning-suppress-types '((use-package) (use-package) (lsp-mode) (lsp-mode) (comp)))))
+   '(warning-suppress-types
+	 '((use-package)
+	   (use-package)
+	   (lsp-mode)
+	   (lsp-mode)
+	   (comp))))
+ '(warning-suppress-types '((use-package) (use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

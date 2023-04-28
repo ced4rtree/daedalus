@@ -16,8 +16,6 @@
 	:init
 	(evil-mode))
 
-(use-package gcmh :ensure t)
-(gcmh-mode 1)
 (setq read-process-output-max (* 1024 1024)) ;; 1 mb
 
 (tool-bar-mode -1)
@@ -34,23 +32,41 @@
 (add-hook 'prog-mode-hook (lambda () (rainbow-identifiers-mode 1)))
 
 (use-package doom-themes
-  :hook (after-init . (lambda () (interactive) (load-theme 'doom-one))))
+  :hook (after-init . (lambda () (load-theme 'doom-one))))
 (use-package doom-modeline
   :ensure t
-  :config (doom-modeline-mode 1))
+  :config (doom-modeline-mode 1)
+  (setq doom-modeline-height 35)
+  (setq doom-dark+-blue-modeline t)
+  (setq doom-molokai-brighter-modeline t))
 
-(require 'dashboard)
-(dashboard-setup-startup-hook)
-;; Or if you use use-package
+(setq native-comp-async-report-warnings-errors nil)
+
+(use-package highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character)
+
+(use-package recentf :ensure t) ; just required to remove some stuff from the 'recent files' section in dashboard
+
 (use-package dashboard
   :ensure t
+  :after recentf
+  :init
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/schedule.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/todo.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/emacs.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/homework.org"))
+  (add-to-list 'recentf-exclude (concat (getenv "HOME") "/.config/emacs/bookmarks"))
+
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq dashboard-center-content t)
+  (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
+  (setq dashboard-startup-banner 2)
+  (setq dashboard-items '((recents . 5)
+						  (bookmarks . 5)
+						  (agenda . 5)))
   :config
   (dashboard-setup-startup-hook))
-
-(setq dashboard-center-content t)
-(setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
-
-(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 
 (define-minor-mode start-mode
   "Provide functions for custom start page."
@@ -60,8 +76,9 @@
               (kbd "e") '(lambda () (interactive) (find-file "~/.config/emacs/config.org"))
               (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
               (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "a") '(lambda () (interactive) (find-file "~/.config/alacritty/alacritty.yml"))
               (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "a") 'org-agenda
+			  (kbd "s") 'org-show-todo-tree
               (kbd "f") 'find-file
               (kbd "d") 'dired)
           map))
@@ -73,7 +90,7 @@
 (use-package nyan-mode)
 (setq nyan-animate-nyancat t)
 (setq nyan-wavy-trail t)
-(setq nyan-bar-length 30)
+(setq nyan-bar-length 80)
 (add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
 
 (use-package zone)
@@ -98,7 +115,6 @@
 
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
-(add-hook 'server-after-make-frame-hook 'revert-buffer)
 
 (use-package all-the-icons) ; Neat little icons everywhere
 (use-package all-the-icons-dired) ; And in dired too
@@ -168,7 +184,7 @@
    ivy-rich-switch-buffer-align-virtual-buffer t
    ivy-rich-path-style 'abbrev)
   :config
-  (ivy-set-display-transformer 'ivy-switch-buffer
+  (ivy-configure :display-transformer-fn 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer)
   (ivy-rich-mode 1))
 
@@ -247,8 +263,7 @@ If on a:
 - statistics-cookie: update it.
 - src block: execute it
 - latex fragment: toggle it.
-- link: follow it
-- otherwise, refresh all inline images in current tree."
+- link: follow it"
   (interactive "P")
   (if (button-at (point))
       (call-interactively #'push-button)
@@ -265,7 +280,7 @@ If on a:
         (`headline
          (cond ((memq (bound-and-true-p org-goto-map)
                       (current-active-maps))
-                (org-goto-ret))
+                (org-goto))
                ((and (fboundp 'toc-org-insert-toc)
                      (member "TOC" (org-get-tags)))
                 (toc-org-insert-toc)
@@ -276,8 +291,7 @@ If on a:
                     (org-element-property :scheduled context))
                 (org-todo
                  (if (eq (org-element-property :todo-type context) 'done)
-                     (or (car (+org-get-todo-keywords-for (org-element-property :todo-keyword context)))
-                         'todo)
+                     (ignore)
                    'done))))
          ;; Update any metadata or inline previews in this subtree
          (org-update-checkbox-count)
@@ -299,7 +313,6 @@ If on a:
                 (image-overlays
                  (cl-find-if (lambda (o) (overlay-get o 'org-image-overlay))
                              overlays)))
-           (+org--toggle-inline-images-in-subtree beg end)
            (if (or image-overlays latex-overlays)
                (org-clear-latex-preview beg end)
              (org--latex-preview-region beg end))))
@@ -347,13 +360,11 @@ If on a:
                 (path (org-element-property :path lineage)))
            (if (or (equal (org-element-property :type lineage) "img")
                    (and path (image-type-from-file-name path)))
-               (+org--toggle-inline-images-in-subtree
-                (org-element-property :begin lineage)
-                (org-element-property :end lineage))
+               (ignore)
              (org-open-at-point arg))))
 
         (`paragraph
-         (+org--toggle-inline-images-in-subtree))
+         (ignore))
 
         ((guard (org-element-property :checkbox (org-element-lineage context '(item) t)))
          (let ((match (and (org-at-item-checkbox-p) (match-string 1))))
@@ -364,9 +375,7 @@ If on a:
                  (org-in-regexp org-tsr-regexp-both nil  t)
                  (org-in-regexp org-link-any-re nil t))
              (call-interactively #'org-open-at-point)
-           (+org--toggle-inline-images-in-subtree
-            (org-element-property :begin context)
-            (org-element-property :end context))))))))
+           (ignore)))))))
 
 (defun org/shift-return (&optional arg)
   "Insert a literal newline, or dwim in tables.
@@ -377,8 +386,8 @@ Executes `org-table-copy-down' if in table."
     (org-return nil arg)))
 
 (add-hook 'org-mode-hook (lambda ()
-							 (evil-local-set-key 'insert (kbd "<return>") 'org/return)
-							 (evil-local-set-key 'insert (kbd "S-<return>") 'org/shift-return)
+							 (evil-local-set-key 'insert (kbd "S-<return>") 'org/return)
+							 (evil-local-set-key 'insert (kbd "<return>") 'org/shift-return)
 							 (evil-local-set-key 'normal (kbd "<return>") 'org/dwim-at-point)))
 
 ; Pretty colors and sizes for org mode
@@ -423,17 +432,23 @@ Executes `org-table-copy-down' if in table."
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory "~/notes")
+  (org-roam-directory "~/org/notes")
   (org-roam-completion-everywhere t)
   :config
-  (org-roam-setup))
+  (org-roam-db-autosync-enable))
+
+(setq org-agenda-files (list "~/org/agenda/todo.org"
+							 "~/org/agenda/homework.org"
+							 "~/org/agenda/emacs.org"
+							 "~/org/agenda/schedule.org"))
 
 (setq org-ellipsis " ▼ ")
+(setq org-directory "~/org")
 
 (use-package evil-collection
 	:after evil
 	:config
-	(setq evil-collection-mode-list '(dashboard dired ibuffer))
+	(setq evil-collection-mode-list '(dashboard dired ibuffer search agenda))
 	(evil-collection-init))
 
 (use-package general
@@ -464,7 +479,7 @@ Executes `org-table-copy-down' if in table."
   "i" '(ibuffer :which-key "Ibuffer")
   "c" '(bugger/kill-buffer :which-key "Close the current buffer")
   "k" '(bugger/kill-buffer-and-window :which-key "Close the current buffer and window")
-  "b" '(pop-to-buffer :which-key "Open a buffer in a new window")
+  "b" '(counsel-switch-buffer :which-key "Open a buffer in a new window")
   "r" '(revert-buffer :which-key "Reload the buffer")
   "s" '(switch-to-buffer "*scratch*" :which-key "Open the scratch buffer"))
 (define-key evil-normal-state-map (kbd "q") 'bugger/kill-buffer)
@@ -494,7 +509,7 @@ Executes `org-table-copy-down' if in table."
 
 (nvmap :prefix "SPC f"
   "s" '(save-buffer :which-key "Save file")
-  "r" '(recentf-open-files :which-key "List recent files to open")
+  "r" '(counsel-recentf :which-key "List recent files to open")
   "u" '(sudo-edit-find-file :which-key "Find file as root")
   "U" '(sudo-edit :which-key "Edit as root"))
 
@@ -511,6 +526,9 @@ Executes `org-table-copy-down' if in table."
   "t" '(org-babel-tangle :which-key "Tangle the current file")
   "k" '(org-edit-src-abort :which-key "Abort editing a code block"))
 
+(nvmap :prefix "SPC o"
+  "t t" '(org-todo :which-key "Toggle todo"))
+
 (nvmap :prefix "SPC r"
   "f" '(org-roam-node-find :which-key "Open a note file")
   "i" '(org-roam-node-insert :which-key "Insert a roam node")
@@ -520,6 +538,11 @@ Executes `org-table-copy-down' if in table."
   "c" '(org-capture-finalize :which-key "Finish roam capture")
   "a" '(org-capture-kill :which-key "Abort roam capture")
   "n" '(org-capture-refile :which-key "Refile roam capture"))
+
+(nvmap :prefix "SPC a"
+  "t" '(org-todo-list :which-key "List TODO entries")
+  "a" '(org-agenda :which-key "Open org agenda")
+  "s" '(org-schedule :which-key "Schedule something"))
 
 (nvmap :prefix "SPC h"
   "f" '(describe-function :which-key "Describe a function")
@@ -575,7 +598,13 @@ Executes `org-table-copy-down' if in table."
  '(evil-undo-system 'undo-redo)
  '(org-return-follows-link t)
  '(package-selected-packages
- '(warning-suppress-types '((use-package) (use-package) (lsp-mode) (lsp-mode) (comp)))))
+   '(warning-suppress-types
+	 '((use-package)
+	   (use-package)
+	   (lsp-mode)
+	   (lsp-mode)
+	   (comp))))
+ '(warning-suppress-types '((use-package) (use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
