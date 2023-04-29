@@ -61,7 +61,7 @@
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   (setq dashboard-center-content t)
   (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
-  (setq dashboard-startup-banner 2)
+  (setq dashboard-startup-banner "~/.config/emacs/dash-text.txt")
   (setq dashboard-items '((recents . 5)
 						  (bookmarks . 5)
 						  (agenda . 5)))
@@ -80,7 +80,8 @@
               (kbd "a") 'org-agenda
 			  (kbd "s") 'org-show-todo-tree
               (kbd "f") 'find-file
-              (kbd "d") 'dired)
+              (kbd "d") 'dired
+			  (kbd "l") 'dashboard-return)
           map))
 
 (add-hook 'start-mode-hook 'read-only-mode)
