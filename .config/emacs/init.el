@@ -58,13 +58,16 @@
   (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/homework.org"))
   (add-to-list 'recentf-exclude (concat (getenv "HOME") "/.config/emacs/bookmarks"))
 
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (setq dashboard-center-content t)
-  (setq dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
-  (setq dashboard-startup-banner "~/.config/emacs/dash-text.txt")
-  (setq dashboard-items '((recents . 5)
-						  (bookmarks . 5)
-						  (agenda . 5)))
+  :custom
+  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (dashboard-center-content t)
+  (dashboard-banner-logo-title "The Modal Text Editor With More Than Vim")
+  (dashboard-startup-banner "~/.config/emacs/dash-text.txt")
+  (dashboard-items '((recents . 5)
+					 (bookmarks . 5)
+					 (agenda . 5)))
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
   :config
   (dashboard-setup-startup-hook))
 
@@ -593,18 +596,18 @@ Executes `org-table-copy-down' if in table."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-dark+ doom-one doom-molokai))
+ '(custom-enabled-themes '(doom-dark+ doom-molokai))
  '(custom-safe-themes
    '("2721b06afaf1769ef63f942bf3e977f208f517b187f2526f0e57c1bd4a000350" "89d9dc6f4e9a024737fb8840259c5dd0a140fd440f5ed17b596be43a05d62e67" "b99e334a4019a2caa71e1d6445fc346c6f074a05fcbb989800ecbe54474ae1b0" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" "be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" default))
  '(evil-undo-system 'undo-redo)
  '(org-return-follows-link t)
  '(package-selected-packages
-   '(warning-suppress-types
-	 '((use-package)
-	   (use-package)
-	   (lsp-mode)
-	   (lsp-mode)
-	   (comp))))
+   '(literate-calc-mode warning-suppress-types
+						'((use-package)
+						  (use-package)
+						  (lsp-mode)
+						  (lsp-mode)
+						  (comp))))
  '(warning-suppress-types '((use-package) (use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
