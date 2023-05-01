@@ -14,7 +14,7 @@ import Graphics.X11.ExtraTypes.XF86
 import System.Exit
 import System.IO
 
--- XMobar
+  -- Bar stuff
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
@@ -40,9 +40,14 @@ myStartupHook = do
   spawnOnce "feh --randomize --bg-scale /home/some-guy/wallpapers"
   spawnOnce "xset r rate 200 65"
   spawnOnce "setxkbmap -option caps:escape"
+  -- These next two are for MY SYSTEM ONLY. They make scrolling on my laptop better
+  -- PLEASE REMOVE IF INPUT IS WEIRD FOR YOU
+  spawnOnce "xinput set-int-prop 14 314 8 1"
+  spawnOnce "xinput set-int-prop 13 313 8 1"
+
   spawnOnce "mpd"
   spawnOnce "mpc pause"
-  spawnOnce "emacs --daemon"
+  spawnOnce "emacs -Q -l ~/.config/emacs/init.elc --daemon || emacs -Q -l ~/.config/emacs/init.el --daemon"
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
     
 
@@ -113,7 +118,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_t), withFocused $ windows . W.sink)
 
         -- emacs
-        , ((modm,  xK_e), spawn "emacsclient -a 'emacs' -c -s '/home/some-guy/.config/emacs/server-dir/server'")
+        , ((modm,  xK_e), spawn "emacsclient -a 'emacs' -c")
 
         -- manage window spacing
         , ((modm, xK_minus), decWindowSpacing 2 *> decScreenSpacing 2)
@@ -122,8 +127,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 main :: IO ()
 main = do
-        --xmonad $ ewmhFullscreen $ ewmh $ xmobarProp $ xmobar $ def {
-        xmonad $ ewmhFullscreen $ ewmh $ xmobarProp def {
+        --xmonad $ ewmhFullscreen $ ewmh $ def {
+        xmonad $ ewmhFullscreen $ docks . ewmh $ def {
         terminal                = "urxvtc",
         focusFollowsMouse       = True,
         clickJustFocuses        = False,
