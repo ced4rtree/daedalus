@@ -10,7 +10,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.SpawnOnce
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
-import Graphics.X11.ExtraTypes.XF86
+import Graphics.X11.ExtraTypes.XF86 -- Epic keys
 import System.Exit
 import System.IO
 
@@ -20,6 +20,7 @@ import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
@@ -31,25 +32,27 @@ myLayout = avoidStruts $
                 ratio = 1/2
                 delta = 3/100
 
+myHome = "/home/some-guy"
+
 myStartupHook :: X ()
 myStartupHook = do
-  spawnOnce "export PATH=${PATH}:/home/some-guy/scripts"
+  spawnOnce $ concat ["export PATH=${PATH}:", myHome, "/scripts"]
   spawnOnce "mpv /opt/sounds/startup-01.mp3"
   spawnOnce "xsetroot -cursor_name left_ptr"
-  spawn "/home/some-guy/.config/polybar/launch.sh"
-  spawnOnce "feh --randomize --bg-scale /home/some-guy/wallpapers"
+  spawn $ concat [myHome, "/.config/polybar/launch.sh"]
+  spawnOnce $ concat ["feh --randomize --bg-scale ", myHome, "/wallpapers"]
+  -- Makes repeat rate much faster
   spawnOnce "xset r rate 200 65"
+  -- Epic caps lock instead of escape chad moment
   spawnOnce "setxkbmap -option caps:escape"
-  -- These next two are for MY SYSTEM ONLY. They make scrolling on my laptop better
-  -- PLEASE REMOVE IF INPUT IS WEIRD FOR YOU
-  spawnOnce "xinput set-int-prop 14 314 8 1"
-  spawnOnce "xinput set-int-prop 13 313 8 1"
+  -- This enables natural scrolling. Disable if scrolling direction feels weird for you
+  spawnOnce $ concat [ myHome, "/.config/xmonad/natScroll.sh" ]
 
   spawnOnce "mpd"
   spawnOnce "mpc pause"
+  -- This may look funky, but my emacs config buggin so idk why but i can only get it to work like this
   spawnOnce "emacs -Q -l ~/.config/emacs/init.elc --daemon || emacs -Q -l ~/.config/emacs/init.el --daemon"
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
-    
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
