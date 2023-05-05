@@ -59,7 +59,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
 
         -- application launcher
-        , ((modm, xK_p), spawn "rofi -show run" >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ((modm, xK_p), spawn "rofi -show drun" >> spawn "mpv /opt/sounds/menu-01.mp3")
 
         -- Close the focused window
         , ((modm .|. shiftMask, xK_x), kill)
@@ -72,10 +72,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((0, xF86XK_AudioLowerVolume), spawn "~/scripts/snd down")
 
         -- Brightness adjustment
-        , ((modm, xK_F10), spawn "~/scripts/brightness down")
-        , ((modm, xK_F11), spawn "~/scripts/brightness up")
-        --, ((0, xF86XK_MonBrightnessUp), spawn "brightness up")
-        --, ((0, xF86XK_MonBrightnessDown), spawn "brightness down")
+        -- , ((modm, xK_F10), spawn "~/scripts/brightness down")
+        -- , ((modm, xK_F11), spawn "~/scripts/brightness up")
+        , ((0, xF86XK_MonBrightnessUp), spawn "brightness up")
+        , ((0, xF86XK_MonBrightnessDown), spawn "brightness down")
 
         -- Change the background
         , ((modm, xK_w), spawn "feh --bg-scale --randomize ~/wallpapers")
