@@ -53,10 +53,11 @@ myStartupHook = do
   -- This may look funky, but my emacs config buggin so idk why but i can only get it to work like this
   spawnOnce "emacs -Q -l ~/.config/emacs/init.elc --daemon || emacs -Q -l ~/.config/emacs/init.el --daemon"
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
+  spawnOnce "xcompmgr &"
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
-        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
+        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "kitty")
 
         -- application launcher
         , ((modm, xK_p), spawn "rofi -show drun" >> spawn "mpv /opt/sounds/menu-01.mp3")
@@ -132,7 +133,7 @@ main :: IO ()
 main = do
         --xmonad $ ewmhFullscreen $ ewmh $ def {
         xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                = "urxvtc",
+        terminal                = "kitty",
         focusFollowsMouse       = True,
         clickJustFocuses        = False,
         borderWidth             = 2,
