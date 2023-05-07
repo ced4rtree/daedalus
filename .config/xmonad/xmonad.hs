@@ -7,6 +7,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.ToggleLayouts
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import XMonad.Util.SpawnOnce
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
@@ -19,12 +20,12 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 
-toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
-
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+myManageHook = checkDock --> doLower
 
 myLayout = avoidStruts $
             toggleLayouts tiled $ noBorders Full
@@ -55,11 +56,10 @@ myStartupHook = do
   -- This may look funky, but my emacs config buggin so idk why but i can only get it to work like this
   spawnOnce "emacs -Q -l ~/.config/emacs/init.elc --daemon || emacs -Q -l ~/.config/emacs/init.el --daemon"
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
-  spawnOnce "xcompmgr &"
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
-        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "kitty")
+        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
 
         -- application launcher
         , ((modm, xK_p), spawn "rofi -show drun" >> spawn "mpv /opt/sounds/menu-01.mp3")
@@ -89,7 +89,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_h), sendMessage Shrink)
         , ((modm, xK_l), sendMessage Expand)
         , ((modm, xK_Return), windows W.swapMaster)
-        , ((modm, xK_m), windows W.focusMaster)
 
         -- Exit XMonad
         , ((modm .|. shiftMask, xK_q), io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
@@ -123,11 +122,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- Force a floating window back to tiling
         , ((modm, xK_t), withFocused $ windows . W.sink)
         -- Toggle fullscreen
-        , ((modm, xK_m), sendMessage (Toggle "Full") >> spawn "polybar-msg cmd toggle")
+        , ((modm, xK_m), sendMessage (Toggle "Full") >> sendMessage ToggleStruts)
         -- Toggle bar
         , ((modm, xK_b), sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
-        -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for polybar
-        , ((modm .|. shiftMask, xK_b), spawn "polybar-msg cmd toggle")
+        -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for struts
+        , ((modm .|. shiftMask, xK_b), sendMessage ToggleStruts)
 
         -- emacs
         , ((modm,  xK_e), spawn "emacsclient -a 'emacs' -c")
@@ -140,15 +139,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 main :: IO ()
 main = do
         xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                = "kitty"
+        terminal                = "alacritty"
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
         , borderWidth             = 2
         , modMask                 = mod4Mask
-        , workspaces              = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        , workspaces              = myWorkspaces
         , keys                    = myKeys
-
         , layoutHook = myLayout
         , startupHook = myStartupHook
-        , manageHook = manageDocks
+        , manageHook = manageDocks <+> myManageHook
         }
