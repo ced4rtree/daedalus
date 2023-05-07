@@ -3,8 +3,8 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Dwindle
 import XMonad.Layout.ResizableTile
-import XMonad.Layout.MultiToggle
-import XMonad.Layout.MultiToggle.Instances
+import XMonad.Layout.NoBorders
+import XMonad.Layout.ToggleLayouts
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.SpawnOnce
@@ -19,13 +19,15 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
+myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
 myLayout = avoidStruts $
-            tiled ||| Mirror tiled ||| Spiral L XMonad.Layout.Dwindle.CW (3/2) (11/10) ||| Full
+            toggleLayouts tiled $ noBorders Full
             where
                 tiled = mySpacing 6 $ ResizableTall nmaster delta ratio []
                 nmaster = 1
@@ -120,6 +122,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_space), sendMessage NextLayout)
         -- Force a floating window back to tiling
         , ((modm, xK_t), withFocused $ windows . W.sink)
+        -- Toggle fullscreen
+        , ((modm, xK_m), sendMessage (Toggle "Full") >> spawn "polybar-msg cmd toggle")
+        -- Toggle bar
+        , ((modm, xK_b), sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
+        -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for polybar
+        , ((modm .|. shiftMask, xK_b), spawn "polybar-msg cmd toggle")
 
         -- emacs
         , ((modm,  xK_e), spawn "emacsclient -a 'emacs' -c")
@@ -131,17 +139,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 main :: IO ()
 main = do
-        --xmonad $ ewmhFullscreen $ ewmh $ def {
         xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                = "kitty",
-        focusFollowsMouse       = True,
-        clickJustFocuses        = False,
-        borderWidth             = 2,
-        modMask                 = mod4Mask,
-        workspaces              = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        keys                    = myKeys,
-        --eventHook               = ewmhDesktopsEventHook,
+        terminal                = "kitty"
+        , focusFollowsMouse       = True
+        , clickJustFocuses        = False
+        , borderWidth             = 2
+        , modMask                 = mod4Mask
+        , workspaces              = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        , keys                    = myKeys
 
-        layoutHook = myLayout,
-        startupHook = myStartupHook
+        , layoutHook = myLayout
+        , startupHook = myStartupHook
+        , manageHook = manageDocks
         }
