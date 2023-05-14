@@ -25,6 +25,8 @@ mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
+myTerminal = "kitty"
+
 myManageHook = checkDock --> doLower
 
 myLayout = avoidStruts $
@@ -59,7 +61,7 @@ myStartupHook = do
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
-        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn "alacritty")
+        [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn myTerminal)
 
         -- application launcher
         , ((modm, xK_p), spawn "rofi -show drun" >> spawn "mpv /opt/sounds/menu-01.mp3")
@@ -139,7 +141,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 main :: IO ()
 main = do
         xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                = "alacritty"
+        terminal                = myTerminal,
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
         , borderWidth             = 2
