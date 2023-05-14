@@ -1,13 +1,13 @@
 #+TITLE: My Emacs Config, Now Literate!
 #+AUTHOR: bugger
 #+PROPERTY: header-args :tangle init.el
-#+auto_tangle: nil
+#+auto_tangle: t
 #+STARTUP: showeverything
 
 * Basic setup
 ** Define where the server should be
 #+begin_src emacs-lisp
-(setq server-socket-dir (substitute-in-file-name "$HOME/.config/emacs/server-dir"))
+;(setq server-socket-dir (substitute-in-file-name "$HOME/.config/emacs/server-dir"))
 #+end_src
 
 ** Enable melpa repository
@@ -184,7 +184,6 @@ Tree-sitter provides some better syntax highlighting, among other things
 (use-package tree-sitter-langs
   :after tree-sitter)
 (global-tree-sitter-mode)
-(add-hook 'tree-sitter-mode-hook (lambda () (tree-sitter-hl-mode 1)))
 #+end_src
 
 ** Misc
@@ -236,8 +235,8 @@ Tree-sitter provides some better syntax highlighting, among other things
 
 ** Flycheck
 #+begin_src emacs-lisp
-(use-package flycheck
-  :hook (prog-mode . 'global-flycheck-mode))
+(use-package flycheck)
+(global-flycheck-mode)
 #+end_src
 
 * Miscellaneous packages
@@ -264,7 +263,6 @@ Tree-sitter provides some better syntax highlighting, among other things
   :config (counsel-mode))
 
 (setq ivy-initial-inputs-alist nil) ; Disable the "^" in interactive counsel commands like M-x
-(add-hook 'ivy-mode-hook #'(lambda () (define-key counsel-find-file-map (kbd "DEL") 'counsel-up-directory))) ; Just hit backspace to go up a directory in counsel-find-file and such
 #+end_src
 
 *** Ivy setup
@@ -678,9 +676,6 @@ My calendar in emacs
 (define-key evil-normal-state-map (kbd "Q") 'bugger/kill-buffer-and-window)
 #+end_src
 
-#+RESULTS:
-: bugger/kill-buffer-and-window
-
 ** Babel
 #+begin_src emacs-lisp
 (nvmap :prefix "SPC t"
@@ -795,6 +790,7 @@ My calendar in emacs
 *** I want to delete a tab, not 4 spaces
 #+begin_src emacs-lisp
 (global-set-key (kbd "DEL") 'backward-delete-char)
+(define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
 #+end_src
 
