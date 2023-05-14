@@ -8,7 +8,9 @@ import XMonad.Layout.ToggleLayouts
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.SetWMName
 import XMonad.Util.SpawnOnce
+import XMonad.Util.Ungrab
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import Graphics.X11.ExtraTypes.XF86 -- Epic keys
@@ -59,6 +61,9 @@ myStartupHook = do
   spawnOnce "emacs -Q -l ~/.config/emacs/init.elc --daemon || emacs -Q -l ~/.config/emacs/init.el --daemon"
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
 
+  -- let java swing apps like intellij work
+  setWMName "LG3D"
+
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
         [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn myTerminal)
@@ -79,11 +84,17 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- Brightness adjustment
         -- , ((modm, xK_F10), spawn "~/scripts/brightness down")
         -- , ((modm, xK_F11), spawn "~/scripts/brightness up")
-        , ((0, xF86XK_MonBrightnessUp), spawn "brightness up")
-        , ((0, xF86XK_MonBrightnessDown), spawn "brightness down")
+        , ((shiftMask, xF86XK_MonBrightnessUp), spawn "brightness up")
+        , ((shiftMask, xF86XK_MonBrightnessDown), spawn "brightness down")
+
+        , ((0, xF86XK_MonBrightnessUp), spawn "real-brightness up")
+        , ((0, xF86XK_MonBrightnessDown), spawn "real-brightness down")
 
         -- Change the background
         , ((modm, xK_w), spawn "feh --bg-scale --randomize ~/wallpapers")
+
+        -- Screenshot
+        , ((modm, xK_s), unGrab *> spawn "scrot 'Pictures/%Y-%m-%d-%H-%M.png' -s")
 
         -- Moving around windows
         , ((modm, xK_j), windows W.focusDown)
@@ -141,10 +152,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 main :: IO ()
 main = do
         xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                = myTerminal,
+        terminal                = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
-        , borderWidth             = 2
+        , borderWidth             = 1
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
         , keys                    = myKeys
