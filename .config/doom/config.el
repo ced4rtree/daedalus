@@ -54,6 +54,12 @@
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
   (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file)) ; use dired-open-file instead if using dired-open package
 
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC d"
+ "d" '(dired :which-key "Open dired")
+ "j" '(dired-jump :which-key "Open dired in current directory"))
+
 (with-eval-after-load 'ibuffer
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
 
@@ -83,6 +89,12 @@
 (general-define-key
  :states '(normal visual)
  "SPC m '" '(bugger/edit-src :which-key "Edit a code block"))
+
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC o"
+ "C" '(cfw:open-org-calendar :which-key "Open org calendar")
+ "a c" '(cfw:open-org-calendar :which-key "Open org calendar"))
 
 (setq-default c-default-style "stroustrup"
 	      c-basic-offset 4
@@ -149,6 +161,7 @@
 							 "~/org/agenda/emacs.org"
 							 "~/org/agenda/schedule.org"))
 (setq org-agenda-weekend-days (list 5 6))
+(setq org-agenda-start-on-weekday 0)
 
 (setq org-ellipsis " ▼ ")
 (setq org-directory "~/org")

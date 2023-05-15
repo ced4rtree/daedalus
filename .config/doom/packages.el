@@ -62,3 +62,5 @@
 (package! counsel)
 (package! org-auto-tangle)
 (package! org-roam)
+(package! calfw)
+(package! calfw-org)
