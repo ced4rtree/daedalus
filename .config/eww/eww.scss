@@ -1,5 +1,7 @@
 * {
     all: unset; //Unsets everything so you can style everything from scratch
+	font-family: "JetBrains Mono Nerd Font";
+	font-size: 18px;
 }
 
 //Global Styles
@@ -35,7 +37,8 @@
     font-size: large;
 }
 .time {
-    margin-right: 30px;
+    margin-right: 10px;
+	color: #a9a1e1;
 }
 
 .0 , .01, .02, .03, .04, .05, .06,
@@ -71,12 +74,23 @@
 
 .ram {
 	padding-right: 15px;
+	color: #c678dd;
 }
+
 .cpu {
 	padding-right : 15px;
+	color: #51afef;
 }
 
 /* Music */
 .musicButton {
 	margin-left: 6px;
+}
+
+.brightness {
+	color: #da8548;
+}
+
+.battery {
+	color: #55aa55;
 }

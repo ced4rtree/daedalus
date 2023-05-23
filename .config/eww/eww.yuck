@@ -1,3 +1,8 @@
+; variables
+(defvar brightness_value "80") ; this is updated by a script
+(defpoll battery :interval "1m"
+	"cat /sys/class/power_supply/BAT*/capacity")
+
 (defwidget bar []
   (centerbox :orientation "h"
 	(left)
@@ -5,14 +10,18 @@
     (sidestuff)))
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-	(label  :text "  ${EWW_RAM.used_mem_perc}%"
-			:limit-width 7
+	(label :text "🔆 ${brightness_value}%  "
+				 :justify "center"
+				 :xalign 0.5
+				 :class "brightness")
+	(label  :text " ${round(EWW_RAM.used_mem_perc, 1)}%"
+			:limit-width 9
 			:justify "center"
 			:show-truncated false
 			:xalign 0.5
 			:class "ram")
-	(label  :text "  ${EWW_CPU.avg}"
-		    :limit-width 7
+	(label  :text " ${round(EWW_CPU.avg, 1)}%"
+		    :limit-width 8
 			:justfy "center"
 			:show-truncated false
 			:xalign 0.5
@@ -23,7 +32,10 @@
     (metric :label "💾"
             :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
             :onchange "")
-    (time)))
+		(label  :text "🔋${battery}%  "
+						:class "battery")
+    (label  :text "${time}"
+						:class "time")))
 
 (defwidget left []
 	(box :orientation "h"
@@ -43,7 +55,7 @@
   (eventbox :class "music"
 			:orientation "h"
 			:space-evenly false
-			:halign "center"
+			:halign "left"
 			:onhover "eww update showMus=true"
 			:onhoverlost "eww update showMus=false"
 			(box :space-evenly false
@@ -74,12 +86,9 @@
            :value value
            :onchange onchange)))
 
-(defwidget time []
-  (box :class "time" {time}))
-
 (defvar volume "50")
 
-(defpoll time :interval "10s"
+(defpoll time :interval "1s"
   "date '+%I:%M %b %d, %Y'")
 
 (defwindow bar0
@@ -92,8 +101,6 @@
   :exclusive true
   :focusable false
   :stacking "fg"
-  :windowtype "dock"
-  :wm-ignore false
   :class "bar0"
 
   (bar))
