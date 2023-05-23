@@ -1,6 +1,6 @@
 * {
     all: unset; //Unsets everything so you can style everything from scratch
-	font-family: "JetBrains Mono Nerd Font";
+	font-family: "JetBrains Mono Nerd Font", "MesloLGS NF";
 	font-size: 18px;
 }
 
@@ -17,9 +17,13 @@
     color: #ffd5cd;
 }
 
+.metric {
+	margin-right: -10px;
+}
+
 .metric scale trough highlight {
     all: unset;
-    background-color: #a1a1e8;
+    background-color: #5699af;
     color: #000000;
     border-radius: 10px;
 }
@@ -93,4 +97,8 @@
 
 .battery {
 	color: #55aa55;
+}
+
+.temp {
+	color: #ff6c6b;
 }

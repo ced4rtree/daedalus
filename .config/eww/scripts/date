@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+while [ 2 -eq 2 ]; do
+	if [ "$(eww get date_format)" = "false" ]; then
+		echo $(date "+%I:%M")
+	else
+		echo $(date "+%b %d (%a) %I:%M:%S%p")
+	fi
+	sleep 1
+done

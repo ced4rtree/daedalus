@@ -3,6 +3,9 @@
 (defpoll battery :interval "1m"
 	"cat /sys/class/power_supply/BAT*/capacity")
 
+(deflisten date_string "scripts/date")
+(defvar date_format false) ; false is shorthand, true is longhand
+
 (defwidget bar []
   (centerbox :orientation "h"
 	(left)
@@ -10,17 +13,17 @@
     (sidestuff)))
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-	(label :text "🔆 ${brightness_value}%  "
-				 :justify "center"
-				 :xalign 0.5
-				 :class "brightness")
-	(label  :text " ${round(EWW_RAM.used_mem_perc, 1)}%"
+	(label  :text "🔆 ${brightness_value}%  "
+		    :justify "center"
+		    :xalign 0.5
+		    :class "brightness")
+	(label  :text "💾 ${round(EWW_RAM.used_mem_perc, 1)}%"
 			:limit-width 9
 			:justify "center"
 			:show-truncated false
 			:xalign 0.5
 			:class "ram")
-	(label  :text " ${round(EWW_CPU.avg, 1)}%"
+	(label  :text "💻 ${round(EWW_CPU.avg, 1)}%"
 		    :limit-width 8
 			:justfy "center"
 			:show-truncated false
@@ -28,14 +31,12 @@
 			:class "cpu")
     (metric :label "🔊"
             :value volume
-            :onchange "amixer sset Master -c 1 {}%")
-    (metric :label "💾"
-            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-            :onchange "")
-		(label  :text "🔋${battery}%  "
-						:class "battery")
-    (label  :text "${time}"
-						:class "time")))
+            :onchange "amixer sset Master {}%")
+	(temp)
+	(label  :text "🔋${battery}%  "
+			:class "battery")
+	(date   :class "time")))
+
 
 (defwidget left []
 	(box :orientation "h"
@@ -88,8 +89,21 @@
 
 (defvar volume "50")
 
-(defpoll time :interval "1s"
-  "date '+%I:%M %b %d, %Y'")
+(defwidget date []
+  (button
+  :onclick "scripts/change-date"
+  :class "time"
+  "${date_string}"))
+
+(defwidget temp []
+  (box
+   :class "temp"
+    (label :text "🌡️")
+    (label
+     :text {round( EWW_TEMPS["CORETEMP_CORE_0"] / 4 + EWW_TEMPS["CORETEMP_CORE_1"] / 4 + EWW_TEMPS["CORETEMP_CORE_2"] / 4 + EWW_TEMPS["CORETEMP_CORE_3"] / 4, 0)}
+	 :xalign 1)
+    (label :text "°"
+		   :xalign 0)))
 
 (defwindow bar0
   :monitor 0

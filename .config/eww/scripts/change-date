@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ "$(eww get date_format)" = "false" ]; then
+	eww update date_format=true
+	eww update date_string="$(date """+%b %d (%a) %I:%M:%S%p""")"
+else
+	eww update date_format=false
+	eww update date_string="$(date +%I:%M)"
+fi
