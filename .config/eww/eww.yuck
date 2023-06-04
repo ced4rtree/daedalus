@@ -17,13 +17,13 @@
 		    :justify "center"
 		    :xalign 0.5
 		    :class "brightness")
-	(label  :text "💾 ${round(EWW_RAM.used_mem_perc, 1)}%"
+	(label  :text "💾 ${round(EWW_RAM.used_mem_perc, 0)}%"
 			:limit-width 9
 			:justify "center"
 			:show-truncated false
 			:xalign 0.5
 			:class "ram")
-	(label  :text "💻 ${round(EWW_CPU.avg, 1)}%"
+	(label  :text "💻 ${round(EWW_CPU.avg, 0)}%"
 		    :limit-width 8
 			:justfy "center"
 			:show-truncated false
@@ -93,7 +93,7 @@
   (button
   :onclick "scripts/change-date"
   :class "time"
-  "${date_string}"))
+  "🕜 ${date_string}"))
 
 (defwidget temp []
   (box
