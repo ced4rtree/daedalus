@@ -64,3 +64,5 @@
 (package! org-roam)
 (package! calfw)
 (package! calfw-org)
+(package! emms)
+(package! ivy-emms)

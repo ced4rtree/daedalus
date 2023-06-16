@@ -1,11 +1,27 @@
 (setq doom-theme 'doom-one)
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 15 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "JetbrainsMono Nerd Font" :size 15))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 15 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 15))
 (setq doom-unicode-font (font-spec :family "MesloLGS NF" :size 13))
 
 (setq highlight-indent-guides-method 'character)
 
 (beacon-mode 1)
+
+;(eval-after-load "zone"
+  ;(zone-when-idle 120))
+
+(eval-after-load "zone"
+  '(unless (memq 'zone-nyan (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-nyan]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-pgm-sl (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-pgm-sl]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-rainbow (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-rainbow]))))
 
 (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
@@ -39,6 +55,23 @@
 (add-hook 'start-mode-hook 'read-only-mode)
 (provide 'start-mode)
 (add-hook 'dashboard-mode-hook 'start-mode)
+
+(global-tree-sitter-mode)
+; (add-hook 'prog-mode-hook) on literally anything causes the server start to just not happen, so I have to do it like this instead
+(add-hook 'c-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'java-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'rust-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'c++-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'sh-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'javascript-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+
+(if (not (daemonp))
+	 (centaur-tabs-mode)
+
+  (defun centaur-tabs-daemon-mode (frame)
+	 (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
+		(run-at-time nil nil (lambda () (centaur-tabs-mode)))))
+  (add-hook 'after-make-frame-functions #'centaur-tabs-daemon-mode))
 
 (global-set-key (kbd "C-j") #'(lambda ()
 								(interactive)
@@ -96,11 +129,20 @@
  "C" '(cfw:open-org-calendar :which-key "Open org calendar")
  "a c" '(cfw:open-org-calendar :which-key "Open org calendar"))
 
-(setq-default c-default-style "stroustrup"
+(setq-default c-default-style "k&r"
+	      c-indentation-style "k&r"
 	      c-basic-offset 4
 	      tab-width 4
-	      indent-tabs-mode 1)
-(add-hook 'haskell-indentation-mode-hook (lambda () (interactive) (setq-default indent-tabs-mode 1)))
+	      js2-basic-offset 4
+	      indent-tabs-mode t)
+
+(defvaralias 'c-basic-offset 'tab-width)
+(add-hook 'cc-mode-hook (lambda () (setq-local tab-width 4)))
+(add-hook 'cc-mode-hook (lambda () (setq tab-width 4)))
+(add-hook 'cc-mode-hook (lambda () (setq-local c-basic-offset 4)))
+(add-hook 'cc-mode-hook (lambda () (setq c-basic-offset 4)))
+(add-hook 'js-mode-hook (lambda () (setq tab-width 4)))
+(add-hook 'js-mode-hook (lambda () (setq js2-basic-offset 4)))
 (global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <indent-for-tab-command>") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <c-indent-line-or-region>") 'tab-to-tab-stop)
@@ -111,7 +153,7 @@
 (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
 
 (use-package org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode)))
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (setq org-hide-leading-stars t)
 
 ; Pretty colors and sizes for org mode
@@ -165,3 +207,22 @@
 
 (setq org-ellipsis " ▼ ")
 (setq org-directory "~/org")
+
+;(require 'emms-player-mpd)
+(emms-all)
+(setq emms-player-list '(emms-player-mpd)
+      emms-info-functions '(emms-info-mpd emms-info-native)
+      emms-player-mpd-server-name "localhost"
+      emms-player-mpd-server-port "6600"
+      emms-player-mpd-music-directory (concat (getenv "HOME") "/music"))
+
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC e"
+ "e" '(emms-smart-browse :which-key "Open emms")
+ "s" '(emms-shuffle :which-key "Shuffle the playlist")
+ "h" '(emms-next :which-key "Play the next song")
+ "l" '(emms-previous :which-key "Play the previous song")
+ "SPC" '(emms-pause :which-key "Pause the music")
+ "r" '(emms-random :which-key "Play a random song")
+ "f" '(emms-play-file :which-key "Select a song to play"))

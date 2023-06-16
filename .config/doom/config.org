@@ -1,16 +1,14 @@
 
 #+TITLE: My Emacs Config, Now Literate!
 #+AUTHOR: bugger
-#+PROPERTY: header-args :tangle config.el
-#+auto_tangle: t
 #+STARTUP: showeverything
 
 * UI Setup
 ** Epic theme
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-one)
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 15 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "JetbrainsMono Nerd Font" :size 15))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 15 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 15))
 (setq doom-unicode-font (font-spec :family "MesloLGS NF" :size 13))
 #+end_src
 
@@ -23,6 +21,29 @@
 Never lose your cursor again
 #+begin_src emacs-lisp
 (beacon-mode 1)
+#+end_src
+
+** Zones
+Screensavers for emacs
+#+begin_src emacs-lisp
+;(eval-after-load "zone"
+  ;(zone-when-idle 120))
+#+end_src
+
+*** Plus a few extra ones
+#+begin_src emacs-lisp
+(eval-after-load "zone"
+  '(unless (memq 'zone-nyan (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-nyan]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-pgm-sl (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-pgm-sl]))))
+(eval-after-load "zone"
+  '(unless (memq 'zone-rainbow (append zone-programs nil))
+     (setq zone-programs
+           (vconcat zone-programs [zone-rainbow]))))
 #+end_src
 
 ** Dashboard
@@ -63,6 +84,31 @@ this lets us do some stuff, like add keybindings to dashboard because 'dashboard
 (add-hook 'start-mode-hook 'read-only-mode)
 (provide 'start-mode)
 (add-hook 'dashboard-mode-hook 'start-mode)
+#+end_src
+
+** Tree-Sitter
+Tree sitter gives us some really nice highlighting, but is not enabled by default for some reason, even if you select it in init.el
+#+begin_src emacs-lisp
+(global-tree-sitter-mode)
+; (add-hook 'prog-mode-hook) on literally anything causes the server start to just not happen, so I have to do it like this instead
+(add-hook 'c-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'java-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'rust-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'c++-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'sh-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+(add-hook 'javascript-mode-hook #'(lambda () (interactive) (tree-sitter-hl-mode 1)))
+#+end_src
+** Centaur tabs
+Centaur tabs (the nice looking tab bar) does not work properly when doom emacs is started in daemon mode.
+For this fix to work, you must remove the line starting with `:hook` in your ${emacs_dir}/modules/ui/tabs/config.el within the `use-package!` macro
+#+begin_src emacs-lisp
+(if (not (daemonp))
+	 (centaur-tabs-mode)
+
+  (defun centaur-tabs-daemon-mode (frame)
+	 (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
+		(run-at-time nil nil (lambda () (centaur-tabs-mode)))))
+  (add-hook 'after-make-frame-functions #'centaur-tabs-daemon-mode))
 #+end_src
 
 * Keybindings
@@ -151,11 +197,20 @@ Calfw is a calendar visualization within emacs that displays all of your appoint
 * Text handling
 ** Making tabs great again
 #+begin_src emacs-lisp
-(setq-default c-default-style "stroustrup"
+(setq-default c-default-style "k&r"
+	      c-indentation-style "k&r"
 	      c-basic-offset 4
 	      tab-width 4
-	      indent-tabs-mode 1)
-(add-hook 'haskell-indentation-mode-hook (lambda () (interactive) (setq-default indent-tabs-mode 1)))
+	      js2-basic-offset 4
+	      indent-tabs-mode t)
+
+(defvaralias 'c-basic-offset 'tab-width)
+(add-hook 'cc-mode-hook (lambda () (setq-local tab-width 4)))
+(add-hook 'cc-mode-hook (lambda () (setq tab-width 4)))
+(add-hook 'cc-mode-hook (lambda () (setq-local c-basic-offset 4)))
+(add-hook 'cc-mode-hook (lambda () (setq c-basic-offset 4)))
+(add-hook 'js-mode-hook (lambda () (setq tab-width 4)))
+(add-hook 'js-mode-hook (lambda () (setq js2-basic-offset 4)))
 (global-set-key (kbd "TAB") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <indent-for-tab-command>") 'tab-to-tab-stop)
 (define-key evil-insert-state-map (kbd "<remap> <c-indent-line-or-region>") 'tab-to-tab-stop)
@@ -173,7 +228,7 @@ Calfw is a calendar visualization within emacs that displays all of your appoint
 ** Bullets, no yucky asterisks
 #+begin_src emacs-lisp
 (use-package org-bullets)
-(add-hook 'org-mode-hook (lambda () (org-bullets-mode)))
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (setq org-hide-leading-stars t)
 #+end_src
 
@@ -248,4 +303,31 @@ My calendar in emacs
 #+begin_src emacs-lisp
 (setq org-ellipsis " ▼ ")
 (setq org-directory "~/org")
+#+end_src
+* EMMS
+EMMS is the Emacs Multimedia System, lets me control music from emacs
+#+begin_src emacs-lisp
+;(require 'emms-player-mpd)
+(emms-all)
+(setq emms-player-list '(emms-player-mpd)
+      emms-info-functions '(emms-info-mpd emms-info-native)
+      emms-player-mpd-server-name "localhost"
+      emms-player-mpd-server-port "6600"
+      emms-player-mpd-music-directory (concat (getenv "HOME") "/music"))
+#+end_src
+
+** Keybindings
+Doom emacs doesn't come with any keybindings for emms, so I made my own.
+All emms commands are prefixed with "SPC e"
+#+begin_src emacs-lisp
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC e"
+ "e" '(emms-smart-browse :which-key "Open emms")
+ "s" '(emms-shuffle :which-key "Shuffle the playlist")
+ "h" '(emms-next :which-key "Play the next song")
+ "l" '(emms-previous :which-key "Play the previous song")
+ "SPC" '(emms-pause :which-key "Pause the music")
+ "r" '(emms-random :which-key "Play a random song")
+ "f" '(emms-play-file :which-key "Select a song to play"))
 #+end_src

@@ -57,8 +57,9 @@ myStartupHook = do
 
   spawnOnce "mpd"
   spawnOnce "mpc pause"
-  -- This may look funky, but my emacs config buggin so idk why but i can only get it to work like this
-  spawnOnce "emacs -Q -l ~/.config/emacs/init.elc --daemon || emacs -Q -l ~/.config/emacs/init.el --daemon"
+
+  -- Emacs (no longer buggin)
+  spawnOnce "emacs --daemon"
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
 
   -- let java swing apps like intellij work

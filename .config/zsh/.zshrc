@@ -1,9 +1,15 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-# Show fetch at top of screen
-fetch
+if [ -r "/opt/shell-color-scripts" ]; then
+	colorscript random
+fi
 
-# Luke's config for the Zoomer Shell
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # Enable colors and change prompt:
 autoload -U colors && colors
@@ -102,7 +108,14 @@ function zsh_add_plugin() {
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 
 # Cool prompt
-source <(/usr/bin/starship init zsh --print-full-init)
+source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+
+if [ -f /etc/bash.command-not-found ]; then
+    . /etc/bash.command-not-found
+fi
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
