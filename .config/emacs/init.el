@@ -11,8 +11,9 @@
 
 (setq evil-want-keybinding nil)
 (use-package evil
-	:init
-	(evil-mode))
+  :ensure t
+  :init
+  (evil-mode))
 
 (setq read-process-output-max (* 1024 1024)) ;; 1 mb
 
@@ -123,12 +124,6 @@
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
 
-(use-package nyan-mode :defer t)
-(setq nyan-animate-nyancat t)
-(setq nyan-wavy-trail t)
-(setq nyan-bar-length 80)
-(add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
-
 (use-package zone
   :defer t
   :config (zone-when-idle 120))
@@ -235,8 +230,7 @@
    ivy-rich-switch-buffer-align-virtual-buffer t
    ivy-rich-path-style 'abbrev)
   :config
-  (ivy-configure :display-transformer-fn 'ivy-switch-buffer
-                               'ivy-rich-switch-buffer-transformer)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
   (ivy-rich-mode 1))
 
 (use-package swiper
@@ -624,6 +618,9 @@ Executes `org-table-copy-down' if in table."
   (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
 
 (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
+
+(nvmap :prefix "SPC"
+  "v" '(vterm-other-window :which-key "vterm"))
 
 (use-package which-key
 	:ensure t

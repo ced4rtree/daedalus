@@ -26,8 +26,9 @@
 #+begin_src emacs-lisp
 (setq evil-want-keybinding nil)
 (use-package evil
-	:init
-	(evil-mode))
+  :ensure t
+  :init
+  (evil-mode))
 #+end_src
 
 * Performance improvement
@@ -170,16 +171,6 @@ this lets us do some stuff, like add keybindings to dashboard because 'dashboard
 #+begin_src emacs-lisp
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
-#+end_src
-
-** Nyan mode
-This puts a little nyan cat in the modeline to indicate our position in the document
-#+begin_src emacs-lisp
-(use-package nyan-mode :defer t)
-(setq nyan-animate-nyancat t)
-(setq nyan-wavy-trail t)
-(setq nyan-bar-length 80)
-(add-hook 'prog-mode-hook (lambda () (nyan-mode 1)))
 #+end_src
 
 ** Zones
@@ -337,8 +328,7 @@ This gives us command descriptions in M-x
    ivy-rich-switch-buffer-align-virtual-buffer t
    ivy-rich-path-style 'abbrev)
   :config
-  (ivy-configure :display-transformer-fn 'ivy-switch-buffer
-                               'ivy-rich-switch-buffer-transformer)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
   (ivy-rich-mode 1))
 #+end_src
 
@@ -856,6 +846,12 @@ My calendar in emacs
 (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold)
 #+end_src
 
+*** Vterm
+Vterm is a fully fledged terminal within emacs
+#+begin_src emacs-lisp
+(nvmap :prefix "SPC"
+  "v" '(vterm-other-window :which-key "vterm"))
+#+end_src
 ** Enable which-key to remind us which key does what
 #+begin_src emacs-lisp
 (use-package which-key
