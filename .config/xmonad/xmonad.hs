@@ -90,15 +90,14 @@ myStartupHook = do
   spawnOnce "setxkbmap -option caps:escape"
   -- This enables natural scrolling. Disable if scrolling direction feels weird for you
   spawnOnce $ concat [ myHome, "/.config/xmonad/natScroll.sh" ]
-
+  --compositor
+  spawnOnce picom
+  -- music
   spawnOnce "mpd"
-
   -- Emacs (no longer buggin)
-  spawnOnce "emacs --daemon"
-
+  spawnOnce "emacs --daemon &"
   -- wifi
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
-
   -- let java swing apps like intellij work
   setWMName "LG3D"
 
