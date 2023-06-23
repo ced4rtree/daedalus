@@ -5,14 +5,27 @@ import XMonad.Layout.Dwindle
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.NoBorders
 import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
+import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, NOBORDERS))
+import XMonad.Layout.WindowArranger (windowArrange)
+import XMonad.Layout.WindowNavigation
+import XMonad.Layout.SimplestFloat
+import XMonad.Layout.Renamed
+import XMonad.Layout.Simplest
+import XMonad.Layout.SubLayouts
+import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
 import XMonad.Hooks.SetWMName
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
+import XMonad.Actions.MouseResize
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
+import Data.Monoid
 import Graphics.X11.ExtraTypes.XF86 -- Epic keys
 import System.Exit
 import System.IO
@@ -27,17 +40,40 @@ mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
-myTerminal = "kitty"
+myTerminal = "alacritty"
 
-myManageHook = checkDock --> doLower
+tall    = renamed [Replace "tall"]
+        $ smartBorders
+        $ windowNavigation
+        $ subLayout [] (smartBorders Simplest)
+        $ mySpacing 8
+        $ ResizableTall 1 (3/100) (1/2) []
+monocle = renamed [Replace "monocle"]
+        $ smartBorders
+        $ windowNavigation
+        $ subLayout [] (smartBorders Simplest)
+        $ Full
+floats  = renamed [Replace "floats"]
+        $ smartBorders
+        $ simplestFloat
 
-myLayout = avoidStruts $
-            toggleLayouts tiled $ noBorders Full
-            where
-                tiled = mySpacing 6 $ ResizableTall nmaster delta ratio []
-                nmaster = 1
-                ratio = 1/2
-                delta = 3/100
+myLayoutHook = avoidStruts
+               $ mouseResize
+               $ windowArrange
+               $ T.toggleLayouts floats
+               $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
+  where
+    myDefaultLayout = withBorder 1 tall
+                               ||| noBorders monocle
+                               ||| floats
+
+--myLayout = avoidStruts $
+            --toggleLayouts tiled $ noBorders Full
+            --where
+                --tiled = mySpacing 6 $ ResizableTall nmaster delta ratio []
+                --nmaster = 1
+                --ratio = 1/2
+                --delta = 3/100
 
 myHome = "/home/some-guy"
 
@@ -56,21 +92,37 @@ myStartupHook = do
   spawnOnce $ concat [ myHome, "/.config/xmonad/natScroll.sh" ]
 
   spawnOnce "mpd"
-  spawnOnce "mpc pause"
 
   -- Emacs (no longer buggin)
   spawnOnce "emacs --daemon"
+
+  -- wifi
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
 
   -- let java swing apps like intellij work
   setWMName "LG3D"
+
+myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
+myManageHook = composeAll
+  [ className =? "confirm"       --> doFloat
+  , className =? "file_progress" --> doFloat
+  , className =? "dialog"        --> doFloat
+  , className =? "download"      --> doFloat
+  , className =? "error"         --> doFloat
+  , className =? "Gimp"          --> doFloat
+  , className =? "notification"  --> doFloat
+  , className =? "splash"        --> doFloat
+  , className =? "toolbar"       --> doFloat
+  , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
+  , isFullscreen --> doFullFloat
+  ] <+> manageDocks
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- launch a terminal
         [ ((modm .|. shiftMask, xK_Return), windows W.focusMaster >> spawn myTerminal)
 
         -- application launcher
-        , ((modm, xK_p), spawn "rofi -show drun" >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ((modm, xK_p), spawn "rofi -show drun -terminal alacritty" >> spawn "mpv /opt/sounds/menu-01.mp3")
 
         -- Close the focused window
         , ((modm .|. shiftMask, xK_x), kill)
@@ -95,7 +147,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_w), spawn "feh --bg-scale --randomize ~/wallpapers")
 
         -- Screenshot
-        , ((modm, xK_s), unGrab *> spawn "scrot 'Pictures/%Y-%m-%d-%H-%M.png' -s")
+        , ((modm, xK_s), unGrab *> spawn "scrot 'pictures/%Y-%m-%d-%H-%M.png' -s")
 
         -- Moving around windows
         , ((modm, xK_j), windows W.focusDown)
@@ -107,7 +159,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- Exit XMonad
         , ((modm .|. shiftMask, xK_q), io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
         -- Restart XMonad
-        , ((modm .|. shiftMask, xK_r), spawn "xmonad --recompile; xmonad --restart")
+        , ((modm .|. shiftMask, xK_r), spawn "xmonad --recompile && xmonad --restart")
 
         , ((modm, xK_1), ((windows $ W.greedyView $ myWorkspaces !! 0)))
         , ((modm, xK_2), ((windows $ W.greedyView $ myWorkspaces !! 1)))
@@ -136,7 +188,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- Force a floating window back to tiling
         , ((modm, xK_t), withFocused $ windows . W.sink)
         -- Toggle fullscreen
-        , ((modm, xK_m), sendMessage (Toggle "Full") >> sendMessage ToggleStruts)
+        , ((modm, xK_m), sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
+        -- Toggle floating
+        , ((modm, xK_f), sendMessage $ T.Toggle "floats")
         -- Toggle bar
         , ((modm, xK_b), sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
         -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for struts
@@ -153,14 +207,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 main :: IO ()
 main = do
         xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                = myTerminal
+        terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
         , borderWidth             = 1
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
         , keys                    = myKeys
-        , layoutHook = myLayout
+        , layoutHook = myLayoutHook
         , startupHook = myStartupHook
-        , manageHook = manageDocks <+> myManageHook
+        , manageHook = myManageHook
         }
