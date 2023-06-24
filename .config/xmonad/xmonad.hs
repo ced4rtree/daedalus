@@ -91,7 +91,7 @@ myStartupHook = do
   -- This enables natural scrolling. Disable if scrolling direction feels weird for you
   spawnOnce $ concat [ myHome, "/.config/xmonad/natScroll.sh" ]
   --compositor
-  spawnOnce picom
+  spawnOnce "picom"
   -- music
   spawnOnce "mpd"
   -- Emacs (no longer buggin)
