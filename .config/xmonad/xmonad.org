@@ -1,0 +1,433 @@
+#+title: My XMonad Config
+#+author: [[https://github.com/bugger2][bugger2]]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :tangle xmonad.hs
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#welcome][Welcome]]
+- [[#imports][Imports]]
+  - [[#xmonad-import][XMonad Import]]
+  - [[#layouts][Layouts]]
+  - [[#hooks][Hooks]]
+  - [[#utils][Utils]]
+  - [[#actions][Actions]]
+  - [[#misc][Misc]]
+- [[#spacing][Spacing]]
+- [[#variables][Variables]]
+- [[#layouts-1][Layouts]]
+- [[#scratchpads][Scratchpads]]
+- [[#startup-hook][Startup hook]]
+- [[#manage-hook][Manage hook]]
+- [[#keymap-definition][Keymap definition]]
+  - [[#basic-keybindings][Basic keybindings]]
+  - [[#music-control][Music control]]
+  - [[#brightness-control][Brightness control]]
+  - [[#scratchpads-1][Scratchpads]]
+  - [[#window-control][Window control]]
+  - [[#workspace-control][Workspace control]]
+  - [[#layout-control][Layout control]]
+  - [[#misc-1][Misc]]
+- [[#main][Main]]
+
+* Welcome
+Hello and welcome to my XMonad configuration. It was a harrowing, arduous, and downright dangerous journey to arrive where I am today, yet it never seems to end. Please sit back and enjoy (or suffer through) my epic haskell skills.
+
+My config has a few things. Notably:
+- Support for polybar
+- Scratchpads (terminal, music, and calendar)
+- DE levels of ease of use (after installing all the programs and if using my configs for them)
+- Confusing as hell (but efficient and nice when you get used to them) keybindings (if somebody asks nicely I'll add namedActions support to make them less confusing)
+
+* Imports
+** XMonad Import
+Just needed a special spot for this special import
+#+begin_src haskell
+import XMonad
+#+end_src
+
+** Layouts
+#+begin_src haskell
+import XMonad.Layout.Spacing
+import XMonad.Layout.LayoutModifier
+import XMonad.Layout.Dwindle
+import XMonad.Layout.ResizableTile
+import XMonad.Layout.NoBorders
+import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
+import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, NOBORDERS))
+import XMonad.Layout.WindowArranger (windowArrange)
+import XMonad.Layout.WindowNavigation
+import XMonad.Layout.SimplestFloat
+import XMonad.Layout.Renamed
+import XMonad.Layout.Simplest
+import XMonad.Layout.SubLayouts
+import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
+#+end_src
+
+** Hooks
+#+begin_src haskell
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
+import XMonad.Hooks.SetWMName
+import XMonad.Hooks.WindowSwallowing
+import XMonad.Hooks.EwmhDesktops
+
+-- Bar stuff
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.StatusBar.PP
+#+end_src
+
+** Utils
+#+begin_src haskell
+import XMonad.Util.SpawnOnce
+import XMonad.Util.Ungrab
+import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
+import XMonad.Util.NamedScratchpad
+import XMonad.Util.WorkspaceCompare
+import XMonad.Util.EZConfig
+#+end_src
+
+** Actions
+#+begin_src haskell
+import XMonad.Actions.MouseResize
+import XMonad.Actions.NoBorders
+#+end_src
+
+** Misc
+#+begin_src haskell
+import qualified XMonad.StackSet as W
+import qualified Data.Map as M
+import XMonad.ManageHook
+import Data.Monoid
+import Graphics.X11.ExtraTypes.XF86 -- Epic keys
+import System.Exit
+import System.IO
+#+end_src
+
+* Spacing
+This adds spacing in between windows to make things look nice
+#+begin_src haskell
+mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
+mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
+#+end_src
+
+* Variables
+Definitions for various window manager-y things, like which terminal I want, workspaces, etc.
+#+begin_src haskell
+myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+myTerminal = "alacritty"
+#+end_src
+
+* Layouts
+#+begin_src haskell
+tall    = renamed [Replace "tall"]
+        $ smartBorders
+        $ windowNavigation
+        $ subLayout [] (smartBorders Simplest)
+        $ mySpacing 8
+        $ ResizableTall 1 (3/100) (1/2) []
+monocle = renamed [Replace "monocle"]
+        $ noBorders
+        $ windowNavigation
+        $ subLayout [] (smartBorders Simplest)
+        $ Full
+floats  = renamed [Replace "floats"]
+        $ smartBorders
+        $ simplestFloat
+
+myLayoutHook = avoidStruts
+               $ mouseResize
+               $ windowArrange
+               $ T.toggleLayouts floats
+               $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
+  where
+    myDefaultLayout = withBorder 1 tall
+                               ||| noBorders monocle
+                               ||| floats
+#+end_src
+
+* Scratchpads
+Nice little dropdown applications you can pull in and out of the void (scratchpad workspace)
+#+begin_src haskell
+myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
+                , NS "ncmpcpp" spawnMus findMus manageMus
+                , NS "calfw" spawnCal findCal manageCal
+                ]
+    where
+      spawnTerm  = myTerminal ++ " -T scratchpad"
+      findTerm   = title =? "scratchpad"
+      manageTerm = customFloating $ W.RationalRect l t w h
+                   where
+                     h = 0.9
+                     w = 0.9
+                     t = 0.075 -- height based
+                     l = 0.05 -- width based
+      spawnMus  = myTerminal ++ " -T music -e ncmpcpp"
+      findMus   = title =? "music"
+      manageMus = customFloating $ W.RationalRect l t w h
+                   where
+                     h = 0.9
+                     w = 0.9
+                     t = 0.075 -- height based
+                     l = 0.05 -- width based
+      spawnCal  = "emacsclient -c -e '(cfw:open-org-calendar)' --title=cal"
+      findCal   = resource =? "cal"
+      manageCal = customFloating $ W.RationalRect l t w h
+                   where
+                     h = 0.9
+                     w = 0.9
+                     t = 0.075 -- height based
+                     l = 0.05 -- width based
+#+end_src
+
+
+* Startup hook
+All of these commands are run when xmonad is started.
+
+spawn = run this shell command every time xmonad is started or restarted
+spawnOnce = run this shell command exclusively when xmonad is first started from the tty/login manager
+#+begin_src haskell
+myStartupHook :: X ()
+myStartupHook = do
+  spawnOnce "mpv /opt/sounds/startup-01.mp3"
+  spawnOnce "xsetroot -cursor_name left_ptr"
+  spawn "~/.config/polybar/launch.sh"
+  spawnOnce "feh --randomize --bg-scale ~/.local/wallpapers"
+  -- Makes repeat rate much faster
+  spawnOnce "xset r rate 200 65"
+  -- Epic caps lock instead of escape chad moment
+  spawnOnce "setxkbmap -option caps:escape"
+  -- This enables natural scrolling. Disable if scrolling direction feels weird for you
+  spawnOnce "~/.config/xmonad/natScroll.sh"
+  --compositor
+  spawnOnce "picom"
+  -- music
+  spawnOnce "mpd"
+  -- Emacs (no longer buggin)
+  spawnOnce "emacs --daemon &"
+  -- wifi
+  spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
+  -- let java swing apps like intellij work
+  setWMName "LG3D" -- tricks programs into thining this is LG3D, which is the only thing java can work with for some reason
+#+end_src
+
+* Manage hook
+This is a hook that manages all the windows. For example, gimp will always be started as floating, and anything that is fullscreen is set to be fullscreen and floating
+The manageDocks hook makes sure that polybar will put in the right spot
+namedScratchpadManageHook makes sure that all the scratchpads defined in myScratchPads are all correctly managed
+#+begin_src haskell
+myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
+myManageHook = composeAll
+  [ className =? "confirm"                             --> doFloat
+  , className =? "file_progress"                       --> doFloat
+  , className =? "dialog"                              --> doFloat
+  , className =? "download"                            --> doFloat
+  , className =? "error"                               --> doFloat
+  , className =? "Gimp"                                --> doFloat
+  , className =? "notification"                        --> doFloat
+  , className =? "splash"                              --> doFloat
+  , className =? "toolbar"                             --> doFloat
+  , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
+  , isFullscreen                                       --> doFullFloat
+  ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
+#+end_src
+
+* Keymap definition
+This is my keymap. It uses EZConfig to make things a bit easier to read, and is by far the biggest (and messiest) part of the whole config.
+For reference, M = super, S = shift, C = control
+|------------------------------+----------------------------------------------------------------|
+| Keymap                       | Definition                                                     |
+|------------------------------+----------------------------------------------------------------|
+| Super+Shift+Enter            | Spawn a terminal (alacritty for now)                           |
+| Super+Shift+x                | Close the focused window                                       |
+| Super+Shift+q                | Close XMonad                                                   |
+| Super+Shift+r                | Restart XMonad                                                 |
+| Super+p                      | Spawn rofi, and make a menu noise (if you have that noise)     |
+| Super+Shift+j                | Pause the music                                                |
+| Pause button                 | Pause the music                                                |
+| Super+Shift+h                | Play the previous song                                         |
+| Previous track button        | Play the previous song                                         |
+| Super+Shift+l                | Play the next song                                             |
+| Next track button            | Play the next song                                             |
+| Brightness up button         | Increase the screen brightness                                 |
+| Brightness down button       | Decrease the screen brightness                                 |
+| Super+Brightness up button   | Artificially increase brightness                               |
+| Super+Brightness down button | Artificially decrease brightness                               |
+| Super+s Enter                | Spawn terminal scratchpad                                      |
+| Super+s m                    | Spawn ncmpcpp (music) scratchpad                               |
+| Super+s c                    | Spawn calendar scratchpad                                      |
+| Super+w                      | Change wallpaper to a random one                               |
+| Super+Shift+s s              | Take screenshot of a selection of the screen                   |
+| Super+Shift+s Shift+s        | Take screenshot of the whole screen                            |
+| Super+j                      | Move down in the window stack                                  |
+| Super+k                      | Move up in the window stack                                    |
+| Super+h                      | Decrease screen real estate of master                          |
+| Super+l                      | Increase screen real estate of master                          |
+| Super+<number>               | Go to the desired workspace                                    |
+| Super+Shift+<number>         | Send the focused window to the desired workspace               |
+| Super+Control+<number>       | Send the focused window to the desired workspace and follow it |
+| Super+Space                  | Go to the next layout                                          |
+| Super+t                      | Force a floating window back to tiling                         |
+| Super+m                      | Go into monocle mode (fullscreen)                              |
+| Super+f                      | Put a window into floating mode                                |
+| Super+b                      | Toggle the bar                                                 |
+| Super+b                      | Toggle the spacing allocated for the bar                       |
+| Super+e                      | Spawn emacs                                                    |
+| Super+<plus>                 | Increase window spacing                                        |
+| Super+<minus>                | Decrease window spacing                                        |
+|------------------------------+----------------------------------------------------------------|
+
+** Basic keybindings
+#+begin_src haskell
+myKeys =
+        -- launch a terminal
+        [ ("M-S-<Return>", windows W.focusMaster >> spawn myTerminal)
+
+        -- Close the focused window
+        , ("M-S-x", kill)
+
+        -- application launcher
+        , ("M-p", spawn (concat ["rofi -show drun -terminal", myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
+
+        -- Exit XMonad
+        , ("M-S-q", io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
+        -- Restart XMonad
+        , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
+#+end_src
+
+** Music control
+#+begin_src haskell
+        -- music control
+        , ("M-S-j",                  spawn "mpc toggle")
+        , ("<XF86AudioPlay>",        spawn "mpc toggle")
+        , ("M-S-h",                  spawn "mpc prev")
+        , ("<XF86AudioPrev>",        spawn "mpc prev")
+        , ("M-S-l",                  spawn "mpc next")
+        , ("<XF86AudioNext>",        spawn "mpc next")
+        , ("<XF86AudioRaiseVolume>", spawn "~/scripts/snd up")
+        , ("<XF86AudioLowerVolume>", spawn "~/scripts/snd down")
+#+end_src
+
+** Brightness control
+#+begin_src haskell
+
+        -- Brightness adjustment
+        , ("<XF86MonBrightnessUp>", spawn "real-brightness up")
+        , ("<XF86MonBrightnessDown>", spawn "real-brightness down")
+
+        , ("S-<XF86MonBrightnessUp>", spawn "brightness up")
+        , ("S-<XF86MonBrightnessDown>", spawn "brightness down")
+#+end_src
+
+** Scratchpads
+#+begin_src haskell
+        -- Scratchpads
+        , ("M-s <Return>", namedScratchpadAction myScratchPads "terminal")
+        , ("M-s m", namedScratchpadAction myScratchPads "ncmpcpp")
+        , ("M-s c", namedScratchpadAction myScratchPads "calfw")
+#+end_src
+
+** Window control
+#+begin_src haskell
+        -- Moving around windows
+        , ("M-j", windows W.focusDown)
+        , ("M-k", windows W.focusUp)
+        , ("M-h", sendMessage Shrink)
+        , ("M-l", sendMessage Expand)
+        , ("M-<Return>", windows W.swapMaster)
+#+end_src
+
+** Workspace control
+#+begin_src haskell
+        , ("M-1", ((windows $ W.greedyView $ myWorkspaces !! 0)))
+        , ("M-2", ((windows $ W.greedyView $ myWorkspaces !! 1)))
+        , ("M-3", ((windows $ W.greedyView $ myWorkspaces !! 2)))
+        , ("M-4", ((windows $ W.greedyView $ myWorkspaces !! 3)))
+        , ("M-5", ((windows $ W.greedyView $ myWorkspaces !! 4)))
+        , ("M-6", ((windows $ W.greedyView $ myWorkspaces !! 5)))
+        , ("M-7", ((windows $ W.greedyView $ myWorkspaces !! 6)))
+        , ("M-8", ((windows $ W.greedyView $ myWorkspaces !! 7)))
+        , ("M-9", ((windows $ W.greedyView $ myWorkspaces !! 8)))
+        , ("M-0", ((windows $ W.greedyView $ myWorkspaces !! 9)))
+
+        , ("M-S-1", ((windows $ W.shift $ myWorkspaces !! 0)))
+        , ("M-S-2", ((windows $ W.shift $ myWorkspaces !! 1)))
+        , ("M-S-3", ((windows $ W.shift $ myWorkspaces !! 2)))
+        , ("M-S-4", ((windows $ W.shift $ myWorkspaces !! 3)))
+        , ("M-S-5", ((windows $ W.shift $ myWorkspaces !! 4)))
+        , ("M-S-6", ((windows $ W.shift $ myWorkspaces !! 5)))
+        , ("M-S-7", ((windows $ W.shift $ myWorkspaces !! 6)))
+        , ("M-S-8", ((windows $ W.shift $ myWorkspaces !! 7)))
+        , ("M-S-9", ((windows $ W.shift $ myWorkspaces !! 8)))
+        , ("M-S-0", ((windows $ W.shift $ myWorkspaces !! 9)))
+
+        , ("M-C-1", ((windows (W.shift (myWorkspaces !! 0)))) >> ((windows $ W.greedyView $ myWorkspaces !! 0)))
+        , ("M-C-2", ((windows (W.shift (myWorkspaces !! 1)))) >> ((windows $ W.greedyView $ myWorkspaces !! 1)))
+        , ("M-C-3", ((windows (W.shift (myWorkspaces !! 2)))) >> ((windows $ W.greedyView $ myWorkspaces !! 2)))
+        , ("M-C-4", ((windows (W.shift (myWorkspaces !! 3)))) >> ((windows $ W.greedyView $ myWorkspaces !! 3)))
+        , ("M-C-5", ((windows (W.shift (myWorkspaces !! 4)))) >> ((windows $ W.greedyView $ myWorkspaces !! 4)))
+        , ("M-C-6", ((windows (W.shift (myWorkspaces !! 5)))) >> ((windows $ W.greedyView $ myWorkspaces !! 5)))
+        , ("M-C-7", ((windows (W.shift (myWorkspaces !! 6)))) >> ((windows $ W.greedyView $ myWorkspaces !! 6)))
+        , ("M-C-8", ((windows (W.shift (myWorkspaces !! 7)))) >> ((windows $ W.greedyView $ myWorkspaces !! 7)))
+        , ("M-C-9", ((windows (W.shift (myWorkspaces !! 8)))) >> ((windows $ W.greedyView $ myWorkspaces !! 8)))
+        , ("M-C-0", ((windows (W.shift (myWorkspaces !! 9)))) >> ((windows $ W.greedyView $ myWorkspaces !! 9)))
+#+end_src
+
+** Layout control
+#+begin_src haskell
+        -- Scroll through the layouts
+        , ("M-<Space>", sendMessage NextLayout)
+        -- Force a floating window back to tiling
+        , ("M-t", withFocused $ windows . W.sink)
+        -- Toggle fullscreen
+        , ("M-m", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- >> spawn "polybar-msg cmd toggle")
+        -- Toggle floating
+        , ("M-f", sendMessage $ T.Toggle "floats")
+        -- Toggle bar
+        , ("M-b", sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
+        -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for struts
+        , ("M-S-b", sendMessage ToggleStruts)
+#+end_src
+
+** Misc
+#+begin_src haskell
+        -- Screenshot
+        , ("M-S-s s", unGrab *> spawn "import ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+        , ("M-S-s S-s", unGrab *> spawn "import -window root ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+
+        -- change background
+        , ("M-w", spawn "feh --bg-scale --randomize ~/.local/wallpapers")
+
+        -- emacs
+        , ("M-e", spawn "emacsclient -a 'emacs' -c")
+
+        -- manage window spacing
+        , ("M--", decWindowSpacing 2 *> decScreenSpacing 2)
+        , ("M-=", incWindowSpacing 2 *> incScreenSpacing 2)
+        ]
+#+end_src
+
+* Main
+This is the main functions that ties everything together. It takes all the things defined earlier, and just tells XMonad what to do using those
+#+begin_src haskell
+main :: IO ()
+main = do
+        --xmonad $ ewmhFullscreen $ addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ docks . ewmh $ def {
+        xmonad $ ewmhFullscreen $ docks . ewmh $ def {
+        terminal                  = myTerminal
+        , focusFollowsMouse       = True
+        , clickJustFocuses        = False
+        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
+        , modMask                 = mod4Mask
+        , workspaces              = myWorkspaces
+        , keys                    = \c -> mkKeymap c myKeys
+        , layoutHook = myLayoutHook
+        , startupHook = myStartupHook
+        , manageHook = myManageHook
+        }
+#+end_src
