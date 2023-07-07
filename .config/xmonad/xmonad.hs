@@ -1,6 +1,5 @@
 import XMonad
 
--- Layouts
 import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Dwindle
@@ -18,7 +17,6 @@ import XMonad.Layout.Simplest
 import XMonad.Layout.SubLayouts
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 
--- Hooks
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -27,7 +25,11 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WindowSwallowing
 import XMonad.Hooks.EwmhDesktops
 
--- Utils
+-- Bar stuff
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.StatusBar.PP
+
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
 import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
@@ -35,11 +37,9 @@ import XMonad.Util.NamedScratchpad
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
 
--- Actions
 import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
 
--- Various things
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.ManageHook
@@ -48,22 +48,12 @@ import Graphics.X11.ExtraTypes.XF86 -- Epic keys
 import System.Exit
 import System.IO
 
-  -- Bar stuff
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.StatusBar
-import XMonad.Hooks.StatusBar.PP
-
--- Spacing
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
--- Workspaces
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
--- Terminal
 myTerminal = "alacritty"
 
--- Layout definitions
 tall    = renamed [Replace "tall"]
         $ smartBorders
         $ windowNavigation
@@ -89,10 +79,6 @@ myLayoutHook = avoidStruts
                                ||| noBorders monocle
                                ||| floats
 
--- Convenient home variable
-myHome = "/home/some-guy"
-
--- Scratchpads
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                 , NS "ncmpcpp" spawnMus findMus manageMus
                 , NS "calfw" spawnCal findCal manageCal
@@ -123,21 +109,18 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                      t = 0.075 -- height based
                      l = 0.05 -- width based
 
-
--- Startup hook
 myStartupHook :: X ()
 myStartupHook = do
-  spawnOnce $ concat ["export PATH=${PATH}:", myHome, "/scripts"]
   spawnOnce "mpv /opt/sounds/startup-01.mp3"
   spawnOnce "xsetroot -cursor_name left_ptr"
-  spawn $ concat [myHome, "/.config/polybar/launch.sh"]
-  spawnOnce $ concat ["feh --randomize --bg-scale ", myHome, "/wallpapers"]
+  spawn "~/.config/polybar/launch.sh"
+  spawnOnce "feh --randomize --bg-scale ~/.local/wallpapers"
   -- Makes repeat rate much faster
   spawnOnce "xset r rate 200 65"
   -- Epic caps lock instead of escape chad moment
   spawnOnce "setxkbmap -option caps:escape"
   -- This enables natural scrolling. Disable if scrolling direction feels weird for you
-  spawnOnce $ concat [ myHome, "/.config/xmonad/natScroll.sh" ]
+  spawnOnce "~/.config/xmonad/natScroll.sh"
   --compositor
   spawnOnce "picom"
   -- music
@@ -147,10 +130,8 @@ myStartupHook = do
   -- wifi
   spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
   -- let java swing apps like intellij work
-  setWMName "LG3D"
+  setWMName "LG3D" -- tricks programs into thining this is LG3D, which is the only thing java can work with for some reason
 
-
--- Manage hook
 myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
   [ className =? "confirm"                             --> doFloat
@@ -166,42 +147,42 @@ myManageHook = composeAll
   , isFullscreen                                       --> doFullFloat
   ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
 
--- Keymap definition
 myKeys =
         -- launch a terminal
         [ ("M-S-<Return>", windows W.focusMaster >> spawn myTerminal)
 
-        -- application launcher
-        , ("M-p", spawn (concat ["rofi -show drun -terminal", myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
-
         -- Close the focused window
         , ("M-S-x", kill)
 
+        -- application launcher
+        , ("M-p", spawn (concat ["rofi -show drun -terminal", myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
+
+        -- Exit XMonad
+        , ("M-S-q", io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
+        -- Restart XMonad
+        , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
+
         -- music control
-        , ("M-S-j", spawn "mpc toggle")
-        , ("M-S-h", spawn "mpc prev")
-        , ("M-S-l", spawn "mpc next")
+        , ("M-S-j",                  spawn "mpc toggle")
+        , ("<XF86AudioPlay>",        spawn "mpc toggle")
+        , ("M-S-h",                  spawn "mpc prev")
+        , ("<XF86AudioPrev>",        spawn "mpc prev")
+        , ("M-S-l",                  spawn "mpc next")
+        , ("<XF86AudioNext>",        spawn "mpc next")
         , ("<XF86AudioRaiseVolume>", spawn "~/scripts/snd up")
         , ("<XF86AudioLowerVolume>", spawn "~/scripts/snd down")
 
         -- Brightness adjustment
-        , ("S-<XF86MonBrightnessUp>", spawn "brightness up")
-        , ("S-<XF86MonBrightnessDown>", spawn "brightness down")
-
         , ("<XF86MonBrightnessUp>", spawn "real-brightness up")
         , ("<XF86MonBrightnessDown>", spawn "real-brightness down")
+
+        , ("S-<XF86MonBrightnessUp>", spawn "brightness up")
+        , ("S-<XF86MonBrightnessDown>", spawn "brightness down")
 
         -- Scratchpads
         , ("M-s <Return>", namedScratchpadAction myScratchPads "terminal")
         , ("M-s m", namedScratchpadAction myScratchPads "ncmpcpp")
         , ("M-s c", namedScratchpadAction myScratchPads "calfw")
-
-        -- Change the background
-        , ("M-w", spawn "feh --bg-scale --randomize ~/wallpapers")
-
-        -- Screenshot
-        , ("M-S-s s", unGrab *> spawn (concat ["import ", myHome, "/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png"]))
-        , ("M-S-s S-s", unGrab *> spawn (concat ["import -window root ", myHome, "/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png"]))
 
         -- Moving around windows
         , ("M-j", windows W.focusDown)
@@ -209,11 +190,6 @@ myKeys =
         , ("M-h", sendMessage Shrink)
         , ("M-l", sendMessage Expand)
         , ("M-<Return>", windows W.swapMaster)
-
-        -- Exit XMonad
-        , ("M-S-q", io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
-        -- Restart XMonad
-        , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
 
         , ("M-1", ((windows $ W.greedyView $ myWorkspaces !! 0)))
         , ("M-2", ((windows $ W.greedyView $ myWorkspaces !! 1)))
@@ -237,6 +213,17 @@ myKeys =
         , ("M-S-9", ((windows $ W.shift $ myWorkspaces !! 8)))
         , ("M-S-0", ((windows $ W.shift $ myWorkspaces !! 9)))
 
+        , ("M-C-1", ((windows (W.shift (myWorkspaces !! 0)))) >> ((windows $ W.greedyView $ myWorkspaces !! 0)))
+        , ("M-C-2", ((windows (W.shift (myWorkspaces !! 1)))) >> ((windows $ W.greedyView $ myWorkspaces !! 1)))
+        , ("M-C-3", ((windows (W.shift (myWorkspaces !! 2)))) >> ((windows $ W.greedyView $ myWorkspaces !! 2)))
+        , ("M-C-4", ((windows (W.shift (myWorkspaces !! 3)))) >> ((windows $ W.greedyView $ myWorkspaces !! 3)))
+        , ("M-C-5", ((windows (W.shift (myWorkspaces !! 4)))) >> ((windows $ W.greedyView $ myWorkspaces !! 4)))
+        , ("M-C-6", ((windows (W.shift (myWorkspaces !! 5)))) >> ((windows $ W.greedyView $ myWorkspaces !! 5)))
+        , ("M-C-7", ((windows (W.shift (myWorkspaces !! 6)))) >> ((windows $ W.greedyView $ myWorkspaces !! 6)))
+        , ("M-C-8", ((windows (W.shift (myWorkspaces !! 7)))) >> ((windows $ W.greedyView $ myWorkspaces !! 7)))
+        , ("M-C-9", ((windows (W.shift (myWorkspaces !! 8)))) >> ((windows $ W.greedyView $ myWorkspaces !! 8)))
+        , ("M-C-0", ((windows (W.shift (myWorkspaces !! 9)))) >> ((windows $ W.greedyView $ myWorkspaces !! 9)))
+
         -- Scroll through the layouts
         , ("M-<Space>", sendMessage NextLayout)
         -- Force a floating window back to tiling
@@ -248,7 +235,14 @@ myKeys =
         -- Toggle bar
         , ("M-b", sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
         -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for struts
-        , ("M-S, xK-b", sendMessage ToggleStruts)
+        , ("M-S-b", sendMessage ToggleStruts)
+
+        -- Screenshot
+        , ("M-S-s s", unGrab *> spawn "import ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+        , ("M-S-s S-s", unGrab *> spawn "import -window root ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+
+        -- change background
+        , ("M-w", spawn "feh --bg-scale --randomize ~/.local/wallpapers")
 
         -- emacs
         , ("M-e", spawn "emacsclient -a 'emacs' -c")
@@ -258,14 +252,14 @@ myKeys =
         , ("M-=", incWindowSpacing 2 *> incScreenSpacing 2)
         ]
 
--- Main function
 main :: IO ()
 main = do
-        xmonad $ ewmhFullscreen $ addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ docks . ewmh $ def {
+        --xmonad $ ewmhFullscreen $ addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ docks . ewmh $ def {
+        xmonad $ ewmhFullscreen $ docks . ewmh $ def {
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
-        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty"  <||> className =? "st-256color" <||> className =? "XTerm") (return True)
+        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
         , keys                    = \c -> mkKeymap c myKeys
