@@ -12,14 +12,15 @@
   - [[#hooks][Hooks]]
   - [[#utils][Utils]]
   - [[#actions][Actions]]
-  - [[#misc][Misc]]
+  - [[#miscellaneous-imports][Miscellaneous imports]]
 - [[#spacing][Spacing]]
 - [[#variables][Variables]]
 - [[#layouts-1][Layouts]]
 - [[#scratchpads][Scratchpads]]
 - [[#startup-hook][Startup hook]]
 - [[#manage-hook][Manage hook]]
-- [[#keymap-definition][Keymap definition]]
+- [[#keybindings][Keybindings]]
+  - [[#table-of-keys][Table of keys]]
   - [[#basic-keybindings][Basic keybindings]]
   - [[#music-control][Music control]]
   - [[#brightness-control][Brightness control]]
@@ -27,7 +28,7 @@
   - [[#window-control][Window control]]
   - [[#workspace-control][Workspace control]]
   - [[#layout-control][Layout control]]
-  - [[#misc-1][Misc]]
+  - [[#misc][Misc]]
 - [[#main][Main]]
 
 * Welcome
@@ -98,7 +99,7 @@ import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
 #+end_src
 
-** Misc
+** Miscellaneous imports
 #+begin_src haskell
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
@@ -237,50 +238,86 @@ myManageHook = composeAll
   ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
 #+end_src
 
-* Keymap definition
+* Keybindings
 This is my keymap. It uses EZConfig to make things a bit easier to read, and is by far the biggest (and messiest) part of the whole config.
 For reference, M = super, S = shift, C = control
-|------------------------------+----------------------------------------------------------------|
-| Keymap                       | Definition                                                     |
-|------------------------------+----------------------------------------------------------------|
-| Super+Shift+Enter            | Spawn a terminal (alacritty for now)                           |
-| Super+Shift+x                | Close the focused window                                       |
-| Super+Shift+q                | Close XMonad                                                   |
-| Super+Shift+r                | Restart XMonad                                                 |
-| Super+p                      | Spawn rofi, and make a menu noise (if you have that noise)     |
-| Super+Shift+j                | Pause the music                                                |
-| Pause button                 | Pause the music                                                |
-| Super+Shift+h                | Play the previous song                                         |
-| Previous track button        | Play the previous song                                         |
-| Super+Shift+l                | Play the next song                                             |
-| Next track button            | Play the next song                                             |
-| Brightness up button         | Increase the screen brightness                                 |
-| Brightness down button       | Decrease the screen brightness                                 |
-| Super+Brightness up button   | Artificially increase brightness                               |
-| Super+Brightness down button | Artificially decrease brightness                               |
-| Super+s Enter                | Spawn terminal scratchpad                                      |
-| Super+s m                    | Spawn ncmpcpp (music) scratchpad                               |
-| Super+s c                    | Spawn calendar scratchpad                                      |
-| Super+w                      | Change wallpaper to a random one                               |
-| Super+Shift+s s              | Take screenshot of a selection of the screen                   |
-| Super+Shift+s Shift+s        | Take screenshot of the whole screen                            |
-| Super+j                      | Move down in the window stack                                  |
-| Super+k                      | Move up in the window stack                                    |
-| Super+h                      | Decrease screen real estate of master                          |
-| Super+l                      | Increase screen real estate of master                          |
-| Super+<number>               | Go to the desired workspace                                    |
-| Super+Shift+<number>         | Send the focused window to the desired workspace               |
-| Super+Control+<number>       | Send the focused window to the desired workspace and follow it |
-| Super+Space                  | Go to the next layout                                          |
-| Super+t                      | Force a floating window back to tiling                         |
-| Super+m                      | Go into monocle mode (fullscreen)                              |
-| Super+f                      | Put a window into floating mode                                |
-| Super+b                      | Toggle the bar                                                 |
-| Super+b                      | Toggle the spacing allocated for the bar                       |
-| Super+e                      | Spawn emacs                                                    |
-| Super+<plus>                 | Increase window spacing                                        |
-| Super+<minus>                | Decrease window spacing                                        |
-|------------------------------+----------------------------------------------------------------|
+** Table of keys
+*** [[#basic-keybindings][Basic keybindings]]
+|-------------------+------------------------------------------------------------|
+| Keymap            | Definition                                                 |
+|-------------------+------------------------------------------------------------|
+| Super+Shift+Enter | Spawn a terminal (alacritty for now)                       |
+| Super+Shift+x     | Close the focused window                                   |
+| Super+Shift+q     | Close XMonad                                               |
+| Super+Shift+r     | Restart XMonad                                             |
+| Super+p           | Spawn rofi, and make a menu noise (if you have that noise) |
+|-------------------+------------------------------------------------------------|
+
+*** [[#music-control][Music]]
+|-----------------------+------------------------|
+| Keymap                | Definition             |
+|-----------------------+------------------------|
+| Super+Shift+j         | Pause the music        |
+| Pause button          | Pause the music        |
+| Super+Shift+h         | Play the previous song |
+| Previous track button | Play the previous song |
+| Super+Shift+l         | Play the next song     |
+| Next track button     | Play the next song     |
+|-----------------------+------------------------|
+
+*** [[#brightness-control][Brightness]]
+|------------------------------+----------------------------------|
+| Keymap                       | Definition                       |
+|------------------------------+----------------------------------|
+| Brightness up button         | Increase the screen brightness   |
+| Brightness down button       | Decrease the screen brightness   |
+| Super+Brightness up button   | Artificially increase brightness |
+| Super+Brightness down button | Artificially decrease brightness |
+|------------------------------+----------------------------------|
+
+*** [[#scratchpads-1][Scratchpads]]
+|---------------+----------------------------------|
+| Keymap        | Definition                       |
+|---------------+----------------------------------|
+| Super+s Enter | Spawn terminal scratchpad        |
+| Super+s m     | Spawn ncmpcpp (music) scratchpad |
+| Super+s c     | Spawn calendar scratchpad        |
+|---------------+----------------------------------|
+
+*** [[#window-control][Window control]]
+|---------+---------------------------------------|
+| Keymap  | Definition                            |
+|---------+---------------------------------------|
+| Super+j | Move down in the window stack         |
+| Super+k | Move up in the window stack           |
+| Super+h | Decrease screen real estate of master |
+| Super+l | Increase screen real estate of master |
+|---------+---------------------------------------|
+
+*** [[#workspace-control][Workspace control]]
+|---------------+------------------------------------------|
+| Keymap        | Definition                               |
+|---------------+------------------------------------------|
+| Super+Space   | Go to the next layout                    |
+| Super+t       | Force a floating window back to tiling   |
+| Super+m       | Go into monocle mode (fullscreen)        |
+| Super+f       | Put a window into floating mode          |
+| Super+b       | Toggle the bar                           |
+| Super+b       | Toggle the spacing allocated for the bar |
+| Super+e       | Spawn emacs                              |
+| Super+<plus>  | Increase window spacing                  |
+| Super+<minus> | Decrease window spacing                  |
+|---------------+------------------------------------------|
+
+*** [[#misc][Misc]]
+|-----------------------+----------------------------------------------|
+| Super+w               | Change wallpaper to a random one             |
+| Super+Shift+s s       | Take screenshot of a selection of the screen |
+| Super+Shift+s Shift+s | Take screenshot of the whole screen          |
+| Spawn emacs           |                                              |
+| Super+<plus>          | Increase window spacing                      |
+| Super+<minus>         | Decrease window spacing                      |
+|-----------------------+----------------------------------------------|
 
 ** Basic keybindings
 #+begin_src haskell
