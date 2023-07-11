@@ -1,9 +1,10 @@
 import XMonad
 
+import XMonad.Layout.SimplestFloat
+import XMonad.Layout.ResizableTile
+
 import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
-import XMonad.Layout.Dwindle
-import XMonad.Layout.ResizableTile
 import XMonad.Layout.NoBorders
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
@@ -11,9 +12,9 @@ import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, NOBORDERS))
 import XMonad.Layout.WindowArranger (windowArrange)
 import XMonad.Layout.WindowNavigation
-import XMonad.Layout.SimplestFloat
 import XMonad.Layout.Renamed
 import XMonad.Layout.Simplest
+import XMonad.Layout.ShowWName
 import XMonad.Layout.SubLayouts
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 
@@ -81,6 +82,13 @@ myLayoutHook = avoidStruts
     myDefaultLayout = withBorder 1 tall
                                ||| noBorders monocle
                                ||| floats
+
+myShowWNameTheme = def
+  { swn_font    = "xft:Ubuntu:bold:size=60"
+  , swn_fade    = 0
+  , swn_bgcolor = "#1c1f24"
+  , swn_color   = "#ffffff"
+  }
 
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                 , NS "ncmpcpp" spawnMus findMus manageMus
@@ -269,7 +277,7 @@ main = do
         , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
-        , layoutHook = myLayoutHook
+        , layoutHook = showWName' myShowWNameTheme $ myLayoutHook
         , startupHook = myStartupHook
         , manageHook = myManageHook
         }
