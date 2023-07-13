@@ -55,7 +55,7 @@ import System.IO
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
-myWorkspaces = [ "1: \984515", "2: \58930", "3: \983609", "4: \984687", "5: \62601", "6: \61441", "7", "8", "9", "10"]
+myWorkspaces = [ "1: \984515", "2: \58930", "3: \983609", "4: \984687", "5: \62601", "6: \984922", "7", "8", "9", "10"]
                -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
 myTerminal = "alacritty"
 
