@@ -14,8 +14,8 @@ import XMonad.Layout.WindowArranger (windowArrange)
 import XMonad.Layout.WindowNavigation
 import XMonad.Layout.Renamed
 import XMonad.Layout.Simplest
-import XMonad.Layout.ShowWName
 import XMonad.Layout.SubLayouts
+import XMonad.Layout.ShowWName
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 
 import XMonad.Hooks.EwmhDesktops
@@ -55,7 +55,8 @@ import System.IO
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
-myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+myWorkspaces = [ "1: \984515", "2: \58930", "3: \983609", "4: \984687", "5: \62601", "6: \61441", "7", "8", "9", "10"]
+               -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
 myTerminal = "alacritty"
 
 tall    = renamed [Replace "tall"]
@@ -84,8 +85,8 @@ myLayoutHook = avoidStruts
                                ||| floats
 
 myShowWNameTheme = def
-  { swn_font    = "xft:Ubuntu:bold:size=60"
-  , swn_fade    = 0
+  { swn_font    = "xft:Ubuntu Nerd Font:bold:size=60"
+  , swn_fade    = 1.0
   , swn_bgcolor = "#1c1f24"
   , swn_color   = "#ffffff"
   }
@@ -124,7 +125,7 @@ myStartupHook :: X ()
 myStartupHook = do
   spawnOnce "mpv /opt/sounds/startup-01.mp3"
   spawnOnce "xsetroot -cursor_name left_ptr"
-  spawn "~/.config/polybar/launch.sh"
+  spawnStatusBar "~/.config/polybar/launch.sh"
   spawnOnce "feh --randomize --bg-scale ~/.local/wallpapers"
   -- Makes repeat rate much faster
   spawnOnce "xset r rate 200 65"
@@ -269,15 +270,15 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
 
 main :: IO ()
 main = do
-        --xmonad $ ewmhFullscreen $ addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ docks . ewmh $ def {
-        xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmhFullscreen $ docks . ewmh $ def {
+        xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmhFullscreen $ addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ ewmh . docks  $ def {
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
         , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
-        , layoutHook = showWName' myShowWNameTheme $ myLayoutHook
-        , startupHook = myStartupHook
-        , manageHook = myManageHook
+        , layoutHook              = showWName' myShowWNameTheme $ myLayoutHook
+        , startupHook             = myStartupHook
+        , manageHook              = myManageHook
+        --, logHook                 = showWNameLogHook myShowWNameTheme
         }
