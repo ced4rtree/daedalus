@@ -7,8 +7,8 @@
 
 (beacon-mode 1)
 
-;(eval-after-load "zone"
-  ;(zone-when-idle 120))
+(with-eval-after-load "zones"
+  (zone-when-idle 120))
 
 (eval-after-load "zone"
   '(unless (memq 'zone-nyan (append zone-programs nil))
@@ -44,7 +44,7 @@
               (kbd "e") '(lambda () (interactive) (find-file "~/.config/doom/config.org"))
               (kbd "z") '(lambda () (interactive) (find-file "~/.config/zsh/.zshrc"))
               (kbd "p") '(lambda () (interactive) (find-file "~/.config/polybar/config.ini"))
-              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.hs"))
+              (kbd "x") '(lambda () (interactive) (find-file "~/.config/xmonad/xmonad.org"))
               (kbd "A") 'org-agenda
               (kbd "s") 'org-show-todo-tree
               (kbd "f") 'find-file
@@ -72,6 +72,8 @@
 	 (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
 		(run-at-time nil nil (lambda () (centaur-tabs-mode)))))
   (add-hook 'after-make-frame-functions #'centaur-tabs-daemon-mode))
+
+(add-hook 'find-file-hook #'(lambda () (interactive) (rainbow-mode 1)))
 
 (global-set-key (kbd "C-j") #'(lambda ()
 								(interactive)
@@ -129,6 +131,22 @@
  "C" '(cfw:open-org-calendar :which-key "Open org calendar")
  "a c" '(cfw:open-org-calendar :which-key "Open org calendar"))
 
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "e"     '(:ignore t :which-key "EMMS")
+ "e e"   '(emms-smart-browse :which-key "Open emms")
+ "e s"   '(emms-shuffle :which-key "Shuffle the playlist")
+ "e h"   '(emms-next :which-key "Play the next song")
+ "e l"   '(emms-previous :which-key "Play the previous song")
+ "e SPC" '(emms-pause :which-key "Pause the music")
+ "e r"   '(emms-random :which-key "Play a random song")
+ "e f"   '(emms-play-file :which-key "Select a song to play"))
+
+(general-define-key
+ :states '(normal visual)
+ "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment line"))
+
 (setq-default c-default-style "k&r"
 	      c-indentation-style "k&r"
 	      c-basic-offset 4
@@ -152,7 +170,6 @@
 (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
 (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
 
-(use-package org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (setq org-hide-leading-stars t)
 
@@ -207,6 +224,9 @@
 
 (setq org-ellipsis " ▼ ")
 (setq org-directory "~/org")
+(set-popup-rule! "^\\*Orc Src" :ignore t)
+(setq org-src-window-setup 'current-window)
+(add-hook 'org-mode-hook #'(lambda () (interactive) (org-auto-tangle-mode 1)))
 
 ;(require 'emms-player-mpd)
 (emms-all)
@@ -215,14 +235,3 @@
       emms-player-mpd-server-name "localhost"
       emms-player-mpd-server-port "6600"
       emms-player-mpd-music-directory (concat (getenv "HOME") "/music"))
-
-(general-define-key
- :states '(normal visual)
- :prefix "SPC e"
- "e" '(emms-smart-browse :which-key "Open emms")
- "s" '(emms-shuffle :which-key "Shuffle the playlist")
- "h" '(emms-next :which-key "Play the next song")
- "l" '(emms-previous :which-key "Play the previous song")
- "SPC" '(emms-pause :which-key "Pause the music")
- "r" '(emms-random :which-key "Play a random song")
- "f" '(emms-play-file :which-key "Select a song to play"))
