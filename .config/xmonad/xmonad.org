@@ -13,13 +13,17 @@
   - [[#hook-imports][Hook Imports]]
   - [[#util-imports][Util Imports]]
   - [[#action-imports][Action Imports]]
+  - [[#prompt-imports][Prompt Imports]]
   - [[#miscellaneous-imports][Miscellaneous Imports]]
 - [[#spacing][Spacing]]
 - [[#variables][Variables]]
+- [[#prompt][Prompt]]
+  - [[#prompt-configuration][Prompt configuration]]
 - [[#layouts][Layouts]]
   - [[#layout-configs][Layout configs]]
   - [[#showwname][ShowWName]]
 - [[#scratchpads][Scratchpads]]
+- [[#screenshots][Screenshots]]
 - [[#startup-hook][Startup hook]]
 - [[#manage-hook][Manage hook]]
 - [[#keybindings][Keybindings]]
@@ -109,6 +113,13 @@ import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
 #+end_src
 
+** Prompt Imports
+#+begin_src haskell
+import XMonad.Prompt
+import XMonad.Prompt.FuzzyMatch
+import XMonad.Prompt.Input
+#+end_src
+
 ** Miscellaneous Imports
 #+begin_src haskell
 import qualified XMonad.StackSet as W
@@ -135,6 +146,31 @@ Note that the workspaces need a nerd font to be installed and set up in your bar
 myWorkspaces = [ "1:  \984515", "2:  \58930", "3:  \983609", "4:  \984687", "5:  \62601", "6:  \984922", "7:  \984745", "8:  \983785", "9:  \62764", "10:  \61944"]
                -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
 myTerminal = "alacritty"
+#+end_src
+
+* Prompt
+XMonad has support for its own dmenu-like prompts
+** Prompt configuration
+#+begin_src haskell
+myXPConfig = def
+      { font                = "xft:Ubuntu Nerd Font:size=14"
+      , bgColor             = "#282c34"
+      , fgColor             = "#bbc2cf"
+      , bgHLight            = "#51afef"
+      , fgHLight            = "#bbc2cf"
+      , borderColor         = "#282c34"
+      , promptBorderWidth   = 0
+      , position            = Top
+      , height              = 33
+      , historySize         = 256
+      , historyFilter       = id
+      , defaultText         = []
+      , autoComplete        = Just 100000
+      , showCompletionOnTab = True
+      , searchPredicate     = fuzzyMatch
+      , alwaysHighlight     = True
+      , maxComplRows        = Nothing
+      }
 #+end_src
 
 * Layouts
@@ -210,6 +246,16 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                      w = 0.9
                      t = 0.075 -- height based
                      l = 0.05 -- width based
+#+end_src
+
+* Screenshots
+To prompt for screenshot names, I have to define a function that takes in that name
+#+begin_src haskell
+takeScreenshot :: Bool -> String -> X ()
+takeScreenshot b s = do
+  if b
+     then spawn $ concat ["import ~/Pictures/\"", s, "\".png"]
+     else spawn $ concat ["import -window root ~/Pictures/\"", s, "\".png"]
 #+end_src
 
 * Startup hook
@@ -472,8 +518,8 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
 ** Misc
 #+begin_src haskell
         ^++^ subKeys "Misc"
-        [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> spawn "import ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
-        , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> spawn "import -window root ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+        [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot True)
+        , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot False)
         , ("M-w",       addName "Set a random wallpaper"                  $ spawn "feh --bg-scale --randomize ~/.local/wallpapers")
         , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -a 'emacs' -c")
         , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)

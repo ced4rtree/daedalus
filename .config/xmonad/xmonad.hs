@@ -43,6 +43,10 @@ import XMonad.Util.Run (spawnPipe)
 import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
 
+import XMonad.Prompt
+import XMonad.Prompt.FuzzyMatch
+import XMonad.Prompt.Input
+
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.ManageHook
@@ -58,6 +62,26 @@ mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 myWorkspaces = [ "1:  \984515", "2:  \58930", "3:  \983609", "4:  \984687", "5:  \62601", "6:  \984922", "7:  \984745", "8:  \983785", "9:  \62764", "10:  \61944"]
                -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
 myTerminal = "alacritty"
+
+myXPConfig = def
+      { font                = "xft:Ubuntu Nerd Font:size=14"
+      , bgColor             = "#282c34"
+      , fgColor             = "#bbc2cf"
+      , bgHLight            = "#51afef"
+      , fgHLight            = "#bbc2cf"
+      , borderColor         = "#282c34"
+      , promptBorderWidth   = 0
+      , position            = Top
+      , height              = 33
+      , historySize         = 256
+      , historyFilter       = id
+      , defaultText         = []
+      , autoComplete        = Just 100000
+      , showCompletionOnTab = True
+      , searchPredicate     = fuzzyMatch
+      , alwaysHighlight     = True
+      , maxComplRows        = Nothing
+      }
 
 tall    = renamed [Replace "tall"]
         $ smartBorders
@@ -120,6 +144,12 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                      w = 0.9
                      t = 0.075 -- height based
                      l = 0.05 -- width based
+
+takeScreenshot :: Bool -> String -> X ()
+takeScreenshot b s = do
+  if b
+     then spawn $ concat ["import ~/Pictures/\"", s, "\".png"]
+     else spawn $ concat ["import -window root ~/Pictures/\"", s, "\".png"]
 
 myStartupHook :: X ()
 myStartupHook = do
@@ -260,8 +290,8 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         ]
 
         ^++^ subKeys "Misc"
-        [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> spawn "import ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
-        , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> spawn "import -window root ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+        [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot True)
+        , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot False)
         , ("M-w",       addName "Set a random wallpaper"                  $ spawn "feh --bg-scale --randomize ~/.local/wallpapers")
         , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -a 'emacs' -c")
         , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)
