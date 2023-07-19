@@ -59,7 +59,7 @@ import System.IO
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
-myWorkspaces = [ "1:  \984515", "2:  \58930", "3:  \983609", "4:  \984687", "5:  \62601", "6:  \984922", "7:  \984745", "8:  \983785", "9:  \62764", "10:  \61944"]
+myWorkspaces = [ "1:  \984515", "2:  \58930", "3:  \983609", "4:  \984687", "5:  \62601", "6:  \984275", "7: \61811", "8: \60259", "9: \989057", "10: \984043"]
                -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
 myTerminal = "alacritty"
 
@@ -80,7 +80,7 @@ myXPConfig = def
       , showCompletionOnTab = True
       , searchPredicate     = fuzzyMatch
       , alwaysHighlight     = True
-      , maxComplRows        = Nothing
+      , maxComplRows        = Just 5
       }
 
 tall    = renamed [Replace "tall"]
@@ -207,7 +207,8 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         subKeys "Basic keybindings"
         [ ("M-S-<Return>", addName "Open a terminal"               $ windows W.focusMaster >> spawn myTerminal)
         , ("M-S-x",        addName "Close the current window"      $ kill)
-        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["rofi -show drun -terminal" , myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["rofi -show drun -terminal " , myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
+        -- , ("M-p",          addName "Open the application launcher" $ spawn "mpv /opt/sounds/menu-01.mp3" *> inputPrompt myXPConfig "Run Program" ?+ spawn)
         , ("M-S-q",        addName "Exit XMonad"                   $ io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
         , ("M-S-r",        addName "Restart XMonad"                $ spawn "xmonad --recompile && xmonad --restart")
         ]
@@ -296,6 +297,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -a 'emacs' -c")
         , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)
         , ("M--",       addName "Decrease window spacing"                 $ decWindowSpacing 2 *> decScreenSpacing 2)
+        , ("M-`",       addName "Lock the screen"                         $ spawn "mpc pause ; i3lock -i ~/.local/wallpapers/$(ls ~/.local/wallpapers | shuf | head -n 1)")
         ]
 
 main :: IO ()
