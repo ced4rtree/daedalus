@@ -188,6 +188,9 @@ myManageHook = composeAll
   , className =? "Yad"                                 --> doFloat
   , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
   , isFullscreen                                       --> doFullFloat
+  , className =? "discord"                             --> doShift (myWorkspaces !! 3) -- send discord to the 4th workspace (arrays start at 0)
+  , className =? "freetube"                            --> doShift (myWorkspaces !! 0)
+  , className =? "steam"                               --> doShift (myWorkspaces !! 5)
   ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
 
 subtitle' ::  String -> ((KeyMask, KeySym), NamedAction)
@@ -207,7 +210,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         subKeys "Basic keybindings"
         [ ("M-S-<Return>", addName "Open a terminal"               $ windows W.focusMaster >> spawn myTerminal)
         , ("M-S-x",        addName "Close the current window"      $ kill)
-        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["rofi -show drun -terminal " , myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["mpv /opt/sounds/menu-01.mp3 & rofi -show drun -terminal " , myTerminal]))
         -- , ("M-p",          addName "Open the application launcher" $ spawn "mpv /opt/sounds/menu-01.mp3" *> inputPrompt myXPConfig "Run Program" ?+ spawn)
         , ("M-S-q",        addName "Exit XMonad"                   $ io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
         , ("M-S-r",        addName "Restart XMonad"                $ spawn "xmonad --recompile && xmonad --restart")

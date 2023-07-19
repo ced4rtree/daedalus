@@ -4,6 +4,9 @@
 #+PROPERTY: header-args :tangle xmonad.hs
 #+auto_tangle: t
 
+* Welcome
+Hello and welcome to my XMonad configuration. It was a harrowing, arduous, and downright dangerous journey to arrive where I am today, yet it never seems to end. Please sit back and enjoy (or suffer through) my epic haskell skills.
+
 * Table of Contents :toc:
 - [[#welcome][Welcome]]
 - [[#imports][Imports]]
@@ -38,9 +41,6 @@
   - [[#layout-control][Layout control]]
   - [[#misc][Misc]]
 - [[#main][Main]]
-
-* Welcome
-Hello and welcome to my XMonad configuration. It was a harrowing, arduous, and downright dangerous journey to arrive where I am today, yet it never seems to end. Please sit back and enjoy (or suffer through) my epic haskell skills.
 
 * Imports
 ** XMonad Import
@@ -301,6 +301,9 @@ myManageHook = composeAll
   , className =? "Yad"                                 --> doFloat
   , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
   , isFullscreen                                       --> doFullFloat
+  , className =? "discord"                             --> doShift (myWorkspaces !! 3) -- send discord to the 4th workspace (arrays start at 0)
+  , className =? "freetube"                            --> doShift (myWorkspaces !! 0)
+  , className =? "steam"                               --> doShift (myWorkspaces !! 5)
   ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
 #+end_src
 
@@ -408,7 +411,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         subKeys "Basic keybindings"
         [ ("M-S-<Return>", addName "Open a terminal"               $ windows W.focusMaster >> spawn myTerminal)
         , ("M-S-x",        addName "Close the current window"      $ kill)
-        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["rofi -show drun -terminal " , myTerminal]) >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["mpv /opt/sounds/menu-01.mp3 & rofi -show drun -terminal " , myTerminal]))
         -- , ("M-p",          addName "Open the application launcher" $ spawn "mpv /opt/sounds/menu-01.mp3" *> inputPrompt myXPConfig "Run Program" ?+ spawn)
         , ("M-S-q",        addName "Exit XMonad"                   $ io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
         , ("M-S-r",        addName "Restart XMonad"                $ spawn "xmonad --recompile && xmonad --restart")
