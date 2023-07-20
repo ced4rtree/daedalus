@@ -10,9 +10,9 @@
 
 (add-to-list 'default-frame-alist
              '(font . "AnonymicePro Nerd Font Mono-15"))
-(use-package dired-all-the-icons
-  :after dired
-  :hook (dired-mode . dired-all-the-icons-mode))
+(use-package treemacs-icons-dired
+  :ensure t
+  :hook (dired-mode . treemacs-icons-dired-mode))
 
 (use-package highlight-indent-guides
   :defer t
@@ -50,28 +50,47 @@
   (add-hook 'after-setting-font-hook #'+modeline-resize-for-font-h)
   (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))
 
-  (global-display-line-numbers-mode 1)
+(use-package centaur-tabs
+  :hook (server-after-make-frame . centaur-tabs-mode)
+  :init
+  (setq centaur-tabs-set-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        centaur-tabs-set-bar 'left
+        centaur-tabs-set-modified-marker t
+        centaur-tabs-close-button "✕"
+        centaur-tabs-modified-marker "•"
+        ;; Scrolling (with the mouse wheel) past the end of the tab list
+        ;; replaces the tab list with that of another Doom workspace. This
+        ;; prevents that.
+        centaur-tabs-cycle-scope 'tabs))
+
+  ;; When started in daemon mode, centaur tabs does not work at all, so here is a fix
+  (if (not (daemonp))
+      (centaur-tabs-mode)
+
+    (defun centaur-tabs--daemon-mode (frame)
+      (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
+        (run-at-time nil nil (lambda () (centaur-tabs-mode)))))
+    (add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
+
+(global-display-line-numbers-mode 1)
 
 (global-hl-line-mode)
 
-  (use-package ef-themes
-    :ensure t
-    :config (load-theme 'ef-trio-dark t))
+(use-package ef-themes
+  :ensure t
+  :config (load-theme 'ef-symbiosis t))
 
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (menu-bar-mode -1)
 
   ;; scroll one line at a time (less "jumpy" than defaults)
-  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+  (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; 2 lines at a time
   (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
   (setq scroll-step 1) ;; keyboard scroll one line at a time
   (setq scroll-conservatively 101)
-
-  (use-package projectile
-    :config
-    (projectile-mode +1))
 
 (use-package all-the-icons
   :if (display-graphic-p))
@@ -224,6 +243,12 @@
 (use-package treemacs-magit :after (treemacs magit))
 (use-package treemacs-all-the-icons :after treemacs)
 
+(use-package projectile
+  :config
+  (projectile-mode +1))
+(use-package projectile-ripgrep :after projectile)
+(use-package counsel-projectile :after (projectile counsel))
+
 (setq evil-undo-system 'undo-redo)
 
   (use-package evil
@@ -233,10 +258,8 @@
     (setq evil-undo-system 'undo-redo))
 
 (use-package evil-collection
-	:after evil
-	:defer t
+	:after evil magit
 	:config
-	(setq evil-collection-mode-list '(dashboard dired ibuffer search agenda))
 	(evil-collection-init))
 
   (use-package general
@@ -281,16 +304,31 @@
    "w q" '(evil-window-delete     :which-key "delete current window")
    "w k" '(kill-buffer-and-window :which-key "delete current window and buffer"))
 
-  (general-define-key
-   :states '(normal visual)
-   :prefix "SPC"
-   "b"   '(:ignore t       :which-key "buffer")
-   "b b" '(buffer-menu     :which-key "buffer menu")
-   "b i" '(ibuffer         :which-key "ibuffer")
-   "b c" '(kill-buffer     :which-key "kill buffer")
-   "b k" '(kill-buffer     :which-key "kill buffer")
-   "b p" '(previous-buffer :which-key "previous buffer")
-   "b n" '(next-buffer     :which-key "next buffer"))
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "b"   '(:ignore t                 :which-key "buffer")
+ "b b" '(buffer-menu               :which-key "buffer menu")
+ "b i" '(ibuffer                   :which-key "ibuffer")
+ "b c" '(kill-this-buffer          :which-key "kill buffer")
+ "b k" '(kill-buffer               :which-key "kill buffer")
+ "b p" '(previous-buffer           :which-key "previous buffer")
+ "b n" '(next-buffer               :which-key "next buffer")
+ "b h" '(centaur-tabs-backward-tab :which-key "previous tab")
+ "b l" '(centaur-tabs-forward-tab  :which-key "previous tab")
+ "b r" '(revert-buffer             :which-key "reload buffer"))
+(define-key evil-normal-state-map (kbd "q") #'(lambda ()
+												(interactive)
+												(when (buffer-modified-p)
+												  (when (y-or-n-p "Buffer modified. Save?")
+													(save-buffer)))
+												(kill-this-buffer)))
+(define-key evil-normal-state-map (kbd "Q") #'(lambda ()
+												(interactive)
+												(when (buffer-modified-p)
+												  (when (y-or-n-p "Buffer modified. Save?")
+													(save-buffer)))
+												(kill-buffer-and-window)))
 
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   (with-eval-after-load 'ibuffer
@@ -304,16 +342,14 @@
   (add-hook 'dashboard-mode-hook #'(lambda ()
 								   (interactive)
 								   (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
+								   (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
 								   (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
 								   (evil-local-set-key 'normal (kbd "e") #'(lambda ()
 																			 (interactive)
 																			 (find-file "~/.config/emacs/config.org")))
 								   (evil-local-set-key 'normal (kbd "x") #'(lambda ()
 																			 (interactive)
-																			 (find-file "~/.config/xmonad/xmonad.org")))
-								   (evil-local-set-key 'normal (kbd "p") #'(lambda ()
-																			 (interactive)
-																			 (find-file "~/.config/polybar/config.ini"))))))
+																			 (find-file "~/.config/xmonad/xmonad.org"))))))
 
 (general-define-key
  :states '(normal visual)
@@ -324,6 +360,17 @@
  "o C"   '(cfw:open-org-calendar :which-key "open org calendar")
  "o a a" '(org-agenda :which-key "open org agenda")
  "o a t" '(org-agenda-todo :which-key "open todo list"))
+
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "g"   '(:ignore t :which-key "magit")
+ "g g" '(magit :which-key "open magit")
+ "g s" '(magit-status :which-key "status")
+ "g b" '(magit-branch :which-key "branch")
+ "g c o" '(magit-checkout :which-key "checkout")
+ "g c b" '(magit-branch-and-checkout :which-key "create and checkout a branch")
+ "g c c" '(magit-commit :which-key "commit"))
 
 (defun bugger/reload ()
   (interactive)
@@ -338,6 +385,32 @@
  "h r" '(:ignore t :which-key "reload")
  "h r r" '(bugger/reload :which-key "reload emacs")
  "h v" '(describe-variable :which-key "describe variable")
+ "h t" '(counsel-load-theme :which-key "load theme")
  "h f" '(describe-function :which-key "describe function"))
 
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "o t" '(projectile-run-vterm-other-window)) ; this keybinding is just because its what I'm used to in doom emacs
+
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "/" '(counsel-projectile-rg :which-key "search project")
+ "p" '(:ignore t :which-key "projectile")
+ "p p" '(counsel-projectile :which-key "open project")
+ "p c" '(projectile-compile-project :which-key "compile project")
+ "p f" '(counsel-projectile-find-file-dwim :which-key "find file"))
+
 (setq gc-cons-threshold (* 2 1024 1024))
+
+(use-package web-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
+(use-package emmet-mode
+  :ensure t
+  :after web-mode
+  :hook (web-mode . emmet-mode))
