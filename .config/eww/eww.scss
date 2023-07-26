@@ -1,6 +1,6 @@
 * {
     all: unset; //Unsets everything so you can style everything from scratch
-	font-family: "JetBrains Mono Nerd Font", "MesloLGS NF";
+	font-family: "Ubuntu Nerd Font", "MesloLGS NF";
 	font-size: 18px;
 }
 
@@ -45,35 +45,32 @@
 	color: #4db5bd;
 }
 
+/* Workspaces */
+
 .0 , .01, .02, .03, .04, .05, .06,
 .011, .022, .033, .044, .055, .066{
   padding: 0px 7px 0px 7px;
 }
 
-/* Unoccupied */
+// Unoccupied
 .0 {
 	color: #606060;
 }
 
-/* Occupied */
+// Occupied
 .01, .02, .03, .04, .05, .06, .07, .08, .09 {
-	color:#959595;
+	color:#c678dd;
 }
 
 
-/* Focused */
+// Focused
 .011, .022, .033, .044, .055, .066, .077, .088, .099 {
-	color: #ffffff;
+	color: #51afef;
 	font-weight:bold;
 }
 
 .works button {
 	transition: 0.5s;
-}
-
-.works button:hover {
-	transition: 0.5s;
-	color: #000000;
 }
 
 .ram {

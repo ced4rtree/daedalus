@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$(mpc | awk 'NR==2 {print $1}')" = "[playing]" ]; then
-	eww update musPaused=" "
+	eww update musPaused="  "
 else
 	eww update musPaused="▶ "
 fi

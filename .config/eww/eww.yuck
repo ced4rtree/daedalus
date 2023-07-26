@@ -1,7 +1,7 @@
 ; variables
 (defvar brightness_value "80") ; this is updated by a script
-(defpoll battery :interval "1m"
-	"cat /sys/class/power_supply/BAT*/capacity")
+;(defpoll battery :interval "1m"
+	;"cat /sys/class/power_supply/BAT*/capacity")
 
 (deflisten date_string "scripts/date")
 (defvar date_format false) ; false is shorthand, true is longhand
@@ -13,7 +13,7 @@
     (sidestuff)))
 (defwidget sidestuff []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-	(label  :text "🔆 ${brightness_value}%  "
+	(label  :text "🔆 ${brightness_value}%    "
 		    :justify "center"
 		    :xalign 0.5
 		    :class "brightness")
@@ -32,9 +32,9 @@
     (metric :label "🔊"
             :value volume
             :onchange "amixer sset Master {}%")
-	(temp)
-	(label  :text "🔋${battery}%  "
-			:class "battery")
+	;(temp)
+	;(label  :text "🔋${battery}%  "
+			;:class "battery")
 	(date   :class "time")))
 
 
@@ -61,10 +61,16 @@
 			:onhoverlost "eww update showMus=false"
 			(box :space-evenly false
 				 :orientation "h"
+				 (button :onclick "mpc prev && eww update music=\"$(mpc | head -n 1)\" && ~/.config/eww/scripts/muspaused"
+								 :class "musicNextOrPrev"
+								 " ")
 				 {music != "" ? "🎵 ${music}": ""}
 				 (button :onclick "mpc toggle && scripts/muspaused"
 						 :class "musicButton"
-					"${musPaused}"))))
+					   "${musPaused}")
+				 (button :onclick "mpc next && eww update music=\"$(mpc | head -n 1)\" && ~/.config/eww/scripts/muspaused"
+								 :class "musicNextOrPrev"
+								 " "))))
 (deflisten music "scripts/mus")
 (defvar musPaused "▶")
 
