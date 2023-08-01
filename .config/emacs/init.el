@@ -3,10 +3,22 @@
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (package-initialize)
 
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (setq use-package-always-ensure t)
+  ;(unless (package-installed-p 'use-package)
+    ;(package-refresh-contents)
+    ;(package-install 'use-package))
+  ;(setq use-package-always-ensure t)
+
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-keybinding nil)
+    (evil-mode 1)
+    (setq evil-undo-system 'undo-redo))
+
+(use-package evil-collection
+    :after evil magit
+    :config
+    (evil-collection-init))
 
 (add-to-list 'default-frame-alist
              '(font . "AnonymicePro Nerd Font Mono-15"))
@@ -20,6 +32,10 @@
   :hook (prog-mode . highlight-indent-guides-mode))
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
+
+(use-package doom-themes
+  :ensure t
+  :config (load-theme 'doom-molokai t))
 
 (use-package doom-modeline
   :ensure t
@@ -42,12 +58,11 @@
         ;; than the current OSes preference
         doom-modeline-buffer-encoding 'nondefault
         doom-modeline-default-eol-type 0
-		doom-modeline-height 35)
+        doom-modeline-height 35)
   (when (daemonp)
     (setq doom-modeline-icon t))
   :config
   
-  (add-hook 'after-setting-font-hook #'+modeline-resize-for-font-h)
   (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))
 
 (use-package centaur-tabs
@@ -74,136 +89,145 @@
     (add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
 
 (global-display-line-numbers-mode 1)
+(with-eval-after-load "dashboard"
+  (add-hook 'dashboard-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1))))
 
 (global-hl-line-mode)
 
-(use-package ef-themes
-  :ensure t
-  :config (load-theme 'ef-symbiosis t))
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
 
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (menu-bar-mode -1)
-
-  ;; scroll one line at a time (less "jumpy" than defaults)
-  (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; 2 lines at a time
-  (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-  (setq scroll-step 1) ;; keyboard scroll one line at a time
-  (setq scroll-conservatively 101)
+;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 2 lines at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
+(pixel-scroll-precision-mode 1) ;; smooth scrolling
 
 (use-package all-the-icons
   :if (display-graphic-p))
 
-  (use-package page-break-lines
-    :config (global-page-break-lines-mode))
+(use-package page-break-lines
+  :config (global-page-break-lines-mode))
 
-  (use-package recentf
-    :config
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/schedule.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/todo.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/emacs.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/homework.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/.config/emacs/bookmarks")))
+(use-package recentf
+  :config
+  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+  (add-to-list 'recentf-exclude "~/org/agenda/todo.org")
+  (add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
+  (add-to-list 'recentf-exclude "~/org/agenda/homework.org")
+  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks"))
 
-    (use-package dashboard
-      :after all-the-icons
-      :after page-break-lines
-      :after projectile
-      :ensure t
-      :init
-      (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-      (setq dashboard-items '((recents . 5)
-                              (projects . 5)
-                              (agenda . 5)))
-      (setq dashboard-icon-type 'all-the-icons)
-      (setq dashboard-center-content t)
-      (setq dashboard-set-heading-icons t)
-      (setq dashboard-set-file-icons t)
-      :config
-      (dashboard-setup-startup-hook))
+(use-package dashboard
+  :after all-the-icons
+  :after page-break-lines
+  :after projectile
+  :after recentf
+  :ensure t
+  :init
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq dashboard-items '((recents . 5)
+                          (projects . 5)
+                          (agenda . 5)))
+  (setq dashboard-icon-type 'all-the-icons)
+  (setq dashboard-center-content t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  :config
+  (dashboard-setup-startup-hook))
 
-  (use-package rainbow-mode
-    :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
-  (use-package rainbow-delimiters
-    :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
-  (use-package rainbow-identifiers
-    :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
+(use-package rainbow-mode
+  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
+(use-package rainbow-delimiters
+  :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
+(use-package rainbow-identifiers
+  :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 
-  (use-package org-tempo
-    :ensure nil)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 
-  (use-package org-auto-tangle
-    :ensure t
-    :defer t
-    :hook (org-mode . org-auto-tangle-mode))
+(add-hook 'java-mode-hook 'java-ts-mode)
 
-  (add-hook 'org-mode-hook 'org-indent-mode)
+(use-package org-tempo
+  :ensure nil)
 
-  (use-package toc-org
-    :hook (org-mode . toc-org-mode))
+(use-package org-auto-tangle
+  :ensure t
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
 
-  (setq org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil
-        org-src-window-setup 'current-window
-        org-src-preserve-indentation t)
+(add-hook 'org-mode-hook 'org-indent-mode)
+
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
+
+(setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-confirm-babel-evaluate nil
+      org-src-window-setup 'current-window
+      org-src-preserve-indentation t)
 
 (setq org-agenda-files (list "~/org/agenda/todo.org"
-							 "~/org/agenda/homework.org"
-							 "~/org/agenda/emacs.org"
-							 "~/org/agenda/schedule.org"))
+                             "~/org/agenda/homework.org"
+                             "~/org/agenda/emacs.org"
+                             "~/org/agenda/schedule.org"))
 
 ;; a better org agenda interface
 (use-package calfw)
 (use-package calfw-org :after calfw)
 
-  (use-package smartparens
-    :config
-    (require 'smartparens-config)
-    (smartparens-global-mode 1))
+(use-package smartparens
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-mode 1))
 
-  (use-package ivy
-    :defer 0.1
-    :diminish
-    :custom
-    (setq ivy-count-format "(%d/%d) ")
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    :config
-    (ivy-mode))
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :custom
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  :config
+  (ivy-mode))
 
-  (use-package counsel
-    :after ivy
-    :defer t
-    :config
-    (counsel-mode)
-    (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
+(use-package counsel
+  :after ivy
+  :defer t
+  :config
+  (counsel-mode)
+  (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
 
-  (use-package ivy-rich
-    :after ivy
-    :defer t
-    :custom
-    (ivy-virtual-abbreviate 'full
-     ivy-rich-switch-buffer-align-virtual-buffer t
-     ivy-rich-path-style 'abbrev)
-    :config
-    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-    (ivy-rich-mode 1))
+(use-package ivy-rich
+  :after ivy
+  :defer t
+  :custom
+  (ivy-virtual-abbreviate 'full
+   ivy-rich-switch-buffer-align-virtual-buffer t
+   ivy-rich-path-style 'abbrev)
+  :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+  (ivy-rich-mode 1))
 
-  (use-package swiper
-    :after ivy
-    :defer t
-    :bind (:map evil-normal-state-map
-           ("/" . swiper-isearch)
-           ("n" . evil-search-previous)
-           ("N" . evil-search-next)))
+(use-package swiper
+  :after ivy
+  :defer t
+  :bind (:map evil-normal-state-map
+         ("/" . swiper-isearch)
+         ("n" . evil-search-previous)
+         ("N" . evil-search-next)))
 
-  (setq indent-tabs-mode t)
-  (setq-default tab-width 4
-                c-basic-offset 4
-                c-default-style "stroustrup")
-  (defvaralias 'c-basic-offset 'tab-width)
+(setq indent-tabs-mode t)
+(setq-default tab-width 4
+              c-basic-offset 4
+              c-default-style "stroustrup")
+(defvaralias 'c-basic-offset 'tab-width)
+
+(define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+(define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+(define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -220,6 +244,8 @@
   :hook (prog-mode . #'lsp-deferred)
   :config
   (setq lsp-keymap-prefix "C-l"))
+
+; extensions
 (use-package lsp-haskell
   :defer t
   :after lsp-mode)
@@ -229,6 +255,10 @@
 (use-package lsp-java
   :defer t
   :after lsp-mode)
+(use-package lsp-ui
+  :defer t
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-doc-mode))
 
 (use-package flycheck
   :defer t
@@ -249,18 +279,25 @@
 (use-package projectile-ripgrep :after projectile)
 (use-package counsel-projectile :after (projectile counsel))
 
-(setq evil-undo-system 'undo-redo)
+(use-package yasnippet
+  :ensure t
+  :config
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+  (yas-global-mode 1))
 
-  (use-package evil
-    :init
-	(setq evil-want-keybinding nil)
-    (evil-mode 1)
-    (setq evil-undo-system 'undo-redo))
+(use-package yasnippet-snippets :ensure t :after yasnippet)
+(use-package java-snippets :ensure t :after yasnippet)
 
-(use-package evil-collection
-	:after evil magit
-	:config
-	(evil-collection-init))
+(use-package web-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
+(use-package emmet-mode
+  :ensure t
+  :after web-mode
+  :hook (web-mode . emmet-mode))
 
   (use-package general
     :ensure t
@@ -270,22 +307,32 @@
     :ensure t
     :config (which-key-mode 1))
 
-  ;; tab over the region
-  (general-define-key
-   :states 'visual
-   "TAB" (lambda ()
-           (interactive)
-           (tab-to-tab-stop)))
+(setq evil-undo-system 'undo-redo)
 
-  ;; comment/uncomment the region
-  (general-define-key
-   :states '(normal visual)
-   "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment lines"))
+;; tab over the region
+(general-define-key
+ :states 'visual
+ "TAB" (lambda ()
+         (interactive)
+         (tab-to-tab-stop)))
 
-  ;; toggle tolding
-  (general-define-key
-   :states 'normal
-   "TAB" 'evil-toggle-fold)
+;; comment/uncomment the region
+(general-define-key
+ :states '(normal visual)
+ "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment lines"))
+
+;; toggle tolding
+(general-define-key
+ :states 'normal
+ "TAB" 'evil-toggle-fold)
+
+;; delete a tab, not 4 spaces
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+
+;; Better directory navigation in ivy
+(eval-after-load 'ivy #'(lambda ()
+						  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char)))
 
   (general-define-key
    :states '(normal visual)
@@ -311,45 +358,54 @@
  "b b" '(buffer-menu               :which-key "buffer menu")
  "b i" '(ibuffer                   :which-key "ibuffer")
  "b c" '(kill-this-buffer          :which-key "kill buffer")
- "b k" '(kill-buffer               :which-key "kill buffer")
+ "b k" '(kill-this-buffer          :which-key "kill buffer")
  "b p" '(previous-buffer           :which-key "previous buffer")
  "b n" '(next-buffer               :which-key "next buffer")
  "b h" '(centaur-tabs-backward-tab :which-key "previous tab")
  "b l" '(centaur-tabs-forward-tab  :which-key "previous tab")
  "b r" '(revert-buffer             :which-key "reload buffer"))
 (define-key evil-normal-state-map (kbd "q") #'(lambda ()
-												(interactive)
-												(when (buffer-modified-p)
-												  (when (y-or-n-p "Buffer modified. Save?")
-													(save-buffer)))
-												(kill-this-buffer)))
+                                                (interactive)
+                                                (when (buffer-modified-p)
+                                                  (when (y-or-n-p "Buffer modified. Save?")
+                                                    (save-buffer)))
+                                                (kill-this-buffer)))
 (define-key evil-normal-state-map (kbd "Q") #'(lambda ()
-												(interactive)
-												(when (buffer-modified-p)
-												  (when (y-or-n-p "Buffer modified. Save?")
-													(save-buffer)))
-												(kill-buffer-and-window)))
+                                                (interactive)
+                                                (when (buffer-modified-p)
+                                                  (when (y-or-n-p "Buffer modified. Save?")
+                                                    (save-buffer)))
+                                                (kill-buffer-and-window)))
 
-  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
-  (with-eval-after-load 'ibuffer
-    (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
+(add-hook 'ibuffer-mode-hook #'(lambda ()
+								 (interactive)
+								 (keymap-local-set (kbd "l") 'ibuffer-visit-buffer)
+								 (keymap-local-set (kbd "j") 'evil-next-visual-line)
+								 (keymap-local-set (kbd "k") 'evil-previous-visual-line)))
 
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "d" '(:ignore t :which-key "dired")
+ "d d" '(dired :which-key "open dired")
+ "d j" '(dired-jump :which-key "open dired at current directory"))
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
   (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file))
 
 (with-eval-after-load "evil"
   (add-hook 'dashboard-mode-hook #'(lambda ()
-								   (interactive)
-								   (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
-								   (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
-								   (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
-								   (evil-local-set-key 'normal (kbd "e") #'(lambda ()
-																			 (interactive)
-																			 (find-file "~/.config/emacs/config.org")))
-								   (evil-local-set-key 'normal (kbd "x") #'(lambda ()
-																			 (interactive)
-																			 (find-file "~/.config/xmonad/xmonad.org"))))))
+                                   (interactive)
+                                   (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
+                                   (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
+                                   (evil-local-set-key 'normal (kbd "a") 'dashboard-jump-to-agenda)
+                                   (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
+                                   (evil-local-set-key 'normal (kbd "e") #'(lambda ()
+                                                                             (interactive)
+                                                                             (find-file "~/.config/emacs/config.org")))
+                                   (evil-local-set-key 'normal (kbd "x") #'(lambda ()
+                                                                             (interactive)
+                                                                             (find-file "~/.config/xmonad/xmonad.org"))))))
 
 (general-define-key
  :states '(normal visual)
@@ -374,7 +430,7 @@
 
 (defun bugger/reload ()
   (interactive)
-  (org-babgel-tangle-file "~/.config/emacs/config.org")
+  (org-babel-tangle-file "~/.config/emacs/config.org")
   (load-file "~/.config/emacs/init.el")
   (load-file "~/.config/emacs/init.el"))
 
@@ -391,7 +447,7 @@
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
- "o t" '(projectile-run-vterm-other-window)) ; this keybinding is just because its what I'm used to in doom emacs
+ "o t" '(projectile-run-vterm-other-window :which-key "open vterm")) ; this keybinding is just because its what I'm used to in doom emacs
 
 (general-define-key
  :states '(normal visual)
@@ -402,15 +458,15 @@
  "p c" '(projectile-compile-project :which-key "compile project")
  "p f" '(counsel-projectile-find-file-dwim :which-key "find file"))
 
-(setq gc-cons-threshold (* 2 1024 1024))
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "i" '(:ignore t :which-key "insert")
+ "i s" '(yas-insert-snippet :which-key "snippets"))
+(general-define-key
+ :states 'insert
+ :prefix "M-SPC"
+ "i" '(:ignore t :which-key "insert")
+ "i s" '(yas-insert-snippet :which-key "snippets"))
 
-(use-package web-mode
-  :ensure t
-  :init
-  (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
-  (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
-(use-package emmet-mode
-  :ensure t
-  :after web-mode
-  :hook (web-mode . emmet-mode))
+(setq gc-cons-threshold (* 2 1024 1024))

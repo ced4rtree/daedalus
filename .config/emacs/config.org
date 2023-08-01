@@ -3,24 +3,26 @@
 #+PROPERTY: header-args :tangle init.el
 #+OPTIONS: toc:2
 #+auto_tangle: t
-#+STARTUP: showeverything
 
 * Table of contents :toc:
 - [[#package-setup][Package setup]]
   - [[#melpa][Melpa]]
   - [[#use-package][use-package]]
+- [[#evil][Evil]]
 - [[#ux][UX]]
   - [[#fonts][Fonts]]
   - [[#indent-guides][Indent guides]]
+  - [[#theme][Theme]]
   - [[#modeline][Modeline]]
   - [[#centaur-tabs][Centaur tabs]]
   - [[#line-numbers][Line numbers]]
   - [[#highlight-the-line][Highlight the line]]
-  - [[#theme][Theme]]
   - [[#rid-of-ugly-stuff][Rid of ugly stuff]]
   - [[#scrolling][Scrolling]]
   - [[#dashboard][Dashboard]]
   - [[#rainbows][Rainbows!]]
+  - [[#window-transparency][Window transparency]]
+  - [[#tree-sitter][Tree Sitter]]
 - [[#org-mode][Org mode]]
   - [[#org-tempo][Org tempo]]
   - [[#auto-tangle][Auto tangle]]
@@ -41,8 +43,11 @@
   - [[#treemacs][Treemacs]]
   - [[#projectile][Projectile]]
   - [[#undo][Undo]]
+- [[#yasnippet][YASnippet]]
+  - [[#main-install][Main Install]]
+  - [[#extra-snippets][Extra Snippets]]
+- [[#web-mode][Web mode]]
 - [[#keybindings][Keybindings]]
-  - [[#evil][Evil]]
   - [[#general][General]]
   - [[#which-key][Which-key]]
   - [[#nice-little-things][Nice little things]]
@@ -57,8 +62,8 @@
   - [[#helpful-functions][Helpful functions]]
   - [[#vterm-1][Vterm]]
   - [[#projectile-1][Projectile]]
+  - [[#yasnippet-1][YASnippet]]
 - [[#clean-up][Clean up]]
-- [[#web-mode][Web mode]]
 
 * Package setup
 ** Melpa
@@ -71,11 +76,31 @@ Melpa is a repository for emacs that enables a lot more than what is in the stan
 #+end_src
 
 ** use-package
+This is no longer needed, since Emacs 29 has use-package built in
 #+begin_src emacs-lisp
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (setq use-package-always-ensure t)
+  ;(unless (package-installed-p 'use-package)
+    ;(package-refresh-contents)
+    ;(package-install 'use-package))
+  ;(setq use-package-always-ensure t)
+#+end_src
+
+* Evil
+Evil is a vim emulation package for emacs, the Emacs Vi extension Layer
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-keybinding nil)
+    (evil-mode 1)
+    (setq evil-undo-system 'undo-redo))
+#+end_src
+
+add evil in every buffer
+#+begin_src emacs-lisp
+(use-package evil-collection
+    :after evil magit
+    :config
+    (evil-collection-init))
 #+end_src
 
 * UX
@@ -96,6 +121,13 @@ Melpa is a repository for emacs that enables a lot more than what is in the stan
   :hook (prog-mode . highlight-indent-guides-mode))
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
+#+end_src
+
+** Theme
+#+begin_src emacs-lisp
+(use-package doom-themes
+  :ensure t
+  :config (load-theme 'doom-molokai t))
 #+end_src
 
 ** Modeline
@@ -122,12 +154,11 @@ A nice little bar at the bottom
         ;; than the current OSes preference
         doom-modeline-buffer-encoding 'nondefault
         doom-modeline-default-eol-type 0
-		doom-modeline-height 35)
+        doom-modeline-height 35)
   (when (daemonp)
     (setq doom-modeline-icon t))
   :config
   
-  (add-hook 'after-setting-font-hook #'+modeline-resize-for-font-h)
   (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))
 #+end_src
 
@@ -161,34 +192,31 @@ Centaur tabs is a better tab bar for emacs
 ** Line numbers
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode 1)
+(with-eval-after-load "dashboard"
+  (add-hook 'dashboard-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1))))
 #+end_src
 
 ** Highlight the line
 #+begin_src emacs-lisp
 (global-hl-line-mode)
 #+end_src
-** Theme
-#+begin_src emacs-lisp
-(use-package ef-themes
-  :ensure t
-  :config (load-theme 'ef-symbiosis t))
-#+end_src
 
 ** Rid of ugly stuff
 #+begin_src emacs-lisp
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
 #+end_src
 
 ** Scrolling
 #+begin_src emacs-lisp
-  ;; scroll one line at a time (less "jumpy" than defaults)
-  (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; 2 lines at a time
-  (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-  (setq scroll-step 1) ;; keyboard scroll one line at a time
-  (setq scroll-conservatively 101)
+;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 2 lines at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
+(pixel-scroll-precision-mode 1) ;; smooth scrolling
 #+end_src
 
 ** Dashboard
@@ -200,98 +228,110 @@ All the icons gives icons in the dashboard
 
 Nice little lines
 #+begin_src emacs-lisp
-  (use-package page-break-lines
-    :config (global-page-break-lines-mode))
+(use-package page-break-lines
+  :config (global-page-break-lines-mode))
 #+end_src
 
-Get rid of agenda files from the recentf list  :after recentf
+Get rid of agenda files from the recentf list
 #+begin_src emacs-lisp
-  (use-package recentf
-    :config
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/schedule.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/todo.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/emacs.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/org/agenda/homework.org"))
-    (add-to-list 'recentf-exclude (concat (getenv "HOME") "/.config/emacs/bookmarks")))
+(use-package recentf
+  :config
+  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+  (add-to-list 'recentf-exclude "~/org/agenda/todo.org")
+  (add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
+  (add-to-list 'recentf-exclude "~/org/agenda/homework.org")
+  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks"))
 #+end_src
 
 *** The actual dashboard
 A dashboard inside of emacs
 #+begin_src emacs-lisp
-    (use-package dashboard
-      :after all-the-icons
-      :after page-break-lines
-      :after projectile
-      :ensure t
-      :init
-      (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-      (setq dashboard-items '((recents . 5)
-                              (projects . 5)
-                              (agenda . 5)))
-      (setq dashboard-icon-type 'all-the-icons)
-      (setq dashboard-center-content t)
-      (setq dashboard-set-heading-icons t)
-      (setq dashboard-set-file-icons t)
-      :config
-      (dashboard-setup-startup-hook))
+(use-package dashboard
+  :after all-the-icons
+  :after page-break-lines
+  :after projectile
+  :after recentf
+  :ensure t
+  :init
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq dashboard-items '((recents . 5)
+                          (projects . 5)
+                          (agenda . 5)))
+  (setq dashboard-icon-type 'all-the-icons)
+  (setq dashboard-center-content t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  :config
+  (dashboard-setup-startup-hook))
 #+end_src
 
 ** Rainbows!
 Adds rainbow parentheses and color to hex values and such
 #+begin_src emacs-lisp
-  (use-package rainbow-mode
-    :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
-  (use-package rainbow-delimiters
-    :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
-  (use-package rainbow-identifiers
-    :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
+(use-package rainbow-mode
+  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
+(use-package rainbow-delimiters
+  :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
+(use-package rainbow-identifiers
+  :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 #+end_src
 
+** Window transparency
+Another new feature in Emacs 29 that lets you make the background transparent while keeping text and such solid
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist '(alpha-background . 90))
+#+end_src
+
+** Tree Sitter
+Tree sitter is now built into emacs as of Emacs 29
+#+begin_src emacs-lisp
+(add-hook 'java-mode-hook 'java-ts-mode)
+#+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
 ** Org tempo
 A simple tool that simplifies writing source code blocks to just typing <s TAB, as well as other similar functions
 #+begin_src emacs-lisp
-  (use-package org-tempo
-    :ensure nil)
+(use-package org-tempo
+  :ensure nil)
 #+end_src
 
 ** Auto tangle
 Tangle a file to its source code blocks automatically upon save
 #+begin_src emacs-lisp
-  (use-package org-auto-tangle
-    :ensure t
-    :defer t
-    :hook (org-mode . org-auto-tangle-mode))
+(use-package org-auto-tangle
+  :ensure t
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
 ** Indentation
 #+begin_src emacs-lisp
-  (add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook 'org-indent-mode)
 #+end_src
 
 ** Toc-org
 This automatically generates a table of contents under any heading tagged :TOC:
 #+begin_src emacs-lisp
-  (use-package toc-org
-    :hook (org-mode . toc-org-mode))
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
 #+end_src
 ** Babel settings
 #+begin_src emacs-lisp
-  (setq org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil
-        org-src-window-setup 'current-window
-        org-src-preserve-indentation t)
+(setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-confirm-babel-evaluate nil
+      org-src-window-setup 'current-window
+      org-src-preserve-indentation t)
 #+end_src
 
 ** Org agenda
 Org agenda is a full blown scheduling application with all the power of org mode built into it
 #+begin_src emacs-lisp
 (setq org-agenda-files (list "~/org/agenda/todo.org"
-							 "~/org/agenda/homework.org"
-							 "~/org/agenda/emacs.org"
-							 "~/org/agenda/schedule.org"))
+                             "~/org/agenda/homework.org"
+                             "~/org/agenda/emacs.org"
+                             "~/org/agenda/schedule.org"))
 
 ;; a better org agenda interface
 (use-package calfw)
@@ -303,83 +343,87 @@ Things that aren't really necessary to do stuff, but nice to have
 ** Smartparens
 Auto completes (, [, {, ", etc for you so you don't have to keep track of them
 #+begin_src emacs-lisp
-  (use-package smartparens
-    :config
-    (require 'smartparens-config)
-    (smartparens-global-mode 1))
+(use-package smartparens
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-mode 1))
 #+end_src
 
 ** Ivy
 Ivy is a minibuffer autocompletion framework that makes it a lot easier to do things like input commands
 *** Just ivy
 #+begin_src emacs-lisp
-  (use-package ivy
-    :defer 0.1
-    :diminish
-    :custom
-    (setq ivy-count-format "(%d/%d) ")
-    (setq ivy-use-virtual-buffers t)
-    (setq enable-recursive-minibuffers t)
-    :config
-    (ivy-mode))
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :custom
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  :config
+  (ivy-mode))
 #+end_src
 
 *** Counsel
 Counsel a sort of extension to ivy, taking lots of functions already in emacs and putting them into an ivy completion minibuffer
 #+begin_src emacs-lisp
-  (use-package counsel
-    :after ivy
-    :defer t
-    :config
-    (counsel-mode)
-    (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
+(use-package counsel
+  :after ivy
+  :defer t
+  :config
+  (counsel-mode)
+  (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
 #+end_src
 
 *** Ivy-rich
 Gives us keybindings alongside the commands they go with when in an ivy completion minibuffer
 #+begin_src emacs-lisp
-  (use-package ivy-rich
-    :after ivy
-    :defer t
-    :custom
-    (ivy-virtual-abbreviate 'full
-     ivy-rich-switch-buffer-align-virtual-buffer t
-     ivy-rich-path-style 'abbrev)
-    :config
-    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-    (ivy-rich-mode 1))
+(use-package ivy-rich
+  :after ivy
+  :defer t
+  :custom
+  (ivy-virtual-abbreviate 'full
+   ivy-rich-switch-buffer-align-virtual-buffer t
+   ivy-rich-path-style 'abbrev)
+  :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+  (ivy-rich-mode 1))
 #+end_src
 
 *** Swiper
 A better way to search
 #+begin_src emacs-lisp
-  (use-package swiper
-    :after ivy
-    :defer t
-    :bind (:map evil-normal-state-map
-           ("/" . swiper-isearch)
-           ("n" . evil-search-previous)
-           ("N" . evil-search-next)))
+(use-package swiper
+  :after ivy
+  :defer t
+  :bind (:map evil-normal-state-map
+         ("/" . swiper-isearch)
+         ("n" . evil-search-previous)
+         ("N" . evil-search-next)))
 #+end_src
+
 ** Tabbing
 #+begin_src emacs-lisp
-  (setq indent-tabs-mode t)
-  (setq-default tab-width 4
-                c-basic-offset 4
-                c-default-style "stroustrup")
-  (defvaralias 'c-basic-offset 'tab-width)
+(setq indent-tabs-mode t)
+(setq-default tab-width 4
+              c-basic-offset 4
+              c-default-style "stroustrup")
+(defvaralias 'c-basic-offset 'tab-width)
 #+end_src
+
 ** Visual lines
-a#+begin_src emacs-lisp
-  (define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
-  (define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
-  (define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
-a#+end_src
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+(define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+(define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+#+end_src
+
 ** Too lazy to type yes
 #+begin_src emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
+
 ** Too lazy to type ESC-ESC-ESC or C-g
 #+begin_src emacs-lisp
 (global-set-key (kbd "<escape>") 'abort-minibuffers)
@@ -404,6 +448,8 @@ LSP is the Language Server Protocol, and is what actually populates the company 
   :hook (prog-mode . #'lsp-deferred)
   :config
   (setq lsp-keymap-prefix "C-l"))
+
+; extensions
 (use-package lsp-haskell
   :defer t
   :after lsp-mode)
@@ -413,6 +459,10 @@ LSP is the Language Server Protocol, and is what actually populates the company 
 (use-package lsp-java
   :defer t
   :after lsp-mode)
+(use-package lsp-ui
+  :defer t
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-doc-mode))
 #+end_src
 
 ** Flycheck
@@ -448,28 +498,38 @@ Projectile manages projects
 #+end_src
 
 ** Undo
+* YASnippet
+YASnippet is a templating system for emacs that allows you to type whatever you want, that expands into whatever you want.
+** Main Install
 #+begin_src emacs-lisp
-(setq evil-undo-system 'undo-redo)
+(use-package yasnippet
+  :ensure t
+  :config
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+  (yas-global-mode 1))
 #+end_src
+
+** Extra Snippets
+#+begin_src emacs-lisp
+(use-package yasnippet-snippets :ensure t :after yasnippet)
+(use-package java-snippets :ensure t :after yasnippet)
+#+end_src
+* Web mode
+Support for web development with web-mode and emmet-mode
+#+begin_src emacs-lisp
+(use-package web-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
+(use-package emmet-mode
+  :ensure t
+  :after web-mode
+  :hook (web-mode . emmet-mode))
+#+end_src
+
 * Keybindings
-** Evil
-Evil is a vim emulation package for emacs, the Emacs Vi extension Layer
-#+begin_src emacs-lisp
-  (use-package evil
-    :init
-	(setq evil-want-keybinding nil)
-    (evil-mode 1)
-    (setq evil-undo-system 'undo-redo))
-#+end_src
-
-add evil in every buffer
-#+begin_src emacs-lisp
-(use-package evil-collection
-	:after evil magit
-	:config
-	(evil-collection-init))
-#+end_src
-
 ** General
 General is a package that allows us to do very complex things like bind space as a leader key, or add which-key labels to prefix keys
 #+begin_src emacs-lisp
@@ -486,24 +546,35 @@ Which-key displays possible completions for keybindings you have typed in a mini
     :config (which-key-mode 1))
 #+end_src
 
+#+begin_src emacs-lisp
+(setq evil-undo-system 'undo-redo)
+#+end_src
 ** Nice little things
 #+begin_src emacs-lisp
-  ;; tab over the region
-  (general-define-key
-   :states 'visual
-   "TAB" (lambda ()
-           (interactive)
-           (tab-to-tab-stop)))
+;; tab over the region
+(general-define-key
+ :states 'visual
+ "TAB" (lambda ()
+         (interactive)
+         (tab-to-tab-stop)))
 
-  ;; comment/uncomment the region
-  (general-define-key
-   :states '(normal visual)
-   "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment lines"))
+;; comment/uncomment the region
+(general-define-key
+ :states '(normal visual)
+ "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment lines"))
 
-  ;; toggle tolding
-  (general-define-key
-   :states 'normal
-   "TAB" 'evil-toggle-fold)
+;; toggle tolding
+(general-define-key
+ :states 'normal
+ "TAB" 'evil-toggle-fold)
+
+;; delete a tab, not 4 spaces
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+
+;; Better directory navigation in ivy
+(eval-after-load 'ivy #'(lambda ()
+						  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char)))
 #+end_src
 
 ** Files
@@ -538,36 +609,44 @@ Which-key displays possible completions for keybindings you have typed in a mini
  "b b" '(buffer-menu               :which-key "buffer menu")
  "b i" '(ibuffer                   :which-key "ibuffer")
  "b c" '(kill-this-buffer          :which-key "kill buffer")
- "b k" '(kill-buffer               :which-key "kill buffer")
+ "b k" '(kill-this-buffer          :which-key "kill buffer")
  "b p" '(previous-buffer           :which-key "previous buffer")
  "b n" '(next-buffer               :which-key "next buffer")
  "b h" '(centaur-tabs-backward-tab :which-key "previous tab")
  "b l" '(centaur-tabs-forward-tab  :which-key "previous tab")
  "b r" '(revert-buffer             :which-key "reload buffer"))
 (define-key evil-normal-state-map (kbd "q") #'(lambda ()
-												(interactive)
-												(when (buffer-modified-p)
-												  (when (y-or-n-p "Buffer modified. Save?")
-													(save-buffer)))
-												(kill-this-buffer)))
+                                                (interactive)
+                                                (when (buffer-modified-p)
+                                                  (when (y-or-n-p "Buffer modified. Save?")
+                                                    (save-buffer)))
+                                                (kill-this-buffer)))
 (define-key evil-normal-state-map (kbd "Q") #'(lambda ()
-												(interactive)
-												(when (buffer-modified-p)
-												  (when (y-or-n-p "Buffer modified. Save?")
-													(save-buffer)))
-												(kill-buffer-and-window)))
+                                                (interactive)
+                                                (when (buffer-modified-p)
+                                                  (when (y-or-n-p "Buffer modified. Save?")
+                                                    (save-buffer)))
+                                                (kill-buffer-and-window)))
 #+end_src
 
 ** Ibuffer
 Add evil keybindings
 #+begin_src emacs-lisp
-  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
-  (with-eval-after-load 'ibuffer
-    (evil-define-key 'normal ibuffer-mode-map (kbd "l") 'ibuffer-visit-buffer))
+(add-hook 'ibuffer-mode-hook #'(lambda ()
+								 (interactive)
+								 (keymap-local-set (kbd "l") 'ibuffer-visit-buffer)
+								 (keymap-local-set (kbd "j") 'evil-next-visual-line)
+								 (keymap-local-set (kbd "k") 'evil-previous-visual-line)))
 #+end_src
 
 ** Dired
 #+begin_src emacs-lisp
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "d" '(:ignore t :which-key "dired")
+ "d d" '(dired :which-key "open dired")
+ "d j" '(dired-jump :which-key "open dired at current directory"))
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
   (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file))
@@ -577,16 +656,17 @@ Add evil keybindings
 #+begin_src emacs-lisp
 (with-eval-after-load "evil"
   (add-hook 'dashboard-mode-hook #'(lambda ()
-								   (interactive)
-								   (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
-								   (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
-								   (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
-								   (evil-local-set-key 'normal (kbd "e") #'(lambda ()
-																			 (interactive)
-																			 (find-file "~/.config/emacs/config.org")))
-								   (evil-local-set-key 'normal (kbd "x") #'(lambda ()
-																			 (interactive)
-																			 (find-file "~/.config/xmonad/xmonad.org"))))))
+                                   (interactive)
+                                   (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
+                                   (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
+                                   (evil-local-set-key 'normal (kbd "a") 'dashboard-jump-to-agenda)
+                                   (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
+                                   (evil-local-set-key 'normal (kbd "e") #'(lambda ()
+                                                                             (interactive)
+                                                                             (find-file "~/.config/emacs/config.org")))
+                                   (evil-local-set-key 'normal (kbd "x") #'(lambda ()
+                                                                             (interactive)
+                                                                             (find-file "~/.config/xmonad/xmonad.org"))))))
 #+end_src
 
 ** Org agenda
@@ -620,7 +700,7 @@ Add evil keybindings
 #+begin_src emacs-lisp
 (defun bugger/reload ()
   (interactive)
-  (org-babgel-tangle-file "~/.config/emacs/config.org")
+  (org-babel-tangle-file "~/.config/emacs/config.org")
   (load-file "~/.config/emacs/init.el")
   (load-file "~/.config/emacs/init.el"))
 
@@ -640,7 +720,7 @@ Add evil keybindings
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
- "o t" '(projectile-run-vterm-other-window)) ; this keybinding is just because its what I'm used to in doom emacs
+ "o t" '(projectile-run-vterm-other-window :which-key "open vterm")) ; this keybinding is just because its what I'm used to in doom emacs
 #+end_src
 
 ** Projectile
@@ -655,23 +735,22 @@ Add evil keybindings
  "p f" '(counsel-projectile-find-file-dwim :which-key "find file"))
 #+end_src
 
+** YASnippet
+#+begin_src emacs-lisp
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "i" '(:ignore t :which-key "insert")
+ "i s" '(yas-insert-snippet :which-key "snippets"))
+(general-define-key
+ :states 'insert
+ :prefix "M-SPC"
+ "i" '(:ignore t :which-key "insert")
+ "i s" '(yas-insert-snippet :which-key "snippets"))
+#+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1024 1024))
 #+end_src
 
-* Web mode
-Support for web development with web-mode and emmet-mode
-#+begin_src emacs-lisp
-(use-package web-mode
-  :ensure t
-  :init
-  (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
-  (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
-(use-package emmet-mode
-  :ensure t
-  :after web-mode
-  :hook (web-mode . emmet-mode))
-#+end_src
