@@ -8,17 +8,19 @@
     ;(package-install 'use-package))
   ;(setq use-package-always-ensure t)
 
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-keybinding nil)
-    (evil-mode 1)
-    (setq evil-undo-system 'undo-redo))
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1)
+  (setq evil-undo-system 'undo-redo))
 
 (use-package evil-collection
-    :after evil magit
-    :config
-    (evil-collection-init))
+  :after evil magit
+  :config
+  (setq evil-collection-mode-list '(dashboard))
+  (evil-collection-init))
 
 (add-to-list 'default-frame-alist
              '(font . "AnonymicePro Nerd Font Mono-15"))
@@ -35,7 +37,7 @@
 
 (use-package doom-themes
   :ensure t
-  :config (load-theme 'doom-molokai t))
+  :config (load-theme 'doom-one t))
 
 (use-package doom-modeline
   :ensure t
@@ -145,7 +147,7 @@
 (use-package rainbow-identifiers
   :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 
 (add-hook 'java-mode-hook 'java-ts-mode)
 
@@ -158,6 +160,7 @@
   :hook (org-mode . org-auto-tangle-mode))
 
 (add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-hide-leading-stars nil)
 
 (use-package toc-org
   :hook (org-mode . toc-org-mode))
@@ -265,7 +268,32 @@
   :config
   (global-flycheck-mode))
 
-(use-package vterm :defer t)
+(use-package vterm
+  :defer t
+  :ensure t
+  :config
+  (setq shell-file-name "/bin/zsh"
+		vterm-max-scrollback 5000))
+
+(use-package vterm-toggle
+  :after vterm
+  :ensure t
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (setq vterm-toggle-scope 'project)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                  (display-buffer-reuse-window display-buffer-at-bottom)
+                  ;;(display-buffer-reuse-window display-buffer-in-direction)
+                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                  ;;(direction . bottom)
+                  ;;(dedicated . t) ;dedicated is supported in emacs27
+                  (reusable-frames . visible)
+                  (window-height . 0.3))))
 
 (use-package treemacs :defer t)
 (use-package treemacs-evil :after (treemacs evil))
@@ -298,6 +326,8 @@
   :ensure t
   :after web-mode
   :hook (web-mode . emmet-mode))
+
+(use-package evil-nerd-commenter :ensure t)
 
   (use-package general
     :ensure t
@@ -426,7 +456,9 @@
  "g b" '(magit-branch :which-key "branch")
  "g c o" '(magit-checkout :which-key "checkout")
  "g c b" '(magit-branch-and-checkout :which-key "create and checkout a branch")
- "g c c" '(magit-commit :which-key "commit"))
+ "g c c" '(magit-commit :which-key "commit")
+ "g p l" '(magit-pull :which-key "pull")
+ "g p s" '(magit-push :which-key "push"))
 
 (defun bugger/reload ()
   (interactive)
@@ -447,7 +479,8 @@
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
- "o t" '(projectile-run-vterm-other-window :which-key "open vterm")) ; this keybinding is just because its what I'm used to in doom emacs
+ "t" '(:ignore t :which-key "toggle")
+ "t v" '(vterm-toggle :which-key "open vterm"))
 
 (general-define-key
  :states '(normal visual)

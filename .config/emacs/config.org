@@ -1,4 +1,4 @@
-#+TITLE: My Emacs Config, Now Literate!
+#+TITLE: My Emacs Config, No Longer Bankrupt
 #+AUTHOR: bugger
 #+PROPERTY: header-args :tangle init.el
 #+OPTIONS: toc:2
@@ -30,7 +30,7 @@
   - [[#toc-org][Toc-org]]
   - [[#babel-settings][Babel settings]]
   - [[#org-agenda][Org agenda]]
-- [[#qol][QOL]]
+- [[#nice-packages][Nice Packages]]
   - [[#smartparens][Smartparens]]
   - [[#ivy][Ivy]]
   - [[#tabbing][Tabbing]]
@@ -43,10 +43,9 @@
   - [[#treemacs][Treemacs]]
   - [[#projectile][Projectile]]
   - [[#undo][Undo]]
-- [[#yasnippet][YASnippet]]
-  - [[#main-install][Main Install]]
-  - [[#extra-snippets][Extra Snippets]]
-- [[#web-mode][Web mode]]
+  - [[#yasnippet][YASnippet]]
+  - [[#web-mode][Web mode]]
+  - [[#commenting][Commenting]]
 - [[#keybindings][Keybindings]]
   - [[#general][General]]
   - [[#which-key][Which-key]]
@@ -60,7 +59,7 @@
   - [[#org-agenda-1][Org agenda]]
   - [[#magit][Magit]]
   - [[#helpful-functions][Helpful functions]]
-  - [[#vterm-1][Vterm]]
+  - [[#toggle][Toggle]]
   - [[#projectile-1][Projectile]]
   - [[#yasnippet-1][YASnippet]]
 - [[#clean-up][Clean up]]
@@ -87,20 +86,22 @@ This is no longer needed, since Emacs 29 has use-package built in
 * Evil
 Evil is a vim emulation package for emacs, the Emacs Vi extension Layer
 #+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-keybinding nil)
-    (evil-mode 1)
-    (setq evil-undo-system 'undo-redo))
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1)
+  (setq evil-undo-system 'undo-redo))
 #+end_src
 
 add evil in every buffer
 #+begin_src emacs-lisp
 (use-package evil-collection
-    :after evil magit
-    :config
-    (evil-collection-init))
+  :after evil magit
+  :config
+  (setq evil-collection-mode-list '(dashboard))
+  (evil-collection-init))
 #+end_src
 
 * UX
@@ -127,7 +128,7 @@ add evil in every buffer
 #+begin_src emacs-lisp
 (use-package doom-themes
   :ensure t
-  :config (load-theme 'doom-molokai t))
+  :config (load-theme 'doom-one t))
 #+end_src
 
 ** Modeline
@@ -279,7 +280,7 @@ Adds rainbow parentheses and color to hex values and such
 ** Window transparency
 Another new feature in Emacs 29 that lets you make the background transparent while keeping text and such solid
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 #+end_src
 
 ** Tree Sitter
@@ -308,6 +309,7 @@ Tangle a file to its source code blocks automatically upon save
 ** Indentation
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-hide-leading-stars nil)
 #+end_src
 
 ** Toc-org
@@ -338,7 +340,7 @@ Org agenda is a full blown scheduling application with all the power of org mode
 (use-package calfw-org :after calfw)
 #+end_src
 
-* QOL
+* Nice Packages
 Things that aren't really necessary to do stuff, but nice to have
 ** Smartparens
 Auto completes (, [, {, ", etc for you so you don't have to keep track of them
@@ -476,7 +478,35 @@ Flycheck is a program that enables essentially 'spell checking' your code
 ** Vterm
 Vterm is a fully fledged terminal within emacs
 #+begin_src emacs-lisp
-(use-package vterm :defer t)
+(use-package vterm
+  :defer t
+  :ensure t
+  :config
+  (setq shell-file-name "/bin/zsh"
+		vterm-max-scrollback 5000))
+#+end_src
+*** Toggling
+It's kind of annoying to have an ordinary window stuck there at the bottom that you have to deal with and pop back up to reconfigure the window again, so why not add a toggle for it?
+#+begin_src emacs-lisp
+(use-package vterm-toggle
+  :after vterm
+  :ensure t
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (setq vterm-toggle-scope 'project)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                  (display-buffer-reuse-window display-buffer-at-bottom)
+                  ;;(display-buffer-reuse-window display-buffer-in-direction)
+                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                  ;;(direction . bottom)
+                  ;;(dedicated . t) ;dedicated is supported in emacs27
+                  (reusable-frames . visible)
+                  (window-height . 0.3))))
 #+end_src
 ** Treemacs
 Treemacs is a little side panel that shows a directory tree
@@ -498,9 +528,9 @@ Projectile manages projects
 #+end_src
 
 ** Undo
-* YASnippet
+** YASnippet
 YASnippet is a templating system for emacs that allows you to type whatever you want, that expands into whatever you want.
-** Main Install
+*** Main Install
 #+begin_src emacs-lisp
 (use-package yasnippet
   :ensure t
@@ -509,12 +539,12 @@ YASnippet is a templating system for emacs that allows you to type whatever you 
   (yas-global-mode 1))
 #+end_src
 
-** Extra Snippets
+*** Extra Snippets
 #+begin_src emacs-lisp
 (use-package yasnippet-snippets :ensure t :after yasnippet)
 (use-package java-snippets :ensure t :after yasnippet)
 #+end_src
-* Web mode
+** Web mode
 Support for web development with web-mode and emmet-mode
 #+begin_src emacs-lisp
 (use-package web-mode
@@ -529,6 +559,11 @@ Support for web development with web-mode and emmet-mode
   :hook (web-mode . emmet-mode))
 #+end_src
 
+** Commenting
+Neat package that gives some nice commenting functions
+#+begin_src emacs-lisp
+(use-package evil-nerd-commenter :ensure t)
+#+end_src
 * Keybindings
 ** General
 General is a package that allows us to do very complex things like bind space as a leader key, or add which-key labels to prefix keys
@@ -693,7 +728,9 @@ Add evil keybindings
  "g b" '(magit-branch :which-key "branch")
  "g c o" '(magit-checkout :which-key "checkout")
  "g c b" '(magit-branch-and-checkout :which-key "create and checkout a branch")
- "g c c" '(magit-commit :which-key "commit"))
+ "g c c" '(magit-commit :which-key "commit")
+ "g p l" '(magit-pull :which-key "pull")
+ "g p s" '(magit-push :which-key "push"))
 #+end_src
 
 ** Helpful functions
@@ -715,12 +752,13 @@ Add evil keybindings
  "h f" '(describe-function :which-key "describe function"))
 #+end_src
 
-** Vterm
+** Toggle
 #+begin_src emacs-lisp
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
- "o t" '(projectile-run-vterm-other-window :which-key "open vterm")) ; this keybinding is just because its what I'm used to in doom emacs
+ "t" '(:ignore t :which-key "toggle")
+ "t v" '(vterm-toggle :which-key "open vterm"))
 #+end_src
 
 ** Projectile
