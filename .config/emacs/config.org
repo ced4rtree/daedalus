@@ -46,6 +46,7 @@
   - [[#yasnippet][YASnippet]]
   - [[#web-mode][Web mode]]
   - [[#commenting][Commenting]]
+  - [[#dired][Dired]]
 - [[#keybindings][Keybindings]]
   - [[#general][General]]
   - [[#which-key][Which-key]]
@@ -54,7 +55,7 @@
   - [[#windows][Windows]]
   - [[#buffers][Buffers]]
   - [[#ibuffer][Ibuffer]]
-  - [[#dired][Dired]]
+  - [[#dired-1][Dired]]
   - [[#dashboard-1][Dashboard]]
   - [[#org-agenda-1][Org agenda]]
   - [[#magit][Magit]]
@@ -564,6 +565,31 @@ Neat package that gives some nice commenting functions
 #+begin_src emacs-lisp
 (use-package evil-nerd-commenter :ensure t)
 #+end_src
+** Dired
+Dired has some nice extensions that let you automatically open in another program, and preview files
+#+begin_src emacs-lisp
+(use-package dired-open
+  :ensure t
+  :after dired
+  :config
+  (setq dired-open-extensions '(("gif" . "nsxiv")
+								("jpg" . "nsxiv")
+								("png" . "nsxiv")
+								("mkv" . "mpv")
+								("mp4" . "mpv")
+								("mp3" . "mpv"))))
+(use-package peep-dired
+  :after dired
+  :ensure t
+  :hook (peep-dired . evil-normalize-keymaps)
+  :config
+  (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
+  (evil-define-key 'normal dired-mode-map (kbd "j") 'peep-dired-next-file)
+  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)
+  (evil-define-key 'normal peep-dired-mode-map (kbd "l") 'dired-open-file))
+
+
+#+end_src
 * Keybindings
 ** General
 General is a package that allows us to do very complex things like bind space as a leader key, or add which-key labels to prefix keys
@@ -681,10 +707,11 @@ Add evil keybindings
  :prefix "SPC"
  "d" '(:ignore t :which-key "dired")
  "d d" '(dired :which-key "open dired")
+ "d p" '(peep-dired :which-key "toggle peep-dired")
  "d j" '(dired-jump :which-key "open dired at current directory"))
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file))
+  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file)) ; use dired-find-file if not using dired-open package
 #+end_src
 
 ** Dashboard

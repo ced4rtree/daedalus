@@ -329,6 +329,26 @@
 
 (use-package evil-nerd-commenter :ensure t)
 
+(use-package dired-open
+  :ensure t
+  :after dired
+  :config
+  (setq dired-open-extensions '(("gif" . "nsxiv")
+								("jpg" . "nsxiv")
+								("png" . "nsxiv")
+								("mkv" . "mpv")
+								("mp4" . "mpv")
+								("mp3" . "mpv"))))
+(use-package peep-dired
+  :after dired
+  :ensure t
+  :hook (peep-dired . evil-normalize-keymaps)
+  :config
+  (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
+  (evil-define-key 'normal dired-mode-map (kbd "j") 'peep-dired-next-file)
+  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)
+  (evil-define-key 'normal peep-dired-mode-map (kbd "l") 'dired-open-file))
+
   (use-package general
     :ensure t
     :init (general-evil-setup t))
@@ -418,10 +438,11 @@
  :prefix "SPC"
  "d" '(:ignore t :which-key "dired")
  "d d" '(dired :which-key "open dired")
+ "d p" '(peep-dired :which-key "toggle peep-dired")
  "d j" '(dired-jump :which-key "open dired at current directory"))
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-file))
+  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file)) ; use dired-find-file if not using dired-open package
 
 (with-eval-after-load "evil"
   (add-hook 'dashboard-mode-hook #'(lambda ()
