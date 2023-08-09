@@ -41,6 +41,7 @@
   - [[#flycheck][Flycheck]]
   - [[#treemacs][Treemacs]]
   - [[#projectile][Projectile]]
+  - [[#perspectives][Perspectives]]
   - [[#yasnippet][YASnippet]]
   - [[#web-mode][Web mode]]
   - [[#commenting][Commenting]]
@@ -68,6 +69,7 @@
   - [[#projectile-1][Projectile]]
   - [[#yasnippet-1][YASnippet]]
   - [[#emms-1][EMMS]]
+  - [[#perspective][Perspective]]
 - [[#clean-up][Clean up]]
 
 * Package setup
@@ -164,7 +166,7 @@ A nice little bar at the bottom
         ;; than the current OSes preference
         doom-modeline-buffer-encoding 'nondefault
         doom-modeline-default-eol-type 0
-        doom-modeline-height 35)
+        doom-modeline-height 25)
   (when (daemonp)
     (setq doom-modeline-icon t))
   :config
@@ -376,8 +378,7 @@ Counsel a sort of extension to ivy, taking lots of functions already in emacs an
 #+begin_src emacs-lisp
 (use-package counsel
   :after ivy
-  :defer t
-  :config
+  :init
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
 #+end_src
@@ -499,6 +500,24 @@ Projectile manages projects
 (use-package counsel-projectile :after (projectile counsel))
 #+end_src
 
+** Perspectives
+Like workspaces inside of emacs to clean up the buffer list
+#+begin_src emacs-lisp
+(use-package perspective
+  :ensure t
+  :init
+  (persp-mode)
+  :config
+  (setq persp-mode-prefix-key "C-x x"))
+#+end_src
+*** Projectile integration
+It'd be really nice if you could assign perspectives to projects, right? It is, so I did that.
+#+begin_src emacs-lisp
+(use-package persp-projectile
+  :ensure t
+  :after perspective
+  :after projectile)
+#+end_src
 ** YASnippet
 YASnippet is a templating system for emacs that allows you to type whatever you want, that expands into whatever you want.
 *** Main Install
@@ -885,9 +904,10 @@ Add evil keybindings
  :prefix "SPC"
  "/" '(counsel-projectile-rg :which-key "search project")
  "p" '(:ignore t :which-key "projectile")
- "p p" '(counsel-projectile :which-key "open project")
+ "p p" '(projectile-persp-switch-project :which-key "open project")
  "p c" '(projectile-compile-project :which-key "compile project")
- "p f" '(counsel-projectile-find-file-dwim :which-key "find file"))
+ "p f" '(counsel-projectile-find-file-dwim :which-key "find file")
+ "p a" '(projectile-add-known-project :which-key "add project"))
 #+end_src
 
 ** YASnippet
@@ -915,6 +935,26 @@ Add evil keybindings
  "m r" '(emms-player-mpd-update-all-reset-cache :which-key "update database")
  "m b" '(emms-smart-browse :which-key "browse music")
  "m s" '(emms-shuffle :which-key "shuffle"))
+#+end_src
+** Perspective
+s prefix doesn't make a lot of sense, but p for perspective and w for workspace
+are taken already by projectile and windows respectively.
+Just think of it like per*Spective*, or work*Space*
+#+begin_src emacs-lisp
+(general-define-key
+ :prefix "SPC"
+ :states '(normal visual)
+ "s" '(:ignore t :which-key "persp")
+ "s b" '(persp-counsel-switch-buffer :which-key "switch buffer")
+ "s i" '(persp-ibuffer :which-key "persp ibuffer")
+ "s s" '(persp-switch :which-key "switch perspective")
+ "s n" '(persp-next :which-key "next perspective")
+ "s p" '(persp-prev :which-key "prev perspective")
+ "s a" '(persp-add-buffer :which-key "add buffer to perspesctive")
+ "s A" '(persp-set-buffer :which-key "brgin buffer to perspective")
+ "s r" '(persp-remove :which-key "remove buffer from perspective")
+ "s k" '(persp-kill :which-key "kill perspective")
+ "s K" '(persp-kill-others :which-key "kill other perspectives"))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init

@@ -63,7 +63,7 @@
         ;; than the current OSes preference
         doom-modeline-buffer-encoding 'nondefault
         doom-modeline-default-eol-type 0
-        doom-modeline-height 35)
+        doom-modeline-height 25)
   (when (daemonp)
     (setq doom-modeline-icon t))
   :config
@@ -196,8 +196,7 @@
 
 (use-package counsel
   :after ivy
-  :defer t
-  :config
+  :init
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
 
@@ -278,6 +277,18 @@
   (projectile-mode +1))
 (use-package projectile-ripgrep :after projectile)
 (use-package counsel-projectile :after (projectile counsel))
+
+(use-package perspective
+  :ensure t
+  :init
+  (persp-mode)
+  :config
+  (setq persp-mode-prefix-key "C-x x"))
+
+(use-package persp-projectile
+  :ensure t
+  :after perspective
+  :after projectile)
 
 (use-package yasnippet
   :ensure t
@@ -574,9 +585,10 @@
  :prefix "SPC"
  "/" '(counsel-projectile-rg :which-key "search project")
  "p" '(:ignore t :which-key "projectile")
- "p p" '(counsel-projectile :which-key "open project")
+ "p p" '(projectile-persp-switch-project :which-key "open project")
  "p c" '(projectile-compile-project :which-key "compile project")
- "p f" '(counsel-projectile-find-file-dwim :which-key "find file"))
+ "p f" '(counsel-projectile-find-file-dwim :which-key "find file")
+ "p a" '(projectile-add-known-project :which-key "add project"))
 
 (general-define-key
  :states '(normal visual)
@@ -600,17 +612,19 @@
  "m b" '(emms-smart-browse :which-key "browse music")
  "m s" '(emms-shuffle :which-key "shuffle"))
 
+(general-define-key
+ :prefix "SPC"
+ :states '(normal visual)
+ "s" '(:ignore t :which-key "persp")
+ "s b" '(persp-counsel-switch-buffer :which-key "switch buffer")
+ "s i" '(persp-ibuffer :which-key "persp ibuffer")
+ "s s" '(persp-switch :which-key "switch perspective")
+ "s n" '(persp-next :which-key "next perspective")
+ "s p" '(persp-prev :which-key "prev perspective")
+ "s a" '(persp-add-buffer :which-key "add buffer to perspesctive")
+ "s A" '(persp-set-buffer :which-key "brgin buffer to perspective")
+ "s r" '(persp-remove :which-key "remove buffer from perspective")
+ "s k" '(persp-kill :which-key "kill perspective")
+ "s K" '(persp-kill-others :which-key "kill other perspectives"))
+
 (setq gc-cons-threshold (* 2 1024 1024))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(yuck-mode yasnippet-snippets xresources-theme which-key web-mode vterm-toggle use-package typescript-mode treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil treemacs-all-the-icons toc-org tide smartparens rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep peep-dired page-break-lines org-auto-tangle lsp-ui lsp-java lsp-haskell java-snippets ivy-rich highlight-indent-guides general evil-nerd-commenter evil-collection emms emmet-mode elfeed-org elfeed-goodies ef-themes doom-themes doom-modeline dired-open dashboard counsel-projectile company centaur-tabs calfw-org calfw)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
