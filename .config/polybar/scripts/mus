@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+while [ 2 -eq 2 ]
+do
+	mpc idle 1>/dev/null
+	if [ "${1}" == "info" ]; then
+		echo "🎵 $(mpc | sed -n '1p')"
+	elif [ "${1}" == "paused" ]; then
+		if [ "$(mpc | awk 'NR==2 {print $1}')" = "[playing]" ]; then
+			echo " "
+		else
+			echo "▶ "
+		fi
+	fi
+done
