@@ -30,7 +30,7 @@
   - [[#toc-org][Toc-org]]
   - [[#babel-settings][Babel settings]]
   - [[#org-agenda][Org agenda]]
-- [[#nice-packages][Nice Packages]]
+- [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#smartparens][Smartparens]]
   - [[#ivy][Ivy]]
   - [[#tabbing][Tabbing]]
@@ -39,14 +39,18 @@
   - [[#too-lazy-to-type-esc-esc-esc-or-c-g][Too lazy to type ESC-ESC-ESC or C-g]]
   - [[#autocompletion][Autocompletion]]
   - [[#flycheck][Flycheck]]
-  - [[#vterm][Vterm]]
   - [[#treemacs][Treemacs]]
   - [[#projectile][Projectile]]
-  - [[#undo][Undo]]
   - [[#yasnippet][YASnippet]]
   - [[#web-mode][Web mode]]
   - [[#commenting][Commenting]]
   - [[#dired][Dired]]
+  - [[#auto-backup][Auto Backup]]
+- [[#emacs-as-an-operating-system][Emacs as an Operating System]]
+  - [[#elfeed][Elfeed]]
+  - [[#vterm][Vterm]]
+  - [[#emms][EMMS]]
+  - [[#calfw][Calfw]]
 - [[#keybindings][Keybindings]]
   - [[#general][General]]
   - [[#which-key][Which-key]]
@@ -63,6 +67,7 @@
   - [[#toggle][Toggle]]
   - [[#projectile-1][Projectile]]
   - [[#yasnippet-1][YASnippet]]
+  - [[#emms-1][EMMS]]
 - [[#clean-up][Clean up]]
 
 * Package setup
@@ -87,13 +92,14 @@ This is no longer needed, since Emacs 29 has use-package built in
 * Evil
 Evil is a vim emulation package for emacs, the Emacs Vi extension Layer
 #+begin_src emacs-lisp
+(require 'bind-key)
 (use-package evil
   :ensure t
   :init
   (setq evil-want-keybinding nil)
   :config
   (evil-mode 1)
-  (setq evil-undo-system 'undo-redo))
+  (evil-set-undo-system 'undo-redo))
 #+end_src
 
 add evil in every buffer
@@ -127,9 +133,11 @@ add evil in every buffer
 
 ** Theme
 #+begin_src emacs-lisp
-(use-package doom-themes
-  :ensure t
-  :config (load-theme 'doom-one t))
+(use-package xresources-theme
+  :ensure t)
+(add-hook 'server-after-make-frame-hook #'(lambda ()
+											(interactive)
+											(load-theme 'xresources t)))
 #+end_src
 
 ** Modeline
@@ -335,13 +343,9 @@ Org agenda is a full blown scheduling application with all the power of org mode
                              "~/org/agenda/homework.org"
                              "~/org/agenda/emacs.org"
                              "~/org/agenda/schedule.org"))
-
-;; a better org agenda interface
-(use-package calfw)
-(use-package calfw-org :after calfw)
 #+end_src
 
-* Nice Packages
+* Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
 ** Smartparens
 Auto completes (, [, {, ", etc for you so you don't have to keep track of them
@@ -476,39 +480,6 @@ Flycheck is a program that enables essentially 'spell checking' your code
   :config
   (global-flycheck-mode))
 #+end_src
-** Vterm
-Vterm is a fully fledged terminal within emacs
-#+begin_src emacs-lisp
-(use-package vterm
-  :defer t
-  :ensure t
-  :config
-  (setq shell-file-name "/bin/zsh"
-		vterm-max-scrollback 5000))
-#+end_src
-*** Toggling
-It's kind of annoying to have an ordinary window stuck there at the bottom that you have to deal with and pop back up to reconfigure the window again, so why not add a toggle for it?
-#+begin_src emacs-lisp
-(use-package vterm-toggle
-  :after vterm
-  :ensure t
-  :config
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                  (display-buffer-reuse-window display-buffer-at-bottom)
-                  ;;(display-buffer-reuse-window display-buffer-in-direction)
-                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                  ;;(direction . bottom)
-                  ;;(dedicated . t) ;dedicated is supported in emacs27
-                  (reusable-frames . visible)
-                  (window-height . 0.3))))
-#+end_src
 ** Treemacs
 Treemacs is a little side panel that shows a directory tree
 #+begin_src emacs-lisp
@@ -528,7 +499,6 @@ Projectile manages projects
 (use-package counsel-projectile :after (projectile counsel))
 #+end_src
 
-** Undo
 ** YASnippet
 YASnippet is a templating system for emacs that allows you to type whatever you want, that expands into whatever you want.
 *** Main Install
@@ -589,6 +559,126 @@ Dired has some nice extensions that let you automatically open in another progra
   (evil-define-key 'normal peep-dired-mode-map (kbd "l") 'dired-open-file))
 
 
+#+end_src
+** Auto Backup
+Emacs has a feature to automatically back up files every so often, which is nice, but clogs up the directory and git, so I moved it
+#+begin_src emacs-lisp
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+#+end_src
+* Emacs as an Operating System
+The packages that let me use emacs instead of some external package
+** Elfeed
+An RSS Client for emacs
+#+begin_src emacs-lisp
+(use-package elfeed :ensure t)
+(use-package elfeed-org
+  :ensure t
+  :after elfeed
+  :config
+  (elfeed-org))
+(use-package elfeed-goodies
+  :ensure t
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
+#+end_src
+** Vterm
+Vterm is a fully fledged terminal within emacs
+#+begin_src emacs-lisp
+(use-package vterm
+  :defer t
+  :ensure t
+  :config
+  (setq shell-file-name "/bin/zsh"
+		vterm-max-scrollback 5000))
+#+end_src
+*** Toggling
+It's kind of annoying to have an ordinary window stuck there at the bottom that you have to deal with and pop back up to reconfigure the window again, so why not add a toggle for it?
+#+begin_src emacs-lisp
+(use-package vterm-toggle
+  :after vterm
+  :ensure t
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (setq vterm-toggle-scope 'project)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                  (display-buffer-reuse-window display-buffer-at-bottom)
+                  ;;(display-buffer-reuse-window display-buffer-in-direction)
+                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                  ;;(direction . bottom)
+                  ;;(dedicated . t) ;dedicated is supported in emacs27
+                  (reusable-frames . visible)
+                  (window-height . 0.3))))
+#+end_src
+** EMMS
+The Emacs Multimedia System lets you use emacs as a music player
+#+begin_src emacs-lisp
+(use-package emms
+  :ensure t
+  :config
+  (require 'emms-setup)
+  (require 'emms-player-mpd)
+  (emms-all)
+  (setq emms-seek-seconds 5)
+  (setq emms-player-list '(emms-player-mpd))
+  (setq emms-info-functions '(emms-info-mpd))
+  (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+  (setq emms-player-mpd-server-name "localhost")
+  (setq emms-player-mpd-server-port "6600")
+  (setq mpc-host "localhost:6600"))
+#+end_src
+
+*** Scratchpad
+To use emms as a scratchpad, you have to do a bunch of stuff, so here's a function to do it
+#+begin_src emacs-lisp
+(defun emms-scratchpad ()
+  "Spawns an emms frame to use as a scratchpad in a window manager"
+  (interactive)
+  (with-selected-frame 
+    (make-frame '((name . "music")
+                  (minibuffer . t)
+                  (fullscreen . 0) ; no fullscreen
+                  (undecorated . t) ; remove title bar
+                  ;;(auto-raise . t) ; focus on this frame
+                  ;;(tool-bar-lines . 0)
+                  ;;(menu-bar-lines . 0)
+                  (internal-border-width . 10)))
+                  (unwind-protect
+                    (emms-smart-browse)
+                    (delete-frame))))
+#+end_src
+** Calfw
+A calendar within emacs!
+#+begin_src emacs-lisp
+(use-package calfw)
+(use-package calfw-org :after calfw)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun calfw-scratchpad ()
+  "Spawns an emms frame to use as a scratchpad in a window manager"
+  (interactive)
+  (with-selected-frame 
+    (make-frame '((name . "cal")
+                  (minibuffer . t)
+                  (fullscreen . 0) ; no fullscreen
+                  (undecorated . t) ; remove title bar
+                  (internal-border-width . 10)
+                  (width . 80)
+                  (height . 11)))                 ;;(auto-raise . t) ; focus on this frame
+                  ;;(tool-bar-lines . 0)
+                  ;;(menu-bar-lines . 0)
+                  (unwind-protect
+                    (cfw:open-org-calendar)
+                    (delete-frame))))
 #+end_src
 * Keybindings
 ** General
@@ -812,6 +902,19 @@ Add evil keybindings
  :prefix "M-SPC"
  "i" '(:ignore t :which-key "insert")
  "i s" '(yas-insert-snippet :which-key "snippets"))
+#+end_src
+** EMMS
+#+begin_src emacs-lisp
+(general-define-key
+ :prefix "SPC"
+ :states '(normal visual)
+ "m" '(:ignore t :which-key "music")
+ "m m" '(emms :which-key "emms dashboard")
+ "m n" '(emms-next :which-key "next song")
+ "m p" '(emms-previous :which-key "prev song")
+ "m r" '(emms-player-mpd-update-all-reset-cache :which-key "update database")
+ "m b" '(emms-smart-browse :which-key "browse music")
+ "m s" '(emms-shuffle :which-key "shuffle"))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init

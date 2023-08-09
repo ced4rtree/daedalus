@@ -8,13 +8,14 @@
     ;(package-install 'use-package))
   ;(setq use-package-always-ensure t)
 
+(require 'bind-key)
 (use-package evil
   :ensure t
   :init
   (setq evil-want-keybinding nil)
   :config
   (evil-mode 1)
-  (setq evil-undo-system 'undo-redo))
+  (evil-set-undo-system 'undo-redo))
 
 (use-package evil-collection
   :after evil magit
@@ -35,9 +36,11 @@
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
 
-(use-package doom-themes
-  :ensure t
-  :config (load-theme 'doom-one t))
+(use-package xresources-theme
+  :ensure t)
+(add-hook 'server-after-make-frame-hook #'(lambda ()
+											(interactive)
+											(load-theme 'xresources t)))
 
 (use-package doom-modeline
   :ensure t
@@ -176,10 +179,6 @@
                              "~/org/agenda/emacs.org"
                              "~/org/agenda/schedule.org"))
 
-;; a better org agenda interface
-(use-package calfw)
-(use-package calfw-org :after calfw)
-
 (use-package smartparens
   :config
   (require 'smartparens-config)
@@ -268,33 +267,6 @@
   :config
   (global-flycheck-mode))
 
-(use-package vterm
-  :defer t
-  :ensure t
-  :config
-  (setq shell-file-name "/bin/zsh"
-		vterm-max-scrollback 5000))
-
-(use-package vterm-toggle
-  :after vterm
-  :ensure t
-  :config
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                  (display-buffer-reuse-window display-buffer-at-bottom)
-                  ;;(display-buffer-reuse-window display-buffer-in-direction)
-                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                  ;;(direction . bottom)
-                  ;;(dedicated . t) ;dedicated is supported in emacs27
-                  (reusable-frames . visible)
-                  (window-height . 0.3))))
-
 (use-package treemacs :defer t)
 (use-package treemacs-evil :after (treemacs evil))
 (use-package treemacs-projectile :after (treemacs projectile))
@@ -348,6 +320,100 @@
   (evil-define-key 'normal dired-mode-map (kbd "j") 'peep-dired-next-file)
   (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)
   (evil-define-key 'normal peep-dired-mode-map (kbd "l") 'dired-open-file))
+
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+(use-package elfeed :ensure t)
+(use-package elfeed-org
+  :ensure t
+  :after elfeed
+  :config
+  (elfeed-org))
+(use-package elfeed-goodies
+  :ensure t
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
+
+(use-package vterm
+  :defer t
+  :ensure t
+  :config
+  (setq shell-file-name "/bin/zsh"
+		vterm-max-scrollback 5000))
+
+(use-package vterm-toggle
+  :after vterm
+  :ensure t
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (setq vterm-toggle-scope 'project)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                  (display-buffer-reuse-window display-buffer-at-bottom)
+                  ;;(display-buffer-reuse-window display-buffer-in-direction)
+                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                  ;;(direction . bottom)
+                  ;;(dedicated . t) ;dedicated is supported in emacs27
+                  (reusable-frames . visible)
+                  (window-height . 0.3))))
+
+(use-package emms
+  :ensure t
+  :config
+  (require 'emms-setup)
+  (require 'emms-player-mpd)
+  (emms-all)
+  (setq emms-seek-seconds 5)
+  (setq emms-player-list '(emms-player-mpd))
+  (setq emms-info-functions '(emms-info-mpd))
+  (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+  (setq emms-player-mpd-server-name "localhost")
+  (setq emms-player-mpd-server-port "6600")
+  (setq mpc-host "localhost:6600"))
+
+(defun emms-scratchpad ()
+  "Spawns an emms frame to use as a scratchpad in a window manager"
+  (interactive)
+  (with-selected-frame 
+    (make-frame '((name . "music")
+                  (minibuffer . t)
+                  (fullscreen . 0) ; no fullscreen
+                  (undecorated . t) ; remove title bar
+                  ;;(auto-raise . t) ; focus on this frame
+                  ;;(tool-bar-lines . 0)
+                  ;;(menu-bar-lines . 0)
+                  (internal-border-width . 10)))
+                  (unwind-protect
+                    (emms-smart-browse)
+                    (delete-frame))))
+
+(use-package calfw)
+(use-package calfw-org :after calfw)
+
+(defun calfw-scratchpad ()
+  "Spawns an emms frame to use as a scratchpad in a window manager"
+  (interactive)
+  (with-selected-frame 
+    (make-frame '((name . "cal")
+                  (minibuffer . t)
+                  (fullscreen . 0) ; no fullscreen
+                  (undecorated . t) ; remove title bar
+                  (internal-border-width . 10)
+                  (width . 80)
+                  (height . 11)))                 ;;(auto-raise . t) ; focus on this frame
+                  ;;(tool-bar-lines . 0)
+                  ;;(menu-bar-lines . 0)
+                  (unwind-protect
+                    (cfw:open-org-calendar)
+                    (delete-frame))))
 
   (use-package general
     :ensure t
@@ -523,4 +589,28 @@
  "i" '(:ignore t :which-key "insert")
  "i s" '(yas-insert-snippet :which-key "snippets"))
 
+(general-define-key
+ :prefix "SPC"
+ :states '(normal visual)
+ "m" '(:ignore t :which-key "music")
+ "m m" '(emms :which-key "emms dashboard")
+ "m n" '(emms-next :which-key "next song")
+ "m p" '(emms-previous :which-key "prev song")
+ "m r" '(emms-player-mpd-update-all-reset-cache :which-key "update database")
+ "m b" '(emms-smart-browse :which-key "browse music")
+ "m s" '(emms-shuffle :which-key "shuffle"))
+
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(yuck-mode yasnippet-snippets xresources-theme which-key web-mode vterm-toggle use-package typescript-mode treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil treemacs-all-the-icons toc-org tide smartparens rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep peep-dired page-break-lines org-auto-tangle lsp-ui lsp-java lsp-haskell java-snippets ivy-rich highlight-indent-guides general evil-nerd-commenter evil-collection emms emmet-mode elfeed-org elfeed-goodies ef-themes doom-themes doom-modeline dired-open dashboard counsel-projectile company centaur-tabs calfw-org calfw)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
