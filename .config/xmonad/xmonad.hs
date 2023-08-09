@@ -59,9 +59,9 @@ import System.IO
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
-myWorkspaces = [ "1:  \984515", "2:  \58930", "3:  \983609", "4:  \984687", "5:  \62601", "6:  \984275", "7: \61811", "8: \60259", "9: \989057", "10: \984043"]
+myWorkspaces = [ "1: \984515", "2: \58930", "3: \983609", "4: \984687", "5: \62601", "6: \984275", "7: \61811", "8: \60259", "9: \989057", "10: \984043"]
                -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
-myTerminal = "alacritty"
+myTerminal = "urxvt"
 
 myXPConfig = def
       { font                = "xft:Ubuntu Nerd Font:size=14"
@@ -120,7 +120,7 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                 , NS "calfw" spawnCal findCal manageCal
                 ]
     where
-      spawnTerm  = myTerminal ++ " -T scratchpad"
+      spawnTerm  = myTerminal ++ " -name scratchpad"
       findTerm   = title =? "scratchpad"
       manageTerm = customFloating $ W.RationalRect l t w h
                    where
@@ -128,7 +128,7 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                      w = 0.9
                      t = 0.075 -- height based
                      l = 0.05 -- width based
-      spawnMus  = myTerminal ++ " -T music -e ncmpcpp"
+      spawnMus  = "emacsclient -cF '((name . \"music\"))' -e '(emms-scratchpad)' -e '(emms-smart-browse)' -e '(turn-off-evil-mode)'"
       findMus   = title =? "music"
       manageMus = customFloating $ W.RationalRect l t w h
                    where
@@ -136,8 +136,8 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                      w = 0.9
                      t = 0.075 -- height based
                      l = 0.05 -- width based
-      spawnCal  = "emacsclient -c -e '(cfw:open-org-calendar)' --title=cal"
-      findCal   = resource =? "cal"
+      spawnCal  = "emacsclient -cF '((name . \"cal\"))' -e '(calfw-scratchpad)' -e '(cfw:open-org-calendar)'"
+      findCal   = title =? "cal"
       manageCal = customFloating $ W.RationalRect l t w h
                    where
                      h = 0.9
@@ -156,7 +156,7 @@ myStartupHook = do
   spawnOnce "mpv /opt/sounds/startup-01.mp3"
   spawnOnce "xsetroot -cursor_name left_ptr"
   spawnStatusBar "~/.config/polybar/launch.sh"
-  spawnOnce "feh --randomize --bg-scale ~/.local/wallpapers"
+  spawnOnce "~/.config/xmonad/wallpaper.sh"
   -- Makes repeat rate much faster
   spawnOnce "xset r rate 200 65"
   -- Epic caps lock instead of escape chad moment
@@ -186,6 +186,8 @@ myManageHook = composeAll
   , className =? "splash"                              --> doFloat
   , className =? "toolbar"                             --> doFloat
   , className =? "Yad"                                 --> doFloat
+  , title     =? "music"                               --> doFloat
+  , title     =? "cal"                                 --> doFloat
   , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
   , isFullscreen                                       --> doFullFloat
   , className =? "discord"                             --> doShift (myWorkspaces !! 3) -- send discord to the 4th workspace (arrays start at 0)
@@ -217,12 +219,18 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         ]
 
         ^++^ subKeys "Music"
-        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "mpc toggle")
-        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "mpc toggle")
-        , ("M-S-h",                  addName "Play the previous song" $ spawn "mpc prev")
-        , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "mpc prev")
-        , ("M-S-l",                  addName "Play the next song"     $ spawn "mpc next")
-        , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "mpc next")
+        -- [ ("M-S-j",                  addName "Toggle the music"       $ spawn "mpc toggle")
+        -- , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "mpc toggle")
+        -- , ("M-S-h",                  addName "Play the previous song" $ spawn "mpc prev")
+        -- , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "mpc prev")
+        -- , ("M-S-l",                  addName "Play the next song"     $ spawn "mpc next")
+        -- , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "mpc next")
+        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
+        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
+        , ("M-S-h",                  addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)")
+        , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)'")
+        , ("M-S-l",                  addName "Play the next song"     $ spawn "emacsclient --eval '(emms-next)'")
+        , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "emacsclient --eval '(emms-next)'")
         , ("<XF86AudioRaiseVolume>", addName "Turn the volume up"     $ spawn "~/scripts/snd up")
         , ("<XF86AudioLowerVolume>", addName "Turn the volume down"   $ spawn "~/scripts/snd down")
         ]
@@ -296,7 +304,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         ^++^ subKeys "Misc"
         [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot True)
         , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot False)
-        , ("M-w",       addName "Set a random wallpaper"                  $ spawn "feh --bg-scale --randomize ~/.local/wallpapers")
+        , ("M-w",       addName "Set a random wallpaper"                  $ spawn "~/.config/xmonad/wallpaper.sh")
         , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -a 'emacs' -c")
         , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)
         , ("M--",       addName "Decrease window spacing"                 $ decWindowSpacing 2 *> decScreenSpacing 2)
