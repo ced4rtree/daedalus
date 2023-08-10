@@ -426,6 +426,46 @@
                     (cfw:open-org-calendar)
                     (delete-frame))))
 
+(use-package mu4e
+  :ensure nil
+  :load-path "/usr/share/emacs/site-lisp/mu4e"
+  :config
+  (setq smtpmail-stream-type 'starttls
+        mu4e-change-filenames-when-moving t
+		mu4e-update-interval (* 10 60)
+		mu4e-maildir "~/Mail"
+		mu4e-compose-format-flowed t
+		mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
+		;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
+		;; using the decryption function defined below
+		message-send-mail-function 'smtpmail-send-it)
+
+		;; this is a dummy configuration for example
+		;; my real email info is stored in ~/.config/emacs/emails.el
+
+		;; mu4e-contexts (list
+		;; 			   (make-mu4e-context
+		;; 				:name "School"
+		;; 				:match-func (lambda (msg)
+		;; 							  (when msg
+		;; 								(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+		;; 				:vars '((user-mail-address . "myemail@gmail.com")
+		;; 						(user-full-name    . "My Name")
+		;; 						(smtpmail-smtp-server . "smtp.gmail.com")
+		;; 						(smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
+		;; 						(mu4e-drafts-folder . "/[Gmail]/Drafts")
+		;; 						(mu4e-sent-folder . "/[Gmail]/Sent Mail")
+		;; 						(mu4e-refile-folder . "/[Gmail]/All Mail")
+		;; 						(mu4e-trash-folder . "/[Gmail]/Trash"))))
+
+  (load (concat user-emacs-directory "emails.el")))
+
+(defun efs/lookup-password (&rest keys)
+  (let ((result (apply #'auth-source-search keys)))
+	(if result
+		(funcall (plist-get (car result) :secret))
+	  nil)))
+
   (use-package general
     :ensure t
     :init (general-evil-setup t))
