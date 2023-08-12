@@ -227,7 +227,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         -- , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "mpc next")
         [ ("M-S-j",                  addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
         , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
-        , ("M-S-h",                  addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)")
+        , ("M-S-h",                  addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)'")
         , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)'")
         , ("M-S-l",                  addName "Play the next song"     $ spawn "emacsclient --eval '(emms-next)'")
         , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "emacsclient --eval '(emms-next)'")
@@ -317,7 +317,7 @@ main = do
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
-        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
+        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "urxvt") (return True)
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
         , layoutHook              = showWName' myShowWNameTheme $ myLayoutHook
