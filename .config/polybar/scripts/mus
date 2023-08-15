@@ -3,12 +3,20 @@ while [ 2 -eq 2 ]
 do
 	mpc idle 1>/dev/null
 	if [ "${1}" == "info" ]; then
-		echo "🎵 $(mpc | sed -n '1p')"
-	elif [ "${1}" == "paused" ]; then
-		if [ "$(mpc | awk 'NR==2 {print $1}')" = "[playing]" ]; then
-			echo " "
+		output="$(mpc | sed -n '1p')"
+		if ! [ "$(echo """$output""" | cut -d ' ' -f1)" == "volume:" ]; then
+			echo "🎵 ${output}"
 		else
+			echo ""
+		fi
+	elif [ "${1}" == "paused" ]; then
+		check="$(mpc | awk 'NR==2 {print $1}')"
+		if [ "${check}" = "[playing]" ]; then
+			echo " "
+		elif [ "${check}" = "[paused]" ]; then
 			echo "▶ "
+		else
+			echo ""
 		fi
 	fi
 done
