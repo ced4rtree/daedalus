@@ -5,7 +5,7 @@ do
 	if [ "${1}" == "info" ]; then
 		output="$(mpc | sed -n '1p')"
 		if ! [ "$(echo """$output""" | cut -d ' ' -f1)" == "volume:" ]; then
-			echo "🎵 ${output}"
+			echo "🎵 ${output}" | cut -c -50 | sed 's/$/\.\.\./'
 		else
 			echo ""
 		fi
