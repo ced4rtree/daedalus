@@ -1,12 +1,27 @@
-  (require 'package)
-  (setq package-user-dir "~/.config/emacs/.local/elpa")
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (package-initialize)
+(require 'package)
+(setq package-user-dir "~/.config/emacs/.local/elpa")
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
-  ;(unless (package-installed-p 'use-package)
-    ;(package-refresh-contents)
-    ;(package-install 'use-package))
-  ;(setq use-package-always-ensure t)
+										;(unless (package-installed-p 'use-package)
+										;(package-refresh-contents)
+										;(package-install 'use-package))
+										;(setq use-package-always-ensure t)
+
+(defun bugger/extern-package (AUTHOR PACKAGE)
+  "Installs an emacs package from the github link https://github.com/AUTHOR/PACKAGE"
+
+  ;; create the installation directory if it doesn't exist
+  (when  (not (file-exists-p (concat user-emacs-directory ".local/extern-package")))
+	(mkdir (concat user-emacs-directory ".local/extern-package")))
+
+  ;; clone the project if it doesn't exist
+  (when (not (file-exists-p (concat user-emacs-directory ".local/extern-package/" PACKAGE)))
+	(shell-command (concat "git clone https://github.com/" AUTHOR "/" PACKAGE " " user-emacs-directory ".local/extern-package/" PACKAGE)))
+
+  ;; load the package
+  (add-to-list 'load-path (concat user-emacs-directory ".local/extern-package/" PACKAGE))
+  (require (intern (symbol-value 'PACKAGE))))
 
 (require 'bind-key)
 (use-package evil
@@ -36,11 +51,12 @@
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
 
-(use-package xresources-theme
-  :ensure t)
-(add-hook 'server-after-make-frame-hook #'(lambda ()
-											(interactive)
-											(load-theme 'xresources t)))
+(load-theme 'doom-one t)
+;; (use-package xresources-theme
+;;   :ensure t)
+;; (add-hook 'server-after-make-frame-hook #'(lambda ()
+;; 											(interactive)
+;; 											(load-theme 'xresources t)))
 
 (use-package doom-modeline
   :ensure t
@@ -58,17 +74,20 @@
         doom-modeline-persp-name nil
         doom-modeline-minor-modes nil
         doom-modeline-major-mode-icon nil
-        doom-modeline-buffer-file-name-style 'relative-from-project
+        doom-modeline-buffer-file-name-style 'filename
         ;; Only show file encoding if it's non-UTF-8 and different line endings
         ;; than the current OSes preference
         doom-modeline-buffer-encoding 'nondefault
         doom-modeline-default-eol-type 0
-        doom-modeline-height 25)
+        doom-modeline-height 35)
   (when (daemonp)
     (setq doom-modeline-icon t))
   :config
   
   (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))
+
+(when (file-exists-p "/sys/class/power_supply/")
+  (display-battery-mode 1))
 
 (use-package centaur-tabs
   :hook (server-after-make-frame . centaur-tabs-mode)
@@ -84,14 +103,14 @@
         ;; prevents that.
         centaur-tabs-cycle-scope 'tabs))
 
-  ;; When started in daemon mode, centaur tabs does not work at all, so here is a fix
-  (if (not (daemonp))
-      (centaur-tabs-mode)
+;; When started in daemon mode, centaur tabs does not work at all, so here is a fix
+ (if (not (daemonp))
+    (centaur-tabs-mode)
 
-    (defun centaur-tabs--daemon-mode (frame)
-      (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
-        (run-at-time nil nil (lambda () (centaur-tabs-mode)))))
-    (add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
+  (defun centaur-tabs--daemon-mode (frame)
+    (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
+      (run-at-time nil nil (lambda () (centaur-tabs-mode)))))
+  (add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
 
 (global-display-line-numbers-mode 1)
 (with-eval-after-load "dashboard"
@@ -112,7 +131,7 @@
 (pixel-scroll-precision-mode 1) ;; smooth scrolling
 
 (use-package all-the-icons
-  :if (display-graphic-p))
+  :after exwm)
 
 (use-package page-break-lines
   :config (global-page-break-lines-mode))
@@ -150,9 +169,11 @@
 (use-package rainbow-identifiers
   :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+;; (add-to-list 'default-frame-alist '(alpha-background . 85))
 
 (add-hook 'java-mode-hook 'java-ts-mode)
+
+(global-visual-line-mode 1)
 
 (use-package org-tempo
   :ensure nil)
@@ -205,8 +226,8 @@
   :defer t
   :custom
   (ivy-virtual-abbreviate 'full
-   ivy-rich-switch-buffer-align-virtual-buffer t
-   ivy-rich-path-style 'abbrev)
+						  ivy-rich-switch-buffer-align-virtual-buffer t
+						  ivy-rich-path-style 'abbrev)
   :config
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
   (ivy-rich-mode 1))
@@ -215,9 +236,9 @@
   :after ivy
   :defer t
   :bind (:map evil-normal-state-map
-         ("/" . swiper-isearch)
-         ("n" . evil-search-previous)
-         ("N" . evil-search-next)))
+			  ("/" . swiper-isearch)
+			  ("n" . evil-search-previous)
+			  ("N" . evil-search-next)))
 
 (setq indent-tabs-mode t)
 (setq-default tab-width 4
@@ -246,7 +267,7 @@
   :config
   (setq lsp-keymap-prefix "C-l"))
 
-; extensions
+										; extensions
 (use-package lsp-haskell
   :defer t
   :after lsp-mode)
@@ -280,10 +301,9 @@
 
 (use-package perspective
   :ensure t
-  :init
-  (persp-mode)
   :config
   (setq persp-mode-prefix-key "C-x x"))
+(persp-mode)
 
 (use-package persp-projectile
   :ensure t
@@ -337,6 +357,173 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+(bugger/extern-package "SebastienWae" "app-launcher")
+
+;; create a global keyboard shortcut with the following code
+;; emacsclient -cF "((visibility . nil))" -e "(emacs-run-launcher)"
+(defun emacs-run-launcher ()
+  "Create and select a frame called emacs-run-launcher which consists only of a minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
+  (interactive)
+  (with-selected-frame 
+      (make-frame '((name . "emacs-run-launcher")
+					;; (minibuffer . only)
+					(fullscreen . 0) ; no fullscreen
+					(undecorated . t) ; remove title bar
+					;; (auto-raise . t) ; focus on this frame
+					;; (tool-bar-lines . 0)
+					;; (menu-bar-lines . 0)
+					(internal-border-width . 10)
+					(width . 80)
+					(height . 15)))
+    (unwind-protect
+		(funcall (lambda ()
+				   (interactive)
+				   (centaur-tabs-local-mode)
+				   (app-launcher-run-app)
+				   (centaur-tabs-local-mode)))
+	  (delete-frame))))
+
+(defun bugger/keybindings ()
+  ;; These keys should always pass through to Emacs
+  (setq exwm-input-prefix-keys
+        '(?\C-x
+          ?\C-u
+          ?\C-h
+          ?\M-x
+          ?\M-`
+          ?\M-&
+          ?\M-:
+          ?\C-\M-j  ;; Buffer list
+          ?\C-\ ))  ;; Ctrl+Space
+
+  ;; Ctrl+Q will enable the next key to be sent directly
+  (define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
+
+  ;; Set up global key bindings.  These always work, no matter the input state!
+  ;; Keep in mind that changing this list after EXWM initializes has no effect.
+  (setq exwm-input-global-keys
+        `(
+          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+          (,(kbd "s-r") . exwm-reset)
+
+          ;; exit
+          (,(kbd "s-C-q") . exwm-exit)
+
+          ;; app launcher
+          (,(kbd "s-p") . app-launcher-run-app)
+
+          ;; emacs keys to move between windows
+          (,(kbd "s-h") . windmove-left)
+          (,(kbd "s-l") . windmove-right)
+          (,(kbd "s-k") . windmove-up)
+          (,(kbd "s-j") . windmove-down)
+
+          ;; vim keys to swap windows
+          (,(kbd "C-s-h") . windmove-swap-states-left)
+          (,(kbd "C-s-l") . windmove-swap-states-right)
+          (,(kbd "C-s-k") . windmove-swap-states-up)
+          (,(kbd "C-s-j") . windmove-swap-states-down)
+
+          ;; terminal
+          (,(kbd "s-<return>") . vterm-other-window)
+
+          ;; Launch applications via shell command
+          (,(kbd "C-s-7") . (lambda (command)
+                               (interactive (list (read-shell-command "$ ")))
+                               (start-process-shell-command command nil command)))
+          
+          ;; music
+          (,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
+                                               (interactive)
+                                               (start-process-shell-command
+                                                "volume-raise"
+                                                nil
+                                                (concat (getenv "HOME") "/scripts/snd up"))))
+          (,(kbd "<XF86AudioLowerVolume>") . (lambda ()
+                                               (interactive)
+                                               (start-process-shell-command
+                                                "volume-lower"
+                                                nil
+                                                (concat (getenv "HOME") "/scripts/snd down"))))
+
+          ;; brightness
+          (,(kbd "<XF86MonBrightnessUp>") . (lambda ()
+                                              (interactive)
+                                              (start-process-shell-command
+                                               "volume-raise"
+                                               nil
+                                               (concat (getenv "HOME") "/scripts/real-brightness up"))))
+          (,(kbd "<XF86MonBrightnessDown>") . (lambda ()
+                                                (interactive)
+                                                (start-process-shell-command
+                                                 "volume-lower"
+                                                 nil
+                                                 (concat (getenv "HOME") "/scripts/real-brightness down"))))
+          ;; layout stuff
+          (,(kbd "s-m") . exwm-layout-toggle-fullscreen)
+          (,(kbd "s-f") . exwm-floating-toggle-floating)
+
+          ;; Switch workspace
+          (,(kbd "s-w") . exwm-workspace-switch)
+
+          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (1 - 9)
+          ,@(mapcar (lambda (i)
+                      `(,(kbd (format "s-%d" i)) .
+                        (lambda ()
+                          (interactive)
+                          (exwm-workspace-switch-create ,(- i 1)))))
+                    (number-sequence 1 9))
+		  (,(kbd "s-0") . (lambda ()
+							(interactive)
+							(exwm-workspace-switch-create 9))))))
+
+(defun bugger/gpg-fix ()
+  (setenv "GPG_AGENT_INFO" nil)
+  (setq auth-source-debug t)
+
+  (setq epg-gpg-program "gpg2")
+  (require 'epa-file)
+  (epa-file-enable)
+  (setq epg-pinentry-mode 'loopback)
+  (pinentry-start)
+
+  (require 'org-crypt)
+  (org-crypt-use-before-save-magic))
+
+;; function for renaming windows
+(defun exwm-rename-buffer ()
+  (interactive)
+  (exwm-workspace-rename-buffer
+   (concat exwm-class-name ":"
+		   (if (<= (length exwm-title) 50) exwm-title
+             (concat (substring exwm-title 0 49) "...")))))
+
+(defun bugger/exwm-settings ()
+  (setq exwm-workspace-number 10) ;; setting workspaces
+
+  ;; systray
+  (use-package exwm-systemtray
+	:config
+	(exwm-systemtray-enable))
+
+  ;; set window names
+  (add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
+  (add-hook 'exwm-update-title-hook 'exwm-rename-buffer))
+
+(defun bugger/autostart ()
+  (call-process "/bin/sh" (concat user-emacs-directory "autostart.sh")))
+
+(use-package exwm
+  ;;:if (not (daemonp))
+  :config
+  (bugger/exwm-settings)
+  (bugger/gpg-fix)
+  (bugger/keybindings)
+
+  ;;(exwm-enable)
+
+  (bugger/autostart))
+
 (use-package elfeed :ensure t)
 (use-package elfeed-org
   :ensure t
@@ -364,20 +551,21 @@
   (setq vterm-toggle-scope 'project)
   (add-to-list 'display-buffer-alist
                '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                  (display-buffer-reuse-window display-buffer-at-bottom)
-                  ;;(display-buffer-reuse-window display-buffer-in-direction)
-                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                  ;;(direction . bottom)
-                  ;;(dedicated . t) ;dedicated is supported in emacs27
-                  (reusable-frames . visible)
-                  (window-height . 0.3))))
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 ;;(display-buffer-reuse-window display-buffer-in-direction)
+                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                 ;;(direction . bottom)
+                 ;;(dedicated . t) ;dedicated is supported in emacs27
+                 (reusable-frames . visible)
+                 (window-height . 0.3))))
 
 (use-package emms
   :ensure t
+  :after exwm ;; exwm autostart is where mpd gets started
   :config
   (require 'emms-setup)
   (require 'emms-player-mpd)
@@ -394,17 +582,17 @@
   "Spawns an emms frame to use as a scratchpad in a window manager"
   (interactive)
   (with-selected-frame 
-    (make-frame '((name . "music")
-                  (minibuffer . t)
-                  (fullscreen . 0) ; no fullscreen
-                  (undecorated . t) ; remove title bar
-                  ;;(auto-raise . t) ; focus on this frame
-                  ;;(tool-bar-lines . 0)
-                  ;;(menu-bar-lines . 0)
-                  (internal-border-width . 10)))
-                  (unwind-protect
-                    (emms-smart-browse)
-                    (delete-frame))))
+      (make-frame '((name . "music")
+					(minibuffer . t)
+					(fullscreen . 0) ; no fullscreen
+					(undecorated . t) ; remove title bar
+					;;(auto-raise . t) ; focus on this frame
+					;;(tool-bar-lines . 0)
+					;;(menu-bar-lines . 0)
+					(internal-border-width . 10)))
+    (unwind-protect
+        (emms-smart-browse)
+      (delete-frame))))
 
 (use-package calfw)
 (use-package calfw-org :after calfw)
@@ -413,18 +601,18 @@
   "Spawns an emms frame to use as a scratchpad in a window manager"
   (interactive)
   (with-selected-frame 
-    (make-frame '((name . "cal")
-                  (minibuffer . t)
-                  (fullscreen . 0) ; no fullscreen
-                  (undecorated . t) ; remove title bar
-                  (internal-border-width . 10)
-                  (width . 80)
-                  (height . 11)))                 ;;(auto-raise . t) ; focus on this frame
-                  ;;(tool-bar-lines . 0)
-                  ;;(menu-bar-lines . 0)
-                  (unwind-protect
-                    (cfw:open-org-calendar)
-                    (delete-frame))))
+      (make-frame '((name . "cal")
+					(minibuffer . t)
+					(fullscreen . 0) ; no fullscreen
+					(undecorated . t) ; remove title bar
+					(internal-border-width . 10)
+					(width . 80)
+					(height . 11)))                 ;;(auto-raise . t) ; focus on this frame
+    ;;(tool-bar-lines . 0)
+    ;;(menu-bar-lines . 0)
+    (unwind-protect
+        (cfw:open-org-calendar)
+      (delete-frame))))
 
 (use-package mu4e
   :ensure nil
@@ -433,32 +621,37 @@
   (setq smtpmail-stream-type 'starttls
         mu4e-change-filenames-when-moving t
 		mu4e-update-interval (* 10 60)
-		mu4e-maildir "~/Mail"
 		mu4e-compose-format-flowed t
 		mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
 		;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
 		;; using the decryption function defined below
 		message-send-mail-function 'smtpmail-send-it)
 
-		;; this is a dummy configuration for example
-		;; my real email info is stored in ~/.config/emacs/emails.el
+  ;; this is a dummy configuration for example
+  ;; my real email info is stored in ~/.config/emacs/emails.el
 
-		;; mu4e-contexts (list
-		;; 			   (make-mu4e-context
-		;; 				:name "School"
-		;; 				:match-func (lambda (msg)
-		;; 							  (when msg
-		;; 								(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-		;; 				:vars '((user-mail-address . "myemail@gmail.com")
-		;; 						(user-full-name    . "My Name")
-		;; 						(smtpmail-smtp-server . "smtp.gmail.com")
-		;; 						(smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
-		;; 						(mu4e-drafts-folder . "/[Gmail]/Drafts")
-		;; 						(mu4e-sent-folder . "/[Gmail]/Sent Mail")
-		;; 						(mu4e-refile-folder . "/[Gmail]/All Mail")
-		;; 						(mu4e-trash-folder . "/[Gmail]/Trash"))))
+  ;; mu4e-contexts (list
+  ;; 			   (make-mu4e-context
+  ;; 				:name "School"
+  ;; 				:match-func (lambda (msg)
+  ;; 							  (when msg
+  ;; 								(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+  ;; 				:vars '((user-mail-address . "myemail@gmail.com")
+  ;; 						(user-full-name    . "My Name")
+  ;; 						(smtpmail-smtp-server . "smtp.gmail.com")
+  ;; 						(smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
+  ;; 						(mu4e-drafts-folder . "/[Gmail]/Drafts")
+  ;; 						(mu4e-sent-folder . "/[Gmail]/Sent Mail")
+  ;; 						(mu4e-refile-folder . "/[Gmail]/All Mail")
+  ;; 						(mu4e-trash-folder . "/[Gmail]/Trash"))))
 
   (load (concat user-emacs-directory "emails.el")))
+
+(use-package mu4e-alert
+  :after mu4e
+  :config
+  (mu4e-alert-enable-mode-line-display)
+  (mu4e-alert-enable-notifications))
 
 (defun efs/lookup-password (&rest keys)
   (let ((result (apply #'auth-source-search keys)))
@@ -466,13 +659,13 @@
 		(funcall (plist-get (car result) :secret))
 	  nil)))
 
-  (use-package general
-    :ensure t
-    :init (general-evil-setup t))
+(use-package general
+  :ensure t
+  :init (general-evil-setup t))
 
-  (use-package which-key
-    :ensure t
-    :config (which-key-mode 1))
+(use-package which-key
+  :ensure t
+  :config (which-key-mode 1))
 
 (setq evil-undo-system 'undo-redo)
 
@@ -501,22 +694,22 @@
 (eval-after-load 'ivy #'(lambda ()
 						  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char)))
 
-  (general-define-key
-   :states '(normal visual)
-   :prefix "SPC"
-   "f"   '(:ignore t :which-key "files")
-   "f s" '(save-buffer :which-key "Save file")
-   "."   '(find-file   :which-key "open file"))
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "f"   '(:ignore t :which-key "files")
+ "f s" '(save-buffer :which-key "Save file")
+ "."   '(find-file   :which-key "open file"))
 
-  (general-define-key
-   :states '(normal visual)
-   :prefix "SPC"
-   "w"   '(:ignore t              :which-key "windows")
-   "w w" '(evil-window-next       :which-key "next window")
-   "w v" '(evil-window-vsplit     :which-key "create new vertical window")
-   "w n" '(evil-window-new        :which-key "create new window")
-   "w q" '(evil-window-delete     :which-key "delete current window")
-   "w k" '(kill-buffer-and-window :which-key "delete current window and buffer"))
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "w"   '(:ignore t              :which-key "windows")
+ "w w" '(evil-window-next       :which-key "next window")
+ "w v" '(evil-window-vsplit     :which-key "create new vertical window")
+ "w n" '(evil-window-new        :which-key "create new window")
+ "w q" '(evil-window-delete     :which-key "delete current window")
+ "w k" '(kill-buffer-and-window :which-key "delete current window and buffer"))
 
 (general-define-key
  :states '(normal visual)
@@ -563,17 +756,17 @@
 
 (with-eval-after-load "evil"
   (add-hook 'dashboard-mode-hook #'(lambda ()
-                                   (interactive)
-                                   (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
-                                   (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
-                                   (evil-local-set-key 'normal (kbd "a") 'dashboard-jump-to-agenda)
-                                   (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
-                                   (evil-local-set-key 'normal (kbd "e") #'(lambda ()
-                                                                             (interactive)
-                                                                             (find-file "~/.config/emacs/config.org")))
-                                   (evil-local-set-key 'normal (kbd "x") #'(lambda ()
-                                                                             (interactive)
-                                                                             (find-file "~/.config/xmonad/xmonad.org"))))))
+									 (interactive)
+									 (evil-local-set-key 'normal (kbd "r") 'dashboard-jump-to-recents)
+									 (evil-local-set-key 'normal (kbd "p") 'dashboard-jump-to-projects)
+									 (evil-local-set-key 'normal (kbd "a") 'dashboard-jump-to-agenda)
+									 (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
+									 (evil-local-set-key 'normal (kbd "e") #'(lambda ()
+                                                                               (interactive)
+                                                                               (find-file "~/.config/emacs/config.org")))
+									 (evil-local-set-key 'normal (kbd "x") #'(lambda ()
+                                                                               (interactive)
+                                                                               (find-file "~/.config/xmonad/xmonad.org"))))))
 
 (general-define-key
  :states '(normal visual)
@@ -598,18 +791,11 @@
  "g p l" '(magit-pull :which-key "pull")
  "g p s" '(magit-push :which-key "push"))
 
-(defun bugger/reload ()
-  (interactive)
-  (org-babel-tangle-file "~/.config/emacs/config.org")
-  (load-file "~/.config/emacs/init.el")
-  (load-file "~/.config/emacs/init.el"))
-
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
  "h" '(:ignore t :which-key "help")
  "h r" '(:ignore t :which-key "reload")
- "h r r" '(bugger/reload :which-key "reload emacs")
  "h v" '(describe-variable :which-key "describe variable")
  "h t" '(counsel-load-theme :which-key "load theme")
  "h f" '(describe-function :which-key "describe function"))
@@ -618,7 +804,35 @@
  :states '(normal visual)
  :prefix "SPC"
  "t" '(:ignore t :which-key "toggle")
- "t v" '(vterm-toggle :which-key "open vterm"))
+ "t v" '(vterm-toggle :which-key "toggle vterm")
+ "t c" '(company-mode :which-key "toggle company")
+ "t l" '(lsp-mode :which-key "toggle lsp")
+ "t w" '(visual-line-mode :which-key "toggle visual line mode"))
+
+(defun bugger/emacs-reload ()
+  (interactive)
+  (org-babel-tangle-file (concat user-emacs-directory "config.org"))
+  ;; (byte-compile-file (concat user-emacs-directory "init.el"))
+  (load-file "~/.config/emacs/init.el")
+  (load-file "~/.config/emacs/init.el"))
+
+(defun bugger/reload (mode)
+  "Reload the mode specified by mode. mode must be a function"
+  (funcall mode)
+  (funcall mode))
+
+(general-define-key
+ :states '(normal visual)
+ :prefix "SPC"
+ "r" '(:ignore t :which-key "reload")
+ "r r" '(bugger/emacs-reload :which-key "reload emacs")
+ "r c" '(lambda () (interactive) (bugger/reload 'company-mode) :which-key "reload company")
+ "r t" '(lambda () (interactive) (bugger/reload 'centaur-tabs-mode) :which-key "reload tabs")
+ "r l" '(lambda () (interactive) (bugger/reload 'lsp-mode) :which-key "reload lsp"))
+
+(which-key-add-key-based-replacements "SPC r c" "reload company")
+(which-key-add-key-based-replacements "SPC r t" "reload tabs")
+(which-key-add-key-based-replacements "SPC r l" "reload lsp")
 
 (general-define-key
  :states '(normal visual)
