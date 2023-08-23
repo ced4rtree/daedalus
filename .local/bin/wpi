@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+dir=$(pwd)
+
+case $1 in 
+new)
+	cd "${HOME}"/wpilib/2023/utility || exit
+	./wpilibutility
+	cd "$dir" || exit
+	;;
+build)
+	echo "Build where?"
+	read -r newdir
+	cd "${newdir}" || exit
+	./gradlew build
+	;;
+esac

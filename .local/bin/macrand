@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+#Generates a random mac address, but with spaces in between the characters
+mac=$(for (( i=0 ; i<5 ; i++ )) {
+	shuf -ez "A" "B" "C" "D" "E" "F" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" | head -c 1
+	shuf -ez "A" "B" "C" "D" "E" "F" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" | head -c 1
+	echo -n ":"
+}
+shuf -ez "A" "B" "C" "D" "E" "F" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" | head -c 1
+shuf -ez "A" "B" "C" "D" "E" "F" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" | head -c 1)
+
+echo $mac
+
+echo "Please give the name of your intenet inteface being used"
+read interface
+
+doas ip link set dev "${interface}" down || sudo ip link set dev "${interface}" down || echo "Could not set the inteface down. Perhaps the wrong name?"
+doas ip link set dev "${interface}" address "${mac}" || sudo ip link set dev "${interface}" ${mac} || echo "Could not set the mac address."
+doas ip link set dev "${interface}" up || sudo ip link set dev "${interface}" up || echo "Could set interface up."
