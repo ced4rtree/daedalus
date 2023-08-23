@@ -709,13 +709,23 @@ The Emacs X Window Manager is a project that replaces your entire desktop manage
                                                (start-process-shell-command
                                                 "volume-raise"
                                                 nil
-                                                (concat (getenv "HOME") "/scripts/snd up"))))
+                                                (concat (getenv "HOME") "snd up"))))
           (,(kbd "<XF86AudioLowerVolume>") . (lambda ()
                                                (interactive)
                                                (start-process-shell-command
                                                 "volume-lower"
                                                 nil
-                                                (concat (getenv "HOME") "/scripts/snd down"))))
+                                                (concat (getenv "HOME") "snd down"))))
+		  (,(kbd "C-c m l") . emms-next)
+		  (,(kbd "C-c m h") . emms-previous)
+		  (,(kbd "C-c m p") . emms-pause)
+		  (,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
+
+		  ;; vterm
+		  (,(kbd "C-c v") . vterm)
+
+		  ;; eshell
+		  (,(kbd "C-c e") . eshell)
 
           ;; brightness
           (,(kbd "<XF86MonBrightnessUp>") . (lambda ()
@@ -723,13 +733,13 @@ The Emacs X Window Manager is a project that replaces your entire desktop manage
                                               (start-process-shell-command
                                                "volume-raise"
                                                nil
-                                               (concat (getenv "HOME") "/scripts/real-brightness up"))))
+                                               (concat (getenv "HOME") "real-brightness up"))))
           (,(kbd "<XF86MonBrightnessDown>") . (lambda ()
                                                 (interactive)
                                                 (start-process-shell-command
                                                  "volume-lower"
                                                  nil
-                                                 (concat (getenv "HOME") "/scripts/real-brightness down"))))
+                                                 (concat (getenv "HOME") "real-brightness down"))))
           ;; layout stuff
           (,(kbd "s-m") . exwm-layout-toggle-fullscreen)
           (,(kbd "s-f") . exwm-floating-toggle-floating)
@@ -737,7 +747,7 @@ The Emacs X Window Manager is a project that replaces your entire desktop manage
           ;; Switch workspace
           (,(kbd "s-w") . exwm-workspace-switch)
 
-          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (1 - 9)
+          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
           ,@(mapcar (lambda (i)
                       `(,(kbd (format "s-%d" i)) .
                         (lambda ()
@@ -809,7 +819,7 @@ Where it all ties together
   (bugger/gpg-fix)
   (bugger/keybindings)
 
-  ;;(exwm-enable)
+  (exwm-enable)
 
   (bugger/autostart))
 #+end_src
@@ -1259,8 +1269,9 @@ Just think of it like per*Spective*, or work*Space*
  "s K" '(persp-kill-others :which-key "kill other perspectives"))
 #+end_src
 * Clean up
-Just need to put gc-cons-threshold back to a normal figure after init
+Just need to put gc-cons-threshold back to a normal figure after init + start the server
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1024 1024))
+(server-start)
 #+end_src
 
