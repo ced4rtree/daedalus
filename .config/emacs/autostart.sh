@@ -8,6 +8,6 @@ xset r rate 200 65
 setxkbmap -option caps:escape
 picom &
 ~/.config/polybar/launch.sh
-batsignal -M 'dunstify'
+batsignal -M 'dunstify' &
 if [ -z "$(pidof mpd)" ]; then mpd; fi # sometimes mpd gets started multiple times, and it sounds like hot garbage getting spoon fed directly into my ears
 wmname "LG3D"

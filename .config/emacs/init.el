@@ -503,18 +503,16 @@
 ;; function for renaming windows
 (defun exwm-rename-buffer ()
   (interactive)
-  (exwm-workspace-rename-buffer
-   (concat exwm-class-name ":"
-		   (if (<= (length exwm-title) 50) exwm-title
-             (concat (substring exwm-title 0 49) "...")))))
+  (exwm-workspace-rename-buffer exwm-class-name))
 
 (defun bugger/exwm-settings ()
   (setq exwm-workspace-number 10) ;; setting workspaces
 
   ;; systray
-  (use-package exwm-systemtray
-	:config
-	(exwm-systemtray-enable))
+  ;; using polybar, so this doesnt work
+  ;; (use-package exwm-systemtray
+  ;; 	:config
+  ;; 	(exwm-systemtray-enable))
 
   ;; set window names
   (add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
@@ -632,6 +630,7 @@
         mu4e-change-filenames-when-moving t
 		mu4e-update-interval (* 10 60)
 		mu4e-compose-format-flowed t
+		mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
 		mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
 		;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
 		;; using the decryption function defined below
