@@ -1,13 +1,12 @@
 #+author: [[https://github.com/bugger2][bugger2]]
 
-* My configuration file for a ton of stuf
+* My configuration files for a ton of stuf
 
-** Includes configuration for lots of programs
 ** Currently used:
 - Polybar
-- XMonad
 - Zsh
-- Doom Emacs
-- Alacritty
+- GNU Emacs
+- URxvt
 - Picom
-- Rofi
+
+Some stuff seems like it is missing from that list (window manager, app launcher, etc.), but that's just because I just use emacs instead.
