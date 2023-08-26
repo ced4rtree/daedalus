@@ -5,6 +5,10 @@
 #+auto_tangle: t
 
 * Table of contents :toc:
+- [[#early-settings][Early Settings]]
+  - [[#mouse-control-for-buffers][Mouse control for buffers]]
+  - [[#make-emacsd-clean-again][Make .emacs.d clean again!]]
+  - [[#package-choices][Package choices]]
 - [[#package-setup][Package setup]]
   - [[#melpa][Melpa]]
   - [[#use-package][use-package]]
@@ -33,6 +37,7 @@
   - [[#babel-settings][Babel settings]]
   - [[#org-agenda][Org agenda]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
+  - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#smartparens][Smartparens]]
   - [[#ivy][Ivy]]
   - [[#tabbing][Tabbing]]
@@ -49,6 +54,7 @@
   - [[#commenting][Commenting]]
   - [[#dired][Dired]]
   - [[#auto-backup][Auto Backup]]
+  - [[#undo][Undo]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#app-launcher][App Launcher]]
   - [[#exwm][EXWM]]
@@ -59,9 +65,9 @@
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
 - [[#keybindings][Keybindings]]
+  - [[#nice-little-things][Nice little things]]
   - [[#general][General]]
   - [[#which-key][Which-key]]
-  - [[#nice-little-things][Nice little things]]
   - [[#files][Files]]
   - [[#windows][Windows]]
   - [[#buffers][Buffers]]
@@ -79,12 +85,60 @@
   - [[#perspective][Perspective]]
 - [[#clean-up][Clean up]]
 
+* Early Settings
+Some stuff that has to get set pretty early, lest the rest of the config get messed up
+** Mouse control for buffers
+In EXWM, to use mouse hovering to change buffers, you have to set some variables prior to the =(package-intialize)= line in your config
+#+begin_src emacs-lisp
+(setq mouse-autoselect-window t
+      focus-follows-mouse t)
+#+end_src
+
+** Make .emacs.d clean again!
+I like to keep just the things I want in my user-emacs-directory, so I tell emacs to put everything except the stuff I want in a different spot
+#+begin_src emacs-lisp
+(setq config-dir user-emacs-directory) ;; to use for some stuff like autostart.sh for example, which I do want in my default user-emacs-directory
+(setq user-emacs-directory "~/.cache/emacs/")
+#+end_src
+
+** Package choices
+I like to use emacs in lots of different contexts, and certain things like EXWM aren't exactly needed for the computer I have to use in my comp sci class.
+#+begin_src emacs-lisp
+(setq
+
+ ;; packages
+ packages/evil t ;; evil mode. Setting to nil breaks all SPC- keybdings
+ packages/modeline t ;; doom modeline
+ packages/tabs t ;; centaur tabs
+ packages/dashboard t ;; dashboard
+ packages/autocompletion t ;; code autocompletion. think company, lsp
+ packages/treemacs t ;; a file viewer like nerdtree for vim
+ packages/projectile t ;; a project manager for emacs
+ packages/perspectives t ;; workspaces for emacs
+ packages/snippets t ;; code snippets, because my hand are too weak
+
+ ;; language support
+ langs/web nil ;; html, js, css
+ langs/java t ;; java
+ langs/haskell nil ;; haskell
+
+ ;; The Emacs Operating System
+ emacsOS/run-launcher t ;; a run launcher like dmenu or rofi
+ emacsOS/exwm t ;; an emacs window manager
+ emacsOS/elfeed nil ;; an rss feed for emacs
+ emacsOS/emms t ;; a music player for emacs
+ emacsOS/vterm t ;; a fully featured terminal inside of emacs
+ emacsOS/calendar t ;; a nice looking calendar
+ emacsOS/mail t ;; a mail client inside of emacs
+)
+#+end_src
+
 * Package setup
 ** Melpa
 Melpa is a repository for emacs that enables a lot more than what is in the standard elpa repos
 #+begin_src emacs-lisp
 (require 'package)
-(setq package-user-dir "~/.config/emacs/.local/elpa")
+(setq package-user-dir (concat user-emacs-directory ".local/elpa"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 #+end_src
@@ -121,6 +175,7 @@ Evil is a vim emulation package for emacs, the Emacs Vi extension Layer
 #+begin_src emacs-lisp
 (require 'bind-key)
 (use-package evil
+  :if packages/evil
   :ensure t
   :init
   (setq evil-want-keybinding nil)
@@ -132,6 +187,8 @@ Evil is a vim emulation package for emacs, the Emacs Vi extension Layer
 add evil in every buffer
 #+begin_src emacs-lisp
 (use-package evil-collection
+  :if packages/evil
+  :ensure t
   :after evil magit
   :config
   (setq evil-collection-mode-list '(dashboard))
@@ -160,7 +217,10 @@ add evil in every buffer
 
 ** Theme
 #+begin_src emacs-lisp
-(load-theme 'doom-one t)
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-one t))
 ;; (use-package xresources-theme
 ;;   :ensure t)
 ;; (add-hook 'server-after-make-frame-hook #'(lambda ()
@@ -172,6 +232,7 @@ add evil in every buffer
 A nice little bar at the bottom
 #+begin_src emacs-lisp
 (use-package doom-modeline
+  :if packages/modeline
   :ensure t
   :hook (after-init . doom-modeline-mode)
   :hook (doom-modeline-mode . size-indication-mode)
@@ -207,27 +268,29 @@ A nice little bar at the bottom
 Centaur tabs is a better tab bar for emacs
 #+begin_src emacs-lisp
 (use-package centaur-tabs
+  :ensure t
+  :if packages/tabs
   :hook (server-after-make-frame . centaur-tabs-mode)
   :init
   (setq centaur-tabs-set-icons t
-        centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'left
-        centaur-tabs-set-modified-marker t
-        centaur-tabs-close-button "✕"
-        centaur-tabs-modified-marker "•"
-        ;; Scrolling (with the mouse wheel) past the end of the tab list
-        ;; replaces the tab list with that of another Doom workspace. This
-        ;; prevents that.
-        centaur-tabs-cycle-scope 'tabs))
+ centaur-tabs-gray-out-icons 'buffer
+ centaur-tabs-set-bar 'left
+ centaur-tabs-set-modified-marker t
+ centaur-tabs-close-button "✕"
+ centaur-tabs-modified-marker "•"
+ ;; Scrolling (with the mouse wheel) past the end of the tab list
+ ;; replaces the tab list with that of another Doom workspace. This
+ ;; prevents that.
+ centaur-tabs-cycle-scope 'tabs))
 
 ;; When started in daemon mode, centaur tabs does not work at all, so here is a fix
- (if (not (daemonp))
-    (centaur-tabs-mode)
-
-  (defun centaur-tabs--daemon-mode (frame)
-    (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
-      (run-at-time nil nil (lambda () (centaur-tabs-mode)))))
-  (add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
+ ;(if (not (daemonp))
+    ;(centaur-tabs-mode)
+;
+  ;(defun centaur-tabs--daemon-mode (frame)
+    ;(unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
+;run-at-time nil nil (lambda () (centaur-tabs-mode)))))
+  ;(add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
 #+end_src
     
 ** Line numbers
@@ -261,33 +324,41 @@ Centaur tabs is a better tab bar for emacs
 #+end_src
 
 ** Dashboard
+*** Dependencies
 All the icons gives icons in the dashboard
 #+begin_src emacs-lisp
 (use-package all-the-icons
-  :after exwm)
+  ;; if exwm is enabled, load after that. otherwise just load regularly
+  ;; (package will always be loaded when this is run)
+  :ensure t)
 #+end_src
 
 Nice little lines
 #+begin_src emacs-lisp
 (use-package page-break-lines
+  :if packages/dashboard
+  :ensure t
   :config (global-page-break-lines-mode))
 #+end_src
 
 Get rid of agenda files from the recentf list
 #+begin_src emacs-lisp
 (use-package recentf
+  :if packages/dashboard
+  :ensure t
   :config
   (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
   (add-to-list 'recentf-exclude "~/org/agenda/todo.org")
   (add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
   (add-to-list 'recentf-exclude "~/org/agenda/homework.org")
-  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks"))
+  (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 #+end_src
 
 *** The actual dashboard
 A dashboard inside of emacs
 #+begin_src emacs-lisp
 (use-package dashboard
+  :if packages/dashboard
   :after all-the-icons
   :after page-break-lines
   :after projectile
@@ -310,10 +381,13 @@ A dashboard inside of emacs
 Adds rainbow parentheses and color to hex values and such
 #+begin_src emacs-lisp
 (use-package rainbow-mode
+  :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
 (use-package rainbow-delimiters
+  :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
 (use-package rainbow-identifiers
+  :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 #+end_src
 
@@ -326,7 +400,8 @@ Another new feature in Emacs 29 that lets you make the background transparent wh
 ** Tree Sitter
 Tree sitter is now built into emacs as of Emacs 29
 #+begin_src emacs-lisp
-(add-hook 'java-mode-hook 'java-ts-mode)
+(when langs/java
+  (add-hook 'java-mode-hook 'java-ts-mode))
 #+end_src
 ** Visual Line Mode
 #+begin_src emacs-lisp
@@ -382,10 +457,17 @@ Org agenda is a full blown scheduling application with all the power of org mode
 
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
+** Keeping emacs clean
+Some things \*cough cough auto-save-list\* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
+#+begin_src emacs-lisp
+(use-package no-littering
+  :ensure t)
+#+end_src
 ** Smartparens
 Auto completes (, [, {, ", etc for you so you don't have to keep track of them
 #+begin_src emacs-lisp
 (use-package smartparens
+  :ensure t
   :config
   (require 'smartparens-config)
   (smartparens-global-mode 1))
@@ -403,7 +485,10 @@ Ivy is a minibuffer autocompletion framework that makes it a lot easier to do th
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   :config
-  (ivy-mode))
+  (ivy-mode)
+  :hook (ivy-mode . (lambda ()
+					  (interactive)
+					  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char))))
 #+end_src
 
 *** Counsel
@@ -411,7 +496,7 @@ Counsel a sort of extension to ivy, taking lots of functions already in emacs an
 #+begin_src emacs-lisp
 (use-package counsel
   :after ivy
-  :init
+  :config
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
 #+end_src
@@ -476,6 +561,7 @@ Emacs has support for code autocompletion on par with that of IDEs like VSCode o
 Company is the package that enables the little popup for autocompletion so you don't to invoke a keybind or anything
 #+begin_src emacs-lisp
 (use-package company
+  :if packages/autocompletion
   :defer t
   :ensure t
   :config
@@ -485,6 +571,8 @@ Company is the package that enables the little popup for autocompletion so you d
 LSP is the Language Server Protocol, and is what actually populates the company frame with suggestions
 #+begin_src emacs-lisp
 (use-package lsp-mode
+  :if packages/autocompletion
+  :ensure t
   :defer t
   :hook (prog-mode . #'lsp-deferred)
   :config
@@ -492,15 +580,23 @@ LSP is the Language Server Protocol, and is what actually populates the company 
 
 										; extensions
 (use-package lsp-haskell
+  :if (and packages/autocompletion langs/haskell)
+  :ensure t
   :defer t
   :after lsp-mode)
 (use-package lsp-treemacs
+  :if (and packages/autocompletion packages/treemacs)
+  :ensure t
   :defer t
   :after lsp-mode)
 (use-package lsp-java
+  :if (and packages/autocompletion langs/java)
+  :ensure t
   :defer t
   :after lsp-mode)
 (use-package lsp-ui
+  :if packages/autocompletion
+  :ensure t
   :defer t
   :after lsp-mode
   :hook (lsp-mode . lsp-ui-doc-mode))
@@ -511,32 +607,56 @@ Flycheck is a program that enables essentially 'spell checking' your code
 #+begin_src emacs-lisp
 (use-package flycheck
   :defer t
+  :ensure t
   :config
   (global-flycheck-mode))
 #+end_src
 ** Treemacs
 Treemacs is a little side panel that shows a directory tree
 #+begin_src emacs-lisp
-(use-package treemacs :defer t)
-(use-package treemacs-evil :after (treemacs evil))
-(use-package treemacs-projectile :after (treemacs projectile))
-(use-package treemacs-magit :after (treemacs magit))
-(use-package treemacs-all-the-icons :after treemacs)
+(use-package treemacs
+  :if packages/treemacs
+  :ensure t
+  :defer t)
+(use-package treemacs-evil
+  :if (and packages/treemacs packages/evil)
+  :ensure t
+  :after (treemacs evil))
+(use-package treemacs-projectile
+  :if (and packages/treemacs packages/projectile)
+  :ensure t
+  :after (treemacs projectile))
+(use-package treemacs-magit
+  :if packages/treemacs
+  :ensure t
+  :after (treemacs magit))
+(use-package treemacs-all-the-icons
+  :ensure t
+  :after (treemacs all-the-icons))
 #+end_src
 ** Projectile
 Projectile manages projects
 #+begin_src emacs-lisp
 (use-package projectile
+  :if packages/projectile
+  :ensure t
   :config
   (projectile-mode +1))
-(use-package projectile-ripgrep :after projectile)
-(use-package counsel-projectile :after (projectile counsel))
+(use-package projectile-ripgrep
+  :if packages/projectile
+  :ensure t
+  :after projectile)
+(use-package counsel-projectile
+  :if packages/projectile
+  :ensure t
+  :after (projectile counsel))
 #+end_src
 
 ** Perspectives
 Like workspaces inside of emacs to clean up the buffer list
 #+begin_src emacs-lisp
 (use-package perspective
+  :if packages/perspectives
   :ensure t
   :config
   (setq persp-mode-prefix-key "C-x x"))
@@ -546,6 +666,7 @@ Like workspaces inside of emacs to clean up the buffer list
 It'd be really nice if you could assign perspectives to projects, right? It is, so I did that.
 #+begin_src emacs-lisp
 (use-package persp-projectile
+  :if (and packages/perspectives packages/projectile)
   :ensure t
   :after perspective
   :after projectile)
@@ -555,27 +676,36 @@ YASnippet is a templating system for emacs that allows you to type whatever you 
 *** Main Install
 #+begin_src emacs-lisp
 (use-package yasnippet
+  :if packages/snippets
   :ensure t
   :config
-  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+  (setq yas-snippet-dirs (list (concat user-emacs-directory "snippets")))
   (yas-global-mode 1))
 #+end_src
 
 *** Extra Snippets
 #+begin_src emacs-lisp
-(use-package yasnippet-snippets :ensure t :after yasnippet)
-(use-package java-snippets :ensure t :after yasnippet)
+(use-package yasnippet-snippets
+  :if packages/snippets
+  :ensure t
+  :after yasnippet)
+(use-package java-snippets
+  :if (and packages/snippets langs/java)
+  :ensure t
+  :after yasnippet)
 #+end_src
 ** Web mode
 Support for web development with web-mode and emmet-mode
 #+begin_src emacs-lisp
 (use-package web-mode
+  :if langs/web
   :ensure t
   :init
   (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
   (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
   (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
 (use-package emmet-mode
+  :if langs/web
   :ensure t
   :after web-mode
   :hook (web-mode . emmet-mode))
@@ -619,161 +749,189 @@ Emacs has a feature to automatically back up files every so often, which is nice
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 #+end_src
+** Undo
+#+begin_src emacs-lisp
+(setq evil-undo-system 'undo-redo)
+#+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
 ** App Launcher
 An emacs replacement for dmenu. Should only be used outside of exwm
 #+begin_src emacs-lisp
-(bugger/extern-package "SebastienWae" "app-launcher")
+(when emacsOS/run-launcher
+  (bugger/extern-package "SebastienWae" "app-launcher")
 
-;; create a global keyboard shortcut with the following code
-;; emacsclient -cF "((visibility . nil))" -e "(emacs-run-launcher)"
-(defun emacs-run-launcher ()
-  "Create and select a frame called emacs-run-launcher which consists only of a minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
-  (interactive)
-  (with-selected-frame 
-      (make-frame '((name . "emacs-run-launcher")
-					;; (minibuffer . only)
-					(fullscreen . 0) ; no fullscreen
-					(undecorated . t) ; remove title bar
-					;; (auto-raise . t) ; focus on this frame
-					;; (tool-bar-lines . 0)
-					;; (menu-bar-lines . 0)
-					(internal-border-width . 10)
-					(width . 80)
-					(height . 15)))
-    (unwind-protect
-		(funcall (lambda ()
-				   (interactive)
-				   (centaur-tabs-local-mode)
-				   (app-launcher-run-app)
-				   (centaur-tabs-local-mode)))
-	  (delete-frame))))
+  ;; create a global keyboard shortcut with the following code
+  ;; emacsclient -cF "((visibility . nil))" -e "(emacs-run-launcher)"
+  (defun emacs-run-launcher ()
+	"Create and select a frame called emacs-run-launcher which consists only of a minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
+	(interactive)
+	(with-selected-frame 
+		(make-frame '((name . "emacs-run-launcher")
+					  ;; (minibuffer . only)
+					  (fullscreen . 0) ; no fullscreen
+					  (undecorated . t) ; remove title bar
+					  ;; (auto-raise . t) ; focus on this frame
+					  ;; (tool-bar-lines . 0)
+					  ;; (menu-bar-lines . 0)
+					  (internal-border-width . 10)
+					  (width . 80)
+					  (height . 15)))
+      (unwind-protect
+		  (funcall (lambda ()
+					 (interactive)
+					 (centaur-tabs-local-mode)
+					 (app-launcher-run-app)
+					 (centaur-tabs-local-mode)))
+		(delete-frame)))))
 #+end_src
 ** EXWM
 The Emacs X Window Manager is a project that replaces your entire desktop management system with emacs
 *** EXWM Keybindings
 #+begin_src emacs-lisp
-(defun bugger/keybindings ()
-  ;; These keys should always pass through to Emacs
-  (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-u
-          ?\C-h
-          ?\M-x
-          ?\M-`
-          ?\M-&
-          ?\M-:
-          ?\C-\M-j  ;; Buffer list
-          ?\C-\ ))  ;; Ctrl+Space
+(when emacsOS/exwm
+  (defun bugger/keybindings ()
+	;; These keys should always pass through to Emacs
+	(setq exwm-input-prefix-keys
+          '(?\C-x
+			?\C-u
+			?\C-h
+			?\M-x
+			?\M-`
+			?\M-&
+			?\M-:
+			?\C-\M-j  ;; Buffer list
+			?\C-\ ))  ;; Ctrl+Space
 
-  ;; Ctrl+Q will enable the next key to be sent directly
-  (define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
+	;; Ctrl+Q will enable the next key to be sent directly
+	(define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
 
-  ;; Set up global key bindings.  These always work, no matter the input state!
-  ;; Keep in mind that changing this list after EXWM initializes has no effect.
-  (setq exwm-input-global-keys
-        `(
-          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-          (,(kbd "s-r") . exwm-reset)
+	;; simulation keys. if you press one keybinding, it'll send the corresponding one to whatever application you have open
+	(setq exwm-input-simulation-keys
+		  '(([?\C-c ?\C-c] . ?\C-c)
+			([?\C-n] . [down])
+			([?\C-p] . [up])
+			([?\C-f] . [right])
+			([?\C-b] . [left])))
 
-          ;; exit
-          (,(kbd "s-C-q") . exwm-exit)
+	;; Set up global key bindings.  These always work, no matter the input state!
+	;; Keep in mind that changing this list after EXWM initializes has no effect.
+	(setq exwm-input-global-keys
+          `(
+			;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+			(,(kbd "s-r") . exwm-reset)
 
-          ;; app launcher
-          (,(kbd "s-p") . app-launcher-run-app)
+			;; exit
+			(,(kbd "s-C-q") . (lambda ()
+								(interactive)
+								(start-process-shell-command "killall emacs" nil "killall emacs")))
 
-          ;; emacs keys to move between windows
-          (,(kbd "s-h") . windmove-left)
-          (,(kbd "s-l") . windmove-right)
-          (,(kbd "s-k") . windmove-up)
-          (,(kbd "s-j") . windmove-down)
+			;; app launcher
+			(,(kbd "s-p") . app-launcher-run-app)
 
-          ;; vim keys to swap windows
-          (,(kbd "C-s-h") . windmove-swap-states-left)
-          (,(kbd "C-s-l") . windmove-swap-states-right)
-          (,(kbd "C-s-k") . windmove-swap-states-up)
-          (,(kbd "C-s-j") . windmove-swap-states-down)
+			;; emacs keys to move between windows
+			(,(kbd "s-h") . windmove-left)
+			(,(kbd "s-l") . windmove-right)
+			(,(kbd "s-k") . windmove-up)
+			(,(kbd "s-j") . windmove-down)
 
-          ;; terminal
-          (,(kbd "s-<return>") . vterm-other-window)
+			;; vim keys to swap windows
+			(,(kbd "C-s-h") . windmove-swap-states-left)
+			(,(kbd "C-s-l") . windmove-swap-states-right)
+			(,(kbd "C-s-k") . windmove-swap-states-up)
+			(,(kbd "C-s-j") . windmove-swap-states-down)
 
-          ;; Launch applications via shell command
-          (,(kbd "C-s-7") . (lambda (command)
-                               (interactive (list (read-shell-command "$ ")))
-                               (start-process-shell-command command nil command)))
-          
-          ;; music
-          (,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
-                                               (interactive)
-                                               (start-process-shell-command
-                                                "volume-raise"
-                                                nil
-                                                (concat (getenv "HOME") "snd up"))))
-          (,(kbd "<XF86AudioLowerVolume>") . (lambda ()
-                                               (interactive)
-                                               (start-process-shell-command
-                                                "volume-lower"
-                                                nil
-                                                (concat (getenv "HOME") "snd down"))))
-		  (,(kbd "C-c m l") . emms-next)
-		  (,(kbd "C-c m h") . emms-previous)
-		  (,(kbd "C-c m p") . emms-pause)
-		  (,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
+			;; terminal
+			(,(kbd "s-<return>") . vterm-other-window)
 
-		  ;; vterm
-		  (,(kbd "C-c v") . vterm)
+			;; Launch applications via shell command
+			(,(kbd "C-s-7") . (lambda (command)
+								(interactive (list (read-shell-command "$ ")))
+								(start-process-shell-command command nil command)))
+			
+			;; music
+			(,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
+												 (interactive)
+												 (start-process-shell-command
+                                                  "volume-raise"
+                                                  nil
+                                                  "snd up")))
+			(,(kbd "<XF86AudioLowerVolume>") . (lambda ()
+												 (interactive)
+												 (start-process-shell-command
+                                                  "volume-lower"
+                                                  nil
+                                                  "snd down")))
+			(,(kbd "C-c m l") . emms-next)
+			(,(kbd "C-c m h") . emms-previous)
+			(,(kbd "C-c m p") . emms-pause)
+			(,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
 
-		  ;; eshell
-		  (,(kbd "C-c e") . eshell)
+			;; vterm
+			(,(kbd "C-c v") . vterm-toggle)
 
-          ;; brightness
-          (,(kbd "<XF86MonBrightnessUp>") . (lambda ()
-                                              (interactive)
-                                              (start-process-shell-command
-                                               "volume-raise"
-                                               nil
-                                               (concat (getenv "HOME") "real-brightness up"))))
-          (,(kbd "<XF86MonBrightnessDown>") . (lambda ()
-                                                (interactive)
-                                                (start-process-shell-command
-                                                 "volume-lower"
-                                                 nil
-                                                 (concat (getenv "HOME") "real-brightness down"))))
-          ;; layout stuff
-          (,(kbd "s-m") . exwm-layout-toggle-fullscreen)
-          (,(kbd "s-f") . exwm-floating-toggle-floating)
+			;; eshell
+			(,(kbd "C-c e") . (lambda ()
+								(interactive)
+								(split-window-right)
+								(eshell)))
 
-          ;; Switch workspace
-          (,(kbd "s-w") . exwm-workspace-switch)
+			;; create an emacs window
+			(,(kbd "s-e") . (lambda ()
+							  (interactive)
+							  (split-window-right)))
 
-          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-          ,@(mapcar (lambda (i)
-                      `(,(kbd (format "s-%d" i)) .
-                        (lambda ()
-                          (interactive)
-                          (exwm-workspace-switch-create ,(- i 1)))))
-                    (number-sequence 1 9))
-		  (,(kbd "s-0") . (lambda ()
+			;; brightness
+			(,(kbd "<XF86MonBrightnessUp>") . (lambda ()
+												(interactive)
+												(start-process-shell-command
+												 "volume-raise"
+												 nil
+												 "real-brightness up")))
+			(,(kbd "<XF86MonBrightnessDown>") . (lambda ()
+                                                  (interactive)
+                                                  (start-process-shell-command
+                                                   "volume-lower"
+                                                   nil
+                                                   "real-brightness down")))
+			;; layout stuff
+			(,(kbd "s-m") . exwm-layout-toggle-fullscreen)
+			(,(kbd "s-f") . exwm-floating-toggle-floating)
+
+			;; Switch workspace
+			(,(kbd "s-w") . exwm-workspace-switch)
+
+			;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+			,@(mapcar (lambda (i)
+						`(,(kbd (format "s-%d" i)) .
+                          (lambda ()
 							(interactive)
-							(exwm-workspace-switch-create 9))))))
+							(exwm-workspace-switch-create ,(- i 1)))))
+                      (number-sequence 1 9))
+			(,(kbd "s-0") . (lambda ()
+							  (interactive)
+							  (exwm-workspace-switch-create 9)))))))
 #+end_src
 
 *** GPG 
 GPG Pinentry kinda broken in EXWM so you gotta fix it
 #+begin_src emacs-lisp
-(defun bugger/gpg-fix ()
-  (setenv "GPG_AGENT_INFO" nil)
-  (setq auth-source-debug t)
+(when emacsOS/exwm
+  (defun bugger/gpg-fix ()
+	(use-package pinentry
+      :ensure t
+	  :config
+	  (setenv "GPG_AGENT_INFO" nil)
+	  (setq auth-source-debug t)
 
-  (setq epg-gpg-program "gpg2")
-  (require 'epa-file)
-  (epa-file-enable)
-  (setq epg-pinentry-mode 'loopback)
-  (pinentry-start)
+	  (setq epg-gpg-program "gpg2")
+	  (require 'epa-file)
+	  (epa-file-enable)
+	  (setq epg-pinentry-mode 'loopback)
+	  (pinentry-start))
 
-  (require 'org-crypt)
-  (org-crypt-use-before-save-magic))
+	(require 'org-crypt)
+	(org-crypt-use-before-save-magic)))
 #+end_src
 
 To fully fix, you have to append the following to =~/.gnupg/gpg-agent.conf=
@@ -785,32 +943,35 @@ allow-loopback-pinentry
 *** Settings
 #+begin_src emacs-lisp
 ;; function for renaming windows
-(defun exwm-rename-buffer ()
-  (interactive)
-  (exwm-workspace-rename-buffer exwm-class-name))
+(when emacsOS/exwm
+  (defun exwm-rename-buffer ()
+	(interactive)
+	(exwm-workspace-rename-buffer exwm-class-name))
 
-(defun bugger/exwm-settings ()
-  (setq exwm-workspace-number 10) ;; setting workspaces
+  (defun bugger/exwm-settings ()
+	(setq exwm-workspace-number 10) ;; setting workspaces
 
-  ;; systray
-  ;; using polybar, so this doesnt work
-  ;; (use-package exwm-systemtray
-  ;; 	:config
-  ;; 	(exwm-systemtray-enable))
+	;; systray
+	(use-package exwm-systemtray
+	  :config
+	  (exwm-systemtray-enable))
 
-  ;; set window names
-  (add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
-  (add-hook 'exwm-update-title-hook 'exwm-rename-buffer))
+	;; set window names
+	(add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
+	(add-hook 'exwm-update-title-hook 'exwm-rename-buffer)))
 #+end_src
 *** Autostart
 #+begin_src emacs-lisp
-(defun bugger/autostart ()
-  (call-process "/bin/sh" (concat user-emacs-directory "autostart.sh")))
+(when emacsOS/exwm
+  (defun bugger/autostart ()
+	(call-process "/bin/sh" (concat config-dir "autostart.sh"))))
 #+end_src
 *** Main
 Where it all ties together
 #+begin_src emacs-lisp
 (use-package exwm
+  :if emacsOS/exwm
+  :ensure t
   ;;:if (not (daemonp))
   :config
   (bugger/exwm-settings)
@@ -824,13 +985,17 @@ Where it all ties together
 ** Elfeed
 An RSS Client for emacs
 #+begin_src emacs-lisp
-(use-package elfeed :ensure t)
+(use-package elfeed
+  :if emacsOS/elfeed
+  :ensure t)
 (use-package elfeed-org
+  :if emacsOS/elfeed
   :ensure t
   :after elfeed
   :config
   (elfeed-org))
 (use-package elfeed-goodies
+  :if emacsOS/elfeed
   :ensure t
   :after elfeed
   :config
@@ -840,6 +1005,7 @@ An RSS Client for emacs
 Vterm is a fully fledged terminal within emacs
 #+begin_src emacs-lisp
 (use-package vterm
+  :if emacsOS/vterm
   :defer t
   :ensure t
   :config
@@ -850,6 +1016,7 @@ Vterm is a fully fledged terminal within emacs
 It's kind of annoying to have an ordinary window stuck there at the bottom that you have to deal with and pop back up to reconfigure the window again, so why not add a toggle for it?
 #+begin_src emacs-lisp
 (use-package vterm-toggle
+  :if emacsOS/vterm
   :after vterm
   :ensure t
   :config
@@ -873,6 +1040,7 @@ It's kind of annoying to have an ordinary window stuck there at the bottom that 
 The Emacs Multimedia System lets you use emacs as a music player
 #+begin_src emacs-lisp
 (use-package emms
+  :if emacsOS/emms
   :ensure t
   :after exwm ;; exwm autostart is where mpd gets started
   :config
@@ -888,54 +1056,23 @@ The Emacs Multimedia System lets you use emacs as a music player
   (setq mpc-host "localhost:6600"))
 #+end_src
 
-*** Scratchpad
-To use emms as a scratchpad, you have to do a bunch of stuff, so here's a function to do it
-#+begin_src emacs-lisp
-(defun emms-scratchpad ()
-  "Spawns an emms frame to use as a scratchpad in a window manager"
-  (interactive)
-  (with-selected-frame 
-      (make-frame '((name . "music")
-					(minibuffer . t)
-					(fullscreen . 0) ; no fullscreen
-					(undecorated . t) ; remove title bar
-					;;(auto-raise . t) ; focus on this frame
-					;;(tool-bar-lines . 0)
-					;;(menu-bar-lines . 0)
-					(internal-border-width . 10)))
-    (unwind-protect
-        (emms-smart-browse)
-      (delete-frame))))
-#+end_src
 ** Calfw
 A calendar within emacs!
 #+begin_src emacs-lisp
-(use-package calfw)
-(use-package calfw-org :after calfw)
+(use-package calfw
+  :if emacsOS/calendar
+  :ensure t)
+(use-package calfw-org
+  :if emacsOS/calendar
+  :ensure
+  :after calfw)
 #+end_src
 
-#+begin_src emacs-lisp
-(defun calfw-scratchpad ()
-  "Spawns an emms frame to use as a scratchpad in a window manager"
-  (interactive)
-  (with-selected-frame 
-      (make-frame '((name . "cal")
-					(minibuffer . t)
-					(fullscreen . 0) ; no fullscreen
-					(undecorated . t) ; remove title bar
-					(internal-border-width . 10)
-					(width . 80)
-					(height . 11)))                 ;;(auto-raise . t) ; focus on this frame
-    ;;(tool-bar-lines . 0)
-    ;;(menu-bar-lines . 0)
-    (unwind-protect
-        (cfw:open-org-calendar)
-      (delete-frame))))
-#+end_src
 ** MU4E
 Maildir Utils 4 Emacs, an email client for emacs
 #+begin_src emacs-lisp
 (use-package mu4e
+  :if emacsOS/mail
   :ensure nil
   :load-path "/usr/share/emacs/site-lisp/mu4e"
   :config
@@ -950,7 +1087,7 @@ Maildir Utils 4 Emacs, an email client for emacs
 		message-send-mail-function 'smtpmail-send-it)
 
   ;; this is a dummy configuration for example
-  ;; my real email info is stored in ~/.config/emacs/emails.el
+  ;; my real email info is stored in ~/.cache/emacs/emails.el
 
   ;; mu4e-contexts (list
   ;; 			   (make-mu4e-context
@@ -975,6 +1112,7 @@ A good package to get notifications when emails come in, as well as a good model
 #+begin_src emacs-lisp
 (use-package mu4e-alert
   :after mu4e
+  :ensure t
   :config
   (mu4e-alert-enable-mode-line-display)
   (mu4e-alert-enable-notifications))
@@ -988,10 +1126,29 @@ A good package to get notifications when emails come in, as well as a good model
 	  nil)))
 #+end_src
 * Keybindings
+** Nice little things
+#+begin_src emacs-lisp
+;; tab over the region
+(when packages/evil
+  (define-key evil-visual-state-map (kbd "TAB") 'indent-region)
+
+  ;; comment/uncomment the region
+  (define-key evil-visual-state-map (kbd "C-/") 'evilnc-comment-or-uncomment-lines)
+  (define-key evil-normal-state-map (kbd "C-/") 'evilnc-comment-or-uncomment-lines)
+
+  ;; toggle tolding
+  (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold))
+
+;; delete a tab, not 4 spaces
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+#+end_src
+
 ** General
 General is a package that allows us to do very complex things like bind space as a leader key, or add which-key labels to prefix keys
 #+begin_src emacs-lisp
 (use-package general
+  :if packages/evil
   :ensure t
   :init (general-evil-setup t))
 #+end_src
@@ -1004,45 +1161,15 @@ Which-key displays possible completions for keybindings you have typed in a mini
   :config (which-key-mode 1))
 #+end_src
 
-#+begin_src emacs-lisp
-(setq evil-undo-system 'undo-redo)
-#+end_src
-** Nice little things
-#+begin_src emacs-lisp
-;; tab over the region
-(general-define-key
- :states 'visual
- "TAB" (lambda ()
-         (interactive)
-         (tab-to-tab-stop)))
-
-;; comment/uncomment the region
-(general-define-key
- :states '(normal visual)
- "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment lines"))
-
-;; toggle tolding
-(general-define-key
- :states 'normal
- "TAB" 'evil-toggle-fold)
-
-;; delete a tab, not 4 spaces
-(global-set-key (kbd "DEL") 'backward-delete-char)
-(setq c-backspace-function 'backward-delete-char)
-
-;; Better directory navigation in ivy
-(eval-after-load 'ivy #'(lambda ()
-						  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char)))
-#+end_src
-
 ** Files
 #+begin_src emacs-lisp
-(general-define-key
- :states '(normal visual)
- :prefix "SPC"
- "f"   '(:ignore t :which-key "files")
- "f s" '(save-buffer :which-key "Save file")
- "."   '(find-file   :which-key "open file"))
+(when packages/evil
+  (general-define-key
+   :states '(normal visual)
+   :prefix "SPC"
+   "f"   '(:ignore t :which-key "files")
+   "f s" '(save-buffer :which-key "Save file")
+   "."   '(find-file   :which-key "open file"))
 #+end_src
 
 ** Windows
@@ -1122,7 +1249,7 @@ Add evil keybindings
 									 (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
 									 (evil-local-set-key 'normal (kbd "e") #'(lambda ()
                                                                                (interactive)
-                                                                               (find-file "~/.config/emacs/config.org")))
+                                                                               (find-file (concat config-dir "config.org"))))
 									 (evil-local-set-key 'normal (kbd "x") #'(lambda ()
                                                                                (interactive)
                                                                                (find-file "~/.config/xmonad/xmonad.org"))))))
@@ -1185,10 +1312,10 @@ Add evil keybindings
 #+begin_src emacs-lisp
 (defun bugger/emacs-reload ()
   (interactive)
-  (org-babel-tangle-file (concat user-emacs-directory "config.org"))
-  ;; (byte-compile-file (concat user-emacs-directory "init.el"))
-  (load-file "~/.config/emacs/init.el")
-  (load-file "~/.config/emacs/init.el"))
+  (org-babel-tangle-file (concat config-dir "config.org"))
+  (byte-compile-file (concat config-dir "init.el"))
+  (load-file (concat config-dir "init.el"))
+  (load-file (concat config-dir "init.el")))
 
 (defun bugger/reload (mode)
   "Reload the mode specified by mode. mode must be a function"
@@ -1265,7 +1392,7 @@ Just think of it like per*Spective*, or work*Space*
  "s A" '(persp-set-buffer :which-key "brgin buffer to perspective")
  "s r" '(persp-remove :which-key "remove buffer from perspective")
  "s k" '(persp-kill :which-key "kill perspective")
- "s K" '(persp-kill-others :which-key "kill other perspectives"))
+ "s K" '(persp-kill-others :which-key "kill other perspectives")))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init + start the server

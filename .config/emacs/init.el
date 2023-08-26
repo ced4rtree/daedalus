@@ -1,5 +1,39 @@
+(setq mouse-autoselect-window t
+      focus-follows-mouse t)
+
+(setq config-dir user-emacs-directory) ;; to use for some stuff like autostart.sh for example, which I do want in my default user-emacs-directory
+(setq user-emacs-directory "~/.cache/emacs/")
+
+(setq
+
+ ;; packages
+ packages/evil t ;; evil mode. Setting to nil breaks all SPC- keybdings
+ packages/modeline t ;; doom modeline
+ packages/tabs t ;; centaur tabs
+ packages/dashboard t ;; dashboard
+ packages/autocompletion t ;; code autocompletion. think company, lsp
+ packages/treemacs t ;; a file viewer like nerdtree for vim
+ packages/projectile t ;; a project manager for emacs
+ packages/perspectives t ;; workspaces for emacs
+ packages/snippets t ;; code snippets, because my hand are too weak
+
+ ;; language support
+ langs/web nil ;; html, js, css
+ langs/java t ;; java
+ langs/haskell nil ;; haskell
+
+ ;; The Emacs Operating System
+ emacsOS/run-launcher t ;; a run launcher like dmenu or rofi
+ emacsOS/exwm t ;; an emacs window manager
+ emacsOS/elfeed nil ;; an rss feed for emacs
+ emacsOS/emms t ;; a music player for emacs
+ emacsOS/vterm t ;; a fully featured terminal inside of emacs
+ emacsOS/calendar t ;; a nice looking calendar
+ emacsOS/mail t ;; a mail client inside of emacs
+)
+
 (require 'package)
-(setq package-user-dir "~/.config/emacs/.local/elpa")
+(setq package-user-dir (concat user-emacs-directory ".local/elpa"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
@@ -25,6 +59,7 @@
 
 (require 'bind-key)
 (use-package evil
+  :if packages/evil
   :ensure t
   :init
   (setq evil-want-keybinding nil)
@@ -33,6 +68,8 @@
   (evil-set-undo-system 'undo-redo))
 
 (use-package evil-collection
+  :if packages/evil
+  :ensure t
   :after evil magit
   :config
   (setq evil-collection-mode-list '(dashboard))
@@ -51,7 +88,10 @@
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 (setq highlight-indent-guides-method 'character)
 
-(load-theme 'doom-one t)
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-one t))
 ;; (use-package xresources-theme
 ;;   :ensure t)
 ;; (add-hook 'server-after-make-frame-hook #'(lambda ()
@@ -59,6 +99,7 @@
 ;; 											(load-theme 'xresources t)))
 
 (use-package doom-modeline
+  :if packages/modeline
   :ensure t
   :hook (after-init . doom-modeline-mode)
   :hook (doom-modeline-mode . size-indication-mode)
@@ -90,27 +131,29 @@
   (display-battery-mode 1))
 
 (use-package centaur-tabs
+  :ensure t
+  :if packages/tabs
   :hook (server-after-make-frame . centaur-tabs-mode)
   :init
   (setq centaur-tabs-set-icons t
-        centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'left
-        centaur-tabs-set-modified-marker t
-        centaur-tabs-close-button "✕"
-        centaur-tabs-modified-marker "•"
-        ;; Scrolling (with the mouse wheel) past the end of the tab list
-        ;; replaces the tab list with that of another Doom workspace. This
-        ;; prevents that.
-        centaur-tabs-cycle-scope 'tabs))
+ centaur-tabs-gray-out-icons 'buffer
+ centaur-tabs-set-bar 'left
+ centaur-tabs-set-modified-marker t
+ centaur-tabs-close-button "✕"
+ centaur-tabs-modified-marker "•"
+ ;; Scrolling (with the mouse wheel) past the end of the tab list
+ ;; replaces the tab list with that of another Doom workspace. This
+ ;; prevents that.
+ centaur-tabs-cycle-scope 'tabs))
 
 ;; When started in daemon mode, centaur tabs does not work at all, so here is a fix
- (if (not (daemonp))
-    (centaur-tabs-mode)
-
-  (defun centaur-tabs--daemon-mode (frame)
-    (unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
-      (run-at-time nil nil (lambda () (centaur-tabs-mode)))))
-  (add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
+ ;(if (not (daemonp))
+    ;(centaur-tabs-mode)
+;
+  ;(defun centaur-tabs--daemon-mode (frame)
+    ;(unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
+;run-at-time nil nil (lambda () (centaur-tabs-mode)))))
+  ;(add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
 
 (global-display-line-numbers-mode 1)
 (with-eval-after-load "dashboard"
@@ -131,20 +174,27 @@
 (pixel-scroll-precision-mode 1) ;; smooth scrolling
 
 (use-package all-the-icons
-  :after exwm)
+  ;; if exwm is enabled, load after that. otherwise just load regularly
+  ;; (package will always be loaded when this is run)
+  :ensure t)
 
 (use-package page-break-lines
+  :if packages/dashboard
+  :ensure t
   :config (global-page-break-lines-mode))
 
 (use-package recentf
+  :if packages/dashboard
+  :ensure t
   :config
   (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
   (add-to-list 'recentf-exclude "~/org/agenda/todo.org")
   (add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
   (add-to-list 'recentf-exclude "~/org/agenda/homework.org")
-  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks"))
+  (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 
 (use-package dashboard
+  :if packages/dashboard
   :after all-the-icons
   :after page-break-lines
   :after projectile
@@ -163,15 +213,19 @@
   (dashboard-setup-startup-hook))
 
 (use-package rainbow-mode
+  :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
 (use-package rainbow-delimiters
+  :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
 (use-package rainbow-identifiers
+  :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 
 ;; (add-to-list 'default-frame-alist '(alpha-background . 85))
 
-(add-hook 'java-mode-hook 'java-ts-mode)
+(when langs/java
+  (add-hook 'java-mode-hook 'java-ts-mode))
 
 (global-visual-line-mode 1)
 
@@ -200,7 +254,11 @@
                              "~/org/agenda/emacs.org"
                              "~/org/agenda/schedule.org"))
 
+(use-package no-littering
+  :ensure t)
+
 (use-package smartparens
+  :ensure t
   :config
   (require 'smartparens-config)
   (smartparens-global-mode 1))
@@ -213,11 +271,14 @@
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   :config
-  (ivy-mode))
+  (ivy-mode)
+  :hook (ivy-mode . (lambda ()
+					  (interactive)
+					  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char))))
 
 (use-package counsel
   :after ivy
-  :init
+  :config
   (counsel-mode)
   (setq ivy-initial-inputs-alist nil)) ; Disable the "^" in interactive counsel commands like M-x
 
@@ -256,12 +317,15 @@
 (global-set-key (kbd "<escape>") 'abort-minibuffers)
 
 (use-package company
+  :if packages/autocompletion
   :defer t
   :ensure t
   :config
   (global-company-mode))
 
 (use-package lsp-mode
+  :if packages/autocompletion
+  :ensure t
   :defer t
   :hook (prog-mode . #'lsp-deferred)
   :config
@@ -269,63 +333,105 @@
 
 										; extensions
 (use-package lsp-haskell
+  :if (and packages/autocompletion langs/haskell)
+  :ensure t
   :defer t
   :after lsp-mode)
 (use-package lsp-treemacs
+  :if (and packages/autocompletion packages/treemacs)
+  :ensure t
   :defer t
   :after lsp-mode)
 (use-package lsp-java
+  :if (and packages/autocompletion langs/java)
+  :ensure t
   :defer t
   :after lsp-mode)
 (use-package lsp-ui
+  :if packages/autocompletion
+  :ensure t
   :defer t
   :after lsp-mode
   :hook (lsp-mode . lsp-ui-doc-mode))
 
 (use-package flycheck
   :defer t
+  :ensure t
   :config
   (global-flycheck-mode))
 
-(use-package treemacs :defer t)
-(use-package treemacs-evil :after (treemacs evil))
-(use-package treemacs-projectile :after (treemacs projectile))
-(use-package treemacs-magit :after (treemacs magit))
-(use-package treemacs-all-the-icons :after treemacs)
+(use-package treemacs
+  :if packages/treemacs
+  :ensure t
+  :defer t)
+(use-package treemacs-evil
+  :if (and packages/treemacs packages/evil)
+  :ensure t
+  :after (treemacs evil))
+(use-package treemacs-projectile
+  :if (and packages/treemacs packages/projectile)
+  :ensure t
+  :after (treemacs projectile))
+(use-package treemacs-magit
+  :if packages/treemacs
+  :ensure t
+  :after (treemacs magit))
+(use-package treemacs-all-the-icons
+  :ensure t
+  :after (treemacs all-the-icons))
 
 (use-package projectile
+  :if packages/projectile
+  :ensure t
   :config
   (projectile-mode +1))
-(use-package projectile-ripgrep :after projectile)
-(use-package counsel-projectile :after (projectile counsel))
+(use-package projectile-ripgrep
+  :if packages/projectile
+  :ensure t
+  :after projectile)
+(use-package counsel-projectile
+  :if packages/projectile
+  :ensure t
+  :after (projectile counsel))
 
 (use-package perspective
+  :if packages/perspectives
   :ensure t
   :config
   (setq persp-mode-prefix-key "C-x x"))
 (persp-mode)
 
 (use-package persp-projectile
+  :if (and packages/perspectives packages/projectile)
   :ensure t
   :after perspective
   :after projectile)
 
 (use-package yasnippet
+  :if packages/snippets
   :ensure t
   :config
-  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+  (setq yas-snippet-dirs (list (concat user-emacs-directory "snippets")))
   (yas-global-mode 1))
 
-(use-package yasnippet-snippets :ensure t :after yasnippet)
-(use-package java-snippets :ensure t :after yasnippet)
+(use-package yasnippet-snippets
+  :if packages/snippets
+  :ensure t
+  :after yasnippet)
+(use-package java-snippets
+  :if (and packages/snippets langs/java)
+  :ensure t
+  :after yasnippet)
 
 (use-package web-mode
+  :if langs/web
   :ensure t
   :init
   (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
   (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
   (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
 (use-package emmet-mode
+  :if langs/web
   :ensure t
   :after web-mode
   :hook (web-mode . emmet-mode))
@@ -357,171 +463,200 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-(bugger/extern-package "SebastienWae" "app-launcher")
+(setq evil-undo-system 'undo-redo)
 
-;; create a global keyboard shortcut with the following code
-;; emacsclient -cF "((visibility . nil))" -e "(emacs-run-launcher)"
-(defun emacs-run-launcher ()
-  "Create and select a frame called emacs-run-launcher which consists only of a minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
-  (interactive)
-  (with-selected-frame 
-      (make-frame '((name . "emacs-run-launcher")
-					;; (minibuffer . only)
-					(fullscreen . 0) ; no fullscreen
-					(undecorated . t) ; remove title bar
-					;; (auto-raise . t) ; focus on this frame
-					;; (tool-bar-lines . 0)
-					;; (menu-bar-lines . 0)
-					(internal-border-width . 10)
-					(width . 80)
-					(height . 15)))
-    (unwind-protect
-		(funcall (lambda ()
-				   (interactive)
-				   (centaur-tabs-local-mode)
-				   (app-launcher-run-app)
-				   (centaur-tabs-local-mode)))
-	  (delete-frame))))
+(when emacsOS/run-launcher
+  (bugger/extern-package "SebastienWae" "app-launcher")
 
-(defun bugger/keybindings ()
-  ;; These keys should always pass through to Emacs
-  (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-u
-          ?\C-h
-          ?\M-x
-          ?\M-`
-          ?\M-&
-          ?\M-:
-          ?\C-\M-j  ;; Buffer list
-          ?\C-\ ))  ;; Ctrl+Space
+  ;; create a global keyboard shortcut with the following code
+  ;; emacsclient -cF "((visibility . nil))" -e "(emacs-run-launcher)"
+  (defun emacs-run-launcher ()
+	"Create and select a frame called emacs-run-launcher which consists only of a minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
+	(interactive)
+	(with-selected-frame 
+		(make-frame '((name . "emacs-run-launcher")
+					  ;; (minibuffer . only)
+					  (fullscreen . 0) ; no fullscreen
+					  (undecorated . t) ; remove title bar
+					  ;; (auto-raise . t) ; focus on this frame
+					  ;; (tool-bar-lines . 0)
+					  ;; (menu-bar-lines . 0)
+					  (internal-border-width . 10)
+					  (width . 80)
+					  (height . 15)))
+      (unwind-protect
+		  (funcall (lambda ()
+					 (interactive)
+					 (centaur-tabs-local-mode)
+					 (app-launcher-run-app)
+					 (centaur-tabs-local-mode)))
+		(delete-frame)))))
 
-  ;; Ctrl+Q will enable the next key to be sent directly
-  (define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
+(when emacsOS/exwm
+  (defun bugger/keybindings ()
+	;; These keys should always pass through to Emacs
+	(setq exwm-input-prefix-keys
+          '(?\C-x
+			?\C-u
+			?\C-h
+			?\M-x
+			?\M-`
+			?\M-&
+			?\M-:
+			?\C-\M-j  ;; Buffer list
+			?\C-\ ))  ;; Ctrl+Space
 
-  ;; Set up global key bindings.  These always work, no matter the input state!
-  ;; Keep in mind that changing this list after EXWM initializes has no effect.
-  (setq exwm-input-global-keys
-        `(
-          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-          (,(kbd "s-r") . exwm-reset)
+	;; Ctrl+Q will enable the next key to be sent directly
+	(define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
 
-          ;; exit
-          (,(kbd "s-C-q") . exwm-exit)
+	;; simulation keys. if you press one keybinding, it'll send the corresponding one to whatever application you have open
+	(setq exwm-input-simulation-keys
+		  '(([?\C-c ?\C-c] . ?\C-c)
+			([?\C-n] . [down])
+			([?\C-p] . [up])
+			([?\C-f] . [right])
+			([?\C-b] . [left])))
 
-          ;; app launcher
-          (,(kbd "s-p") . app-launcher-run-app)
+	;; Set up global key bindings.  These always work, no matter the input state!
+	;; Keep in mind that changing this list after EXWM initializes has no effect.
+	(setq exwm-input-global-keys
+          `(
+			;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+			(,(kbd "s-r") . exwm-reset)
 
-          ;; emacs keys to move between windows
-          (,(kbd "s-h") . windmove-left)
-          (,(kbd "s-l") . windmove-right)
-          (,(kbd "s-k") . windmove-up)
-          (,(kbd "s-j") . windmove-down)
+			;; exit
+			(,(kbd "s-C-q") . (lambda ()
+								(interactive)
+								(start-process-shell-command "killall emacs" nil "killall emacs")))
 
-          ;; vim keys to swap windows
-          (,(kbd "C-s-h") . windmove-swap-states-left)
-          (,(kbd "C-s-l") . windmove-swap-states-right)
-          (,(kbd "C-s-k") . windmove-swap-states-up)
-          (,(kbd "C-s-j") . windmove-swap-states-down)
+			;; app launcher
+			(,(kbd "s-p") . app-launcher-run-app)
 
-          ;; terminal
-          (,(kbd "s-<return>") . vterm-other-window)
+			;; emacs keys to move between windows
+			(,(kbd "s-h") . windmove-left)
+			(,(kbd "s-l") . windmove-right)
+			(,(kbd "s-k") . windmove-up)
+			(,(kbd "s-j") . windmove-down)
 
-          ;; Launch applications via shell command
-          (,(kbd "C-s-7") . (lambda (command)
-                               (interactive (list (read-shell-command "$ ")))
-                               (start-process-shell-command command nil command)))
-          
-          ;; music
-          (,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
-                                               (interactive)
-                                               (start-process-shell-command
-                                                "volume-raise"
-                                                nil
-                                                (concat (getenv "HOME") "snd up"))))
-          (,(kbd "<XF86AudioLowerVolume>") . (lambda ()
-                                               (interactive)
-                                               (start-process-shell-command
-                                                "volume-lower"
-                                                nil
-                                                (concat (getenv "HOME") "snd down"))))
-		  (,(kbd "C-c m l") . emms-next)
-		  (,(kbd "C-c m h") . emms-previous)
-		  (,(kbd "C-c m p") . emms-pause)
-		  (,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
+			;; vim keys to swap windows
+			(,(kbd "C-s-h") . windmove-swap-states-left)
+			(,(kbd "C-s-l") . windmove-swap-states-right)
+			(,(kbd "C-s-k") . windmove-swap-states-up)
+			(,(kbd "C-s-j") . windmove-swap-states-down)
 
-		  ;; vterm
-		  (,(kbd "C-c v") . vterm)
+			;; terminal
+			(,(kbd "s-<return>") . vterm-other-window)
 
-		  ;; eshell
-		  (,(kbd "C-c e") . eshell)
+			;; Launch applications via shell command
+			(,(kbd "C-s-7") . (lambda (command)
+								(interactive (list (read-shell-command "$ ")))
+								(start-process-shell-command command nil command)))
+			
+			;; music
+			(,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
+												 (interactive)
+												 (start-process-shell-command
+                                                  "volume-raise"
+                                                  nil
+                                                  "snd up")))
+			(,(kbd "<XF86AudioLowerVolume>") . (lambda ()
+												 (interactive)
+												 (start-process-shell-command
+                                                  "volume-lower"
+                                                  nil
+                                                  "snd down")))
+			(,(kbd "C-c m l") . emms-next)
+			(,(kbd "C-c m h") . emms-previous)
+			(,(kbd "C-c m p") . emms-pause)
+			(,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
 
-          ;; brightness
-          (,(kbd "<XF86MonBrightnessUp>") . (lambda ()
-                                              (interactive)
-                                              (start-process-shell-command
-                                               "volume-raise"
-                                               nil
-                                               (concat (getenv "HOME") "real-brightness up"))))
-          (,(kbd "<XF86MonBrightnessDown>") . (lambda ()
-                                                (interactive)
-                                                (start-process-shell-command
-                                                 "volume-lower"
-                                                 nil
-                                                 (concat (getenv "HOME") "real-brightness down"))))
-          ;; layout stuff
-          (,(kbd "s-m") . exwm-layout-toggle-fullscreen)
-          (,(kbd "s-f") . exwm-floating-toggle-floating)
+			;; vterm
+			(,(kbd "C-c v") . vterm-toggle)
 
-          ;; Switch workspace
-          (,(kbd "s-w") . exwm-workspace-switch)
+			;; eshell
+			(,(kbd "C-c e") . (lambda ()
+								(interactive)
+								(split-window-right)
+								(eshell)))
 
-          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-          ,@(mapcar (lambda (i)
-                      `(,(kbd (format "s-%d" i)) .
-                        (lambda ()
-                          (interactive)
-                          (exwm-workspace-switch-create ,(- i 1)))))
-                    (number-sequence 1 9))
-		  (,(kbd "s-0") . (lambda ()
+			;; create an emacs window
+			(,(kbd "s-e") . (lambda ()
+							  (interactive)
+							  (split-window-right)))
+
+			;; brightness
+			(,(kbd "<XF86MonBrightnessUp>") . (lambda ()
+												(interactive)
+												(start-process-shell-command
+												 "volume-raise"
+												 nil
+												 "real-brightness up")))
+			(,(kbd "<XF86MonBrightnessDown>") . (lambda ()
+                                                  (interactive)
+                                                  (start-process-shell-command
+                                                   "volume-lower"
+                                                   nil
+                                                   "real-brightness down")))
+			;; layout stuff
+			(,(kbd "s-m") . exwm-layout-toggle-fullscreen)
+			(,(kbd "s-f") . exwm-floating-toggle-floating)
+
+			;; Switch workspace
+			(,(kbd "s-w") . exwm-workspace-switch)
+
+			;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+			,@(mapcar (lambda (i)
+						`(,(kbd (format "s-%d" i)) .
+                          (lambda ()
 							(interactive)
-							(exwm-workspace-switch-create 9))))))
+							(exwm-workspace-switch-create ,(- i 1)))))
+                      (number-sequence 1 9))
+			(,(kbd "s-0") . (lambda ()
+							  (interactive)
+							  (exwm-workspace-switch-create 9)))))))
 
-(defun bugger/gpg-fix ()
-  (setenv "GPG_AGENT_INFO" nil)
-  (setq auth-source-debug t)
+(when emacsOS/exwm
+  (defun bugger/gpg-fix ()
+	(use-package pinentry
+      :ensure t
+	  :config
+	  (setenv "GPG_AGENT_INFO" nil)
+	  (setq auth-source-debug t)
 
-  (setq epg-gpg-program "gpg2")
-  (require 'epa-file)
-  (epa-file-enable)
-  (setq epg-pinentry-mode 'loopback)
-  (pinentry-start)
+	  (setq epg-gpg-program "gpg2")
+	  (require 'epa-file)
+	  (epa-file-enable)
+	  (setq epg-pinentry-mode 'loopback)
+	  (pinentry-start))
 
-  (require 'org-crypt)
-  (org-crypt-use-before-save-magic))
+	(require 'org-crypt)
+	(org-crypt-use-before-save-magic)))
 
 ;; function for renaming windows
-(defun exwm-rename-buffer ()
-  (interactive)
-  (exwm-workspace-rename-buffer exwm-class-name))
+(when emacsOS/exwm
+  (defun exwm-rename-buffer ()
+	(interactive)
+	(exwm-workspace-rename-buffer exwm-class-name))
 
-(defun bugger/exwm-settings ()
-  (setq exwm-workspace-number 10) ;; setting workspaces
+  (defun bugger/exwm-settings ()
+	(setq exwm-workspace-number 10) ;; setting workspaces
 
-  ;; systray
-  ;; using polybar, so this doesnt work
-  ;; (use-package exwm-systemtray
-  ;; 	:config
-  ;; 	(exwm-systemtray-enable))
+	;; systray
+	(use-package exwm-systemtray
+	  :config
+	  (exwm-systemtray-enable))
 
-  ;; set window names
-  (add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
-  (add-hook 'exwm-update-title-hook 'exwm-rename-buffer))
+	;; set window names
+	(add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
+	(add-hook 'exwm-update-title-hook 'exwm-rename-buffer)))
 
-(defun bugger/autostart ()
-  (call-process "/bin/sh" (concat user-emacs-directory "autostart.sh")))
+(when emacsOS/exwm
+  (defun bugger/autostart ()
+	(call-process "/bin/sh" (concat config-dir "autostart.sh"))))
 
 (use-package exwm
+  :if emacsOS/exwm
+  :ensure t
   ;;:if (not (daemonp))
   :config
   (bugger/exwm-settings)
@@ -532,19 +667,24 @@
 
   (bugger/autostart))
 
-(use-package elfeed :ensure t)
+(use-package elfeed
+  :if emacsOS/elfeed
+  :ensure t)
 (use-package elfeed-org
+  :if emacsOS/elfeed
   :ensure t
   :after elfeed
   :config
   (elfeed-org))
 (use-package elfeed-goodies
+  :if emacsOS/elfeed
   :ensure t
   :after elfeed
   :config
   (elfeed-goodies/setup))
 
 (use-package vterm
+  :if emacsOS/vterm
   :defer t
   :ensure t
   :config
@@ -552,6 +692,7 @@
 		vterm-max-scrollback 5000))
 
 (use-package vterm-toggle
+  :if emacsOS/vterm
   :after vterm
   :ensure t
   :config
@@ -572,6 +713,7 @@
                  (window-height . 0.3))))
 
 (use-package emms
+  :if emacsOS/emms
   :ensure t
   :after exwm ;; exwm autostart is where mpd gets started
   :config
@@ -586,43 +728,16 @@
   (setq emms-player-mpd-server-port "6600")
   (setq mpc-host "localhost:6600"))
 
-(defun emms-scratchpad ()
-  "Spawns an emms frame to use as a scratchpad in a window manager"
-  (interactive)
-  (with-selected-frame 
-      (make-frame '((name . "music")
-					(minibuffer . t)
-					(fullscreen . 0) ; no fullscreen
-					(undecorated . t) ; remove title bar
-					;;(auto-raise . t) ; focus on this frame
-					;;(tool-bar-lines . 0)
-					;;(menu-bar-lines . 0)
-					(internal-border-width . 10)))
-    (unwind-protect
-        (emms-smart-browse)
-      (delete-frame))))
-
-(use-package calfw)
-(use-package calfw-org :after calfw)
-
-(defun calfw-scratchpad ()
-  "Spawns an emms frame to use as a scratchpad in a window manager"
-  (interactive)
-  (with-selected-frame 
-      (make-frame '((name . "cal")
-					(minibuffer . t)
-					(fullscreen . 0) ; no fullscreen
-					(undecorated . t) ; remove title bar
-					(internal-border-width . 10)
-					(width . 80)
-					(height . 11)))                 ;;(auto-raise . t) ; focus on this frame
-    ;;(tool-bar-lines . 0)
-    ;;(menu-bar-lines . 0)
-    (unwind-protect
-        (cfw:open-org-calendar)
-      (delete-frame))))
+(use-package calfw
+  :if emacsOS/calendar
+  :ensure t)
+(use-package calfw-org
+  :if emacsOS/calendar
+  :ensure
+  :after calfw)
 
 (use-package mu4e
+  :if emacsOS/mail
   :ensure nil
   :load-path "/usr/share/emacs/site-lisp/mu4e"
   :config
@@ -637,7 +752,7 @@
 		message-send-mail-function 'smtpmail-send-it)
 
   ;; this is a dummy configuration for example
-  ;; my real email info is stored in ~/.config/emacs/emails.el
+  ;; my real email info is stored in ~/.cache/emacs/emails.el
 
   ;; mu4e-contexts (list
   ;; 			   (make-mu4e-context
@@ -658,6 +773,7 @@
 
 (use-package mu4e-alert
   :after mu4e
+  :ensure t
   :config
   (mu4e-alert-enable-mode-line-display)
   (mu4e-alert-enable-notifications))
@@ -668,7 +784,23 @@
 		(funcall (plist-get (car result) :secret))
 	  nil)))
 
+;; tab over the region
+(when packages/evil
+  (define-key evil-visual-state-map (kbd "TAB") 'indent-region)
+
+  ;; comment/uncomment the region
+  (define-key evil-visual-state-map (kbd "C-/") 'evilnc-comment-or-uncomment-lines)
+  (define-key evil-normal-state-map (kbd "C-/") 'evilnc-comment-or-uncomment-lines)
+
+  ;; toggle tolding
+  (define-key evil-normal-state-map (kbd "TAB") 'evil-toggle-fold))
+
+;; delete a tab, not 4 spaces
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+
 (use-package general
+  :if packages/evil
   :ensure t
   :init (general-evil-setup t))
 
@@ -676,39 +808,13 @@
   :ensure t
   :config (which-key-mode 1))
 
-(setq evil-undo-system 'undo-redo)
-
-;; tab over the region
-(general-define-key
- :states 'visual
- "TAB" (lambda ()
-         (interactive)
-         (tab-to-tab-stop)))
-
-;; comment/uncomment the region
-(general-define-key
- :states '(normal visual)
- "C-/" '(evilnc-comment-or-uncomment-lines :which-key "Comment lines"))
-
-;; toggle tolding
-(general-define-key
- :states 'normal
- "TAB" 'evil-toggle-fold)
-
-;; delete a tab, not 4 spaces
-(global-set-key (kbd "DEL") 'backward-delete-char)
-(setq c-backspace-function 'backward-delete-char)
-
-;; Better directory navigation in ivy
-(eval-after-load 'ivy #'(lambda ()
-						  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char)))
-
-(general-define-key
- :states '(normal visual)
- :prefix "SPC"
- "f"   '(:ignore t :which-key "files")
- "f s" '(save-buffer :which-key "Save file")
- "."   '(find-file   :which-key "open file"))
+(when packages/evil
+  (general-define-key
+   :states '(normal visual)
+   :prefix "SPC"
+   "f"   '(:ignore t :which-key "files")
+   "f s" '(save-buffer :which-key "Save file")
+   "."   '(find-file   :which-key "open file"))
 
 (general-define-key
  :states '(normal visual)
@@ -772,7 +878,7 @@
 									 (evil-local-set-key 'normal (kbd "l") 'dashboard-return)
 									 (evil-local-set-key 'normal (kbd "e") #'(lambda ()
                                                                                (interactive)
-                                                                               (find-file "~/.config/emacs/config.org")))
+                                                                               (find-file (concat config-dir "config.org"))))
 									 (evil-local-set-key 'normal (kbd "x") #'(lambda ()
                                                                                (interactive)
                                                                                (find-file "~/.config/xmonad/xmonad.org"))))))
@@ -820,10 +926,10 @@
 
 (defun bugger/emacs-reload ()
   (interactive)
-  (org-babel-tangle-file (concat user-emacs-directory "config.org"))
-  ;; (byte-compile-file (concat user-emacs-directory "init.el"))
-  (load-file "~/.config/emacs/init.el")
-  (load-file "~/.config/emacs/init.el"))
+  (org-babel-tangle-file (concat config-dir "config.org"))
+  (byte-compile-file (concat config-dir "init.el"))
+  (load-file (concat config-dir "init.el"))
+  (load-file (concat config-dir "init.el")))
 
 (defun bugger/reload (mode)
   "Reload the mode specified by mode. mode must be a function"
@@ -888,7 +994,20 @@
  "s A" '(persp-set-buffer :which-key "brgin buffer to perspective")
  "s r" '(persp-remove :which-key "remove buffer from perspective")
  "s k" '(persp-kill :which-key "kill perspective")
- "s K" '(persp-kill-others :which-key "kill other perspectives"))
+ "s K" '(persp-kill-others :which-key "kill other perspectives")))
 
 (setq gc-cons-threshold (* 2 1024 1024))
 (server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(no-littering yasnippet-snippets which-key web-mode vterm-toggle treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil treemacs-all-the-icons toc-org smartparens rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep pinentry persp-projectile peep-dired page-break-lines org-auto-tangle mu4e-alert lsp-ui lsp-java lsp-haskell java-snippets highlight-indent-guides general flycheck exwm evil-nerd-commenter evil-collection emms emmet-mode elfeed-org elfeed-goodies doom-themes doom-modeline dired-open dashboard counsel-projectile company centaur-tabs calfw-org calfw)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
