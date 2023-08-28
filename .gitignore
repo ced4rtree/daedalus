@@ -1,4 +1,5 @@
 **/*.orig
+**/*.gch
 **/*.rej
 **/*.elc
 **/*.o
@@ -7,4 +8,4 @@
 .config/blocks/dwmblocks
 **/*~
 **/*#
-.config/zsh/.zcompdump
+**/.zcompdump
