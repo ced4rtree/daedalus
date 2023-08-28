@@ -1,6 +1,10 @@
 *.orig
 *.rej
 *.elc
+*.o
+dwm
+dmenu
+dwmblocks
 *~
 *#
 .zcompdump
