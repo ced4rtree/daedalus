@@ -242,7 +242,7 @@
   :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 
-;; (add-to-list 'default-frame-alist '(alpha-background . 85))
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 
 (when langs/java
   (add-hook 'java-mode-hook 'java-ts-mode))

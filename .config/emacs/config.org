@@ -427,7 +427,7 @@ Adds rainbow parentheses and color to hex values and such
 ** Window transparency
 Another new feature in Emacs 29 that lets you make the background transparent while keeping text and such solid
 #+begin_src emacs-lisp
-;; (add-to-list 'default-frame-alist '(alpha-background . 85))
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 #+end_src
 
 ** Tree Sitter
