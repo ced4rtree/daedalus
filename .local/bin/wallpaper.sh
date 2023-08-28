@@ -2,7 +2,7 @@
 
 kill -9 $(top -b -n 1 | grep wal | cut -d ' ' -f3)
 # wal -i ~/.local/wallpapers/"$(ls ~/.local/wallpapers/ | shuf | head -n 1)" 
-wal -i ~/.local/wallpapers/wallpaper.jpg
+wal -i ~/.local/share/wallpapers/wallpaper.jpg
 cp ~/.cache/wal/colors.Xresources ~/.Xresources
 
 # fixing some urxvt settings since the previous command overwrites them
