@@ -11,4 +11,7 @@ picom &
 nm-applet &
 batsignal -M 'dunstify' &
 if [ -z "$(pidof mpd)" ]; then mpd; fi # sometimes mpd gets started multiple times, and it sounds like hot garbage getting spoon fed directly into my ears
+
+# make java apps work
+export _JAVA_AWT_WM_NONREPARENTING=1
 wmname "LG3D"

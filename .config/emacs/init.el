@@ -1,14 +1,19 @@
+(when (not (boundp 'has-restarted))
+  (setq has-restarted nil))
+
 (setq mouse-autoselect-window t
       focus-follows-mouse t)
 
-(setq config-dir user-emacs-directory) ;; to use for some stuff like autostart.sh for example, which I do want in my default user-emacs-directory
+(when (not has-restarted)
+  (setq config-dir user-emacs-directory)) ;; to use for some stuff like autostart.sh for example, which I do want in my default user-emacs-directory
 (setq user-emacs-directory "~/.cache/emacs/")
 
 (setq
 
  ;; packages
  packages/evil t ;; evil mode. Setting to nil breaks all SPC- keybdings
- packages/modeline t ;; doom modeline
+ packages/doom-modeline t ;; doom emacs modeline
+ packages/spaceline nil ;; spacemacs modeline
  packages/tabs t ;; centaur tabs
  packages/dashboard t ;; dashboard
  packages/autocompletion t ;; code autocompletion. think company, lsp
@@ -58,25 +63,24 @@
   (require (intern (symbol-value 'PACKAGE))))
 
 (require 'bind-key)
-(use-package evil
-  :if packages/evil
-  :ensure t
-  :init
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1)
-  (evil-set-undo-system 'undo-redo))
+(when packages/evil
+  (use-package evil
+	:ensure t
+	:init
+	(setq evil-want-keybinding nil)
+	:config
+	(evil-mode 1)
+	(evil-set-undo-system 'undo-redo)))
 
-(use-package evil-collection
-  :if packages/evil
-  :ensure t
-  :after evil magit
-  :config
-  (setq evil-collection-mode-list '(dashboard))
-  (evil-collection-init))
+(when packages/evil
+  (use-package evil-collection
+	:ensure t
+	:after evil magit
+	:config
+	(evil-collection-init)))
 
-(add-to-list 'default-frame-alist
-             '(font . "AnonymicePro Nerd Font Mono-15"))
+;; (add-to-list 'default-frame-alist
+;;              '(font . "AnonymicePro Nerd Font Mono-15"))
 (use-package treemacs-icons-dired
   :ensure t
   :hook (dired-mode . treemacs-icons-dired-mode))
@@ -98,66 +102,86 @@
 ;; 											(interactive)
 ;; 											(load-theme 'xresources t)))
 
-(use-package doom-modeline
-  :if packages/modeline
+(use-package all-the-icons
   :ensure t
-  :hook (after-init . doom-modeline-mode)
-  :hook (doom-modeline-mode . size-indication-mode)
-  :hook (doom-modeline-mode . column-number-mode)
+  :after exwm) ;; this line needs to be fixed for when exwm is disabled
 
-  :init
-  (setq projectile-dynamic-mode-line t)
+(when packages/doom-modeline
+  (use-package doom-modeline
+	:after all-the-icons
+	:ensure t
+	:hook (after-init . doom-modeline-mode)
+	:hook (doom-modeline-mode . size-indication-mode)
+	:hook (doom-modeline-mode . column-number-mode)
 
-  ;; Set these early so they don't trigger variable watchers
-  (setq doom-modeline-bar-width 3
-        doom-modeline-github nil
-        doom-modeline-mu4e nil
-        doom-modeline-persp-name nil
-        doom-modeline-minor-modes nil
-        doom-modeline-major-mode-icon nil
-        doom-modeline-buffer-file-name-style 'filename
-        ;; Only show file encoding if it's non-UTF-8 and different line endings
-        ;; than the current OSes preference
-        doom-modeline-buffer-encoding 'nondefault
-        doom-modeline-default-eol-type 0
-        doom-modeline-height 35)
-  (when (daemonp)
-    (setq doom-modeline-icon t))
-  :config
-  
-  (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))
+	:config
+	(setq projectile-dynamic-mode-line t)
+
+	;; Set these early so they don't trigger variable watchers
+	(setq doom-modeline-bar-width 3
+          doom-modeline-github nil
+          doom-modeline-mu4e t
+          doom-modeline-persp-name t
+          doom-modeline-minor-modes nil
+          doom-modeline-major-mode-icon t
+          doom-modeline-buffer-file-name-style 'filename
+          ;; Only show file encoding if it's non-UTF-8 and different line endings
+          ;; than the current OSes preference
+          doom-modeline-buffer-encoding 'nondefault
+          doom-modeline-default-eol-type 0
+          doom-modeline-height 35
+		  doom-modeline-icon t)
+	
+	(when (package-installed-p 'ef-themes)
+	  (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))))
 
 (when (file-exists-p "/sys/class/power_supply/")
   (display-battery-mode 1))
 
-(use-package centaur-tabs
-  :ensure t
-  :if packages/tabs
-  :hook (server-after-make-frame . centaur-tabs-mode)
-  :init
-  (setq centaur-tabs-set-icons t
- centaur-tabs-gray-out-icons 'buffer
- centaur-tabs-set-bar 'left
- centaur-tabs-set-modified-marker t
- centaur-tabs-close-button "✕"
- centaur-tabs-modified-marker "•"
- ;; Scrolling (with the mouse wheel) past the end of the tab list
- ;; replaces the tab list with that of another Doom workspace. This
- ;; prevents that.
- centaur-tabs-cycle-scope 'tabs))
+(when packages/spaceline
+  (use-package fancy-battery
+	:ensure t
+	:config
+	(fancy-battery-mode)))
 
-;; When started in daemon mode, centaur tabs does not work at all, so here is a fix
- ;(if (not (daemonp))
-    ;(centaur-tabs-mode)
-;
-  ;(defun centaur-tabs--daemon-mode (frame)
-    ;(unless (and (featurep 'centaur-tabs) (centaur-tabs-mode-on-p))
-;run-at-time nil nil (lambda () (centaur-tabs-mode)))))
-  ;(add-hook 'after-make-frame-functions #'centaur-tabs--daemon-mode))
+(when packages/spaceline
+  (use-package spaceline
+	:ensure t
+	:config
+	(require 'spaceline-config)
+	(setq powerline-default-seperator (quote arrow)
+		  powerline-height 25)
+	(spaceline-toggle-minor-modes-off)
+	(spaceline-toggle-version-control-on)
+	(spaceline-toggle-battery)
+	(spaceline-toggle-flycheck-info-on)
+	(spaceline-toggle-global)
+	(spaceline-toggle-hud-off)
+	(spaceline-toggle-mu4e-alert-segment-on)
+	(spaceline-spacemacs-theme)
+
+	;; emms support
+	(spaceline-define-segment all-the-icons-track
+	  "Show the current played track"
+	  (emms-mode-line-icon-function))))
+
+(when packages/tabs
+  (use-package centaur-tabs
+	:ensure t
+	:hook (server-after-make-frame . centaur-tabs-mode)
+	:init
+	(setq centaur-tabs-set-icons t
+		  centaur-tabs-gray-out-icons 'buffer
+		  centaur-tabs-set-bar 'left
+		  centaur-tabs-set-modified-marker t
+		  centaur-tabs-close-button "✕"
+		  centaur-tabs-modified-marker "•"
+		  ;; Scrolling (with the mouse wheel) past the end of the tab list
+		  ;; replaces the tab list with that of another Doom workspace. This
+		  ;; prevents that.
+		  centaur-tabs-cycle-scope 'tabs)))
 
 (global-display-line-numbers-mode 1)
-(with-eval-after-load "dashboard"
-  (add-hook 'dashboard-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1))))
 
 (global-hl-line-mode)
 
@@ -173,44 +197,40 @@
 (setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
 (pixel-scroll-precision-mode 1) ;; smooth scrolling
 
-(use-package all-the-icons
-  ;; if exwm is enabled, load after that. otherwise just load regularly
-  ;; (package will always be loaded when this is run)
-  :ensure t)
+(when packages/dashboard
+  (use-package page-break-lines
+	:ensure t
+	:config (global-page-break-lines-mode)))
 
-(use-package page-break-lines
-  :if packages/dashboard
-  :ensure t
-  :config (global-page-break-lines-mode))
+(when packages/dashboard
+  (use-package recentf
+	:ensure t
+	:config
+	(add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+	(add-to-list 'recentf-exclude "~/org/agenda/todo.org")
+	(add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
+	(add-to-list 'recentf-exclude "~/org/agenda/homework.org")
+	(add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks"))
+	:hook (dashboard . display-line-numbers-mode)))
 
-(use-package recentf
-  :if packages/dashboard
-  :ensure t
-  :config
-  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
-  (add-to-list 'recentf-exclude "~/org/agenda/todo.org")
-  (add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
-  (add-to-list 'recentf-exclude "~/org/agenda/homework.org")
-  (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
-
-(use-package dashboard
-  :if packages/dashboard
-  :after all-the-icons
-  :after page-break-lines
-  :after projectile
-  :after recentf
-  :ensure t
-  :init
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (setq dashboard-items '((recents . 5)
-                          (projects . 5)
-                          (agenda . 5)))
-  (setq dashboard-icon-type 'all-the-icons)
-  (setq dashboard-center-content t)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  :config
-  (dashboard-setup-startup-hook))
+(when packages/dashboard
+  (use-package dashboard
+	:after all-the-icons
+	:after page-break-lines
+	:after projectile
+	:after recentf
+	:ensure t
+	:init
+	(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+	(setq dashboard-items '((recents . 5)
+							(projects . 5)
+							(agenda . 5)))
+	(setq dashboard-icon-type 'all-the-icons)
+	(setq dashboard-center-content t)
+	(setq dashboard-set-heading-icons t)
+	(setq dashboard-set-file-icons t)
+	:config
+	(dashboard-setup-startup-hook)))
 
 (use-package rainbow-mode
   :ensure t
@@ -284,6 +304,7 @@
 
 (use-package ivy-rich
   :after ivy
+  :ensure t
   :defer t
   :custom
   (ivy-virtual-abbreviate 'full
@@ -316,43 +337,45 @@
 
 (global-set-key (kbd "<escape>") 'abort-minibuffers)
 
-(use-package company
-  :if packages/autocompletion
-  :defer t
-  :ensure t
-  :config
-  (global-company-mode))
+(when packages/autocompletion
+  (use-package company
+	:defer t
+	:ensure t
+	:config
+	(global-company-mode)))
 
-(use-package lsp-mode
-  :if packages/autocompletion
-  :ensure t
-  :defer t
-  :hook (prog-mode . #'lsp-deferred)
-  :config
-  (setq lsp-keymap-prefix "C-l"))
+(when packages/autocompletion
+  (use-package lsp-mode
+	:ensure t
+	:defer t
+	:hook (prog-mode . #'lsp-deferred)
+	:config
+	(setq lsp-keymap-prefix "C-l"))
 
 										; extensions
-(use-package lsp-haskell
-  :if (and packages/autocompletion langs/haskell)
-  :ensure t
-  :defer t
-  :after lsp-mode)
-(use-package lsp-treemacs
-  :if (and packages/autocompletion packages/treemacs)
-  :ensure t
-  :defer t
-  :after lsp-mode)
-(use-package lsp-java
-  :if (and packages/autocompletion langs/java)
-  :ensure t
-  :defer t
-  :after lsp-mode)
-(use-package lsp-ui
-  :if packages/autocompletion
-  :ensure t
-  :defer t
-  :after lsp-mode
-  :hook (lsp-mode . lsp-ui-doc-mode))
+  (when langs/haskell
+	(use-package lsp-haskell
+	  :ensure t
+	  :defer t
+	  :after lsp-mode))
+
+  (when packages/treemacs
+	(use-package lsp-treemacs
+	  :ensure t
+	  :defer t
+	  :after lsp-mode))
+
+  (when langs/java
+	(use-package lsp-java
+	  :ensure t
+	  :defer t
+	  :after lsp-mode))
+
+  (use-package lsp-ui
+	:ensure t
+	:defer t
+	:after lsp-mode
+	:hook (lsp-mode . lsp-ui-doc-mode)))
 
 (use-package flycheck
   :defer t
@@ -360,81 +383,79 @@
   :config
   (global-flycheck-mode))
 
-(use-package treemacs
-  :if packages/treemacs
-  :ensure t
-  :defer t)
-(use-package treemacs-evil
-  :if (and packages/treemacs packages/evil)
-  :ensure t
-  :after (treemacs evil))
-(use-package treemacs-projectile
-  :if (and packages/treemacs packages/projectile)
-  :ensure t
-  :after (treemacs projectile))
-(use-package treemacs-magit
-  :if packages/treemacs
-  :ensure t
-  :after (treemacs magit))
-(use-package treemacs-all-the-icons
-  :ensure t
-  :after (treemacs all-the-icons))
+(when packages/treemacs
+  (use-package treemacs
+	:ensure t
+	:defer t)
+  (when packages/evil
+	(use-package treemacs-evil
+	  :ensure t
+	  :after (treemacs evil)))
+  (when packages/projectile
+	(use-package treemacs-projectile
+	  :ensure t
+	  :after (treemacs projectile)))
+  (use-package treemacs-magit
+	:ensure t
+	:after (treemacs magit))
+  (use-package treemacs-all-the-icons
+	:ensure t
+	:after (treemacs all-the-icons)))
 
-(use-package projectile
-  :if packages/projectile
-  :ensure t
-  :config
-  (projectile-mode +1))
-(use-package projectile-ripgrep
-  :if packages/projectile
-  :ensure t
-  :after projectile)
-(use-package counsel-projectile
-  :if packages/projectile
-  :ensure t
-  :after (projectile counsel))
+(when packages/projectile
+  (use-package projectile
+	:ensure t
+	:config
+	(projectile-mode +1))
 
-(use-package perspective
-  :if packages/perspectives
-  :ensure t
-  :config
-  (setq persp-mode-prefix-key "C-x x"))
-(persp-mode)
+  (use-package projectile-ripgrep
+	:ensure t
+	:after projectile)
 
+  (use-package counsel-projectile
+	:ensure t
+	:after (projectile counsel)))
+
+(when packages/perspectives
+  (use-package perspective
+	:ensure t
+	:config
+	(setq persp-mode-prefix-key "C-x x")
+	(persp-mode)))
+
+(when (and packages/perspectives packages/projectile)
 (use-package persp-projectile
-  :if (and packages/perspectives packages/projectile)
   :ensure t
   :after perspective
-  :after projectile)
+  :after projectile))
 
-(use-package yasnippet
-  :if packages/snippets
-  :ensure t
-  :config
-  (setq yas-snippet-dirs (list (concat user-emacs-directory "snippets")))
-  (yas-global-mode 1))
+(when packages/snippets
+  (use-package yasnippet
+	:ensure t
+	:config
+	(setq yas-snippet-dirs (list (concat user-emacs-directory "snippets")))
+	(yas-global-mode 1)))
 
-(use-package yasnippet-snippets
-  :if packages/snippets
-  :ensure t
-  :after yasnippet)
-(use-package java-snippets
-  :if (and packages/snippets langs/java)
-  :ensure t
-  :after yasnippet)
+(when packages/snippets
+  (use-package yasnippet-snippets
+	:ensure t
+	:after yasnippet)
+  (when langs/java
+	(use-package java-snippets
+	  :ensure t
+	  :after yasnippet)))
 
-(use-package web-mode
-  :if langs/web
-  :ensure t
-  :init
-  (add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
-  (add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
-(use-package emmet-mode
-  :if langs/web
-  :ensure t
-  :after web-mode
-  :hook (web-mode . emmet-mode))
+(when langs/web
+  (use-package web-mode
+	:ensure t
+	:init
+	(add-to-list 'auto-mode-alist  '("\\.html$" . web-mode))
+	(add-to-list 'auto-mode-alist  '("\\.css?\\'" . web-mode))
+	(add-to-list 'auto-mode-alist  '("\\.js$\\'" . web-mode)))
+  (use-package emmet-mode
+	:ensure t
+	:after web-mode
+	:hook (web-mode . emmet-mode)))
 
 (use-package evil-nerd-commenter :ensure t)
 
@@ -471,7 +492,10 @@
   ;; create a global keyboard shortcut with the following code
   ;; emacsclient -cF "((visibility . nil))" -e "(emacs-run-launcher)"
   (defun emacs-run-launcher ()
-	"Create and select a frame called emacs-run-launcher which consists only of a minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame, which is an emacs command that prompts you to select an app and open it in a dmenu like behaviour. Delete the frame after that command has exited"
+	"Create and select a frame called emacs-run-launcher which consists only of a
+minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
+ which is an emacs command that prompts you to select an app and open it in a
+ dmenu like behaviour. Delete the frame after that command has exited"
 	(interactive)
 	(with-selected-frame 
 		(make-frame '((name . "emacs-run-launcher")
@@ -642,9 +666,9 @@
 	(setq exwm-workspace-number 10) ;; setting workspaces
 
 	;; systray
-	(use-package exwm-systemtray
-	  :config
-	  (exwm-systemtray-enable))
+	;; (use-package exwm-systemtray
+	;;   :config
+	;;   (exwm-systemtray-enable))
 
 	;; set window names
 	(add-hook 'exwm-update-class-hook 'exwm-rename-buffer)
@@ -654,122 +678,119 @@
   (defun bugger/autostart ()
 	(call-process "/bin/sh" (concat config-dir "autostart.sh"))))
 
-(use-package exwm
-  :if emacsOS/exwm
-  :ensure t
-  ;;:if (not (daemonp))
-  :config
-  (bugger/exwm-settings)
-  (bugger/gpg-fix)
-  (bugger/keybindings)
+(when emacsOS/exwm
+  (use-package exwm
+	:ensure t
+	:config
+	(bugger/exwm-settings)
+	(bugger/gpg-fix)
+	(bugger/keybindings)
 
-  (exwm-enable)
+	(exwm-enable)
 
-  (bugger/autostart))
+	(when (not has-restarted)
+	  (bugger/autostart))))
 
-(use-package elfeed
-  :if emacsOS/elfeed
-  :ensure t)
-(use-package elfeed-org
-  :if emacsOS/elfeed
-  :ensure t
-  :after elfeed
-  :config
-  (elfeed-org))
-(use-package elfeed-goodies
-  :if emacsOS/elfeed
-  :ensure t
-  :after elfeed
-  :config
-  (elfeed-goodies/setup))
+(when emacsOS/elfeed
+  (use-package elfeed
+	:ensure t)
+  (use-package elfeed-org
+	:ensure t
+	:after elfeed
+	:config
+	(elfeed-org))
+  (use-package elfeed-goodies
+	:ensure t
+	:after elfeed
+	:config
+	(elfeed-goodies/setup)))
 
-(use-package vterm
-  :if emacsOS/vterm
-  :defer t
-  :ensure t
-  :config
-  (setq shell-file-name "/bin/zsh"
-		vterm-max-scrollback 5000))
+(when emacsOS/vterm
+  (use-package vterm
+	:defer t
+	:ensure t
+	:config
+	(setq shell-file-name "/bin/zsh"
+		  vterm-max-scrollback 5000)))
 
-(use-package vterm-toggle
-  :if emacsOS/vterm
-  :after vterm
-  :ensure t
-  :config
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                   (let ((buffer (get-buffer buffer-or-name)))
-                     (with-current-buffer buffer
-                       (or (equal major-mode 'vterm-mode)
-                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 ;;(display-buffer-reuse-window display-buffer-in-direction)
-                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                 ;;(direction . bottom)
-                 ;;(dedicated . t) ;dedicated is supported in emacs27
-                 (reusable-frames . visible)
-                 (window-height . 0.3))))
+(when emacsOS/vterm
+  (use-package vterm-toggle
+	:after vterm
+	:ensure t
+	:config
+	(setq vterm-toggle-fullscreen-p nil)
+	(setq vterm-toggle-scope 'project)
+	(add-to-list 'display-buffer-alist
+				 '((lambda (buffer-or-name _)
+					 (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+						 (or (equal major-mode 'vterm-mode)
+							 (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                   (display-buffer-reuse-window display-buffer-at-bottom)
+                   ;;(display-buffer-reuse-window display-buffer-in-direction)
+                   ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                   ;;(direction . bottom)
+                   ;;(dedicated . t) ;dedicated is supported in emacs27
+                   (reusable-frames . visible)
+                   (window-height . 0.3)))))
 
-(use-package emms
-  :if emacsOS/emms
-  :ensure t
-  :after exwm ;; exwm autostart is where mpd gets started
-  :config
-  (require 'emms-setup)
-  (require 'emms-player-mpd)
-  (emms-all)
-  (setq emms-seek-seconds 5)
-  (setq emms-player-list '(emms-player-mpd))
-  (setq emms-info-functions '(emms-info-mpd))
-  (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-  (setq emms-player-mpd-server-name "localhost")
-  (setq emms-player-mpd-server-port "6600")
-  (setq mpc-host "localhost:6600"))
+(when emacsOS/emms
+  (use-package emms
+	:ensure t
+	:after exwm ;; exwm autostart is where mpd gets started
+	:config
+	(require 'emms-setup)
+	(require 'emms-player-mpd)
+	(emms-all)
+	(setq emms-seek-seconds 5)
+	(setq emms-player-list '(emms-player-mpd))
+	(setq emms-info-functions '(emms-info-mpd))
+	(setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+	(setq emms-player-mpd-server-name "localhost")
+	(setq emms-player-mpd-server-port "6600")
+	(setq mpc-host "localhost:6600")))
 
-(use-package calfw
-  :if emacsOS/calendar
-  :ensure t)
-(use-package calfw-org
-  :if emacsOS/calendar
-  :ensure
-  :after calfw)
+(when emacsOS/calendar
+  (use-package calfw
+	:ensure t)
+  (use-package calfw-org
+	:ensure
+	:after calfw))
 
-(use-package mu4e
-  :if emacsOS/mail
-  :ensure nil
-  :load-path "/usr/share/emacs/site-lisp/mu4e"
-  :config
-  (setq smtpmail-stream-type 'starttls
-        mu4e-change-filenames-when-moving t
-		mu4e-update-interval (* 10 60)
-		mu4e-compose-format-flowed t
-		mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
-		mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
-		;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
-		;; using the decryption function defined below
-		message-send-mail-function 'smtpmail-send-it)
+(when emacsOS/mail
+  (use-package mu4e
+	:ensure nil
+	:load-path "/usr/share/emacs/site-lisp/mu4e"
+	:config
+	(setq smtpmail-stream-type 'starttls
+          mu4e-change-filenames-when-moving t
+		  mu4e-update-interval (* 10 60)
+		  mu4e-compose-format-flowed t
+		  mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
+		  mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
+		  ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
+		  ;; using the decryption function defined below
+		  message-send-mail-function 'smtpmail-send-it)
 
-  ;; this is a dummy configuration for example
-  ;; my real email info is stored in ~/.cache/emacs/emails.el
+	;; this is a dummy configuration for example
+	;; my real email info is stored in ~/.cache/emacs/emails.el
 
-  ;; mu4e-contexts (list
-  ;; 			   (make-mu4e-context
-  ;; 				:name "School"
-  ;; 				:match-func (lambda (msg)
-  ;; 							  (when msg
-  ;; 								(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-  ;; 				:vars '((user-mail-address . "myemail@gmail.com")
-  ;; 						(user-full-name    . "My Name")
-  ;; 						(smtpmail-smtp-server . "smtp.gmail.com")
-  ;; 						(smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
-  ;; 						(mu4e-drafts-folder . "/[Gmail]/Drafts")
-  ;; 						(mu4e-sent-folder . "/[Gmail]/Sent Mail")
-  ;; 						(mu4e-refile-folder . "/[Gmail]/All Mail")
-  ;; 						(mu4e-trash-folder . "/[Gmail]/Trash"))))
+	;; mu4e-contexts (list
+	;; 			   (make-mu4e-context
+	;; 				:name "My email"
+	;; 				:match-func (lambda (msg)
+	;; 							  (when msg
+	;; 								(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+	;; 				:vars '((user-mail-address . "myemail@gmail.com")
+	;; 						(user-full-name    . "My Name")
+	;; 						(smtpmail-smtp-server . "smtp.gmail.com")
+	;; 						(smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
+	;; 						(mu4e-drafts-folder . "/[Gmail]/Drafts")
+	;; 						(mu4e-sent-folder . "/[Gmail]/Sent Mail")
+	;; 						(mu4e-refile-folder . "/[Gmail]/All Mail")
+	;; 						(mu4e-trash-folder . "/[Gmail]/Trash"))))
 
-  (load (concat user-emacs-directory "emails.el")))
+	(load (concat user-emacs-directory "emails.el"))))
 
 (use-package mu4e-alert
   :after mu4e
@@ -799,10 +820,10 @@
 (global-set-key (kbd "DEL") 'backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
 
-(use-package general
-  :if packages/evil
-  :ensure t
-  :init (general-evil-setup t))
+(when packages/evil
+  (use-package general
+	:ensure t
+	:config (general-evil-setup t)))
 
 (use-package which-key
   :ensure t
@@ -926,10 +947,11 @@
 
 (defun bugger/emacs-reload ()
   (interactive)
+  (setq has-restarted t)
   (org-babel-tangle-file (concat config-dir "config.org"))
   (byte-compile-file (concat config-dir "init.el"))
-  (load-file (concat config-dir "init.el"))
-  (load-file (concat config-dir "init.el")))
+  (load-file (concat config-dir "init.elc"))
+  (load-file (concat config-dir "init.elc")))
 
 (defun bugger/reload (mode)
   "Reload the mode specified by mode. mode must be a function"
@@ -998,16 +1020,3 @@
 
 (setq gc-cons-threshold (* 2 1024 1024))
 (server-start)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(no-littering yasnippet-snippets which-key web-mode vterm-toggle treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil treemacs-all-the-icons toc-org smartparens rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep pinentry persp-projectile peep-dired page-break-lines org-auto-tangle mu4e-alert lsp-ui lsp-java lsp-haskell java-snippets highlight-indent-guides general flycheck exwm evil-nerd-commenter evil-collection emms emmet-mode elfeed-org elfeed-goodies doom-themes doom-modeline dired-open dashboard counsel-projectile company centaur-tabs calfw-org calfw)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
