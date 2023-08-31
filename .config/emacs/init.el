@@ -8,37 +8,11 @@
   (setq config-dir user-emacs-directory)) ;; to use for some stuff like autostart.sh for example, which I do want in my default user-emacs-directory
 (setq user-emacs-directory "~/.cache/emacs/")
 
-(setq
-
- ;; packages
- packages/evil t ;; evil mode. Setting to nil breaks all SPC- keybdings
- packages/doom-modeline t ;; doom emacs modeline
- packages/spaceline nil ;; spacemacs modeline
- packages/tabs t ;; centaur tabs
- packages/dashboard t ;; dashboard
- packages/autocompletion t ;; code autocompletion. think company, lsp
- packages/treemacs t ;; a file viewer like nerdtree for vim
- packages/projectile t ;; a project manager for emacs
- packages/perspectives t ;; workspaces for emacs
- packages/snippets t ;; code snippets, because my hand are too weak
-
- ;; language support
- langs/web nil ;; html, js, css
- langs/java t ;; java
- langs/haskell nil ;; haskell
-
- ;; The Emacs Operating System
- emacsOS/run-launcher t ;; a run launcher like dmenu or rofi
- emacsOS/exwm t ;; an emacs window manager
- emacsOS/elfeed nil ;; an rss feed for emacs
- emacsOS/emms t ;; a music player for emacs
- emacsOS/vterm t ;; a fully featured terminal inside of emacs
- emacsOS/calendar t ;; a nice looking calendar
- emacsOS/mail t ;; a mail client inside of emacs
-)
+(load (concat config-dir "packages.el"))
 
 (require 'package)
 (setq package-user-dir (concat user-emacs-directory ".local/elpa"))
+(setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
@@ -210,8 +184,7 @@
 	(add-to-list 'recentf-exclude "~/org/agenda/todo.org")
 	(add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
 	(add-to-list 'recentf-exclude "~/org/agenda/homework.org")
-	(add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks"))
-	:hook (dashboard . display-line-numbers-mode)))
+	(add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks"))))
 
 (when packages/dashboard
   (use-package dashboard
@@ -274,27 +247,19 @@
                              "~/org/agenda/emacs.org"
                              "~/org/agenda/schedule.org"))
 
-(use-package no-littering
-  :ensure t)
-
-(use-package smartparens
-  :ensure t
-  :config
-  (require 'smartparens-config)
-  (smartparens-global-mode 1))
-
-(use-package ivy
-  :defer 0.1
-  :diminish
-  :custom
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  :config
-  (ivy-mode)
-  :hook (ivy-mode . (lambda ()
-					  (interactive)
-					  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char))))
+(when minibuffer/ivy
+  (use-package ivy
+	:defer 0.1
+	:diminish
+	:custom
+	(setq ivy-count-format "(%d/%d) ")
+	(setq ivy-use-virtual-buffers t)
+	(setq enable-recursive-minibuffers t)
+	:config
+	(ivy-mode)
+	:hook (ivy-mode . (lambda ()
+						(interactive)
+						(define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char))))
 
 (use-package counsel
   :after ivy
@@ -320,22 +285,32 @@
   :bind (:map evil-normal-state-map
 			  ("/" . swiper-isearch)
 			  ("n" . evil-search-previous)
-			  ("N" . evil-search-next)))
+			  ("N" . evil-search-next))))
 
-(setq indent-tabs-mode t)
-(setq-default tab-width 4
-              c-basic-offset 4
-              c-default-style "stroustrup")
-(defvaralias 'c-basic-offset 'tab-width)
+(when minibuffer/vertico
+  (use-package vertico
+	:ensure t
+	:config
+	(vertico-mode))
 
-(define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
-(define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
-(define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
-(define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+  (use-package marginalia
+	:ensure t
+	:config
+	(marginalia-mode 1))
 
-(defalias 'yes-or-no-p 'y-or-n-p)
+  (use-package consult
+	:ensure t
+	:bind (:map evil-normal-state-map
+				("/" . consult-line))))
 
-(global-set-key (kbd "<escape>") 'abort-minibuffers)
+(use-package no-littering
+  :ensure t)
+
+(use-package smartparens
+  :ensure t
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-mode 1))
 
 (when packages/autocompletion
   (use-package company
@@ -348,11 +323,25 @@
   (use-package lsp-mode
 	:ensure t
 	:defer t
-	:hook (prog-mode . #'lsp-deferred)
 	:config
-	(setq lsp-keymap-prefix "C-l"))
+	(setq lsp-keymap-prefix "SPC c")
 
-										; extensions
+	;; enable hooks for enabled languages
+	(when langs/java
+	  (add-hook 'java-mode-hook #'lsp-deferred)
+	  (add-hook 'java-ts-mode-hook #'lsp-deferred))
+	(when langs/haskell
+	  (add-hook 'haskell-mode-hook #'lsp-deferred))
+	(when langs/web
+	  (add-hook 'js-mode-hook #'lsp-deferred)
+	  (add-hook 'js-ts-mode-hook #'lsp-deferred)
+	  (add-hook 'js-jsx-mode-hook #'lsp-deferred)
+	  (add-hook 'html-mode-hook #'lsp-deferred)
+	  (add-hook 'css-mode-hook #'lsp-deferred))
+	(when langs/c
+	  (add-hook 'cc-mode-hook #'lsp-deferred))
+
+	;; extensions
   (when langs/haskell
 	(use-package lsp-haskell
 	  :ensure t
@@ -375,7 +364,49 @@
 	:ensure t
 	:defer t
 	:after lsp-mode
-	:hook (lsp-mode . lsp-ui-doc-mode)))
+	:hook (lsp-mode . lsp-ui-doc-mode))))
+
+(use-package prescient
+  :ensure t)
+
+(when minibuffer/vertico
+  (use-package vertico-prescient
+	:ensure t
+	:after vertico
+	:after prescient
+	:config
+	(vertico-prescient-mode 1)))
+
+(when minibuffer/ivy
+  (use-package ivy-prescient
+	:ensure t
+	:after ivy
+	:after prescient
+	:config
+	(ivy-prescient-mode 1)))
+
+(when packages/autocompletion
+  (use-package company-prescient
+	:after company
+	:after prescient
+	:ensure t
+	:config
+	(company-prescient-mode 1)))
+
+(setq indent-tabs-mode t)
+(setq-default tab-width 4
+              c-basic-offset 4
+              c-default-style "stroustrup")
+(defvaralias 'c-basic-offset 'tab-width)
+
+(define-key evil-normal-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+(define-key evil-motion-state-map (kbd "<remap> <evil-next-line>") 'evil-next-visual-line)
+(define-key evil-motion-state-map (kbd "<remap> <evil-previous-line>") 'evil-previous-visual-line)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(global-set-key (kbd "<escape>") 'abort-minibuffers)
 
 (use-package flycheck
   :defer t
@@ -412,9 +443,14 @@
 	:ensure t
 	:after projectile)
 
-  (use-package counsel-projectile
-	:ensure t
-	:after (projectile counsel)))
+  (when minibuffer/ivy
+	(use-package counsel-projectile
+	  :ensure t
+	  :after '(projectile counsel)))
+  (when minibuffer/vertico
+	(use-package consult-projectile
+	  :ensure t
+	  :after '(projectile consult))))
 
 (when packages/perspectives
   (use-package perspective
@@ -851,7 +887,6 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
  :states '(normal visual)
  :prefix "SPC"
  "b"   '(:ignore t                 :which-key "buffer")
- "b b" '(buffer-menu               :which-key "buffer menu")
  "b i" '(ibuffer                   :which-key "ibuffer")
  "b c" '(kill-this-buffer          :which-key "kill buffer")
  "b k" '(kill-this-buffer          :which-key "kill buffer")
@@ -860,6 +895,14 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
  "b h" '(centaur-tabs-backward-tab :which-key "previous tab")
  "b l" '(centaur-tabs-forward-tab  :which-key "previous tab")
  "b r" '(revert-buffer             :which-key "reload buffer"))
+(if minibuffer/vertico
+	(general-define-key
+	 :states '(normal visual)
+	 "SPC b b" '(consult-buffer :which-key "switch to buffer"))
+  (general-define-key
+   :states '(normal visual)
+   "SPC b b" '(switch-to-buffer :which-key "switch to buffer")))
+
 (define-key evil-normal-state-map (kbd "q") #'(lambda ()
                                                 (interactive)
                                                 (when (buffer-modified-p)
@@ -933,7 +976,7 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
  "h" '(:ignore t :which-key "help")
  "h r" '(:ignore t :which-key "reload")
  "h v" '(describe-variable :which-key "describe variable")
- "h t" '(counsel-load-theme :which-key "load theme")
+ "h t" '(load-theme :which-key "load theme")
  "h f" '(describe-function :which-key "describe function"))
 
 (general-define-key
@@ -974,12 +1017,20 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
- "/" '(counsel-projectile-rg :which-key "search project")
  "p" '(:ignore t :which-key "projectile")
  "p p" '(projectile-persp-switch-project :which-key "open project")
  "p c" '(projectile-compile-project :which-key "compile project")
- "p f" '(counsel-projectile-find-file-dwim :which-key "find file")
  "p a" '(projectile-add-known-project :which-key "add project"))
+(when minibuffer/vertico
+  (general-define-key
+   :states '(normal visual)
+   "SPC /" '(consult-ripgrep :which-key "search project")
+   "SPC p f" '(consult-projectile-find-file :which-key "find file")))
+(when minibuffer/ivy
+  (general-define-key
+   :states '(normal visual)
+   "SPC /" '(counsel-projectile-rg :which-key "search project")
+   "SPC p f" '(counsel-projectile-find-file)))
 
 (general-define-key
  :states '(normal visual)
@@ -1007,7 +1058,6 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
  :prefix "SPC"
  :states '(normal visual)
  "s" '(:ignore t :which-key "persp")
- "s b" '(persp-counsel-switch-buffer :which-key "switch buffer")
  "s i" '(persp-ibuffer :which-key "persp ibuffer")
  "s s" '(persp-switch :which-key "switch perspective")
  "s n" '(persp-next :which-key "next perspective")
@@ -1016,7 +1066,15 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
  "s A" '(persp-set-buffer :which-key "brgin buffer to perspective")
  "s r" '(persp-remove :which-key "remove buffer from perspective")
  "s k" '(persp-kill :which-key "kill perspective")
- "s K" '(persp-kill-others :which-key "kill other perspectives")))
+ "s K" '(persp-kill-others :which-key "kill other perspectives"))
+(when minibuffer/vertico
+  (general-define-key
+   :states '(normal visual)
+   "SPC s b" '(persp-switch-to-buffer)))
+(when minibuffer/ivy)
+  (general-define-key
+   :states '(normal visual)
+   "SPC s b" '(persp-counsel-switch-buffer)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
 (server-start)

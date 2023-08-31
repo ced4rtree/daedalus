@@ -38,15 +38,19 @@
   - [[#toc-org][Toc-org]]
   - [[#babel-settings][Babel settings]]
   - [[#org-agenda][Org agenda]]
+- [[#minibuffer-completion][Minibuffer Completion]]
+  - [[#ivy][Ivy]]
+  - [[#vertico][Vertico]]
+  - [[#helm][Helm]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#smartparens][Smartparens]]
-  - [[#ivy][Ivy]]
+  - [[#autocompletion][Autocompletion]]
+  - [[#prescient][Prescient]]
   - [[#tabbing][Tabbing]]
   - [[#visual-lines][Visual lines]]
   - [[#too-lazy-to-type-yes][Too lazy to type yes]]
   - [[#too-lazy-to-type-esc-esc-esc-or-c-g][Too lazy to type ESC-ESC-ESC or C-g]]
-  - [[#autocompletion][Autocompletion]]
   - [[#flycheck][Flycheck]]
   - [[#treemacs][Treemacs]]
   - [[#projectile][Projectile]]
@@ -112,35 +116,9 @@ I like to keep just the things I want in my user-emacs-directory, so I tell emac
 
 ** Package choices
 I like to use emacs in lots of different contexts, and certain things like EXWM aren't exactly needed for the computer I have to use in my comp sci class.
+This is pretty similar to the package configuration in doom emacs, just open the file set the packages you want to =t=, packages you don't want to =nil=.
 #+begin_src emacs-lisp
-(setq
-
- ;; packages
- packages/evil t ;; evil mode. Setting to nil breaks all SPC- keybdings
- packages/doom-modeline t ;; doom emacs modeline
- packages/spaceline nil ;; spacemacs modeline
- packages/tabs t ;; centaur tabs
- packages/dashboard t ;; dashboard
- packages/autocompletion t ;; code autocompletion. think company, lsp
- packages/treemacs t ;; a file viewer like nerdtree for vim
- packages/projectile t ;; a project manager for emacs
- packages/perspectives t ;; workspaces for emacs
- packages/snippets t ;; code snippets, because my hand are too weak
-
- ;; language support
- langs/web nil ;; html, js, css
- langs/java t ;; java
- langs/haskell nil ;; haskell
-
- ;; The Emacs Operating System
- emacsOS/run-launcher t ;; a run launcher like dmenu or rofi
- emacsOS/exwm t ;; an emacs window manager
- emacsOS/elfeed nil ;; an rss feed for emacs
- emacsOS/emms t ;; a music player for emacs
- emacsOS/vterm t ;; a fully featured terminal inside of emacs
- emacsOS/calendar t ;; a nice looking calendar
- emacsOS/mail t ;; a mail client inside of emacs
-)
+(load (concat config-dir "packages.el"))
 #+end_src
 
 * Package setup
@@ -149,6 +127,7 @@ Melpa is a repository for emacs that enables a lot more than what is in the stan
 #+begin_src emacs-lisp
 (require 'package)
 (setq package-user-dir (concat user-emacs-directory ".local/elpa"))
+(setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 #+end_src
@@ -383,8 +362,7 @@ Get rid of agenda files from the recentf list
 	(add-to-list 'recentf-exclude "~/org/agenda/todo.org")
 	(add-to-list 'recentf-exclude "~/org/agenda/emacs.org")
 	(add-to-list 'recentf-exclude "~/org/agenda/homework.org")
-	(add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks"))
-	:hook (dashboard . display-line-numbers-mode)))
+	(add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks"))))
 #+end_src
 
 *** The actual dashboard
@@ -488,40 +466,25 @@ Org agenda is a full blown scheduling application with all the power of org mode
                              "~/org/agenda/schedule.org"))
 #+end_src
 
-* Nice Packages and Settings
-Things that aren't really necessary to do stuff, but nice to have
-** Keeping emacs clean
-Some things \*cough cough auto-save-list\* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
-#+begin_src emacs-lisp
-(use-package no-littering
-  :ensure t)
-#+end_src
-** Smartparens
-Auto completes (, [, {, ", etc for you so you don't have to keep track of them
-#+begin_src emacs-lisp
-(use-package smartparens
-  :ensure t
-  :config
-  (require 'smartparens-config)
-  (smartparens-global-mode 1))
-#+end_src
-
+* Minibuffer Completion
+Packages like ivy, helm, vertico, etc. provide a nice minibuffer completion framework that makes it a lot easier to work inside emacs.
 ** Ivy
 Ivy is a minibuffer autocompletion framework that makes it a lot easier to do things like input commands
 *** Just ivy
 #+begin_src emacs-lisp
-(use-package ivy
-  :defer 0.1
-  :diminish
-  :custom
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  :config
-  (ivy-mode)
-  :hook (ivy-mode . (lambda ()
-					  (interactive)
-					  (define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char))))
+(when minibuffer/ivy
+  (use-package ivy
+	:defer 0.1
+	:diminish
+	:custom
+	(setq ivy-count-format "(%d/%d) ")
+	(setq ivy-use-virtual-buffers t)
+	(setq enable-recursive-minibuffers t)
+	:config
+	(ivy-mode)
+	:hook (ivy-mode . (lambda ()
+						(interactive)
+						(define-key ivy-mode-map (kbd "DEL") 'ivy-backward-delete-char))))
 #+end_src
 
 *** Counsel
@@ -559,9 +522,146 @@ A better way to search
   :bind (:map evil-normal-state-map
 			  ("/" . swiper-isearch)
 			  ("n" . evil-search-previous)
-			  ("N" . evil-search-next)))
+			  ("N" . evil-search-next))))
 #+end_src
 
+** Vertico
+Vertico is like ivy, but integrates with default emacs completion mechanisms a bit better
+#+begin_src emacs-lisp
+(when minibuffer/vertico
+  (use-package vertico
+	:ensure t
+	:config
+	(vertico-mode))
+#+end_src
+
+Marginalia gives us some more detail in the minibuffer, like ivy-rich for vertico
+#+begin_src emacs-lisp
+  (use-package marginalia
+	:ensure t
+	:config
+	(marginalia-mode 1))
+#+end_src
+
+Our counsel replacement for vertico is consult. It also takes over swiper
+#+begin_src emacs-lisp
+  (use-package consult
+	:ensure t
+	:bind (:map evil-normal-state-map
+				("/" . consult-line))))
+#+end_src
+** Helm
+* Nice Packages and Settings
+Things that aren't really necessary to do stuff, but nice to have
+** Keeping emacs clean
+Some things \*cough cough auto-save-list\* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
+#+begin_src emacs-lisp
+(use-package no-littering
+  :ensure t)
+#+end_src
+** Smartparens
+Auto completes (, [, {, ", etc for you so you don't have to keep track of them
+#+begin_src emacs-lisp
+(use-package smartparens
+  :ensure t
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-mode 1))
+#+end_src
+
+** Autocompletion
+Emacs has support for code autocompletion on par with that of IDEs like VSCode or IntelliJ
+*** Company
+Company is the package that enables the little popup for autocompletion so you don't to invoke a keybind or anything
+#+begin_src emacs-lisp
+(when packages/autocompletion
+  (use-package company
+	:defer t
+	:ensure t
+	:config
+	(global-company-mode)))
+#+end_src
+*** LSP
+LSP is the Language Server Protocol, and is what actually populates the company frame with suggestions
+#+begin_src emacs-lisp
+(when packages/autocompletion
+  (use-package lsp-mode
+	:ensure t
+	:defer t
+	:config
+	(setq lsp-keymap-prefix "SPC c")
+
+	;; enable hooks for enabled languages
+	(when langs/java
+	  (add-hook 'java-mode-hook #'lsp-deferred)
+	  (add-hook 'java-ts-mode-hook #'lsp-deferred))
+	(when langs/haskell
+	  (add-hook 'haskell-mode-hook #'lsp-deferred))
+	(when langs/web
+	  (add-hook 'js-mode-hook #'lsp-deferred)
+	  (add-hook 'js-ts-mode-hook #'lsp-deferred)
+	  (add-hook 'js-jsx-mode-hook #'lsp-deferred)
+	  (add-hook 'html-mode-hook #'lsp-deferred)
+	  (add-hook 'css-mode-hook #'lsp-deferred))
+	(when langs/c
+	  (add-hook 'cc-mode-hook #'lsp-deferred))
+
+	;; extensions
+  (when langs/haskell
+	(use-package lsp-haskell
+	  :ensure t
+	  :defer t
+	  :after lsp-mode))
+
+  (when packages/treemacs
+	(use-package lsp-treemacs
+	  :ensure t
+	  :defer t
+	  :after lsp-mode))
+
+  (when langs/java
+	(use-package lsp-java
+	  :ensure t
+	  :defer t
+	  :after lsp-mode))
+
+  (use-package lsp-ui
+	:ensure t
+	:defer t
+	:after lsp-mode
+	:hook (lsp-mode . lsp-ui-doc-mode))))
+#+end_src
+
+** Prescient
+Prescient allows you to sort your history in things M-x, and others
+#+begin_src emacs-lisp
+(use-package prescient
+  :ensure t)
+
+(when minibuffer/vertico
+  (use-package vertico-prescient
+	:ensure t
+	:after vertico
+	:after prescient
+	:config
+	(vertico-prescient-mode 1)))
+
+(when minibuffer/ivy
+  (use-package ivy-prescient
+	:ensure t
+	:after ivy
+	:after prescient
+	:config
+	(ivy-prescient-mode 1)))
+
+(when packages/autocompletion
+  (use-package company-prescient
+	:after company
+	:after prescient
+	:ensure t
+	:config
+	(company-prescient-mode 1)))
+#+end_src
 ** Tabbing
 #+begin_src emacs-lisp
 (setq indent-tabs-mode t)
@@ -587,55 +687,6 @@ A better way to search
 ** Too lazy to type ESC-ESC-ESC or C-g
 #+begin_src emacs-lisp
 (global-set-key (kbd "<escape>") 'abort-minibuffers)
-#+end_src
-
-** Autocompletion
-Emacs has support for code autocompletion on par with that of IDEs like VSCode or IntelliJ
-*** Company
-Company is the package that enables the little popup for autocompletion so you don't to invoke a keybind or anything
-#+begin_src emacs-lisp
-(when packages/autocompletion
-  (use-package company
-	:defer t
-	:ensure t
-	:config
-	(global-company-mode)))
-#+end_src
-*** LSP
-LSP is the Language Server Protocol, and is what actually populates the company frame with suggestions
-#+begin_src emacs-lisp
-(when packages/autocompletion
-  (use-package lsp-mode
-	:ensure t
-	:defer t
-	:hook (prog-mode . #'lsp-deferred)
-	:config
-	(setq lsp-keymap-prefix "C-l"))
-
-										; extensions
-  (when langs/haskell
-	(use-package lsp-haskell
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (when packages/treemacs
-	(use-package lsp-treemacs
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (when langs/java
-	(use-package lsp-java
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (use-package lsp-ui
-	:ensure t
-	:defer t
-	:after lsp-mode
-	:hook (lsp-mode . lsp-ui-doc-mode)))
 #+end_src
 
 ** Flycheck
@@ -682,9 +733,14 @@ Projectile manages projects
 	:ensure t
 	:after projectile)
 
-  (use-package counsel-projectile
-	:ensure t
-	:after (projectile counsel)))
+  (when minibuffer/ivy
+	(use-package counsel-projectile
+	  :ensure t
+	  :after '(projectile counsel)))
+  (when minibuffer/vertico
+	(use-package consult-projectile
+	  :ensure t
+	  :after '(projectile consult))))
 #+end_src
 
 ** Perspectives
@@ -1225,7 +1281,6 @@ Which-key displays possible completions for keybindings you have typed in a mini
  :states '(normal visual)
  :prefix "SPC"
  "b"   '(:ignore t                 :which-key "buffer")
- "b b" '(buffer-menu               :which-key "buffer menu")
  "b i" '(ibuffer                   :which-key "ibuffer")
  "b c" '(kill-this-buffer          :which-key "kill buffer")
  "b k" '(kill-this-buffer          :which-key "kill buffer")
@@ -1234,6 +1289,14 @@ Which-key displays possible completions for keybindings you have typed in a mini
  "b h" '(centaur-tabs-backward-tab :which-key "previous tab")
  "b l" '(centaur-tabs-forward-tab  :which-key "previous tab")
  "b r" '(revert-buffer             :which-key "reload buffer"))
+(if minibuffer/vertico
+	(general-define-key
+	 :states '(normal visual)
+	 "SPC b b" '(consult-buffer :which-key "switch to buffer"))
+  (general-define-key
+   :states '(normal visual)
+   "SPC b b" '(switch-to-buffer :which-key "switch to buffer")))
+
 (define-key evil-normal-state-map (kbd "q") #'(lambda ()
                                                 (interactive)
                                                 (when (buffer-modified-p)
@@ -1326,7 +1389,7 @@ Add evil keybindings
  "h" '(:ignore t :which-key "help")
  "h r" '(:ignore t :which-key "reload")
  "h v" '(describe-variable :which-key "describe variable")
- "h t" '(counsel-load-theme :which-key "load theme")
+ "h t" '(load-theme :which-key "load theme")
  "h f" '(describe-function :which-key "describe function"))
 #+end_src
 
@@ -1375,12 +1438,20 @@ Add evil keybindings
 (general-define-key
  :states '(normal visual)
  :prefix "SPC"
- "/" '(counsel-projectile-rg :which-key "search project")
  "p" '(:ignore t :which-key "projectile")
  "p p" '(projectile-persp-switch-project :which-key "open project")
  "p c" '(projectile-compile-project :which-key "compile project")
- "p f" '(counsel-projectile-find-file-dwim :which-key "find file")
  "p a" '(projectile-add-known-project :which-key "add project"))
+(when minibuffer/vertico
+  (general-define-key
+   :states '(normal visual)
+   "SPC /" '(consult-ripgrep :which-key "search project")
+   "SPC p f" '(consult-projectile-find-file :which-key "find file")))
+(when minibuffer/ivy
+  (general-define-key
+   :states '(normal visual)
+   "SPC /" '(counsel-projectile-rg :which-key "search project")
+   "SPC p f" '(counsel-projectile-find-file)))
 #+end_src
 
 ** YASnippet
@@ -1418,7 +1489,6 @@ Just think of it like per*Spective*, or work*Space*
  :prefix "SPC"
  :states '(normal visual)
  "s" '(:ignore t :which-key "persp")
- "s b" '(persp-counsel-switch-buffer :which-key "switch buffer")
  "s i" '(persp-ibuffer :which-key "persp ibuffer")
  "s s" '(persp-switch :which-key "switch perspective")
  "s n" '(persp-next :which-key "next perspective")
@@ -1427,7 +1497,15 @@ Just think of it like per*Spective*, or work*Space*
  "s A" '(persp-set-buffer :which-key "brgin buffer to perspective")
  "s r" '(persp-remove :which-key "remove buffer from perspective")
  "s k" '(persp-kill :which-key "kill perspective")
- "s K" '(persp-kill-others :which-key "kill other perspectives")))
+ "s K" '(persp-kill-others :which-key "kill other perspectives"))
+(when minibuffer/vertico
+  (general-define-key
+   :states '(normal visual)
+   "SPC s b" '(persp-switch-to-buffer)))
+(when minibuffer/ivy)
+  (general-define-key
+   :states '(normal visual)
+   "SPC s b" '(persp-counsel-switch-buffer)))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init + start the server
