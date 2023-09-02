@@ -367,7 +367,10 @@
 	:hook (lsp-mode . lsp-ui-doc-mode))))
 
 (use-package prescient
-  :ensure t)
+  :ensure t
+  :config
+  (prescient-toggle-fuzzy 1)
+  (prescient-persist-mode 1))
 
 (when minibuffer/vertico
   (use-package vertico-prescient
@@ -421,17 +424,19 @@
   (when packages/evil
 	(use-package treemacs-evil
 	  :ensure t
-	  :after (treemacs evil)))
+	  :after treemacs
+      :after evil))
   (when packages/projectile
 	(use-package treemacs-projectile
 	  :ensure t
-	  :after (treemacs projectile)))
+	  :after '(treemacs projectile)))
   (use-package treemacs-magit
 	:ensure t
-	:after (treemacs magit))
+	:after '(treemacs magit))
   (use-package treemacs-all-the-icons
 	:ensure t
-	:after (treemacs all-the-icons)))
+	:after treemacs
+    :after all-the-icons))
 
 (when packages/projectile
   (use-package projectile
@@ -515,12 +520,23 @@
   (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)
   (evil-define-key 'normal peep-dired-mode-map (kbd "l") 'dired-open-file))
 
+(when packages/dirvish
+  (use-package dirvish
+	:ensure t
+	:config
+	(dirvish-override-dired-mode 1)
+	(dirvish-peek-mode 1)))
+
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
 (setq evil-undo-system 'undo-redo)
+
+(use-package aggressive-indent
+  :ensure t
+  :hook (prog-mode . aggressive-indent-mode))
 
 (when emacsOS/run-launcher
   (bugger/extern-package "SebastienWae" "app-launcher")
@@ -1030,7 +1046,7 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
   (general-define-key
    :states '(normal visual)
    "SPC /" '(counsel-projectile-rg :which-key "search project")
-   "SPC p f" '(counsel-projectile-find-file)))
+   "SPC p f" '(counsel-projectile-find-file :which-key "find file in project")))
 
 (general-define-key
  :states '(normal visual)

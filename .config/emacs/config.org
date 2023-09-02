@@ -41,7 +41,6 @@
 - [[#minibuffer-completion][Minibuffer Completion]]
   - [[#ivy][Ivy]]
   - [[#vertico][Vertico]]
-  - [[#helm][Helm]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#smartparens][Smartparens]]
@@ -59,8 +58,10 @@
   - [[#web-mode][Web mode]]
   - [[#commenting][Commenting]]
   - [[#dired][Dired]]
+  - [[#dirvish][Dirvish]]
   - [[#auto-backup][Auto Backup]]
   - [[#undo][Undo]]
+  - [[#aggressive-indentation][Aggressive Indentation]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#app-launcher][App Launcher]]
   - [[#exwm][EXWM]]
@@ -550,7 +551,6 @@ Our counsel replacement for vertico is consult. It also takes over swiper
 	:bind (:map evil-normal-state-map
 				("/" . consult-line))))
 #+end_src
-** Helm
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
 ** Keeping emacs clean
@@ -636,7 +636,10 @@ LSP is the Language Server Protocol, and is what actually populates the company 
 Prescient allows you to sort your history in things M-x, and others
 #+begin_src emacs-lisp
 (use-package prescient
-  :ensure t)
+  :ensure t
+  :config
+  (prescient-toggle-fuzzy 1)
+  (prescient-persist-mode 1))
 
 (when minibuffer/vertico
   (use-package vertico-prescient
@@ -708,17 +711,19 @@ Treemacs is a little side panel that shows a directory tree
   (when packages/evil
 	(use-package treemacs-evil
 	  :ensure t
-	  :after (treemacs evil)))
+	  :after treemacs
+      :after evil))
   (when packages/projectile
 	(use-package treemacs-projectile
 	  :ensure t
-	  :after (treemacs projectile)))
+	  :after '(treemacs projectile)))
   (use-package treemacs-magit
 	:ensure t
-	:after (treemacs magit))
+	:after '(treemacs magit))
   (use-package treemacs-all-the-icons
 	:ensure t
-	:after (treemacs all-the-icons)))
+	:after treemacs
+    :after all-the-icons))
 #+end_src
 ** Projectile
 Projectile manages projects
@@ -831,6 +836,16 @@ Dired has some nice extensions that let you automatically open in another progra
 
 
 #+end_src
+** Dirvish
+Dirvish is sort of like dired, but more akin to something like thunar
+#+begin_src emacs-lisp
+(when packages/dirvish
+  (use-package dirvish
+	:ensure t
+	:config
+	(dirvish-override-dired-mode 1)
+	(dirvish-peek-mode 1)))
+#+end_src
 ** Auto Backup
 Emacs has a feature to automatically back up files every so often, which is nice, but clogs up the directory and git, so I moved it
 #+begin_src emacs-lisp
@@ -842,6 +857,13 @@ Emacs has a feature to automatically back up files every so often, which is nice
 ** Undo
 #+begin_src emacs-lisp
 (setq evil-undo-system 'undo-redo)
+#+end_src
+** Aggressive Indentation
+I like to keep everything indented properly always, and aggressive indentation makes sure to align everything properly at all times
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+  :ensure t
+  :hook (prog-mode . aggressive-indent-mode))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
@@ -1451,7 +1473,7 @@ Add evil keybindings
   (general-define-key
    :states '(normal visual)
    "SPC /" '(counsel-projectile-rg :which-key "search project")
-   "SPC p f" '(counsel-projectile-find-file)))
+   "SPC p f" '(counsel-projectile-find-file :which-key "find file in project")))
 #+end_src
 
 ** YASnippet

@@ -11,13 +11,12 @@
  packages/projectile t ;; a project manager for emacs
  packages/perspectives t ;; workspaces for emacs
  packages/snippets t ;; code snippets, because my hand are too weak
+ packages/dirvish t ;; like dired, but better
 
  ;; minibuffer completion frameworks
  ;;; These aren't meant to be compatible with each other
- minibuffer/ivy nil
- minibuffer/vertico t
- minibuffer/helm nil ;; TODO
- minibuffer/ido nil ;; TODO
+ minibuffer/ivy t
+ minibuffer/vertico nil
 
  ;; language support
  langs/web nil ;; html, js, css
