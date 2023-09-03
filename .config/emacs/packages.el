@@ -7,7 +7,6 @@
  packages/tabs t ;; centaur tabs
  packages/dashboard t ;; dashboard
  packages/autocompletion t ;; code autocompletion. think company, lsp
- packages/treemacs t ;; a file viewer like nerdtree for vim
  packages/projectile t ;; a project manager for emacs
  packages/perspectives t ;; workspaces for emacs
  packages/snippets t ;; code snippets, because my hand are too weak
@@ -32,4 +31,4 @@
  emacsOS/vterm t ;; a fully featured terminal inside of emacs
  emacsOS/calendar t ;; a nice looking calendar
  emacsOS/mail t ;; a mail client inside of emacs
-)
+ )

@@ -51,7 +51,6 @@
   - [[#too-lazy-to-type-yes][Too lazy to type yes]]
   - [[#too-lazy-to-type-esc-esc-esc-or-c-g][Too lazy to type ESC-ESC-ESC or C-g]]
   - [[#flycheck][Flycheck]]
-  - [[#treemacs][Treemacs]]
   - [[#projectile][Projectile]]
   - [[#perspectives][Perspectives]]
   - [[#yasnippet][YASnippet]]
@@ -189,9 +188,6 @@ add evil in every buffer
 #+begin_src emacs-lisp
 ;; (add-to-list 'default-frame-alist
 ;;              '(font . "AnonymicePro Nerd Font Mono-15"))
-(use-package treemacs-icons-dired
-  :ensure t
-  :hook (dired-mode . treemacs-icons-dired-mode))
 #+end_src
 
 ** Indent guides
@@ -258,7 +254,7 @@ There are two main choices to make the modeline better: Doom modeline and Spacel
 	(when (package-installed-p 'ef-themes)
 	  (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))))
 
-(when (file-exists-p "/sys/class/power_supply/")
+(when (or (file-exists-p "/sys/class/power_supply/BAT0") (file-exists-p "/sys/class/power_supply/BAT1"))
   (display-battery-mode 1))
 #+end_src
 
@@ -592,11 +588,6 @@ LSP is the Language Server Protocol, and is what actually populates the company 
 	(setq lsp-keymap-prefix "SPC c")
 
 	;; enable hooks for enabled languages
-	(when langs/java
-	  (add-hook 'java-mode-hook #'lsp-deferred)
-	  (add-hook 'java-ts-mode-hook #'lsp-deferred))
-	(when langs/haskell
-	  (add-hook 'haskell-mode-hook #'lsp-deferred))
 	(when langs/web
 	  (add-hook 'js-mode-hook #'lsp-deferred)
 	  (add-hook 'js-ts-mode-hook #'lsp-deferred)
@@ -607,29 +598,25 @@ LSP is the Language Server Protocol, and is what actually populates the company 
 	  (add-hook 'cc-mode-hook #'lsp-deferred))
 
 	;; extensions
-  (when langs/haskell
-	(use-package lsp-haskell
+	(when langs/haskell
+	  (use-package lsp-haskell
+		:ensure t
+		:defer t
+		:after lsp-mode
+		:hook (haskell-mode . lsp-deferred)))
+
+	(when langs/java
+	  (use-package lsp-java
+		:ensure t
+		:defer t
+		:after lsp-mode
+		:hook (java-ts-mode . lsp-deferred)))
+
+	(use-package lsp-ui
 	  :ensure t
 	  :defer t
-	  :after lsp-mode))
-
-  (when packages/treemacs
-	(use-package lsp-treemacs
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (when langs/java
-	(use-package lsp-java
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (use-package lsp-ui
-	:ensure t
-	:defer t
-	:after lsp-mode
-	:hook (lsp-mode . lsp-ui-doc-mode))))
+	  :after lsp-mode
+	  :hook (lsp-mode . lsp-ui-doc-mode))))
 #+end_src
 
 ** Prescient
@@ -701,30 +688,7 @@ Flycheck is a program that enables essentially 'spell checking' your code
   :config
   (global-flycheck-mode))
 #+end_src
-** Treemacs
-Treemacs is a little side panel that shows a directory tree
-#+begin_src emacs-lisp
-(when packages/treemacs
-  (use-package treemacs
-	:ensure t
-	:defer t)
-  (when packages/evil
-	(use-package treemacs-evil
-	  :ensure t
-	  :after treemacs
-      :after evil))
-  (when packages/projectile
-	(use-package treemacs-projectile
-	  :ensure t
-	  :after '(treemacs projectile)))
-  (use-package treemacs-magit
-	:ensure t
-	:after '(treemacs magit))
-  (use-package treemacs-all-the-icons
-	:ensure t
-	:after treemacs
-    :after all-the-icons))
-#+end_src
+
 ** Projectile
 Projectile manages projects
 #+begin_src emacs-lisp

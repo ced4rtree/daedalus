@@ -55,9 +55,6 @@
 
 ;; (add-to-list 'default-frame-alist
 ;;              '(font . "AnonymicePro Nerd Font Mono-15"))
-(use-package treemacs-icons-dired
-  :ensure t
-  :hook (dired-mode . treemacs-icons-dired-mode))
 
 (use-package highlight-indent-guides
   :defer t
@@ -109,7 +106,7 @@
 	(when (package-installed-p 'ef-themes)
 	  (add-hook 'ef-themes-post-load-hook #'doom-modeline-refresh-bars))))
 
-(when (file-exists-p "/sys/class/power_supply/")
+(when (or (file-exists-p "/sys/class/power_supply/BAT0") (file-exists-p "/sys/class/power_supply/BAT1"))
   (display-battery-mode 1))
 
 (when packages/spaceline
@@ -327,11 +324,6 @@
 	(setq lsp-keymap-prefix "SPC c")
 
 	;; enable hooks for enabled languages
-	(when langs/java
-	  (add-hook 'java-mode-hook #'lsp-deferred)
-	  (add-hook 'java-ts-mode-hook #'lsp-deferred))
-	(when langs/haskell
-	  (add-hook 'haskell-mode-hook #'lsp-deferred))
 	(when langs/web
 	  (add-hook 'js-mode-hook #'lsp-deferred)
 	  (add-hook 'js-ts-mode-hook #'lsp-deferred)
@@ -342,29 +334,25 @@
 	  (add-hook 'cc-mode-hook #'lsp-deferred))
 
 	;; extensions
-  (when langs/haskell
-	(use-package lsp-haskell
+	(when langs/haskell
+	  (use-package lsp-haskell
+		:ensure t
+		:defer t
+		:after lsp-mode
+		:hook (haskell-mode . lsp-deferred)))
+
+	(when langs/java
+	  (use-package lsp-java
+		:ensure t
+		:defer t
+		:after lsp-mode
+		:hook (java-ts-mode . lsp-deferred)))
+
+	(use-package lsp-ui
 	  :ensure t
 	  :defer t
-	  :after lsp-mode))
-
-  (when packages/treemacs
-	(use-package lsp-treemacs
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (when langs/java
-	(use-package lsp-java
-	  :ensure t
-	  :defer t
-	  :after lsp-mode))
-
-  (use-package lsp-ui
-	:ensure t
-	:defer t
-	:after lsp-mode
-	:hook (lsp-mode . lsp-ui-doc-mode))))
+	  :after lsp-mode
+	  :hook (lsp-mode . lsp-ui-doc-mode))))
 
 (use-package prescient
   :ensure t
@@ -416,27 +404,6 @@
   :ensure t
   :config
   (global-flycheck-mode))
-
-(when packages/treemacs
-  (use-package treemacs
-	:ensure t
-	:defer t)
-  (when packages/evil
-	(use-package treemacs-evil
-	  :ensure t
-	  :after treemacs
-      :after evil))
-  (when packages/projectile
-	(use-package treemacs-projectile
-	  :ensure t
-	  :after '(treemacs projectile)))
-  (use-package treemacs-magit
-	:ensure t
-	:after '(treemacs magit))
-  (use-package treemacs-all-the-icons
-	:ensure t
-	:after treemacs
-    :after all-the-icons))
 
 (when packages/projectile
   (use-package projectile
