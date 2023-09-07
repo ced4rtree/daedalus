@@ -7,7 +7,7 @@ cp ~/.cache/wal/colors.Xresources ~/.Xresources
 
 # fixing some urxvt settings since the previous command overwrites them
 {
-echo "URxvt.font: xft:AnonymicePro Nerd Font Mono:size=15:antialias=true";
+echo "URxvt.font: xft:Iosevka Nerd Font Mono:size=15:antialias=true";
 echo "URxvt.scrollBar: false";
 echo "URxvt.geometry: 400x400";
 } >> ~/.Xresources

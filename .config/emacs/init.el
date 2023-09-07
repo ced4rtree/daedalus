@@ -53,8 +53,8 @@
 	:config
 	(evil-collection-init)))
 
-;; (add-to-list 'default-frame-alist
-;;              '(font . "AnonymicePro Nerd Font Mono-15"))
+(add-to-list 'default-frame-alist
+             '(font . "Iosevka Nerd Font Mono-15"))
 
 (use-package highlight-indent-guides
   :defer t
