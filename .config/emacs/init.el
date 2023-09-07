@@ -474,6 +474,17 @@
 
 (use-package evil-nerd-commenter :ensure t)
 
+(use-package hl-todo
+  :ensure t
+  :hook (prog-mode . (lambda () (interactive) (hl-todo-mode 1)))
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces `(("TODO"       warning bold)
+                                ("FIXME"      error bold)
+                                ("HACK"       font-lock-constant-face bold)
+                                ("NOTE"       success bold)
+                                ("DEPRECATED" font-lock-doc-face bold))))
+
 (use-package dired-open
   :ensure t
   :after dired

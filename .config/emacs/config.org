@@ -56,6 +56,7 @@
   - [[#yasnippet][YASnippet]]
   - [[#web-mode][Web mode]]
   - [[#commenting][Commenting]]
+  - [[#hl-todo][Hl-Todo]]
   - [[#dired][Dired]]
   - [[#dirvish][Dirvish]]
   - [[#auto-backup][Auto Backup]]
@@ -773,6 +774,20 @@ Support for web development with web-mode and emmet-mode
 Neat package that gives some nice commenting functions
 #+begin_src emacs-lisp
 (use-package evil-nerd-commenter :ensure t)
+#+end_src
+** Hl-Todo
+This package highlights thing like TODO, FIXME, etc. that are common in programming to annotate your code easily
+#+begin_src emacs-lisp
+(use-package hl-todo
+  :ensure t
+  :hook (prog-mode . (lambda () (interactive) (hl-todo-mode 1)))
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces `(("TODO"       warning bold)
+                                ("FIXME"      error bold)
+                                ("HACK"       font-lock-constant-face bold)
+                                ("NOTE"       success bold)
+                                ("DEPRECATED" font-lock-doc-face bold))))
 #+end_src
 ** Dired
 Dired has some nice extensions that let you automatically open in another program, and preview files
