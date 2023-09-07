@@ -114,20 +114,19 @@
     :ensure t
     :hook (prog-mode . (lambda ()
                          (interactive)
-                         (centaur-tabs-mode 1)
-                         (centaur-tabs-local-mode 1)))
+                         (centaur-tabs-local-mode -1)))
     :hook (org-mode . (lambda ()
                         (interactive)
-                        (centaur-tabs-local-mode -1)))
+                        (centaur-tabs-local-mode 1)))
     :hook (fundamental-mode . (lambda ()
                                 (interactive)
-                                (centaur-tabs-local-mode -1)))
+                                (centaur-tabs-local-mode 1)))
     :hook (dashboard-mode . (lambda ()
                               (interactive)
-                              (centaur-tabs-local-mode -1)))
+                              (centaur-tabs-local-mode 1)))
     :hook (text-mode . (lambda ()
                          (interactive)
-                         (centaur-tabs-local-mode -1)))
+                         (centaur-tabs-local-mode 1)))
     :init
     (setq centaur-tabs-set-icons t
           centaur-tabs-gray-out-icons 'buffer
@@ -138,7 +137,9 @@
           ;; Scrolling (with the mouse wheel) past the end of the tab list
           ;; replaces the tab list with that of another Doom workspace. This
           ;; prevents that.
-          centaur-tabs-cycle-scope 'tabs)))
+          centaur-tabs-cycle-scope 'tabs)
+    :config
+    (centaur-tabs-mode 1)))
 
 (global-display-line-numbers-mode 1)
 
