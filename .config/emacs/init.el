@@ -176,6 +176,7 @@
     :after projectile
     :after recentf
     :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
+    :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
     :ensure t
     :init
     (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
@@ -512,10 +513,8 @@
     (dirvish-override-dired-mode 1)
     (dirvish-peek-mode 1)))
 
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
 (setq evil-undo-system 'undo-redo)
 
