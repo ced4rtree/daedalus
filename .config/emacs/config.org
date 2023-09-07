@@ -676,7 +676,7 @@ Prescient allows you to sort your history in things M-x, and others
 
 ** Too lazy to type ESC-ESC-ESC or C-g
 #+begin_src emacs-lisp
-(global-set-key (kbd "<escape>") 'abort-minibuffers)
+(global-set-key (kbd "<escape>") 'keyboard-quit)
 #+end_src
 
 ** Flycheck

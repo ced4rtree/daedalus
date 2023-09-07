@@ -404,7 +404,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(global-set-key (kbd "<escape>") 'abort-minibuffers)
+(global-set-key (kbd "<escape>") 'keyboard-quit)
 
 (use-package flycheck
   :defer t
