@@ -3,7 +3,6 @@
  ;; packages
  packages/evil t ;; evil mode. Setting to nil breaks all SPC- keybdings
  packages/doom-modeline t ;; doom emacs modeline
- packages/spaceline nil ;; spacemacs modeline
  packages/tabs t ;; centaur tabs
  packages/dashboard t ;; dashboard
  packages/autocompletion t ;; code autocompletion. think company, lsp
