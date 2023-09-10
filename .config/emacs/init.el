@@ -150,7 +150,7 @@
 (menu-bar-mode -1)
 
 ;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 2 lines at a time
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 1 line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
@@ -306,7 +306,12 @@
 ;;     stuff
 ;; }
 ;; automatically
-(electric-pair-mode 1)
+;; it doesn't work well in c or c++ though
+(add-hook 'prog-mode #'(lambda ()
+                         (interactive)
+                         (if (or (equal major-mode 'c-mode) (equal major-mode 'c++-mode))
+                             (electric-pair-mode -1)
+                           (electric-pair-mode 1))))
 
 (when packages/autocompletion
   (use-package company
@@ -630,6 +635,7 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
             (,(kbd "C-c m h") . emms-previous)
             (,(kbd "C-c m p") . emms-pause)
             (,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
+            (,(kbd "C-c m s") . emms-shuffle)
 
             ;; vterm
             (,(kbd "C-c v") . vterm-toggle)
@@ -713,9 +719,9 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
 
 (when emacsOS/exwm
   (defun bugger/autostart ()
-    (call-process "/bin/sh" (concat config-dir "autostart.sh"))))
+    (call-process "/bin/sh" (concat (getenv "HOME") "/.local/bin/autostart.sh"))))
 
-(when emacsOS/exwm
+(when (and emacsOS/exwm (equal window-system 'x) (not (daemonp)))
   (use-package exwm
     :ensure t
     :config
@@ -774,7 +780,7 @@ minibuffer and has specific dimensions. Runs app-launcher-run-app on that frame,
 (when emacsOS/emms
   (use-package emms
     :ensure t
-    :after exwm ;; exwm autostart is where mpd gets started
+    ;; :after exwm ;; exwm autostart is where mpd gets started
     :config
     (require 'emms-setup)
     (require 'emms-player-mpd)

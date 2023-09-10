@@ -313,7 +313,7 @@ Centaur tabs is a better tab bar for emacs
 ** Scrolling
 #+begin_src emacs-lisp
 ;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 2 lines at a time
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 1 line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
@@ -554,7 +554,12 @@ Auto completes (, [, {, ", etc for you so you don't have to keep track of them
 ;;     stuff
 ;; }
 ;; automatically
-(electric-pair-mode 1)
+;; it doesn't work well in c or c++ though
+(add-hook 'prog-mode #'(lambda ()
+                         (interactive)
+                         (if (or (equal major-mode 'c-mode) (equal major-mode 'c++-mode))
+                             (electric-pair-mode -1)
+                           (electric-pair-mode 1))))
 #+end_src
 
 ** Autocompletion
@@ -961,6 +966,7 @@ The Emacs X Window Manager is a project that replaces your entire desktop manage
             (,(kbd "C-c m h") . emms-previous)
             (,(kbd "C-c m p") . emms-pause)
             (,(kbd "C-c m r") . emms-player-mpd-update-all-reset-cache)
+            (,(kbd "C-c m s") . emms-shuffle)
 
             ;; vterm
             (,(kbd "C-c v") . vterm-toggle)
@@ -1059,12 +1065,12 @@ allow-loopback-pinentry
 #+begin_src emacs-lisp
 (when emacsOS/exwm
   (defun bugger/autostart ()
-    (call-process "/bin/sh" (concat config-dir "autostart.sh"))))
+    (call-process "/bin/sh" (concat (getenv "HOME") "/.local/bin/autostart.sh"))))
 #+end_src
 *** Main
 Where it all ties together
 #+begin_src emacs-lisp
-(when emacsOS/exwm
+(when (and emacsOS/exwm (equal window-system 'x) (not (daemonp)))
   (use-package exwm
     :ensure t
     :config
@@ -1135,7 +1141,7 @@ The Emacs Multimedia System lets you use emacs as a music player
 (when emacsOS/emms
   (use-package emms
     :ensure t
-    :after exwm ;; exwm autostart is where mpd gets started
+    ;; :after exwm ;; exwm autostart is where mpd gets started
     :config
     (require 'emms-setup)
     (require 'emms-player-mpd)

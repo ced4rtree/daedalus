@@ -24,7 +24,7 @@
 
  ;; The Emacs Operating System
  emacsOS/run-launcher t ;; a run launcher like dmenu or rofi
- emacsOS/exwm t ;; an emacs window manager
+ emacsOS/exwm nil ;; an emacs window manager
  emacsOS/elfeed nil ;; an rss feed for emacs
  emacsOS/emms t ;; a music player for emacs
  emacsOS/vterm t ;; a fully featured terminal inside of emacs
