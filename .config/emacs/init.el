@@ -299,11 +299,10 @@
 ;; }
 ;; automatically
 ;; it doesn't work well in c or c++ though
-(add-hook 'prog-mode #'(lambda ()
-                         (interactive)
-                         (if (or (equal major-mode 'c-mode) (equal major-mode 'c++-mode))
-                             (electric-pair-mode -1)
-                           (electric-pair-mode 1))))
+(add-hook 'prog-mode-hook #'(lambda ()
+                              (if (or (equal major-mode 'c-mode) (equal major-mode 'c++-mode))
+                                  (electric-pair-mode -1)
+                                (electric-pair-mode 1))))
 
 (when packages/autocompletion
   (use-package company
