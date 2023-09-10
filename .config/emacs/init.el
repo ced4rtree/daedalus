@@ -266,15 +266,7 @@
                           ivy-rich-path-style 'abbrev)
   :config
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-  (ivy-rich-mode 1))
-
-(use-package swiper
-  :after ivy
-  :defer t
-  :bind (:map evil-normal-state-map
-              ("/" . swiper-isearch)
-              ("n" . evil-search-previous)
-              ("N" . evil-search-next))))
+  (ivy-rich-mode 1)))
 
 (when minibuffer/vertico
   (use-package vertico
