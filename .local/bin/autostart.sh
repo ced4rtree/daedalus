@@ -5,7 +5,7 @@ xsetroot -cursor_name left_ptr
 wallpaper.sh
 natScroll.sh
 xset r rate 200 65
-setxkbmap -option caps:escape
+setxkbmap -option ctrl:nocaps
 xcompmgr &
 ~/.config/polybar/launch.sh &
 nm-applet &

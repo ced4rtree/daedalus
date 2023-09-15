@@ -57,8 +57,8 @@
 (setq org-hide-leading-stars nil)
 
 (use-package toc-org
-      :ensure t
-      :hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
+  :ensure t
+  :hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
 
 (setq org-src-fontify-natively t
       org-src-tab-acts-natively t
@@ -87,12 +87,78 @@
   (prescient-toggle-fuzzy 1)
   (prescient-persist-mode 1))
 
-  (use-package vertico-prescient
-    :ensure t
-    :after vertico
-    :after prescient
-    :config
-    (vertico-prescient-mode 1))
+(use-package vertico-prescient
+  :ensure t
+  :after vertico
+  :after prescient
+  :config
+  (vertico-prescient-mode 1))
+
+(add-hook 'java-ts-mode-hook #'eglot)
+(add-hook 'c-ts-mode-hook #'eglot)
+(add-hook 'c++-ts-mode-hook #'eglot)
+
+(use-package magit
+  :defer t
+  :ensure t)
+
+(use-package flycheck
+  :defer t
+  :ensure t
+  :config
+  (global-flycheck-mode))
+
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1))
+
+(use-package projectile-ripgrep
+  :ensure t
+  :after projectile)
+
+(use-package consult-projectile
+  :ensure t
+  :after projectile
+  :after consult)
+
+(use-package aggressive-indent
+  :ensure t
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
+
+(use-package evil-nerd-commenter
+  :ensure t
+  :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
+
+(use-package page-break-lines
+  :ensure t)
+
+(use-package recentf
+  :ensure t
+  :config
+  ;; remove boilerplate files from recentf list
+  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+  (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
+
+(use-package dashboard
+  :after page-break-lines
+  :after projectile
+  :after recentf
+  :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
+  :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
+  :ensure t
+  :init
+  (setq dashboard-page-separator "
+
+")
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq dashboard-items '((recents . 5)
+                          (projects . 5)
+                          (agenda . 5)))
+  (setq dashboard-center-content t)
+  (setq dashboard-projects-switch-function 'projectile-persp-switch-project)
+  :config
+  (dashboard-setup-startup-hook))
 
 (use-package no-littering
   :ensure t)
@@ -100,7 +166,7 @@
 (electric-pair-mode 1)
 (setq electric-pair-inhibit-predicate
       `(lambda (c)
-	 (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+         (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
 
 (setq indent-tabs-mode t)
 (setq-default tab-width 4
@@ -154,41 +220,14 @@
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
-(add-hook 'java-ts-mode-hook #'eglot)
-(add-hook 'c-ts-mode-hook #'eglot)
-(add-hook 'c++-ts-mode-hook #'eglot)
-
-(use-package magit
-  :defer t
+(use-package page-break-lines
   :ensure t)
 
-(use-package flycheck
-  :defer t
+(use-package recentf
   :ensure t
   :config
-  (global-flycheck-mode))
-
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode +1))
-
-(use-package projectile-ripgrep
-  :ensure t
-  :after projectile)
-
-(use-package consult-projectile
-  :ensure t
-  :after projectile
-  :after consult)
-
-(use-package aggressive-indent
-  :ensure t
-  :hook (emacs-lisp-mode . aggressive-indent-mode))
-
-(use-package evil-nerd-commenter
-  :ensure t
-  :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
+  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+  (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 
 (use-package vterm
   :defer t
@@ -301,5 +340,17 @@
   :config (which-key-mode 1))
 
 (setq gc-cons-threshold (* 2 1024 1024))
-(when (not (daemonp))
-  (server-start))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(haskell-mode which-key vterm-toggle vertico-prescient toc-org rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep persp-projectile page-break-lines org-auto-tangle no-littering mu4e-alert marginalia magit hl-todo flycheck evil-nerd-commenter emms dired-open dashboard consult-projectile calfw-org calfw aggressive-indent))
+ '(safe-local-variable-values '((org-src-preserve-indentation . t))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

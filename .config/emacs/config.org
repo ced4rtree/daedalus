@@ -2,7 +2,8 @@
 #+AUTHOR: bugger
 #+PROPERTY: header-args :tangle init.el
 #+OPTIONS: toc:2
-#+auto_tangle: t
+#+AUTO_TANGLE: t
+#+STARTUP: overview
 
 * Table of contents :toc:
 - [[#make-emacsd-clean-again][Make .emacs.d clean again!]]
@@ -28,7 +29,15 @@
   - [[#marginalia][Marginalia]]
   - [[#consult][Consult]]
   - [[#prescient][Prescient]]
+- [[#programming-help][Programming Help]]
+  - [[#eglot][Eglot]]
+  - [[#magit][Magit]]
+  - [[#flycheck][Flycheck]]
+  - [[#projectile][Projectile]]
+  - [[#aggressive-indentation][Aggressive Indentation]]
+  - [[#commenting][Commenting]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
+  - [[#dashboard][Dashboard]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#electric-pairing][Electric Pairing]]
   - [[#tabbing][Tabbing]]
@@ -38,13 +47,8 @@
   - [[#hl-todo][Hl-Todo]]
   - [[#dired][Dired]]
   - [[#auto-backup][Auto Backup]]
-- [[#programming-help][Programming Help]]
-  - [[#eglot][Eglot]]
-  - [[#magit][Magit]]
-  - [[#flycheck][Flycheck]]
-  - [[#projectile][Projectile]]
-  - [[#aggressive-indentation][Aggressive Indentation]]
-  - [[#commenting][Commenting]]
+  - [[#dashboard-1][Dashboard]]
+  - [[#dependencies][Dependencies]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#vterm][Vterm]]
   - [[#emms][EMMS]]
@@ -72,17 +76,17 @@ I like to keep just the things I want in my user-emacs-directory, so I tell emac
 * Melpa
 Melpa is a repository for emacs that enables a lot more than what is in the standard elpa repos
 #+begin_src emacs-lisp
-(require 'package)
-(setq package-user-dir (concat user-emacs-directory ".local/elpa"))
-(setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+  (require 'package)
+  (setq package-user-dir (concat user-emacs-directory ".local/elpa"))
+  (setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
 #+end_src
 * UX
 ** Fonts
 #+begin_src emacs-lisp
-(add-to-list 'default-frame-alist
-             '(font . "Iosevka Nerd Font Mono-15"))
+  (add-to-list 'default-frame-alist
+               '(font . "Iosevka Nerd Font Mono-15"))
 #+end_src
 
 ** Theme
@@ -92,38 +96,38 @@ Melpa is a repository for emacs that enables a lot more than what is in the stan
 
 ** Line numbers
 #+begin_src emacs-lisp
-(global-display-line-numbers-mode 1)
+  (global-display-line-numbers-mode 1)
 #+end_src
 
 ** Rid of ugly stuff
 #+begin_src emacs-lisp
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1)
 #+end_src
 
 ** Scrolling
 #+begin_src emacs-lisp
-;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 1 line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboard scroll one line at a time
-(setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
+  ;; scroll one line at a time (less "jumpy" than defaults)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; 1 line at a time
+  (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+  (setq scroll-step 1) ;; keyboard scroll one line at a time
+  (setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
 #+end_src
 
 ** Rainbows!
 Adds rainbow parentheses and color to hex values and such
 #+begin_src emacs-lisp
-(use-package rainbow-mode
-  :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
-(use-package rainbow-delimiters
-  :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
-(use-package rainbow-identifiers
-  :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
+  (use-package rainbow-mode
+    :ensure t
+    :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
+  (use-package rainbow-identifiers
+    :ensure t
+    :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 #+end_src
 
 ** Tree Sitter
@@ -135,50 +139,50 @@ Tree sitter is now built into emacs as of Emacs 29
 #+end_src
 ** Visual Line Mode
 #+begin_src emacs-lisp
-(global-visual-line-mode 1)
+  (global-visual-line-mode 1)
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
 ** Org tempo
 A simple tool that simplifies writing source code blocks to just typing <s TAB, as well as other similar functions
 #+begin_src emacs-lisp
-(use-package org-tempo
-  :ensure nil)
+  (use-package org-tempo
+    :ensure nil)
 #+end_src
 
 ** Auto tangle
 Tangle a file to its source code blocks automatically upon save
 #+begin_src emacs-lisp
-(use-package org-auto-tangle
-  :ensure t
-  :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
+  (use-package org-auto-tangle
+    :ensure t
+    :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
 #+end_src
 
 ** Indentation
 #+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-hide-leading-stars nil)
+  (add-hook 'org-mode-hook 'org-indent-mode)
+  (setq org-hide-leading-stars nil)
 #+end_src
 
 ** Toc-org
 This automatically generates a table of contents under any heading tagged :TOC:
 #+begin_src emacs-lisp
   (use-package toc-org
-	:ensure t
-	:hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
+    :ensure t
+    :hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
 #+end_src
 ** Babel settings
 #+begin_src emacs-lisp
-(setq org-src-fontify-natively t
-      org-src-tab-acts-natively t
-      org-confirm-babel-evaluate nil
-      org-src-window-setup 'current-window)
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-confirm-babel-evaluate nil
+        org-src-window-setup 'current-window)
 #+end_src
 
 ** Org agenda
 Org agenda is a full blown scheduling application with all the power of org mode built into it
 #+begin_src emacs-lisp
-(setq org-agenda-files (list "~/org/agenda/schedule.org"))
+  (setq org-agenda-files (list "~/org/agenda/schedule.org"))
 #+end_src
 
 * Minibuffer
@@ -211,11 +215,11 @@ Our counsel replacement for vertico is consult. It also takes over swiper
 ** Prescient
 Prescient allows you to sort your history in things M-x, and others
 #+begin_src emacs-lisp
-(use-package prescient
-  :ensure t
-  :config
-  (prescient-toggle-fuzzy 1)
-  (prescient-persist-mode 1))
+  (use-package prescient
+    :ensure t
+    :config
+    (prescient-toggle-fuzzy 1)
+    (prescient-persist-mode 1))
 
   (use-package vertico-prescient
     :ensure t
@@ -223,99 +227,6 @@ Prescient allows you to sort your history in things M-x, and others
     :after prescient
     :config
     (vertico-prescient-mode 1))
-#+end_src
-* Nice Packages and Settings
-Things that aren't really necessary to do stuff, but nice to have
-** Keeping emacs clean
-Some things \*cough cough auto-save-list\* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
-#+begin_src emacs-lisp
-(use-package no-littering
-  :ensure t)
-#+end_src
-** Electric Pairing
-Automatically pair parentheses and the like
-#+begin_src emacs-lisp
-  (electric-pair-mode 1)
-  (setq electric-pair-inhibit-predicate
-	`(lambda (c)
-	   (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
-#+end_src
-
-** Tabbing
-#+begin_src emacs-lisp
-(setq indent-tabs-mode t)
-(setq-default tab-width 4
-              c-basic-offset 4
-              c-default-style "stroustrup")
-(defvaralias 'c-basic-offset 'tab-width)
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (interactive)
-                              (if (equal major-mode 'emacs-lisp-mode)
-                                  (setq indent-tabs-mode nil)
-                                (setq indent-tabs-mode t))))
-#+end_src
-
-** Too lazy to type yes
-#+begin_src emacs-lisp
-(defalias 'yes-or-no-p 'y-or-n-p)
-#+end_src
-
-** Too lazy to type ESC-ESC-ESC or C-g
-#+begin_src emacs-lisp
-(global-set-key (kbd "<escape>") 'abort-minibuffers)
-#+end_src
-
-** Perspectives
-Like workspaces inside of emacs to clean up the buffer list
-#+begin_src emacs-lisp
-  (use-package perspective
-    :ensure t
-    :config
-    (setq persp-initial-frame-name "Main")
-    (setq persp-mode-prefix-key "C-c p")
-    (persp-mode))
-#+end_src
-*** Projectile integration
-It'd be really nice if you could assign perspectives to projects, right? It is, so I did that.
-#+begin_src emacs-lisp
-(use-package persp-projectile
-  :ensure t
-  :after perspective
-  :after projectile)
-#+end_src
-** Hl-Todo
-This package highlights thing like TODO, FIXME, etc. that are common in programming to annotate your code easily
-#+begin_src emacs-lisp
-(use-package hl-todo
-  :ensure t
-  :hook (prog-mode . (lambda () (interactive) (hl-todo-mode 1)))
-  :config
-  (setq hl-todo-highlight-punctuation ":"
-        hl-todo-keyword-faces `(("TODO"       warning bold)
-                                ("FIXME"      error bold)
-                                ("HACK"       font-lock-constant-face bold)
-                                ("NOTE"       success bold)
-                                ("DEPRECATED" font-lock-doc-face bold))))
-#+end_src
-** Dired
-Dired has some nice extensions that let you automatically open in another program, and preview files
-#+begin_src emacs-lisp
-(use-package dired-open
-  :ensure t
-  :after dired
-  :config
-  (setq dired-open-extensions '(("gif" . "nsxiv")
-                                ("jpg" . "nsxiv")
-                                ("png" . "nsxiv")
-                                ("mkv" . "mpv")
-                                ("mp4" . "mpv")
-                                ("mp3" . "mpv"))))
-#+end_src
-** Auto Backup
-Emacs has a feature to automatically back up files every so often, which is nice, but clogs up the directory and git, so I moved it
-#+begin_src emacs-lisp
-(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
-(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 #+end_src
 * Programming Help
 Things like eglot and projectile are a huge help when programming
@@ -336,11 +247,11 @@ The best way to use git there is
 ** Flycheck
 Flycheck is a program that enables essentially 'spell checking' your code
 #+begin_src emacs-lisp
-(use-package flycheck
-  :defer t
-  :ensure t
-  :config
-  (global-flycheck-mode))
+  (use-package flycheck
+    :defer t
+    :ensure t
+    :config
+    (global-flycheck-mode))
 #+end_src
 
 ** Projectile
@@ -366,9 +277,9 @@ I like to keep all my lisp code indented properly automatically, and aggressive 
 
 This is actually really annoying in languages that use tabbing to denote scope/seperation, like C or Java, so just for lisp
 #+begin_src emacs-lisp
-(use-package aggressive-indent
-  :ensure t
-  :hook (emacs-lisp-mode . aggressive-indent-mode))
+  (use-package aggressive-indent
+    :ensure t
+    :hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
 ** Commenting
 Neat package that gives some nice commenting functions
@@ -377,6 +288,160 @@ Neat package that gives some nice commenting functions
     :ensure t
     :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 #+end_src
+* Nice Packages and Settings
+Things that aren't really necessary to do stuff, but nice to have
+** Dashboard
+*** Dependencies
+
+Nice little lines
+#+begin_src emacs-lisp
+  (use-package page-break-lines
+    :ensure t)
+#+end_src
+
+Show the recent files
+#+begin_src emacs-lisp
+  (use-package recentf
+    :ensure t
+    :config
+    ;; remove boilerplate files from recentf list
+    (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+    (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
+#+end_src
+
+*** The actual dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :after page-break-lines
+    :after projectile
+    :after recentf
+    :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
+    :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
+    :ensure t
+    :init
+    (setq dashboard-page-separator "
+  
+  ")
+    (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+    (setq dashboard-items '((recents . 5)
+                            (projects . 5)
+                            (agenda . 5)))
+    (setq dashboard-center-content t)
+    (setq dashboard-projects-switch-function 'projectile-persp-switch-project)
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
+** Keeping emacs clean
+Some things \*cough cough auto-save-list\* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
+#+begin_src emacs-lisp
+  (use-package no-littering
+    :ensure t)
+#+end_src
+** Electric Pairing
+Automatically pair parentheses and the like
+#+begin_src emacs-lisp
+  (electric-pair-mode 1)
+  (setq electric-pair-inhibit-predicate
+        `(lambda (c)
+           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+#+end_src
+
+** Tabbing
+#+begin_src emacs-lisp
+  (setq indent-tabs-mode t)
+  (setq-default tab-width 4
+                c-basic-offset 4
+                c-default-style "stroustrup")
+  (defvaralias 'c-basic-offset 'tab-width)
+  (add-hook 'prog-mode-hook #'(lambda ()
+                                (interactive)
+                                (if (equal major-mode 'emacs-lisp-mode)
+                                    (setq indent-tabs-mode nil)
+                                  (setq indent-tabs-mode t))))
+#+end_src
+
+** Too lazy to type yes
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+** Too lazy to type ESC-ESC-ESC or C-g
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<escape>") 'abort-minibuffers)
+#+end_src
+
+** Perspectives
+Like workspaces inside of emacs to clean up the buffer list
+#+begin_src emacs-lisp
+  (use-package perspective
+    :ensure t
+    :config
+    (setq persp-initial-frame-name "Main")
+    (setq persp-mode-prefix-key "C-c p")
+    (persp-mode))
+#+end_src
+*** Projectile integration
+It'd be really nice if you could assign perspectives to projects, right? It is, so I did that.
+#+begin_src emacs-lisp
+  (use-package persp-projectile
+    :ensure t
+    :after perspective
+    :after projectile)
+#+end_src
+** Hl-Todo
+This package highlights thing like TODO, FIXME, etc. that are common in programming to annotate your code easily
+#+begin_src emacs-lisp
+  (use-package hl-todo
+    :ensure t
+    :hook (prog-mode . (lambda () (interactive) (hl-todo-mode 1)))
+    :config
+    (setq hl-todo-highlight-punctuation ":"
+          hl-todo-keyword-faces `(("TODO"       warning bold)
+                                  ("FIXME"      error bold)
+                                  ("HACK"       font-lock-constant-face bold)
+                                  ("NOTE"       success bold)
+                                  ("DEPRECATED" font-lock-doc-face bold))))
+#+end_src
+** Dired
+Dired has some nice extensions that let you automatically open in another program
+#+begin_src emacs-lisp
+  (use-package dired-open
+    :ensure t
+    :after dired
+    :config
+    (setq dired-open-extensions '(("gif" . "nsxiv")
+                                  ("jpg" . "nsxiv")
+                                  ("png" . "nsxiv")
+                                  ("mkv" . "mpv")
+                                  ("mp4" . "mpv")
+                                  ("mp3" . "mpv"))))
+#+end_src
+** Auto Backup
+Emacs has a feature to automatically back up files every so often, which is nice, but clogs up the directory and git, so I moved it
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+#+end_src
+** Dashboard
+A dashboard in emacs to get to what you're doing faster
+
+** Dependencies
+Nice little lines
+
+#+begin_src emacs-lisp
+  (use-package page-break-lines
+    :ensure t)
+#+end_src
+
+Get rid of agenda files from the recentf list
+#+begin_src emacs-lisp
+  (use-package recentf
+    :ensure t
+    :config
+    (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+    (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
+#+end_src
+    
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
 ** Vterm
@@ -482,20 +547,20 @@ Maildir Utils 4 Emacs, an email client for emacs
 *** MU4E Alert
 A good package to get notifications when emails come in, as well as a good modeline display for emails
 #+begin_src emacs-lisp
-(use-package mu4e-alert
-  :after mu4e
-  :ensure t
-  :config
-  (mu4e-alert-enable-mode-line-display)
-  (mu4e-alert-enable-notifications))
+  (use-package mu4e-alert
+    :after mu4e
+    :ensure t
+    :config
+    (mu4e-alert-enable-mode-line-display)
+    (mu4e-alert-enable-notifications))
 #+end_src
 ** Password Encryption
 #+begin_src emacs-lisp
-(defun efs/lookup-password (&rest keys)
-  (let ((result (apply #'auth-source-search keys)))
-    (if result
-        (funcall (plist-get (car result) :secret))
-      nil)))
+  (defun efs/lookup-password (&rest keys)
+    (let ((result (apply #'auth-source-search keys)))
+      (if result
+          (funcall (plist-get (car result) :secret))
+        nil)))
 #+end_src
 * Keybindings
 ** Delete a tab, not 4 spaces
@@ -517,16 +582,13 @@ It's pretty useful to just reload your config on the fly rather than have to rel
 ** Which-key
 Which-key displays possible completions for keybindings you have typed in a minibuffer at the bottom of the screen
 #+begin_src emacs-lisp
-(use-package which-key
-  :ensure t
-  :config (which-key-mode 1))
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode 1))
 #+end_src
 
 * Clean up
-Just need to put gc-cons-threshold back to a normal figure after init + start the server
+Just need to put gc-cons-threshold back to a normal figure after init
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 2 1024 1024))
-  (when (not (daemonp))
-    (server-start))
 #+end_src
-
