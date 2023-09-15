@@ -34,7 +34,6 @@ import XMonad.Hooks.StatusBar.PP
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
 import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
-import XMonad.Util.NamedScratchpad
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
 import XMonad.Util.NamedActions
@@ -115,36 +114,6 @@ myShowWNameTheme = def
   , swn_color   = "#ffffff"
   }
 
-myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
-                , NS "ncmpcpp" spawnMus findMus manageMus
-                , NS "calfw" spawnCal findCal manageCal
-                ]
-    where
-      spawnTerm  = myTerminal ++ " -name scratchpad"
-      findTerm   = title =? "scratchpad"
-      manageTerm = customFloating $ W.RationalRect l t w h
-                   where
-                     h = 0.9
-                     w = 0.9
-                     t = 0.075 -- height based
-                     l = 0.05 -- width based
-      spawnMus  = "emacsclient -cF '((name . \"music\"))' -e '(emms-scratchpad)' -e '(emms-smart-browse)' -e '(turn-off-evil-mode)'"
-      findMus   = title =? "music"
-      manageMus = customFloating $ W.RationalRect l t w h
-                   where
-                     h = 0.9
-                     w = 0.9
-                     t = 0.075 -- height based
-                     l = 0.05 -- width based
-      spawnCal  = "emacsclient -cF '((name . \"cal\"))' -e '(calfw-scratchpad)' -e '(cfw:open-org-calendar)'"
-      findCal   = title =? "cal"
-      manageCal = customFloating $ W.RationalRect l t w h
-                   where
-                     h = 0.9
-                     w = 0.9
-                     t = 0.075 -- height based
-                     l = 0.05 -- width based
-
 takeScreenshot :: Bool -> String -> X ()
 takeScreenshot b s = do
   if b
@@ -156,21 +125,17 @@ myStartupHook = do
   spawnOnce "mpv /opt/sounds/startup-01.mp3"
   spawnOnce "xsetroot -cursor_name left_ptr"
   spawnStatusBar "~/.config/polybar/launch.sh"
-  spawnOnce "~/.config/xmonad/wallpaper.sh"
+  spawnOnce "wallpaper.sh"
   -- Makes repeat rate much faster
   spawnOnce "xset r rate 200 65"
   -- Epic caps lock instead of escape chad moment
-  spawnOnce "setxkbmap -option caps:escape"
+  spawnOnce "setxkbmap -option ctrl:nocaps"
   -- This enables natural scrolling. Disable if scrolling direction feels weird for you
-  spawnOnce "~/.config/xmonad/natScroll.sh"
+  spawnOnce "natScroll.sh"
   --compositor
-  spawnOnce "picom"
+  spawnOnce "xcompmgr &"
   -- music
-  spawnOnce "mpd"
-  -- Emacs (no longer buggin)
-  spawnOnce "emacs --daemon &"
-  -- wifi
-  spawnOnce "doas rfkill unblock wifi && iwctl station wlan0 scan"
+  spawnOnce "if [ -z $(pidof mpd) ]; then mpd; fi"
   -- let java swing apps like intellij work
   setWMName "LG3D" -- tricks programs into thining this is LG3D, which is the only thing java can work with for some reason
 
@@ -193,7 +158,7 @@ myManageHook = composeAll
   , className =? "discord"                             --> doShift (myWorkspaces !! 3) -- send discord to the 4th workspace (arrays start at 0)
   , className =? "freetube"                            --> doShift (myWorkspaces !! 0)
   , className =? "steam"                               --> doShift (myWorkspaces !! 5)
-  ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
+  ] <+> manageDocks
 
 subtitle' ::  String -> ((KeyMask, KeySym), NamedAction)
 subtitle' x = ((0,0), NamedAction $ map toUpper
@@ -219,18 +184,12 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         ]
 
         ^++^ subKeys "Music"
-        -- [ ("M-S-j",                  addName "Toggle the music"       $ spawn "mpc toggle")
-        -- , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "mpc toggle")
-        -- , ("M-S-h",                  addName "Play the previous song" $ spawn "mpc prev")
-        -- , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "mpc prev")
-        -- , ("M-S-l",                  addName "Play the next song"     $ spawn "mpc next")
-        -- , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "mpc next")
-        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
-        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
-        , ("M-S-h",                  addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)'")
-        , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "emacsclient --eval '(emms-previous)'")
-        , ("M-S-l",                  addName "Play the next song"     $ spawn "emacsclient --eval '(emms-next)'")
-        , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "emacsclient --eval '(emms-next)'")
+        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "mpc toggle")
+        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "mpc toggle")
+        , ("M-S-h",                  addName "Play the previous song" $ spawn "mpc prev")
+        , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "mpc prev")
+        , ("M-S-l",                  addName "Play the next song"     $ spawn "mpc next")
+        , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "mpc next")
         , ("<XF86AudioRaiseVolume>", addName "Turn the volume up"     $ spawn "~/scripts/snd up")
         , ("<XF86AudioLowerVolume>", addName "Turn the volume down"   $ spawn "~/scripts/snd down")
         ]
@@ -241,12 +200,6 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
 
         , ("S-<XF86MonBrightnessUp>",   addName "Turn the brightness up"              $ spawn "brightness up")
         , ("S-<XF86MonBrightnessDown>", addName "Turn the brightness down"            $ spawn "brightness down")
-        ]
-
-        ^++^ subKeys "Scratchpads"
-        [ ("M-s <Return>", addName "Open the terminal scratchpad" $ namedScratchpadAction myScratchPads "terminal")
-        , ("M-s m",        addName "Open the music scratchpad"    $ namedScratchpadAction myScratchPads "ncmpcpp")
-        , ("M-s c",        addName "Open the calendar scratchpad" $ namedScratchpadAction myScratchPads "calfw")
         ]
 
         ^++^ subKeys "Windows"
@@ -305,7 +258,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot True)
         , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot False)
         , ("M-w",       addName "Set a random wallpaper"                  $ spawn "~/.config/xmonad/wallpaper.sh")
-        , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -a 'emacs' -c")
+        , ("M-e",       addName "Spawn emacs"                             $ spawn "emacs")
         , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)
         , ("M--",       addName "Decrease window spacing"                 $ decWindowSpacing 2 *> decScreenSpacing 2)
         , ("M-`",       addName "Lock the screen"                         $ spawn "mpc pause ; i3lock -i ~/.local/wallpapers/$(ls ~/.local/wallpapers | shuf | head -n 1)")
@@ -313,7 +266,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
 
 main :: IO ()
 main = do
-        xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmhFullscreen $ addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ ewmh . docks  $ def {
+        xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmhFullscreen $ ewmh . docks  $ def {
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
