@@ -6,7 +6,7 @@ wallpaper.sh
 natScroll.sh
 xset r rate 200 65
 setxkbmap -option caps:escape
-picom &
+xcompmgr &
 ~/.config/polybar/launch.sh &
 nm-applet &
 batsignal -M 'dunstify' &
