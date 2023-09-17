@@ -102,12 +102,11 @@
   :config
   (vertico-prescient-mode 1))
 
-(with-eval-after-load 'eglot
-  (add-hook 'c-ts-mode-hook #'eglot-ensure)
-  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
-  (setq eglot-autoshutdown t)
-  (use-package eglot-java
-    :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1)))))
+(add-hook 'c-ts-mode-hook #'eglot-ensure)
+(add-hook 'c++-ts-mode-hook #'eglot-ensure)
+(setq eglot-autoshutdown t)
+(use-package eglot-java
+  :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1))))
 
 (use-package magit
   :defer t

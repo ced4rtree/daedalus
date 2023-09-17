@@ -241,12 +241,11 @@ Things like eglot and projectile are a huge help when programming
 ** Eglot
 A lightweight LSP implementation built into emacs (as of emacs 29)
 #+begin_src emacs-lisp
-  (with-eval-after-load 'eglot
-    (add-hook 'c-ts-mode-hook #'eglot-ensure)
-    (add-hook 'c++-ts-mode-hook #'eglot-ensure)
-    (setq eglot-autoshutdown t)
-    (use-package eglot-java
-      :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1)))))
+  (add-hook 'c-ts-mode-hook #'eglot-ensure)
+  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+  (setq eglot-autoshutdown t)
+  (use-package eglot-java
+    :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1))))
 #+end_src
 ** Magit
 The best way to use git there is
