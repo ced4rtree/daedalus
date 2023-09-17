@@ -40,9 +40,6 @@
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
-(use-package rainbow-identifiers
-  :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 
 (add-hook 'java-mode-hook 'java-ts-mode)
 (add-hook 'c-mode-hook 'c-ts-mode)

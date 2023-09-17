@@ -135,12 +135,10 @@ Adds rainbow parentheses and color to hex values and such
   (use-package rainbow-delimiters
     :ensure t
     :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
-  (use-package rainbow-identifiers
-    :ensure t
-    :hook (prog-mode . (lambda () (interactive) (rainbow-identifiers-mode 1))))
 #+end_src
 
 ** Tree Sitter
+Tree sitter is a parsing library that gives us good, fast syntax highlighting
 Tree sitter is now built into emacs as of Emacs 29
 #+begin_src emacs-lisp
   (add-hook 'java-mode-hook 'java-ts-mode)
