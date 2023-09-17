@@ -183,8 +183,11 @@
 (setq indent-tabs-mode t)
 (setq-default tab-width 4
               c-basic-offset 4
-              c-default-style "stroustrup")
+              c-ts-mode-indent-offset 4
+              c-ts-mode-indent-style 'k&r
+              c-default-style "k&r")
 (defvaralias 'c-basic-offset 'tab-width)
+(defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (add-hook 'prog-mode-hook #'(lambda ()
                               (interactive)
                               (if (equal major-mode 'emacs-lisp-mode)
@@ -352,4 +355,3 @@
   :diminish which-key-mode)
 
 (setq gc-cons-threshold (* 2 1024 1024))
-(put 'emms-browser-delete-files 'disabled nil)
