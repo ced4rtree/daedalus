@@ -48,6 +48,7 @@
   - [[#hl-todo][Hl-Todo]]
   - [[#dired][Dired]]
   - [[#auto-backup][Auto Backup]]
+  - [[#disable-async-shell-command-window][Disable Async Shell Command Window]]
   - [[#diminish][Diminish]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#vterm][Vterm]]
@@ -55,6 +56,7 @@
   - [[#calfw][Calfw]]
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
+  - [[#password-storage][Password Storage]]
 - [[#keybindings][Keybindings]]
   - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
   - [[#reload-emacs][Reload Emacs]]
@@ -434,6 +436,12 @@ Emacs has a feature to automatically back up files every so often, which is nice
   (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
   (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 #+end_src
+** Disable Async Shell Command Window
+If I want to see the output of a shell command, I'll just do it with a compilation command. This is just annoying
+#+begin_src emacs-lisp
+(add-to-list 'display-buffer-alist
+  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+#+end_src
 ** Diminish
 Not a big fan of a bunch of random minor modes I don't care about clogging up the modeline.
 #+begin_src emacs-lisp
@@ -553,12 +561,18 @@ A good package to get notifications when emails come in, as well as a good model
     (mu4e-alert-enable-notifications))
 #+end_src
 ** Password Encryption
+This is really just for mbsync. To actually use passwords well, see [[#password-storage][Password Storage]]
 #+begin_src emacs-lisp
   (defun efs/lookup-password (&rest keys)
     (let ((result (apply #'auth-source-search keys)))
       (if result
           (funcall (plist-get (car result) :secret))
         nil)))
+#+end_src
+** Password Storage
+Store and retrieve all your passwords with emacs!
+#+begin_src emacs-lisp
+  (use-package pass)
 #+end_src
 * Keybindings
 ** Delete a tab, not 4 spaces

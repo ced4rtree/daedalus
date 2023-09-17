@@ -232,6 +232,9 @@
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
+(add-to-list 'display-buffer-alist
+  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+
 (diminish 'eldoc-mode)
 (diminish 'auto-revert-mode)
 
@@ -330,6 +333,8 @@
         (funcall (plist-get (car result) :secret))
       nil)))
 
+(use-package pass)
+
 (global-set-key (kbd "DEL") 'backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
 
@@ -347,3 +352,4 @@
   :diminish which-key-mode)
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(put 'emms-browser-delete-files 'disabled nil)
