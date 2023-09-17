@@ -12,6 +12,9 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
+(setq use-package-always-ensure t)
+(use-package diminish)
+
 (add-to-list 'default-frame-alist
              '(font . "Iosevka Nerd Font Mono-15"))
 
@@ -32,7 +35,8 @@
 
 (use-package rainbow-mode
   :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
+  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1)))
+  :diminish rainbow-mode)
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
@@ -45,25 +49,29 @@
 (add-hook 'c++-mode-hook 'c++-ts-mode)
 
 (global-visual-line-mode 1)
+(diminish 'visual-line-mode)
 
 (use-package org-tempo
   :ensure nil)
 
-(use-package org-auto-tangle
-  :ensure t
-  :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
-
 (add-hook 'org-mode-hook 'org-indent-mode)
+(diminish 'org-indent-mode)
 (setq org-hide-leading-stars nil)
 
 (use-package toc-org
   :ensure t
   :hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
 
-(setq org-src-fontify-natively t
-      org-src-tab-acts-natively t
-      org-confirm-babel-evaluate nil
-      org-src-window-setup 'current-window)
+;; automatically tangle org files
+(use-package org-auto-tangle
+  :ensure t
+  :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1)))
+  :diminish org-auto-tangle-mode)
+
+(setq org-src-fontify-natively t ;; use the font like it is in a normal buffer
+      org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
+      org-confirm-babel-evaluate nil ;; don't ask to evaluate code
+      org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
 (setq org-agenda-files (list "~/org/agenda/schedule.org"))
 
@@ -94,9 +102,12 @@
   :config
   (vertico-prescient-mode 1))
 
-(add-hook 'java-ts-mode-hook #'eglot)
-(add-hook 'c-ts-mode-hook #'eglot)
-(add-hook 'c++-ts-mode-hook #'eglot)
+(with-eval-after-load 'eglot
+  (add-hook 'c-ts-mode-hook #'eglot-ensure)
+  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+  (setq eglot-autoshutdown t)
+  (use-package eglot-java
+    :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1)))))
 
 (use-package magit
   :defer t
@@ -111,7 +122,8 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-mode +1))
+  (projectile-mode +1)
+  :diminish projectile-mode)
 
 (use-package projectile-ripgrep
   :ensure t
@@ -131,7 +143,8 @@
   :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 
 (use-package page-break-lines
-  :ensure t)
+  :ensure t
+  :diminish page-break-lines-mode)
 
 (use-package recentf
   :ensure t
@@ -220,14 +233,8 @@
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
-(use-package page-break-lines
-  :ensure t)
-
-(use-package recentf
-  :ensure t
-  :config
-  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
-  (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
+(diminish 'eldoc-mode)
+(diminish 'auto-revert-mode)
 
 (use-package vterm
   :defer t
@@ -337,20 +344,7 @@
 
 (use-package which-key
   :ensure t
-  :config (which-key-mode 1))
+  :config (which-key-mode 1)
+  :diminish which-key-mode)
 
 (setq gc-cons-threshold (* 2 1024 1024))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(haskell-mode which-key vterm-toggle vertico-prescient toc-org rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep persp-projectile page-break-lines org-auto-tangle no-littering mu4e-alert marginalia magit hl-todo flycheck evil-nerd-commenter emms dired-open dashboard consult-projectile calfw-org calfw aggressive-indent))
- '(safe-local-variable-values '((org-src-preserve-indentation . t))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
