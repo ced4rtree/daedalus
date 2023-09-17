@@ -232,6 +232,8 @@ myStartupHook = do
   spawnOnce "xset r rate 200 65"
   -- Epic caps lock instead of escape chad moment
   spawnOnce "setxkbmap -option ctrl:nocaps"
+  -- spawn emacs daemon
+  spawnOnce "emacs --daemon &"
   -- This enables natural scrolling. Disable if scrolling direction feels weird for you
   spawnOnce "natScroll.sh"
   --compositor
@@ -462,7 +464,7 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
         [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot True)
         , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot False)
         , ("M-w",       addName "Set a random wallpaper"                  $ spawn "~/.config/xmonad/wallpaper.sh")
-        , ("M-e",       addName "Spawn emacs"                             $ spawn "emacs")
+        , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -c -a 'emacs'")
         , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)
         , ("M--",       addName "Decrease window spacing"                 $ decWindowSpacing 2 *> decScreenSpacing 2)
         , ("M-`",       addName "Lock the screen"                         $ spawn "mpc pause ; i3lock -i ~/.local/wallpapers/$(ls ~/.local/wallpapers | shuf | head -n 1)")
