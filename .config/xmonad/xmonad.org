@@ -375,8 +375,8 @@ myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
 ** Music control
 #+begin_src haskell
         ^++^ subKeys "Music"
-        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "mpc toggle")
-        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "mpc toggle")
+        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
+        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
         , ("M-S-h",                  addName "Play the previous song" $ spawn "mpc prev")
         , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "mpc prev")
         , ("M-S-l",                  addName "Play the next song"     $ spawn "mpc next")

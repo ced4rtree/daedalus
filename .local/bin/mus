@@ -16,9 +16,9 @@ do
 	elif [ "${1}" == "paused" ]; then
 		check="$(mpc | awk 'NR==2 {print $1}')"
 		if [ "${check}" = "[playing]" ]; then
-			echo " "
+			printf "\n"
 		elif [ "${check}" = "[paused]" ]; then
-			echo "▶ "
+			printf "▶\n"
 		else
 			echo ""
 		fi
