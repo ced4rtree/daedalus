@@ -352,3 +352,17 @@
   :diminish which-key-mode)
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(corfu pass which-key vterm-toggle vertico-prescient toc-org rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep persp-projectile page-break-lines org-auto-tangle no-littering mu4e-alert marginalia magit hl-todo haskell-mode flycheck evil-nerd-commenter emms eglot-java dired-open diminish dashboard consult-projectile calfw-org calfw aggressive-indent))
+ '(safe-local-variable-values '((org-src-preserve-indentation . t))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

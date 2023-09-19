@@ -7,7 +7,7 @@ natScroll.sh
 xset r rate 200 65
 setxkbmap -option ctrl:nocaps
 xcompmgr &
-~/.config/polybar/launch.sh &
+if [ "$1" != "--no-polybar" ]; then ~/.config/polybar/launch.sh &; fi
 nm-applet &
 batsignal -M 'dunstify' &
 if [ -z "$(pidof mpd)" ]; then mpd; fi # sometimes mpd gets started multiple times, and it sounds like hot garbage getting spoon fed directly into my ears
