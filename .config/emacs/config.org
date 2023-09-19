@@ -282,7 +282,6 @@ Projectile manages projects
     :after projectile
     :after consult)
 #+end_src
-
 ** Aggressive Indentation
 I like to keep all my lisp code indented properly automatically, and aggressive indentation is really nice for that
 
@@ -390,6 +389,10 @@ Like workspaces inside of emacs to clean up the buffer list
 #+begin_src emacs-lisp
   (use-package perspective
     :ensure t
+    :bind (("C-c p k" . persp-kill)
+           ("C-c p p" . persp-switch)
+           ("C-c p i" . persp-ibuffer)
+           ("C-c p b" . persp-switch-to-buffer*))
     :config
     (setq persp-initial-frame-name "Main")
     (setq persp-mode-prefix-key "C-c p")
@@ -400,6 +403,7 @@ It'd be really nice if you could assign perspectives to projects, right? It is, 
 #+begin_src emacs-lisp
   (use-package persp-projectile
     :ensure t
+    :bind (("C-x p p" . projectile-persp-switch-project))
     :after perspective
     :after projectile)
 #+end_src
