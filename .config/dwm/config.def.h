@@ -887,7 +887,7 @@ static const Key on_empty_keys[] = {
 
 /* Peronsal Keys definition */
 static const char* emacs[] = { "emacsclient", "-c", NULL };
-static const char* musPause[] = { "emacsclient", "--eval", "'(emms-pause)'", NULL };
+static const char* musPause[] = { "emacsclient", "-e", "(emms-pause)", NULL };
 static const char* musNext[] = { "mpc", "next", NULL };
 static const char* musPrev[] = { "mpc", "prev", NULL };
 static const char* sndDown[] = { "snd", "down", NULL };
