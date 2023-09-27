@@ -46,6 +46,7 @@
   - [[#auto-backup][Auto Backup]]
   - [[#disable-async-shell-command-window][Disable Async Shell Command Window]]
   - [[#diminish][Diminish]]
+  - [[#theme-magic][Theme Magic]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#vterm][Vterm]]
   - [[#emms][EMMS]]
@@ -407,6 +408,14 @@ Not a big fan of a bunch of random minor modes I don't care about clogging up th
 #+begin_src emacs-lisp
   (diminish 'eldoc-mode)
   (diminish 'auto-revert-mode)
+#+end_src
+** Theme Magic
+Get emacs themes everywhere
+#+begin_src emacs-lisp
+  (use-package theme-magic
+    :ensure t
+    :config
+    (theme-magic-from-emacs))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
