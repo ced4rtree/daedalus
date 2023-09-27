@@ -72,32 +72,14 @@
 
 (setq org-agenda-files (list "~/org/agenda/schedule.org"))
 
-(use-package vertico
+(use-package ido-completing-read+
   :ensure t
   :config
-  (vertico-mode))
+  (ido-ubiquitous-mode 1))
 
-(use-package marginalia
+(use-package smex
   :ensure t
-  :config
-  (marginalia-mode 1))
-
-(use-package consult
-  :ensure t
-  :bind ("C-s" . consult-line))
-
-(use-package prescient
-  :ensure t
-  :config
-  (prescient-toggle-fuzzy 1)
-  (prescient-persist-mode 1))
-
-(use-package vertico-prescient
-  :ensure t
-  :after vertico
-  :after prescient
-  :config
-  (vertico-prescient-mode 1))
+  :bind ("M-x" . smex))
 
 (add-hook 'c-ts-mode-hook #'eglot-ensure)
 (add-hook 'c++-ts-mode-hook #'eglot-ensure)
@@ -212,27 +194,16 @@
   :after perspective
   :after projectile)
 
-(use-package hl-todo
-  :ensure t
-  :hook (prog-mode . (lambda () (interactive) (hl-todo-mode 1)))
-  :config
-  (setq hl-todo-highlight-punctuation ":"
-        hl-todo-keyword-faces `(("TODO"       warning bold)
-                                ("FIXME"      error bold)
-                                ("HACK"       font-lock-constant-face bold)
-                                ("NOTE"       success bold)
-                                ("DEPRECATED" font-lock-doc-face bold))))
-
 (use-package dired-open
   :ensure t
   :after dired
   :config
   (setq dired-open-extensions '(("gif" . "nsxiv")
-                                ("jpg" . "nsxiv")
-                                ("png" . "nsxiv")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv")
-                                ("mp3" . "mpv"))))
+                                ("mp3" . "mpv")))
+  :bind (:map dired-mode-map
+              ("f" . dired-open-file)))
 
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
