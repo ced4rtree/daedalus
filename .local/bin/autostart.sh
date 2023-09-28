@@ -1,13 +1,18 @@
 #!/bin/sh
 
 mpv /opt/sounds/startup-01.mp3 &
-xsetroot -cursor_name left_ptr
+if [ -n "$(pidof Xorg)" ]; then
+	xsetroot -cursor_name left_ptr
+	setxkbmap -option ctrl:nocaps
+	xset r rate 200 65
+	xcompmgr &
+	if [ "$1" != "--no-polybar" ]; then ~/.config/polybar/launch.sh &; fi
+else
+	eww open bar0
+fi
+
 wallpaper.sh
 natScroll.sh
-xset r rate 200 65
-setxkbmap -option ctrl:nocaps
-xcompmgr &
-if [ "$1" != "--no-polybar" ]; then ~/.config/polybar/launch.sh &; fi
 nm-applet &
 batsignal -M 'dunstify' &
 if [ -z "$(pidof mpd)" ]; then mpd; fi # sometimes mpd gets started multiple times, and it sounds like hot garbage getting spoon fed directly into my ears
