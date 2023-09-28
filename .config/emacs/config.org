@@ -193,6 +193,8 @@ Org agenda is a full blown scheduling application with all the power of org mode
 * Ido
 Interactively Do Things with ido
 #+begin_src emacs-lisp
+  (ido-mode 1)
+  (ido-everywhere 1)
   (use-package ido-completing-read+
     :ensure t
     :config

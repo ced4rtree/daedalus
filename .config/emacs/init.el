@@ -72,6 +72,8 @@
 
 (setq org-agenda-files (list "~/org/agenda/schedule.org"))
 
+(ido-mode 1)
+(ido-everywhere 1)
 (use-package ido-completing-read+
   :ensure t
   :config
