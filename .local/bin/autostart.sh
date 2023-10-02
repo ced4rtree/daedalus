@@ -1,15 +1,11 @@
 #!/bin/sh
 
 mpv /opt/sounds/startup-01.mp3 &
-if [ -n "$(pidof Xorg)" ]; then
-	xsetroot -cursor_name left_ptr
-	setxkbmap -option ctrl:nocaps
-	xset r rate 200 65
-	xcompmgr &
-	if [ "$1" != "--no-polybar" ]; then ~/.config/polybar/launch.sh &; fi
-else
-	eww open bar0
-fi
+xsetroot -cursor_name left_ptr
+setxkbmap -option ctrl:nocaps
+xset r rate 200 65
+xcompmgr &
+#if [ "$1" != "--no-polybar" ]; then ~/.config/polybar/launch.sh &; fi
 
 wallpaper.sh
 natScroll.sh
