@@ -30,6 +30,13 @@ riverctl map normal Super 7 set-focused-tags 001000000
 riverctl map normal Super 8 set-focused-tags 010000000
 riverctl map normal Super 9 set-focused-tags 100000000
 
+#riverctl map normal None XF86XK_MonBrightnessUp spawn "real-brightness up"
+#riverctl map normal None XF86XK_MonBrightnessDown spawn "real-brightness down"
+#riverctl map normal None XF86XK_AudioRaiseVolume spawn "snd up"
+#riverctl map normal None XF86XK_AudioLowerVolume spawn "snd down"
+
+#riverctl map locked None Escape enter-mode normal
+
 
 # make river a tiling wm
 rivertile &
