@@ -10,3 +10,4 @@
 **/*#
 **/.zcompdump
 /.config/dwm/.github/
+/.config/emacs/eln-cache/
