@@ -335,8 +335,8 @@ Automatically pair parentheses and the like
   (setq-default tab-width 4
                 c-basic-offset 4
                 c-ts-mode-indent-offset 4
-                c-ts-mode-indent-style 'k&r
-                c-default-style "k&r")
+                c-ts-mode-indent-style 'bsd
+                c-default-style "bsd")
   (defvaralias 'c-basic-offset 'tab-width)
   (defvaralias 'c-ts-mode-indent-offset 'tab-width)
   (add-hook 'prog-mode-hook #'(lambda ()
