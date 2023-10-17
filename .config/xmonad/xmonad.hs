@@ -1,10 +1,9 @@
 import XMonad
 
-import XMonad.Layout.SimplestFloat
-import XMonad.Layout.ResizableTile
-
 import XMonad.Layout.Spacing
 import XMonad.Layout.LayoutModifier
+import XMonad.Layout.Dwindle
+import XMonad.Layout.ResizableTile
 import XMonad.Layout.NoBorders
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
@@ -12,15 +11,13 @@ import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, NOBORDERS))
 import XMonad.Layout.WindowArranger (windowArrange)
 import XMonad.Layout.WindowNavigation
+import XMonad.Layout.SimplestFloat
 import XMonad.Layout.Renamed
 import XMonad.Layout.Simplest
 import XMonad.Layout.SubLayouts
-import XMonad.Layout.ShowWName
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 
-import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ManageHelpers (isFullscreen, doFullFloat)
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.WindowSwallowing
@@ -34,23 +31,17 @@ import XMonad.Hooks.StatusBar.PP
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
 import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
+import XMonad.Util.NamedScratchpad
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
-import XMonad.Util.NamedActions
-import XMonad.Util.Run (spawnPipe)
 
 import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
-
-import XMonad.Prompt
-import XMonad.Prompt.FuzzyMatch
-import XMonad.Prompt.Input
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.ManageHook
 import Data.Monoid
-import Data.Char (toUpper)
 import Graphics.X11.ExtraTypes.XF86 -- Epic keys
 import System.Exit
 import System.IO
@@ -59,28 +50,7 @@ mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spaci
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-               -- At most, I use like 5 workspaces at a time I had no idea what to put for 7, 8, 9, or 10
-myTerminal = "urxvt"
-
-myXPConfig = def
-      { font                = "xft:Ubuntu Nerd Font:size=14"
-      , bgColor             = "#282c34"
-      , fgColor             = "#bbc2cf"
-      , bgHLight            = "#51afef"
-      , fgHLight            = "#bbc2cf"
-      , borderColor         = "#282c34"
-      , promptBorderWidth   = 0
-      , position            = Top
-      , height              = 33
-      , historySize         = 256
-      , historyFilter       = id
-      , defaultText         = []
-      , autoComplete        = Just 100000
-      , showCompletionOnTab = True
-      , searchPredicate     = fuzzyMatch
-      , alwaysHighlight     = True
-      , maxComplRows        = Just 5
-      }
+myTerminal = "alacritty"
 
 tall    = renamed [Replace "tall"]
         $ smartBorders
@@ -107,38 +77,9 @@ myLayoutHook = avoidStruts
                                ||| noBorders monocle
                                ||| floats
 
-myShowWNameTheme = def
-  { swn_font    = "xft:Ubuntu Nerd Font:bold:size=60"
-  , swn_fade    = 1.0
-  , swn_bgcolor = "#1c1f24"
-  , swn_color   = "#ffffff"
-  }
-
-takeScreenshot :: Bool -> String -> X ()
-takeScreenshot b s = do
-  if b
-     then spawn $ concat ["import ~/Pictures/\"", s, "\".png"]
-     else spawn $ concat ["import -window root ~/Pictures/\"", s, "\".png"]
-
 myStartupHook :: X ()
 myStartupHook = do
-  spawnOnce "mpv /opt/sounds/startup-01.mp3"
-  spawnOnce "xsetroot -cursor_name left_ptr"
-  spawnStatusBar "~/.config/polybar/launch.sh"
-  spawnOnce "wallpaper.sh"
-  -- Makes repeat rate much faster
-  spawnOnce "xset r rate 200 65"
-  -- Epic caps lock instead of escape chad moment
-  spawnOnce "setxkbmap -option ctrl:nocaps"
-  -- spawn emacs daemon
-  spawnOnce "emacs --daemon &"
-  -- This enables natural scrolling. Disable if scrolling direction feels weird for you
-  spawnOnce "natScroll.sh"
-  --compositor
-  spawnOnce "xcompmgr &"
-  -- music
-  spawnOnce "if [ -z $(pidof mpd) ]; then mpd; fi"
-  -- let java swing apps like intellij work
+  spawnOnce "autostart.sh" -- autostart shell file
   setWMName "LG3D" -- tricks programs into thining this is LG3D, which is the only thing java can work with for some reason
 
 myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
@@ -152,131 +93,121 @@ myManageHook = composeAll
   , className =? "notification"                        --> doFloat
   , className =? "splash"                              --> doFloat
   , className =? "toolbar"                             --> doFloat
-  , className =? "Yad"                                 --> doFloat
-  , title     =? "music"                               --> doFloat
-  , title     =? "cal"                                 --> doFloat
   , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
   , isFullscreen                                       --> doFullFloat
-  , className =? "discord"                             --> doShift (myWorkspaces !! 3) -- send discord to the 4th workspace (arrays start at 0)
-  , className =? "freetube"                            --> doShift (myWorkspaces !! 0)
-  , className =? "steam"                               --> doShift (myWorkspaces !! 5)
-  ] <+> manageDocks
+  ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
 
-subtitle' ::  String -> ((KeyMask, KeySym), NamedAction)
-subtitle' x = ((0,0), NamedAction $ map toUpper
-                      $ sep ++ "\n-- " ++ x ++ " --\n" ++ sep)
-  where
-    sep = replicate (6 + length x) '-'
+myKeys =
+        -- launch a terminal
+        [ ("M-S-<Return>", windows W.focusMaster >> spawn myTerminal)
 
-showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction
-showKeybindings x = addName "Show Keybindings" $ io $ do
-  h <- spawnPipe $ "yad --text-info --fontname=\"JetBrains Mono\" --center --geometry=1200x800 --title \"XMonad keybindings\""
-  hPutStr h  $ unlines $ showKm x
-  hClose h
-  return ()
+        -- Close the focused window
+        , ("M-S-x", kill)
 
-myKeys c = let subKeys str ks = subtitle' str : mkNamedKeymap c ks in
-        subKeys "Basic keybindings"
-        [ ("M-S-<Return>", addName "Open a terminal"               $ windows W.focusMaster >> spawn myTerminal)
-        , ("M-S-x",        addName "Close the current window"      $ kill)
-        , ("M-p",          addName "Open the application launcher" $ spawn (concat ["mpv /opt/sounds/menu-01.mp3 & rofi -show drun -terminal " , myTerminal]))
-        -- , ("M-p",          addName "Open the application launcher" $ spawn "mpv /opt/sounds/menu-01.mp3" *> inputPrompt myXPConfig "Run Program" ?+ spawn)
-        , ("M-S-q",        addName "Exit XMonad"                   $ io (exitWith ExitSuccess) >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
-        , ("M-S-r",        addName "Restart XMonad"                $ spawn "xmonad --recompile && xmonad --restart")
-        ]
+        -- application launcher
+        , ("M-p", spawn ("rofi -show drun -terminal" ++ myTerminal) >> spawn "mpv /opt/sounds/menu-01.mp3")
 
-        ^++^ subKeys "Music"
-        [ ("M-S-j",                  addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
-        , ("<XF86AudioPlay>",        addName "Toggle the music"       $ spawn "emacsclient --eval '(emms-pause)'")
-        , ("M-S-h",                  addName "Play the previous song" $ spawn "mpc prev")
-        , ("<XF86AudioPrev>",        addName "Play the previous song" $ spawn "mpc prev")
-        , ("M-S-l",                  addName "Play the next song"     $ spawn "mpc next")
-        , ("<XF86AudioNext>",        addName "Play the next song"     $ spawn "mpc next")
-        , ("<XF86AudioRaiseVolume>", addName "Turn the volume up"     $ spawn "~/scripts/snd up")
-        , ("<XF86AudioLowerVolume>", addName "Turn the volume down"   $ spawn "~/scripts/snd down")
-        ]
+        -- Exit XMonad
+        , ("M-S-q", io exitSuccess >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
+        -- Restart XMonad
+        , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
 
-        ^++^ subKeys "Brightness"
-        [ ("<XF86MonBrightnessUp>",     addName "Turn the artificial brightness up"   $ spawn "real-brightness up")
-        , ("<XF86MonBrightnessDown>",   addName "Turn the artificial brightness down" $ spawn "real-brightness down")
+        -- music control
+        , ("M-S-j",                  spawn "mpc toggle")
+        , ("<XF86AudioPlay>",        spawn "mpc toggle")
+        , ("M-S-h",                  spawn "mpc prev")
+        , ("<XF86AudioPrev>",        spawn "mpc prev")
+        , ("M-S-l",                  spawn "mpc next")
+        , ("<XF86AudioNext>",        spawn "mpc next")
+        , ("<XF86AudioRaiseVolume>", spawn "snd up")
+        , ("<XF86AudioLowerVolume>", spawn "snd down")
 
-        , ("S-<XF86MonBrightnessUp>",   addName "Turn the brightness up"              $ spawn "brightness up")
-        , ("S-<XF86MonBrightnessDown>", addName "Turn the brightness down"            $ spawn "brightness down")
-        ]
+        -- Brightness adjustment
+        , ("<XF86MonBrightnessUp>", spawn "real-brightness up")
+        , ("<XF86MonBrightnessDown>", spawn "real-brightness down")
 
-        ^++^ subKeys "Windows"
-        [ ("M-j", addName "Go down the window stack"                   $ windows W.focusDown)
-        , ("M-k", addName "Go up the window stack"                     $ windows W.focusUp)
-        , ("M-h", addName "Shrink the master window"                   $ sendMessage Shrink)
-        , ("M-l", addName "Expand the master window"                   $ sendMessage Expand)
-        , ("M-<Return>", addName "Swap the current window with master" $ windows W.swapMaster)
-        ]
+        , ("S-<XF86MonBrightnessUp>", spawn "brightness up")
+        , ("S-<XF86MonBrightnessDown>", spawn "brightness down")
 
-        ^++^ subKeys "Workspaces"
-        [ ("M-1", addName "Go to workspace 1"  $ ((windows $ W.greedyView $ myWorkspaces !! 0)))
-        , ("M-2", addName "Go to workspace 2"  $ ((windows $ W.greedyView $ myWorkspaces !! 1)))
-        , ("M-3", addName "Go to workspace 3"  $ ((windows $ W.greedyView $ myWorkspaces !! 2)))
-        , ("M-4", addName "Go to workspace 4"  $ ((windows $ W.greedyView $ myWorkspaces !! 3)))
-        , ("M-5", addName "Go to workspace 5"  $ ((windows $ W.greedyView $ myWorkspaces !! 4)))
-        , ("M-6", addName "Go to workspace 6"  $ ((windows $ W.greedyView $ myWorkspaces !! 5)))
-        , ("M-7", addName "Go to workspace 6"  $ ((windows $ W.greedyView $ myWorkspaces !! 6)))
-        , ("M-8", addName "Go to workspace 8"  $ ((windows $ W.greedyView $ myWorkspaces !! 7)))
-        , ("M-9", addName "Go to workspace 9"  $ ((windows $ W.greedyView $ myWorkspaces !! 8)))
-        , ("M-0", addName "Go to workspace 10" $ ((windows $ W.greedyView $ myWorkspaces !! 9)))
+        -- Moving around windows
+        , ("M-j", windows W.focusDown)
+        , ("M-k", windows W.focusUp)
+        , ("M-h", sendMessage Shrink)
+        , ("M-l", sendMessage Expand)
+        , ("M-<Return>", windows W.swapMaster)
 
-        , ("M-S-1", addName "Send focused window to workspace 1"  $ ((windows $ W.shift $ myWorkspaces !! 0)))
-        , ("M-S-2", addName "Send focused window to workspace 2"  $ ((windows $ W.shift $ myWorkspaces !! 1)))
-        , ("M-S-3", addName "Send focused window to workspace 3"  $ ((windows $ W.shift $ myWorkspaces !! 2)))
-        , ("M-S-4", addName "Send focused window to workspace 4"  $ ((windows $ W.shift $ myWorkspaces !! 3)))
-        , ("M-S-5", addName "Send focused window to workspace 5"  $ ((windows $ W.shift $ myWorkspaces !! 4)))
-        , ("M-S-6", addName "Send focused window to workspace 6"  $ ((windows $ W.shift $ myWorkspaces !! 5)))
-        , ("M-S-7", addName "Send focused window to workspace 7"  $ ((windows $ W.shift $ myWorkspaces !! 6)))
-        , ("M-S-8", addName "Send focused window to workspace 8"  $ ((windows $ W.shift $ myWorkspaces !! 7)))
-        , ("M-S-9", addName "Send focused window to workspace 9"  $ ((windows $ W.shift $ myWorkspaces !! 8)))
-        , ("M-S-0", addName "Send focused window to workspace 10" $ ((windows $ W.shift $ myWorkspaces !! 9)))
+        , ("M-1", windows $ W.greedyView $ head myWorkspaces)
+        , ("M-2", windows $ W.greedyView $ myWorkspaces !! 1)
+        , ("M-3", windows $ W.greedyView $ myWorkspaces !! 2)
+        , ("M-4", windows $ W.greedyView $ myWorkspaces !! 3)
+        , ("M-5", windows $ W.greedyView $ myWorkspaces !! 4)
+        , ("M-6", windows $ W.greedyView $ myWorkspaces !! 5)
+        , ("M-7", windows $ W.greedyView $ myWorkspaces !! 6)
+        , ("M-8", windows $ W.greedyView $ myWorkspaces !! 7)
+        , ("M-9", windows $ W.greedyView $ myWorkspaces !! 8)
+        , ("M-0", windows $ W.greedyView $ myWorkspaces !! 9)
 
-        , ("M-C-1", addName "Send focused window to workspace 1 and follow it"  $ ((windows (W.shift (myWorkspaces !! 0)))) >> ((windows $ W.greedyView $ myWorkspaces !! 0)))
-        , ("M-C-2", addName "Send focused window to workspace 2 and follow it"  $ ((windows (W.shift (myWorkspaces !! 1)))) >> ((windows $ W.greedyView $ myWorkspaces !! 1)))
-        , ("M-C-3", addName "Send focused window to workspace 3 and follow it"  $ ((windows (W.shift (myWorkspaces !! 2)))) >> ((windows $ W.greedyView $ myWorkspaces !! 2)))
-        , ("M-C-4", addName "Send focused window to workspace 4 and follow it"  $ ((windows (W.shift (myWorkspaces !! 3)))) >> ((windows $ W.greedyView $ myWorkspaces !! 3)))
-        , ("M-C-5", addName "Send focused window to workspace 5 and follow it"  $ ((windows (W.shift (myWorkspaces !! 4)))) >> ((windows $ W.greedyView $ myWorkspaces !! 4)))
-        , ("M-C-6", addName "Send focused window to workspace 6 and follow it"  $ ((windows (W.shift (myWorkspaces !! 5)))) >> ((windows $ W.greedyView $ myWorkspaces !! 5)))
-        , ("M-C-7", addName "Send focused window to workspace 7 and follow it"  $ ((windows (W.shift (myWorkspaces !! 6)))) >> ((windows $ W.greedyView $ myWorkspaces !! 6)))
-        , ("M-C-8", addName "Send focused window to workspace 8 and follow it"  $ ((windows (W.shift (myWorkspaces !! 7)))) >> ((windows $ W.greedyView $ myWorkspaces !! 7)))
-        , ("M-C-9", addName "Send focused window to workspace 9 and follow it"  $ ((windows (W.shift (myWorkspaces !! 8)))) >> ((windows $ W.greedyView $ myWorkspaces !! 8)))
-        , ("M-C-0", addName "Send focused window to workspace 10 and follow it" $ ((windows (W.shift (myWorkspaces !! 9)))) >> ((windows $ W.greedyView $ myWorkspaces !! 9)))
-        ]
+        , ("M-S-1", windows $ W.shift $ head myWorkspaces)
+        , ("M-S-2", windows $ W.shift $ myWorkspaces !! 1)
+        , ("M-S-3", windows $ W.shift $ myWorkspaces !! 2)
+        , ("M-S-4", windows $ W.shift $ myWorkspaces !! 3)
+        , ("M-S-5", windows $ W.shift $ myWorkspaces !! 4)
+        , ("M-S-6", windows $ W.shift $ myWorkspaces !! 5)
+        , ("M-S-7", windows $ W.shift $ myWorkspaces !! 6)
+        , ("M-S-8", windows $ W.shift $ myWorkspaces !! 7)
+        , ("M-S-9", windows $ W.shift $ myWorkspaces !! 8)
+        , ("M-S-0", windows $ W.shift $ myWorkspaces !! 9)
 
-        ^++^ subKeys "Layouts"
-        [ ("M-<Space>", addName "Switch to the next layout"        $ sendMessage NextLayout)
-        , ("M-t",       addName "Force a floating window to tile"  $ withFocused $ windows . W.sink)
-        , ("M-m",       addName "Toggle monocle (fullscreen) mode" $ sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts)
-        , ("M-f",       addName "Toggle a floating window"         $ sendMessage $ T.Toggle "floats")
-        , ("M-b",       addName "Toggle polybar"                   $ sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
-        , ("M-S-b",     addName "Toggle the spacing for polybar"   $ sendMessage ToggleStruts)
-        ]
+        , ("M-C-1", windows (W.shift (head myWorkspaces)) >> windows (W.greedyView $ head myWorkspaces))
+        , ("M-C-2", windows (W.shift (myWorkspaces !! 1)) >> windows (W.greedyView $ myWorkspaces !! 1))
+        , ("M-C-3", windows (W.shift (myWorkspaces !! 2)) >> windows (W.greedyView $ myWorkspaces !! 2))
+        , ("M-C-4", windows (W.shift (myWorkspaces !! 3)) >> windows (W.greedyView $ myWorkspaces !! 3))
+        , ("M-C-5", windows (W.shift (myWorkspaces !! 4)) >> windows (W.greedyView $ myWorkspaces !! 4))
+        , ("M-C-6", windows (W.shift (myWorkspaces !! 5)) >> windows (W.greedyView $ myWorkspaces !! 5))
+        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.greedyView $ myWorkspaces !! 6))
+        , ("M-C-8", windows (W.shift (myWorkspaces !! 7)) >> windows (W.greedyView $ myWorkspaces !! 7))
+        , ("M-C-9", windows (W.shift (myWorkspaces !! 8)) >> windows (W.greedyView $ myWorkspaces !! 8))
+        , ("M-C-0", windows (W.shift (myWorkspaces !! 9)) >> windows (W.greedyView $ myWorkspaces !! 9))
 
-        ^++^ subKeys "Misc"
-        [ ("M-S-s s",   addName "Take a screenshot of part of the screen" $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot True)
-        , ("M-S-s S-s", addName "Take a screenshot of the whole screen"   $ unGrab *> inputPrompt myXPConfig "Image Name" ?+ takeScreenshot False)
-        , ("M-w",       addName "Set a random wallpaper"                  $ spawn "~/.config/xmonad/wallpaper.sh")
-        , ("M-e",       addName "Spawn emacs"                             $ spawn "emacsclient -c -a 'emacs'")
-        , ("M-=",       addName "Increase window spacing"                 $ incWindowSpacing 2 *> incScreenSpacing 2)
-        , ("M--",       addName "Decrease window spacing"                 $ decWindowSpacing 2 *> decScreenSpacing 2)
-        , ("M-`",       addName "Lock the screen"                         $ spawn "mpc pause ; i3lock -i ~/.local/wallpapers/$(ls ~/.local/wallpapers | shuf | head -n 1)")
+        -- Scroll through the layouts
+        , ("M-<Space>", sendMessage NextLayout)
+        -- Force a floating window back to tiling
+        , ("M-t", withFocused $ windows . W.sink)
+        -- Toggle fullscreen
+        , ("M-m", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- >> spawn "polybar-msg cmd toggle")
+        -- Toggle floating
+        , ("M-f", sendMessage $ T.Toggle "floats")
+        -- Toggle bar
+        , ("M-b", sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
+        -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for struts
+        , ("M-S-b", sendMessage ToggleStruts)
+
+        -- Screenshot
+        , ("M-S-s s", unGrab *> spawn "import ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+        , ("M-S-s S-s", unGrab *> spawn "import -window root ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
+
+        -- change background
+        , ("M-w", spawn "feh --bg-scale --randomize ~/.local/wallpapers")
+
+        -- emacs
+        , ("M-e", spawn "emacsclient -a 'emacs' -c")
+
+        -- manage window spacing
+        , ("M--", decWindowSpacing 2 *> decScreenSpacing 2)
+        , ("M-=", incWindowSpacing 2 *> incScreenSpacing 2)
         ]
 
 main :: IO ()
 main = do
-        xmonad $ addDescrKeys' ((mod4Mask, xK_F1), showKeybindings) myKeys $ ewmhFullscreen $ ewmh . docks  $ def {
+        xmonad $ ewmhFullscreen $ docks . ewmh $ def {
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
-        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "urxvt") (return True)
+        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
-        , layoutHook              = showWName' myShowWNameTheme $ myLayoutHook
-        , startupHook             = myStartupHook
-        , manageHook              = myManageHook
-        --, logHook                 = showWNameLogHook myShowWNameTheme
+        , keys                    = (`mkKeymap` myKeys)
+        , layoutHook = myLayoutHook
+        , startupHook = myStartupHook
+        , manageHook = myManageHook
         }
