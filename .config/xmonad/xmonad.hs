@@ -31,7 +31,6 @@ import XMonad.Hooks.StatusBar.PP
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Ungrab
 import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
-import XMonad.Util.NamedScratchpad
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
 
@@ -55,16 +54,16 @@ myTerminal = "alacritty"
 tall    = renamed [Replace "tall"]
         $ smartBorders
         $ windowNavigation
-        $ subLayout [] (smartBorders Simplest)
+        -- $ subLayout [] (smartBorders Simplest) <- this causes issues
         $ mySpacing 8
-        $ ResizableTall 1 (3/100) (1/2) []
+        $ Tall 1 (3/100) (1/2)
 monocle = renamed [Replace "monocle"]
         $ noBorders
         $ windowNavigation
-        $ subLayout [] (smartBorders Simplest)
+        -- $ subLayout [] (smartBorders Simplest)
         $ Full
 floats  = renamed [Replace "floats"]
-        $ smartBorders
+        -- $ smartBorders
         $ simplestFloat
 
 myLayoutHook = avoidStruts
@@ -95,7 +94,7 @@ myManageHook = composeAll
   , className =? "toolbar"                             --> doFloat
   , (className =? "firefox" <&&> resource =? "Dialog") --> doFloat
   , isFullscreen                                       --> doFullFloat
-  ] <+> manageDocks <+> namedScratchpadManageHook myScratchPads
+  ] <+> manageDocks
 
 myKeys =
         -- launch a terminal
@@ -136,16 +135,16 @@ myKeys =
         , ("M-l", sendMessage Expand)
         , ("M-<Return>", windows W.swapMaster)
 
-        , ("M-1", windows $ W.greedyView $ head myWorkspaces)
-        , ("M-2", windows $ W.greedyView $ myWorkspaces !! 1)
-        , ("M-3", windows $ W.greedyView $ myWorkspaces !! 2)
-        , ("M-4", windows $ W.greedyView $ myWorkspaces !! 3)
-        , ("M-5", windows $ W.greedyView $ myWorkspaces !! 4)
-        , ("M-6", windows $ W.greedyView $ myWorkspaces !! 5)
-        , ("M-7", windows $ W.greedyView $ myWorkspaces !! 6)
-        , ("M-8", windows $ W.greedyView $ myWorkspaces !! 7)
-        , ("M-9", windows $ W.greedyView $ myWorkspaces !! 8)
-        , ("M-0", windows $ W.greedyView $ myWorkspaces !! 9)
+        , ("M-1", windows $ W.view $ head myWorkspaces)
+        , ("M-2", windows $ W.view $ myWorkspaces !! 1)
+        , ("M-3", windows $ W.view $ myWorkspaces !! 2)
+        , ("M-4", windows $ W.view $ myWorkspaces !! 3)
+        , ("M-5", windows $ W.view $ myWorkspaces !! 4)
+        , ("M-6", windows $ W.view $ myWorkspaces !! 5)
+        , ("M-7", windows $ W.view $ myWorkspaces !! 6)
+        , ("M-8", windows $ W.view $ myWorkspaces !! 7)
+        , ("M-9", windows $ W.view $ myWorkspaces !! 8)
+        , ("M-0", windows $ W.view $ myWorkspaces !! 9)
 
         , ("M-S-1", windows $ W.shift $ head myWorkspaces)
         , ("M-S-2", windows $ W.shift $ myWorkspaces !! 1)
@@ -158,16 +157,16 @@ myKeys =
         , ("M-S-9", windows $ W.shift $ myWorkspaces !! 8)
         , ("M-S-0", windows $ W.shift $ myWorkspaces !! 9)
 
-        , ("M-C-1", windows (W.shift (head myWorkspaces)) >> windows (W.greedyView $ head myWorkspaces))
-        , ("M-C-2", windows (W.shift (myWorkspaces !! 1)) >> windows (W.greedyView $ myWorkspaces !! 1))
-        , ("M-C-3", windows (W.shift (myWorkspaces !! 2)) >> windows (W.greedyView $ myWorkspaces !! 2))
-        , ("M-C-4", windows (W.shift (myWorkspaces !! 3)) >> windows (W.greedyView $ myWorkspaces !! 3))
-        , ("M-C-5", windows (W.shift (myWorkspaces !! 4)) >> windows (W.greedyView $ myWorkspaces !! 4))
-        , ("M-C-6", windows (W.shift (myWorkspaces !! 5)) >> windows (W.greedyView $ myWorkspaces !! 5))
-        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.greedyView $ myWorkspaces !! 6))
-        , ("M-C-8", windows (W.shift (myWorkspaces !! 7)) >> windows (W.greedyView $ myWorkspaces !! 7))
-        , ("M-C-9", windows (W.shift (myWorkspaces !! 8)) >> windows (W.greedyView $ myWorkspaces !! 8))
-        , ("M-C-0", windows (W.shift (myWorkspaces !! 9)) >> windows (W.greedyView $ myWorkspaces !! 9))
+        , ("M-C-1", windows (W.shift (head myWorkspaces)) >> windows (W.view $ head myWorkspaces))
+        , ("M-C-2", windows (W.shift (myWorkspaces !! 1)) >> windows (W.view $ myWorkspaces !! 1))
+        , ("M-C-3", windows (W.shift (myWorkspaces !! 2)) >> windows (W.view $ myWorkspaces !! 2))
+        , ("M-C-4", windows (W.shift (myWorkspaces !! 3)) >> windows (W.view $ myWorkspaces !! 3))
+        , ("M-C-5", windows (W.shift (myWorkspaces !! 4)) >> windows (W.view $ myWorkspaces !! 4))
+        , ("M-C-6", windows (W.shift (myWorkspaces !! 5)) >> windows (W.view $ myWorkspaces !! 5))
+        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ myWorkspaces !! 6))
+        , ("M-C-8", windows (W.shift (myWorkspaces !! 7)) >> windows (W.view $ myWorkspaces !! 7))
+        , ("M-C-9", windows (W.shift (myWorkspaces !! 8)) >> windows (W.view $ myWorkspaces !! 8))
+        , ("M-C-0", windows (W.shift (myWorkspaces !! 9)) >> windows (W.view $ myWorkspaces !! 9))
 
         -- Scroll through the layouts
         , ("M-<Space>", sendMessage NextLayout)
@@ -203,7 +202,7 @@ main = do
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
-        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? "Alacritty") (return True)
+        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? myTerminal) (return True)
         , modMask                 = mod4Mask
         , workspaces              = myWorkspaces
         , keys                    = (`mkKeymap` myKeys)
