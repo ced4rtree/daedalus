@@ -8,7 +8,7 @@ xcompmgr &
 ~/.config/polybar/launch.sh
 emacs --daemon &
 #wallpaper.sh
-feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg
+if [ $1 != "--no-polybar" ]; then feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg; fi
 natScroll.sh
 batsignal -M 'dunstify' &
 if [ -z "$(pidof mpd)" ]; then mpd; fi # sometimes mpd gets started multiple times, and it sounds like hot garbage getting spoon fed directly into my ears
