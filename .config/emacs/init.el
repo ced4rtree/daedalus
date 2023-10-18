@@ -216,11 +216,6 @@
 (diminish 'eldoc-mode)
 (diminish 'auto-revert-mode)
 
-(use-package theme-magic
-  :ensure t
-  :config
-  (theme-magic-from-emacs))
-
 (use-package vterm
   :defer t
   :ensure t
