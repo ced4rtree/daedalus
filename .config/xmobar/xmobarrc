@@ -1,16 +1,12 @@
 Config {
   -- appearance
-  font = "Iosevka Nerd Font"
+  font = "xft:Iosevka Nerd Font:size=12:antialias=true"
+  , additionalFonts = [ "xft:Noto Color Emoji:size=10:antialias=true" ]
   , bgColor = "black"
   , fgColor = "#646464"
   , position = Top
   , border = BottomB
   , borderColor = "#646464"
-
-  -- layout
-  , sepChar = "%"
-  , alignSep = "}{"
-  , template = "%XMonadLog% %multicpu% | %memory% | %dynnetwork% }{ %alsa:default:Master% | %mpd% | %RJTT% | %date%"
 
   -- general behavior
   , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -21,14 +17,14 @@ Config {
   , persistent =       False    -- enable/disable hiding (False = enabled)
 
   -- plugins
-     , commands = 
-
-        -- weather monitor
-        [ Run Weather "RJTT" [ "--template", "<skyCondition> | <fc=#4682B4><tempF></fc>°F | <fc=#4682B4><rh></fc>%"
+  , commands = 
+    
+      -- weather monitor
+      [ Run Weather "RJTT" [ "--template", "<fn=1>⛅</fn> <skyCondition> <fc=#4682B4><tempF></fc>°F"
                              ] 36000
 
         -- network activity monitor (dynamic interface resolution)
-        , Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+        , Run DynNetwork     [ "--template" , "  <tx>kB/s|<rx>kB/s"
                              , "--Low"      , "1000"       -- units: B/s
                              , "--High"     , "5000"       -- units: B/s
                              , "--low"      , "darkgreen"
@@ -37,7 +33,7 @@ Config {
                              ] 10
 
         -- cpu activity monitor
-        , Run MultiCpu       [ "--template" , "Cpu: <total0>%|<total1>%"
+        , Run MultiCpu       [ "--template" , " <total0>%|<total1>%"
                              , "--Low"      , "50"         -- units: %
                              , "--High"     , "85"         -- units: %
                              , "--low"      , "darkgreen"
@@ -55,7 +51,7 @@ Config {
                              ] 50
                           
         -- memory usage monitor
-        , Run Memory         [ "--template" ,"Mem: <usedratio>%"
+        , Run Memory         [ "--template" ,"󰘚  <usedratio>%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
                              , "--low"      , "darkgreen"
@@ -64,7 +60,7 @@ Config {
                              ] 10
 
         -- battery monitor
-        , Run Battery        [ "--template" , "Batt: <acstatus>"
+        , Run Battery        [ "--template" , "<fn=1>🔋</fn> <left>% (<timeleft>)"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "darkred"
@@ -82,12 +78,12 @@ Config {
 
         -- time and date indicator 
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-        , Run Date           "<fc=#ABABAB>%F (%a) %T</fc>" "date" 10
+        , Run Date           "<fn=1>🕜</fn> <fc=#ABABAB>%b %d (%a) %I:%M:%S%p</fc>" "date" 10
 
-        , Run MPD [ "-t", "<artist> - <title>" ] 10
+        , Run MPD [ "-t", "<fn=1>🎵</fn> <artist> - <title>" ] 10
 
         , Run Alsa "default" "Master"
-          [ "--template", "<volumestatus>"
+          [ "--template", "<fn=1>🔊</fn> <volumestatus>"
           , "--suffix"  , "True"
           , "--"
           , "--on", ""
@@ -95,4 +91,10 @@ Config {
 
         , Run XMonadLog
         ]
+
+  -- layout
+  , sepChar = "%"
+  , alignSep = "}{"
+  , template = "%XMonadLog% | %multicpu% | %memory% | %dynnetwork% }{ %alsa:default:Master% | %mpd% | %RJTT% | %battery% | %date%"
+
   }
