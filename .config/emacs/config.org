@@ -18,6 +18,7 @@
   - [[#scrolling][Scrolling]]
   - [[#rainbows][Rainbows!]]
   - [[#tree-sitter][Tree Sitter]]
+  - [[#beacon][Beacon]]
   - [[#visual-line-mode][Visual Line Mode]]
 - [[#org-mode][Org mode]]
   - [[#org-tempo][Org tempo]]
@@ -140,6 +141,14 @@ Tree sitter is now built into emacs as of Emacs 29
   (add-hook 'java-mode-hook 'java-ts-mode)
   (add-hook 'c-mode-hook 'c-ts-mode)
   (add-hook 'c++-mode-hook 'c++-ts-mode)
+#+end_src
+** Beacon
+Never lose your cursor again with this beacon of light
+#+begin_src emacs-lisp
+  (use-package beacon
+    :ensure t
+    :config
+    (beacon-mode 1))
 #+end_src
 ** Visual Line Mode
 #+begin_src emacs-lisp

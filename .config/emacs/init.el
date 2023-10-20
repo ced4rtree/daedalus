@@ -45,6 +45,11 @@
 (add-hook 'c-mode-hook 'c-ts-mode)
 (add-hook 'c++-mode-hook 'c++-ts-mode)
 
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1))
+
 (global-visual-line-mode 1)
 (diminish 'visual-line-mode)
 
