@@ -1,7 +1,7 @@
 Config {
   -- appearance
-  font = "xft:Iosevka Nerd Font:size=12:antialias=true"
-  , additionalFonts = [ "xft:Noto Color Emoji:size=10:antialias=true" ]
+  font = "Terminus (TTF) 15"
+  , additionalFonts = [ "Noto Color Emoji 10" ]
   , bgColor = "black"
   , fgColor = "#646464"
   , position = Top
@@ -16,15 +16,19 @@ Config {
   , pickBroadest =     False   -- choose widest display (multi-monitor)
   , persistent =       False    -- enable/disable hiding (False = enabled)
 
+  -- layout
+  , sepChar = "%"
+  , alignSep = "}{"
+  , template = "%XMonadLog% | %multicpu% | %memory% | %dynnetwork% }{ %alsa:default:Master% | %RJTT% | %battery% | %date%"
+
   -- plugins
   , commands = 
     
       -- weather monitor
-      [ Run Weather "RJTT" [ "--template", "<fn=1>⛅</fn> <skyCondition> <fc=#4682B4><tempF></fc>°F"
-                             ] 36000
+      [ Run Weather "RJTT" [ "--template", "<fn=1>⛅</fn> <skyCondition> <fc=#4682B4><tempF></fc>°F" ] 36000
 
         -- network activity monitor (dynamic interface resolution)
-        , Run DynNetwork     [ "--template" , "  <tx>kB/s|<rx>kB/s"
+        , Run DynNetwork     [ "--template" , "<fn=1></fn>  <tx>kB/s|<rx>kB/s"
                              , "--Low"      , "1000"       -- units: B/s
                              , "--High"     , "5000"       -- units: B/s
                              , "--low"      , "darkgreen"
@@ -74,13 +78,13 @@ Config {
                                        , "-O"	, "<fc=#dAA520>Charging</fc>"
                                        -- charged status
                                        , "-i"	, "<fc=#006000>Charged</fc>"
-                             ] 50
+                             ] 600
 
         -- time and date indicator 
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-        , Run Date           "<fn=1>🕜</fn> <fc=#ABABAB>%b %d (%a) %I:%M:%S%p</fc>" "date" 10
+        , Run Date "<fn=1>🕜</fn> <fc=#ABABAB>%b %d (%a) %I:%M%p</fc>" "date" 100
 
-        , Run MPD [ "-t", "<fn=1>🎵</fn> <artist> - <title>" ] 10
+--        , Run MPD [ "--template", "<fn=1>🎵</fn> <artist> - <title>" ] 10
 
         , Run Alsa "default" "Master"
           [ "--template", "<fn=1>🔊</fn> <volumestatus>"
@@ -91,10 +95,4 @@ Config {
 
         , Run XMonadLog
         ]
-
-  -- layout
-  , sepChar = "%"
-  , alignSep = "}{"
-  , template = "%XMonadLog% | %multicpu% | %memory% | %dynnetwork% }{ %alsa:default:Master% | %mpd% | %RJTT% | %battery% | %date%"
-
   }

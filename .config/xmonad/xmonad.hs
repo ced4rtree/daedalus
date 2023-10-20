@@ -79,7 +79,7 @@ myLayoutHook = avoidStruts
 myStartupHook :: X ()
 myStartupHook = do
   spawnOnce "autostart.sh --no-polybar" -- autostart shell file
-  spawnOnce "xmobar"
+  spawnOnce "xmobar &"
   setWMName "LG3D" -- tricks programs into thining this is LG3D, which is the only thing java can work with for some reason
 
 myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
