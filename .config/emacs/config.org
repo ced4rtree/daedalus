@@ -91,7 +91,7 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Iosevka Nerd Font Mono-15"))
+               '(font . "Terminus (TTF)-15"))
 #+end_src
 
 ** Theme

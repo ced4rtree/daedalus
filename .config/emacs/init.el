@@ -16,7 +16,7 @@
 (use-package diminish)
 
 (add-to-list 'default-frame-alist
-             '(font . "Iosevka Nerd Font Mono-15"))
+             '(font . "Terminus (TTF)-15"))
 
 (load-theme 'tango-dark t)
 
