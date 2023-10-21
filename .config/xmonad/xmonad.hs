@@ -113,8 +113,8 @@ myKeys =
         , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
 
         -- music control
-        , ("M-S-j",                  spawn "mpc toggle")
-        , ("<XF86AudioPlay>",        spawn "mpc toggle")
+        , ("M-S-j",                  spawn "emacsclient --eval '(emms-pause)' || mpc toggle")
+        , ("<XF86AudioPlay>",        spawn "emacsclient --eval '(emms-pause)' || mpc toggle")
         , ("M-S-h",                  spawn "mpc prev")
         , ("<XF86AudioPrev>",        spawn "mpc prev")
         , ("M-S-l",                  spawn "mpc next")
