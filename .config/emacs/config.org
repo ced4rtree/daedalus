@@ -60,6 +60,7 @@
   - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
   - [[#reload-emacs][Reload Emacs]]
   - [[#which-key][Which-key]]
+  - [[#kill-all-buffers][kill-all-buffers]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -590,6 +591,14 @@ Which-key displays possible completions for keybindings you have typed in a mini
     :diminish which-key-mode)
 #+end_src
 
+** kill-all-buffers
+It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
+#+begin_src emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+#+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init
 #+begin_src emacs-lisp

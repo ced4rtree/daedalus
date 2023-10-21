@@ -344,4 +344,9 @@
   :config (which-key-mode 1)
   :diminish which-key-mode)
 
+(defun kill-all-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+(global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+
 (setq gc-cons-threshold (* 2 1024 1024))
