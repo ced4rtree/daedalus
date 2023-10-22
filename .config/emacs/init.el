@@ -176,7 +176,7 @@
       `(lambda (c)
          (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
 
-(setq indent-tabs-mode t)
+(setq indent-tabs-mode nil)
 (setq-default tab-width 4
               c-basic-offset 4
               c-ts-mode-indent-offset 4

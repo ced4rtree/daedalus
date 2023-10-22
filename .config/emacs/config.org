@@ -360,7 +360,7 @@ Automatically pair parentheses and the like
 
 ** Tabbing
 #+begin_src emacs-lisp
-  (setq indent-tabs-mode t)
+  (setq indent-tabs-mode nil)
   (setq-default tab-width 4
                 c-basic-offset 4
                 c-ts-mode-indent-offset 4
