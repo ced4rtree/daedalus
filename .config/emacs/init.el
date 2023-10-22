@@ -231,23 +231,23 @@
 (diminish 'eldoc-mode)
 (diminish 'auto-revert-mode)
 
-(defvar goodbye-message-list '("Don't leave me!"
-                               "B-baka! It's not like I liked you anyway..."
-                               "Thank you for participating in this Aperture Science computer-aided enrichment activity."
-                               "Emacs, Emacs never changes."
-                               "Wake up, Mr. Stallman. Wake up and smell the ashes."
-                               "I don't think you want to do that."
-                               (concat "I'm afraid I can't do that, " user-login-name ".")
-                               "In case I don't see ya, good afternoon, good evening, and good night!"
-                               "Here's looking at you, kid."
-                               "I do wish we could chat longer, but I'm having an old friend for dinner..."
-                               "Life moves pretty fast. If you don't stop and look around once and a while you might miss it."
-                               "So long... partner."
-                               "I'll be right here..."
-                               "I think this just might be my masterpiece."
-                               "Where we go from there is a choice I leave to you."
-                               "Daisy, Daisy, give me your answer do."
-                               "Leaving? Emacs? Are you well?")
+(defvar goodbye-message-list (list "Don't leave me!"
+                                   "B-baka! It's not like I liked you anyway..."
+                                   "Thank you for participating in this Aperture Science computer-aided enrichment activity."
+                                   "Emacs, Emacs never changes."
+                                   "Wake up, Mr. Stallman. Wake up and smell the ashes."
+                                   "I don't think you want to do that."
+                                   (concat "I'm sorry " user-login-name ", I'm afraid I can't do that.")
+                                   "In case I don't see ya, good afternoon, good evening, and good night!"
+                                   "Here's looking at you, kid."
+                                   "I do wish we could chat longer, but I'm having an old friend for dinner..."
+                                   "Life moves pretty fast. If you don't stop and look around once and a while you might miss it."
+                                   "So long... partner."
+                                   "I'll be right here..."
+                                   "I think this just might be my masterpiece."
+                                   "Where we go from there is a choice I leave to you."
+                                   "Daisy, Daisy, give me your answer do."
+                                   "Leaving? Emacs? Are you well?")
   "A list of messages used as prompts for the user when quiting emacs")
 (defun quit-emacs (&rest STUFF)
   (interactive)
