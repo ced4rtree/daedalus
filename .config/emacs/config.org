@@ -476,8 +476,8 @@ I think that it would be pretty cute to have a little goodbye confirmation when 
                       " Really quit emacs?")))
   (global-set-key (kbd "C-x C-c") (lambda ()
                                     (interactive)
-                                    (quit-emacs)
-                                    (save-buffers-kill-terminal)))
+                                    (when (quit-emacs)
+                                      (save-buffers-kill-terminal))))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package

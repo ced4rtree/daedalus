@@ -260,8 +260,8 @@
                     " Really quit emacs?")))
 (global-set-key (kbd "C-x C-c") (lambda ()
                                   (interactive)
-                                  (quit-emacs)
-                                  (save-buffers-kill-terminal)))
+                                  (when (quit-emacs)
+                                    (save-buffers-kill-terminal))))
 
 (use-package vterm
   :defer t
