@@ -137,6 +137,10 @@
   :ensure t
   :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 
+(use-package company
+  :ensure t
+  :hook (prog-mode . (lambda () (company-mode 1))))
+
 (use-package page-break-lines
   :ensure t
   :diminish page-break-lines-mode)

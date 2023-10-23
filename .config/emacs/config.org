@@ -37,6 +37,7 @@
   - [[#projectile][Projectile]]
   - [[#aggressive-indentation][Aggressive Indentation]]
   - [[#commenting][Commenting]]
+  - [[#company][Company]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#dashboard][Dashboard]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
@@ -298,6 +299,13 @@ Neat package that gives some nice commenting functions
   (use-package evil-nerd-commenter
     :ensure t
     :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
+#+end_src
+** Company
+The autocompletion framework to make code practically write itself
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :hook (prog-mode . (lambda () (company-mode 1))))
 #+end_src
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
