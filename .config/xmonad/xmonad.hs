@@ -36,6 +36,7 @@ import XMonad.Util.EZConfig
 
 import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
+import XMonad.Actions.CopyWindow
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
@@ -195,6 +196,10 @@ myKeys =
         -- manage window spacing
         , ("M--", decWindowSpacing 2 *> decScreenSpacing 2)
         , ("M-=", incWindowSpacing 2 *> incScreenSpacing 2)
+
+        -- Copy Window functionality
+        , ("M-v", windows copyToAll) -- make window always visible
+        , ("M-S-v", killAllOtherCopies) -- return to ordinary state
         ]
 
 main :: IO ()
