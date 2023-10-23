@@ -258,7 +258,10 @@
   (y-or-n-p (concat (nth (random (length goodbye-message-list))
                          goodbye-message-list)
                     " Really quit emacs?")))
-(setq confirm-kill-emacs #'quit-emacs)
+(global-set-key (kbd "C-x C-c") (lambda ()
+                                  (interactive)
+                                  (quit-emacs)
+                                  (save-buffers-kill-terminal)))
 
 (use-package vterm
   :defer t

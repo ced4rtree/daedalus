@@ -474,7 +474,10 @@ I think that it would be pretty cute to have a little goodbye confirmation when 
     (y-or-n-p (concat (nth (random (length goodbye-message-list))
                            goodbye-message-list)
                       " Really quit emacs?")))
-  (setq confirm-kill-emacs #'quit-emacs)
+  (global-set-key (kbd "C-x C-c") (lambda ()
+                                    (interactive)
+                                    (quit-emacs)
+                                    (save-buffers-kill-terminal)))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
