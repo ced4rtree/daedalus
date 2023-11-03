@@ -1,0 +1,23 @@
+;; Variables
+
+(deflisten music "scripts/mus")
+(defvar musPaused "▶")
+
+;; Main widget
+(defwidget center []
+  (eventbox :class "music"
+			:orientation "h"
+			:space-evenly false
+			:halign "left"
+			(box :space-evenly false
+				 :orientation "h"
+				 (button :onclick "mpc prev && eww update music=\"$(~/.config/eww/scripts/mus --simple)\" && ~/.config/eww/scripts/muspaused"
+								 :class "musicNextOrPrev"
+								 " ")
+				 {music != "" ? "🎵 ${music}": ""}
+				 (button :onclick "mpc toggle && scripts/muspaused"
+						 :class "musicButton"
+					   "${musPaused}")
+				 (button :onclick "mpc next && eww update music=\"$(~/.config/eww/scripts/mus --simple)\" && ~/.config/eww/scripts/muspaused"
+								 :class "musicNextOrPrev"
+								 " "))))

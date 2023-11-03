@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
-while [ 2 -eq 2 ]
-do
-	mpc idle 1>/dev/null
-	mpc | sed -n '1p'
-done
+
+LENGTH=50
+
+print-music() {
+	music="$(mpc | sed -n '1p')"
+	if [ $(echo "${music}" | wc -c) -gt ${LENGTH} ]; then
+		printf "%s...\n" "$(echo """${music}""" | cut -c -${LENGTH})"
+	else
+		printf "%s\n" "${music}"
+	fi
+}
+
+if [ "$1" == "--simple" ]; then
+	print-music
+else
+	while [ 2 -eq 2 ]
+	do
+		mpc idle 1>/dev/null
+		print-music
+	done
+fi

@@ -1,115 +1,12 @@
-; variables
-(defvar brightness_value "80") ; this is updated by a script
-(defpoll battery :interval "1m"
-	"cat /sys/class/power_supply/BAT*/capacity")
-
-(deflisten date_string "scripts/date")
-(defvar date_format false) ; false is shorthand, true is longhand
+(include "left.yuck")
+(include "center.yuck")
+(include "right.yuck")
 
 (defwidget bar []
   (centerbox :orientation "h"
 	(left)
-    (music)
-    (sidestuff)))
-(defwidget sidestuff []
-  (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-	(label  :text "🔆 ${brightness_value}%    "
-		    :justify "center"
-		    :xalign 0.5
-		    :class "brightness")
-	(label  :text "💾 ${round(EWW_RAM.used_mem_perc, 0)}%"
-			:limit-width 9
-			:justify "center"
-			:show-truncated false
-			:xalign 0.5
-			:class "ram")
-	(label  :text "💻 ${round(EWW_CPU.avg, 0)}%"
-		    :limit-width 8
-			:justfy "center"
-			:show-truncated false
-			:xalign 0.5
-			:class "cpu")
-    (metric :label "🔊"
-            :value volume
-            :onchange "amixer sset Master {}%")
-	(temp)
-	(label  :text "🔋${battery}%  "
-			:class "battery")
-	(date   :class "time")))
-
-
-(defwidget left []
-	(box :orientation "h"
-		 :space-evenly "false"
-		 :halign "start"
-		 :valign "center"
-		 :class "left_modules"
-		 (workspaces)))
-
-; Workspaces
-(deflisten workspace "scripts/workspaces")
-(defwidget workspaces []
-  (literal :content workspace))
-
-; Music
-(defwidget music []
-  (eventbox :class "music"
-			:orientation "h"
-			:space-evenly false
-			:halign "left"
-			:onhover "eww update showMus=true"
-			:onhoverlost "eww update showMus=false"
-			(box :space-evenly false
-				 :orientation "h"
-				 (button :onclick "mpc prev && eww update music=\"$(mpc | head -n 1)\" && ~/.config/eww/scripts/muspaused"
-								 :class "musicNextOrPrev"
-								 " ")
-				 {music != "" ? "🎵 ${music}": ""}
-				 (button :onclick "mpc toggle && scripts/muspaused"
-						 :class "musicButton"
-					   "${musPaused}")
-				 (button :onclick "mpc next && eww update music=\"$(mpc | head -n 1)\" && ~/.config/eww/scripts/muspaused"
-								 :class "musicNextOrPrev"
-								 " "))))
-(deflisten music "scripts/mus")
-(defvar musPaused "▶")
-
-(defvar showMus false)
-(defwidget musWidget []
-  (eventbox :class "musInfoContainer"
-			:valign "fill"
-			:halign "fill"
-			:active true
-			:visible "${showMus}"))
-
-(defwidget metric [label value onchange]
-  (box :orientation "h"
-       :class "metric"
-       :space-evenly false
-    (box :class "label" label)
-    (scale :min 0
-           :max 101
-           :active {onchange != ""}
-           :value value
-           :onchange onchange)))
-
-(defvar volume "50")
-
-(defwidget date []
-  (button
-  :onclick "scripts/change-date"
-  :class "time"
-  "🕜 ${date_string}"))
-
-(defwidget temp []
-  (box
-   :class "temp"
-    (label :text "🌡️")
-    (label
-     :text {round( EWW_TEMPS["CORETEMP_CORE_0"] / 4 + EWW_TEMPS["CORETEMP_CORE_1"] / 4 + EWW_TEMPS["CORETEMP_CORE_2"] / 4 + EWW_TEMPS["CORETEMP_CORE_3"] / 4, 0)}
-	 :xalign 1)
-    (label :text "°"
-		   :xalign 0)))
+    (center)
+    (right)))
 
 (defwindow bar0
   :monitor 0
@@ -124,17 +21,3 @@
   :class "bar0"
 
   (bar))
-
-(defwindow showMus
-  :monitor 0
-  :geometry (geometry :x "50%"
-					  :y "10%"
-					  :width "15%"
-					  :height "100px"
-					  :anchor "top center")
-  :exclusive false
-  :focusable true
-  :stacking "fg"
-  :class "musInfo"
-
-  (musWidget))
