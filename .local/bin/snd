@@ -4,14 +4,14 @@ case "$1" in
 	up) 
 		amixer sset Master 5%+
 		# polybar-msg hook sound 1
-		# eww update volume="$(snd check)"
-		pkill -RTMIN+1 dwmblocks
+		eww update volume="$(snd check)"
+		# pkill -RTMIN+1 dwmblocks
 		;;
 	down)
 		amixer sset Master 5%-
 		# polybar-msg hook sound 1
-		# eww update volume="$(snd check)"
-		pkill -RTMIN+1 dwmblocks
+		eww update volume="$(snd check)"
+		# pkill -RTMIN+1 dwmblocks
 		;;
 	check)
 		amixer sget Master 2>/dev/null | sed -e 's/\[//' -e 's/\%]//' | awk '/\[/ { if ($5 >= 0 && $5 <= 100) print $5; else print $4 }' | awk 'NR==1 {print $1}'
