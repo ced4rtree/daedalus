@@ -1,7 +1,7 @@
 ; variables
 (defvar brightness_value "80") ; this is updated by a script
-;(defpoll battery :interval "1m"
-	;"cat /sys/class/power_supply/BAT*/capacity")
+(defpoll battery :interval "1m"
+	"cat /sys/class/power_supply/BAT*/capacity")
 
 (deflisten date_string "scripts/date")
 (defvar date_format false) ; false is shorthand, true is longhand
@@ -32,9 +32,9 @@
     (metric :label "🔊"
             :value volume
             :onchange "amixer sset Master {}%")
-	;(temp)
-	;(label  :text "🔋${battery}%  "
-			;:class "battery")
+	(temp)
+	(label  :text "🔋${battery}%  "
+			:class "battery")
 	(date   :class "time")))
 
 

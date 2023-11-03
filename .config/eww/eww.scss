@@ -1,6 +1,6 @@
 * {
     all: unset; //Unsets everything so you can style everything from scratch
-	font-family: "Ubuntu Nerd Font", "MesloLGS NF";
+	font-family: "Terminus (TTF)", "MesloLGS NF";
 	font-size: 18px;
 }
 
@@ -89,6 +89,7 @@
 }
 
 .brightness {
+	margin-right: -20px;
 	color: #da8548;
 }
 
