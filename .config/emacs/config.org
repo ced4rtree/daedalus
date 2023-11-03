@@ -28,8 +28,7 @@
   - [[#org-agenda][Org agenda]]
   - [[#org-bullets][Org Bullets]]
   - [[#heading-sizes][Heading Sizes]]
-- [[#ido][Ido]]
-  - [[#smex][Smex]]
+- [[#vertico][Vertico]]
 - [[#programming-help][Programming Help]]
   - [[#eglot][Eglot]]
   - [[#magit][Magit]]
@@ -102,7 +101,10 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 
 ** Theme
 #+begin_src emacs-lisp
-  (load-theme 'tango-dark t)
+  (use-package uwu-theme
+    :ensure t
+    :init
+    (load-theme 'uwu t))
 #+end_src
 
 ** Line numbers
@@ -220,23 +222,26 @@ Make the headings larger than ordinary text
   '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
   '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
 #+end_src
-* Ido
-Interactively Do Things with ido
+* Vertico
+A simple and efficient completion framework for emacs
 #+begin_src emacs-lisp
-  (ido-mode 1)
-  (ido-everywhere 1)
-  (use-package ido-completing-read+
+  (use-package vertico
     :ensure t
     :config
-    (ido-ubiquitous-mode 1))
-#+end_src
-
-** Smex
-Store history in M-x with smex
-#+begin_src emacs-lisp
-  (use-package smex
+    (vertico-mode 1))
+  (use-package marginalia
     :ensure t
-    :bind ("M-x" . smex))
+    :config
+    (marginalia-mode 1)
+    :after vertico)
+  (use-package prescient
+    :ensure t
+    :config
+    (vertico-prescient-mode 1)
+    :after vertico)
+  (use-package consult
+    :ensure t
+    :after vertico)
 #+end_src
 * Programming Help
 Things like eglot and projectile are a huge help when programming

@@ -1,4 +1,4 @@
-﻿(if (not (boundp 'has-restarted))
+(if (not (boundp 'has-restarted))
     (setq has-restarted nil)
   (setq has-restarted t))
 
@@ -18,7 +18,10 @@
 (add-to-list 'default-frame-alist
              '(font . "Terminus (TTF)-15"))
 
-(load-theme 'tango-dark t)
+(use-package uwu-theme
+  :ensure t
+  :init
+  (load-theme 'uwu t))
 
 (global-display-line-numbers-mode 1)
 
@@ -87,16 +90,23 @@
   '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
   '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
 
-(ido-mode 1)
-(ido-everywhere 1)
-(use-package ido-completing-read+
+(use-package vertico
   :ensure t
   :config
-  (ido-ubiquitous-mode 1))
-
-(use-package smex
+  (vertico-mode 1))
+(use-package marginalia
   :ensure t
-  :bind ("M-x" . smex))
+  :config
+  (marginalia-mode 1)
+  :after vertico)
+(use-package prescient
+  :ensure t
+  :config
+  (vertico-prescient-mode 1)
+  :after vertico)
+(use-package consult
+  :ensure t
+  :after vertico)
 
 (add-hook 'c-ts-mode-hook #'eglot-ensure)
 (add-hook 'c++-ts-mode-hook #'eglot-ensure)
