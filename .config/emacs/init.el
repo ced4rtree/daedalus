@@ -328,7 +328,6 @@
   (setq smtpmail-stream-type 'starttls
         mu4e-change-filenames-when-moving t
         mu4e-update-interval (* 10 60)
-        mu4e-compose-format-flowed t
         mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
         mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
         ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
