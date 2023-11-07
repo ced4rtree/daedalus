@@ -14,9 +14,9 @@ case "$1" in
 			echo $new_brightness > $path_to_backlight/brightness
 		fi
 
-		pkill -RTMIN+2 dwmblocks
+		# pkill -RTMIN+2 dwmblocks
 		# polybar-msg hook brightness 1
-		# eww update brightness_value=$(real-brightness check)
+		eww update brightness_value=$(real-brightness check)
 		;;
 
 	down)
@@ -27,9 +27,9 @@ case "$1" in
 			echo $new_brightness > $path_to_backlight/brightness
 		fi
 
-		pkill -RTMIN+2 dwmblocks
+		# pkill -RTMIN+2 dwmblocks
 		# polybar-msg hook brightness 1
-		# eww update brightness_value=$(real-brightness check)
+		eww update brightness_value=$(real-brightness check)
 		;;
 
 	check)
