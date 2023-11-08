@@ -18,10 +18,27 @@
 (add-to-list 'default-frame-alist
              '(font . "Terminus (TTF)-15"))
 
-(use-package uwu-theme
+(use-package doom-themes
   :ensure t
   :init
-  (load-theme 'uwu t))
+  (load-theme 'doom-one t))
+
+(global-hl-line-mode 1)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-height 35
+        doom-modeline-project-detection 'file-name
+        doom-modeline-icon (display-graphic-p)
+        doom-modeline-major-mode-icon t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-state-icon t
+        doom-modeline-buffer-modification-icon t
+        doom-modeline-unicode-fallback t
+        doom-modeline-buffer-encoding nil
+        doom-modeline-mu4e t))
 
 (global-display-line-numbers-mode 1)
 
