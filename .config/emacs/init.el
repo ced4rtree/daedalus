@@ -290,6 +290,12 @@
                                   (when (quit-emacs)
                                     (save-buffers-kill-terminal))))
 
+(use-package drag-stuff
+  :ensure t
+  :init (drag-stuff-global-mode 1)
+  :config
+  (drag-stuff-define-keys))
+
 (use-package vterm
   :defer t
   :ensure t

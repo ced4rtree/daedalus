@@ -52,6 +52,7 @@
   - [[#disable-async-shell-command-window][Disable Async Shell Command Window]]
   - [[#diminish][Diminish]]
   - [[#goodbye-message][Goodbye message]]
+  - [[#move-lines][Move Lines]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#vterm][Vterm]]
   - [[#emms][EMMS]]
@@ -507,6 +508,14 @@ I think that it would be pretty cute to have a little goodbye confirmation when 
                                     (interactive)
                                     (when (quit-emacs)
                                       (save-buffers-kill-terminal))))
+#+end_src
+** Move Lines
+#+begin_src emacs-lisp
+  (use-package drag-stuff
+    :ensure t
+    :init (drag-stuff-global-mode 1)
+    :config
+    (drag-stuff-define-keys))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
