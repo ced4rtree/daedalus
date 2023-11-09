@@ -39,6 +39,7 @@
   - [[#aggressive-indentation][Aggressive Indentation]]
   - [[#commenting][Commenting]]
   - [[#company][Company]]
+  - [[#languages][Languages]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#dashboard][Dashboard]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
@@ -50,7 +51,6 @@
   - [[#dired][Dired]]
   - [[#auto-backup][Auto Backup]]
   - [[#disable-async-shell-command-window][Disable Async Shell Command Window]]
-  - [[#diminish][Diminish]]
   - [[#goodbye-message][Goodbye message]]
   - [[#move-lines][Move Lines]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
@@ -93,13 +93,12 @@ Melpa is a repository for emacs that enables a lot more than what is in the stan
 As of Emacs 29, use-package is built in, so you don't need to install it, but I like to set some settings for it
 #+begin_src emacs-lisp
   (setq use-package-always-ensure t)
-  (use-package diminish)
 #+end_src
 * UX
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Terminus (TTF)-15"))
+               '(font . "Terminess Nerd Font-15"))
 #+end_src
 
 ** Theme
@@ -119,18 +118,17 @@ Fancy little modeline that looks a bit better than the stock one
 #+begin_src emacs-lisp
   (use-package doom-modeline
     :ensure t
-    :init (doom-modeline-mode 1)
+    :ensure octicons
+    :init
+    (doom-modeline-mode 1)
     :config
     (setq doom-modeline-height 35
           doom-modeline-project-detection 'file-name
-          doom-modeline-icon (display-graphic-p)
-          doom-modeline-major-mode-icon t
-          doom-modeline-major-mode-color-icon t
-          doom-modeline-buffer-state-icon t
-          doom-modeline-buffer-modification-icon t
-          doom-modeline-unicode-fallback t
           doom-modeline-buffer-encoding nil
+          doom-modeline-persp-name t
+          doom-modeline-persp-icon t
           doom-modeline-mu4e t))
+
 #+end_src
 ** Line numbers
 #+begin_src emacs-lisp
@@ -159,8 +157,7 @@ Adds rainbow parentheses and color to hex values and such
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1)))
-    :diminish rainbow-mode)
+    :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
   (use-package rainbow-delimiters
     :ensure t
     :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
@@ -185,7 +182,6 @@ Never lose your cursor again with this beacon of light
 ** Visual Line Mode
 #+begin_src emacs-lisp
   (global-visual-line-mode 1)
-  (diminish 'visual-line-mode)
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
@@ -199,7 +195,6 @@ A simple tool that simplifies writing source code blocks to just typing <s TAB, 
 ** Indentation
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook 'org-indent-mode)
-  (diminish 'org-indent-mode)
   (setq org-hide-leading-stars nil)
 #+end_src
 
@@ -215,8 +210,7 @@ This automatically generates a table of contents under any heading tagged :TOC:
     ;; automatically tangle org files
     (use-package org-auto-tangle
       :ensure t
-      :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1)))
-      :diminish org-auto-tangle-mode)
+      :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
 
     (setq org-src-fontify-natively t ;; use the font like it is in a normal buffer
           org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
@@ -302,8 +296,7 @@ Projectile manages projects
   (use-package projectile
     :ensure t
     :config
-    (projectile-mode +1)
-    :diminish projectile-mode)
+    (projectile-mode +1))
 
   (use-package projectile-ripgrep
     :ensure t
@@ -337,6 +330,10 @@ The autocompletion framework to make code practically write itself
     :ensure t
     :hook (prog-mode . (lambda () (company-mode 1))))
 #+end_src
+** Languages
+#+begin_src emacs-lisp
+  (use-package rustic :ensure t)
+#+end_src
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
 ** Dashboard
@@ -345,8 +342,7 @@ Things that aren't really necessary to do stuff, but nice to have
 Nice little lines
 #+begin_src emacs-lisp
   (use-package page-break-lines
-    :ensure t
-    :diminish page-break-lines-mode)
+    :ensure t)
 #+end_src
 
 Show the recent files
@@ -398,7 +394,6 @@ Automatically pair parentheses and the like
 
 ** Tabbing
 #+begin_src emacs-lisp
-  (setq indent-tabs-mode nil)
   (setq-default tab-width 4
                 c-basic-offset 4
                 c-ts-mode-indent-offset 4
@@ -406,11 +401,7 @@ Automatically pair parentheses and the like
                 c-default-style "bsd")
   (defvaralias 'c-basic-offset 'tab-width)
   (defvaralias 'c-ts-mode-indent-offset 'tab-width)
-  (add-hook 'prog-mode-hook #'(lambda ()
-                                (interactive)
-                                (if (equal major-mode 'emacs-lisp-mode)
-                                    (setq indent-tabs-mode nil)
-                                  (setq indent-tabs-mode t))))
+  (indent-tabs-mode nil)
 #+end_src
 
 ** Too lazy to type yes
@@ -471,12 +462,6 @@ If I want to see the output of a shell command, I'll just do it with a compilati
 #+begin_src emacs-lisp
 (add-to-list 'display-buffer-alist
   (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
-#+end_src
-** Diminish
-Not a big fan of a bunch of random minor modes I don't care about clogging up the modeline.
-#+begin_src emacs-lisp
-  (diminish 'eldoc-mode)
-  (diminish 'auto-revert-mode)
 #+end_src
 ** Goodbye message
 I think that it would be pretty cute to have a little goodbye confirmation when exiting emacs
@@ -664,8 +649,7 @@ Which-key displays possible completions for keybindings you have typed in a mini
 #+begin_src emacs-lisp
   (use-package which-key
     :ensure t
-    :config (which-key-mode 1)
-    :diminish which-key-mode)
+    :config (which-key-mode 1))
 #+end_src
 
 ** kill-all-buffers

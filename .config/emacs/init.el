@@ -13,10 +13,9 @@
 (package-initialize)
 
 (setq use-package-always-ensure t)
-(use-package diminish)
 
 (add-to-list 'default-frame-alist
-             '(font . "Terminus (TTF)-15"))
+             '(font . "Terminess Nerd Font-15"))
 
 (use-package doom-themes
   :ensure t
@@ -27,17 +26,15 @@
 
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 1)
+  :ensure octicons
+  :init
+  (doom-modeline-mode 1)
   :config
   (setq doom-modeline-height 35
         doom-modeline-project-detection 'file-name
-        doom-modeline-icon (display-graphic-p)
-        doom-modeline-major-mode-icon t
-        doom-modeline-major-mode-color-icon t
-        doom-modeline-buffer-state-icon t
-        doom-modeline-buffer-modification-icon t
-        doom-modeline-unicode-fallback t
         doom-modeline-buffer-encoding nil
+        doom-modeline-persp-name t
+        doom-modeline-persp-icon t
         doom-modeline-mu4e t))
 
 (global-display-line-numbers-mode 1)
@@ -55,8 +52,7 @@
 
 (use-package rainbow-mode
   :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1)))
-  :diminish rainbow-mode)
+  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
@@ -71,13 +67,11 @@
   (beacon-mode 1))
 
 (global-visual-line-mode 1)
-(diminish 'visual-line-mode)
 
 (use-package org-tempo
   :ensure nil)
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-(diminish 'org-indent-mode)
 (setq org-hide-leading-stars nil)
 
 (use-package toc-org
@@ -87,8 +81,7 @@
 ;; automatically tangle org files
 (use-package org-auto-tangle
   :ensure t
-  :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1)))
-  :diminish org-auto-tangle-mode)
+  :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
 
 (setq org-src-fontify-natively t ;; use the font like it is in a normal buffer
       org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
@@ -144,8 +137,7 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-mode +1)
-  :diminish projectile-mode)
+  (projectile-mode +1))
 
 (use-package projectile-ripgrep
   :ensure t
@@ -168,9 +160,10 @@
   :ensure t
   :hook (prog-mode . (lambda () (company-mode 1))))
 
+(use-package rustic :ensure t)
+
 (use-package page-break-lines
-  :ensure t
-  :diminish page-break-lines-mode)
+  :ensure t)
 
 (use-package recentf
   :ensure t
@@ -207,7 +200,6 @@
       `(lambda (c)
          (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
 
-(setq indent-tabs-mode nil)
 (setq-default tab-width 4
               c-basic-offset 4
               c-ts-mode-indent-offset 4
@@ -215,11 +207,7 @@
               c-default-style "bsd")
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
-(add-hook 'prog-mode-hook #'(lambda ()
-                              (interactive)
-                              (if (equal major-mode 'emacs-lisp-mode)
-                                  (setq indent-tabs-mode nil)
-                                (setq indent-tabs-mode t))))
+(indent-tabs-mode nil)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -258,9 +246,6 @@
 
 (add-to-list 'display-buffer-alist
   (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
-
-(diminish 'eldoc-mode)
-(diminish 'auto-revert-mode)
 
 (defvar goodbye-message-list (list "Don't leave me!"
                                    "B-baka! It's not like I liked you anyway..."
@@ -405,8 +390,7 @@
 
 (use-package which-key
   :ensure t
-  :config (which-key-mode 1)
-  :diminish which-key-mode)
+  :config (which-key-mode 1))
 
 (defun kill-all-buffers ()
   (interactive)
