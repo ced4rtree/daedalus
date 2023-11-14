@@ -321,7 +321,10 @@
   (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
   (setq emms-player-mpd-server-name "localhost")
   (setq emms-player-mpd-server-port "6600")
-  (setq mpc-host "localhost:6600"))
+  (setq mpc-host "localhost:6600")
+  :bind (("C-c m m" . emms-smart-browse)
+         :map emms-playlist-mode-map
+         ("Z" . emms-shuffle)))
 
 (use-package calfw
   :ensure t)
