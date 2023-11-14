@@ -332,7 +332,7 @@ The autocompletion framework to make code practically write itself
 #+end_src
 ** Languages
 #+begin_src emacs-lisp
-  (use-package rustic :ensure t)
+  (use-package rust-mode :ensure t)
 #+end_src
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have

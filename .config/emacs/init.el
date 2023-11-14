@@ -160,7 +160,7 @@
   :ensure t
   :hook (prog-mode . (lambda () (company-mode 1))))
 
-(use-package rustic :ensure t)
+(use-package rust-mode :ensure t)
 
 (use-package page-break-lines
   :ensure t)
