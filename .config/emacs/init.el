@@ -118,8 +118,9 @@
   :ensure t
   :after vertico)
 
-(add-hook 'c-ts-mode-hook #'eglot-ensure)
-(add-hook 'c++-ts-mode-hook #'eglot-ensure)
+(add-hook 'c-mode-hook #'eglot-ensure)
+(add-hook 'c++-mode-hook #'eglot-ensure)
+(add-hook 'rust-mode #'eglot-ensure)
 (setq eglot-autoshutdown t)
 (use-package eglot-java
   :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1))))

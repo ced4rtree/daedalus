@@ -268,8 +268,9 @@ Things like eglot and projectile are a huge help when programming
 ** Eglot
 A lightweight LSP implementation built into emacs (as of emacs 29)
 #+begin_src emacs-lisp
-  (add-hook 'c-ts-mode-hook #'eglot-ensure)
-  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+  (add-hook 'c-mode-hook #'eglot-ensure)
+  (add-hook 'c++-mode-hook #'eglot-ensure)
+  (add-hook 'rust-mode #'eglot-ensure)
   (setq eglot-autoshutdown t)
   (use-package eglot-java
     :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1))))
