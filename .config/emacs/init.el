@@ -400,4 +400,13 @@
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
 
+(global-set-key (kbd "M-n") #'(lambda ()
+                                (interactive)
+                                (scroll-up-line 1)
+                                (next-line)))
+(global-set-key (kbd "M-p") #'(lambda ()
+                                (interactive)
+                                (scroll-down-line 1)
+                                (previous-line)))
+
 (setq gc-cons-threshold (* 2 1024 1024))

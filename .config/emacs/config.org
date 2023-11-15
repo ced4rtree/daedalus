@@ -65,6 +65,7 @@
   - [[#reload-emacs][Reload Emacs]]
   - [[#which-key][Which-key]]
   - [[#kill-all-buffers][kill-all-buffers]]
+  - [[#scrolling-1][Scrolling]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -662,6 +663,18 @@ It can be useful to kill all of the buffers to clean up your buffer list. This f
     (interactive)
     (mapc 'kill-buffer (buffer-list)))
   (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+#+end_src
+** Scrolling
+Scroll down a line while maintaining the cursor position wherever it is
+#+begin_src emacs-lisp
+  (global-set-key (kbd "M-n") #'(lambda ()
+                                  (interactive)
+                                  (scroll-up-line 1)
+                                  (next-line)))
+  (global-set-key (kbd "M-p") #'(lambda ()
+                                  (interactive)
+                                  (scroll-down-line 1)
+                                  (previous-line)))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init
