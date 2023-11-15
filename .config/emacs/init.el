@@ -113,6 +113,7 @@
   :ensure t
   :config
   (vertico-prescient-mode 1)
+  (prescient-persist-mode 1)
   :after vertico)
 (use-package consult
   :ensure t
