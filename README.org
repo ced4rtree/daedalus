@@ -2,8 +2,8 @@
 #+TITLE: My configuration files for a ton of stuff
 
 ** Currently used:
-- Polybar
+- EWW
 - Zsh
 - GNU Emacs
-- XMonad
-- URxvt
+- Wayfire
+- Foot
