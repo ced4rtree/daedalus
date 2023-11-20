@@ -10,6 +10,7 @@ zle_highlight=('paste:none')
 # set the prompt
 PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 
+alias l='ls --color=auto'
 alias ls='ls --color=auto'
 alias ll='ls -l'
 alias la='ls -a'
