@@ -110,6 +110,8 @@ return require('packer').startup(function(use)
 
     use 'norcalli/nvim-colorizer.lua'
 
+    use 'terrortylor/nvim-comment'
+
     if packer_bootstrap then
         require('packer').sync()
     end
