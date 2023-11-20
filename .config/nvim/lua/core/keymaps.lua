@@ -14,9 +14,13 @@ vim.keymap.set('n', '<leader>fs', ':w<CR>')
 -- buffers
 vim.keymap.set('n', '<leader>bb', ':Telescope buffers')
 vim.keymap.set('n', '<leader>bk', ':bd')
+vim.keymap.set('n', '<leader>bp', '<C-o>')
+vim.keymap.set('n', '<leader>bn', '<C-i>')
 
 -- windows
 vim.keymap.set('n', '<leader>ww', '<c-w>w')
 vim.keymap.set('n', '<leader>wv', '<c-w>v')
 vim.keymap.set('n', '<leader>wn', '<c-w>n')
 
+-- follow definition
+vim.keymap.set('n', '<M-.>', 'gd')
