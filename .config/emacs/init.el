@@ -96,9 +96,13 @@
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
-  '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
-  '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
 
 (use-package vertico
   :ensure t
@@ -412,3 +416,10 @@
                                 (previous-line)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(sudo-edit yuck-mode wttrin which-key vterm-toggle vertico-prescient uwu-theme toc-org theme-magic spinner smex rust-mode rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep pretty-mode plantuml-mode persp-projectile pass page-break-lines org-bullets org-auto-tangle octicons oauth no-littering mu4e-alert markdown-mode marginalia magit langtool indent-guide ido-completing-read+ htmlize hl-todo haskell-mode flycheck evil-nerd-commenter emms eglot-java drag-stuff doom-themes doom-modeline dired-open diminish dashboard corfu consult-projectile company clippy calfw-org calfw beacon all-the-icons aggressive-indent)))
