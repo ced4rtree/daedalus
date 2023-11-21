@@ -12,8 +12,8 @@ vim.keymap.set('n', '<leader>.', ':Telescope find_files<CR>')
 vim.keymap.set('n', '<leader>fs', ':w<CR>')
 
 -- buffers
-vim.keymap.set('n', '<leader>bb', ':Telescope buffers')
-vim.keymap.set('n', '<leader>bk', ':bd')
+vim.keymap.set('n', '<leader>bb', ':Telescope buffers<CR>')
+vim.keymap.set('n', '<leader>bk', ':bd<CR>')
 vim.keymap.set('n', '<leader>bp', '<C-o>')
 vim.keymap.set('n', '<leader>bn', '<C-i>')
 
