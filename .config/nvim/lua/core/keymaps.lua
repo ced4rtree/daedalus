@@ -24,3 +24,7 @@ vim.keymap.set('n', '<leader>wn', '<c-w>n')
 
 -- follow definition
 vim.keymap.set('n', '<M-.>', 'gd')
+
+-- indentation
+vim.keymap.set('n', '<TAB>', '==')
+vim.keymap.set('v', '<TAB>', '=')
