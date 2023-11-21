@@ -19,7 +19,8 @@ vim.cmd([[autocmd FileType * set formatoptions-=ro]])
 -- add system clipboard to neovim clipboard
 vim.cmd([[set clipboard+=unnamedplus]])
 
--- keep terminal opacity
---vim.cmd.highlight([[Normal     ctermbg=NONE guibg=NONE]])
---vim.cmd.highlight([[LineNr     ctermbg=NONE guibg=NONE]])
---vim.cmd.highlight([[SignColumn ctermbg=NONE guibg=NONE]])
+-- case insensitive searching
+vim.cmd([[set ignorecase]])
+
+-- line numbers
+vim.cmd([[set number number]])
