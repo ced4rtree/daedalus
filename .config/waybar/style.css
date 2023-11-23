@@ -51,7 +51,7 @@ button:hover {
 #workspaces button {
     padding: 0 5px;
     background-color: transparent;
-    color: #ffffff;
+    color: grey;
 }
 
 #workspaces button:hover {
@@ -61,6 +61,10 @@ button:hover {
 #workspaces button.focused {
     background-color: #64727D;
     box-shadow: inset 0 -3px #ffffff;
+}
+
+#workspaces button.active {
+    color: white;
 }
 
 #workspaces button.urgent {
