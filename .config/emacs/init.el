@@ -15,12 +15,14 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "Terminess Nerd Font-15"))
+             '(font . "Iosevka Nerd Font-14"))
 
-(use-package doom-themes
+(use-package catppuccin-theme
   :ensure t
   :init
-  (load-theme 'doom-one t))
+  (add-to-list 'default-frame-alist '(background-color . "black"))
+  (load-theme 'catppuccin t)
+  (set-frame-parameter nil 'background-color "black"))
 
 (global-hl-line-mode 1)
 
@@ -68,6 +70,82 @@
 
 (global-visual-line-mode 1)
 
+(add-to-list 'default-frame-alist '(alpha-background . 60))
+
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+
+(defun bugger/emacs-reload ()
+  (interactive)
+  (setq has-restarted t)
+  (org-babel-tangle-file (concat config-dir "config.org"))
+  (load-file (concat config-dir "init.el"))
+  (load-file (concat config-dir "init.el")))
+(global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
+
+(use-package which-key
+  :ensure t
+  :config (which-key-mode 1))
+
+(defun kill-all-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+(global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup)
+
+  (general-create-definer bugger/bind
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :global-prefix "M-SPC")
+
+(general-define-key
+ :states '(normal visual)
+ "J" #'(lambda ()
+         (interactive)
+         (scroll-up-line 1)
+         (next-line)))
+(general-define-key
+ :states '(normal visual)
+ "K" #'(lambda ()
+         (interactive)
+         (scroll-down-line 1)
+         (previous-line)))
+
+(bugger/bind
+ "." '(find-file :wk "find file")
+ "f" '(:ignore t :wk "file")
+ "f s" '(save-buffer :wk "save file")
+ "f f" '(find-file :wk "find file")
+ "f u" '(sudo-edit-find-file :wk "find file as root")
+ "f U" '(sudo-edit :wk "re-open current file as root"))
+
+(bugger/bind
+  "b" '(:ignore t :wk "buffer")
+  "b b" '(consult-buffer :wk "switch to buffer")
+  "b i" '(persp-ibuffer :wk "ibuffer")
+  "b n" '(next-buffer :wk "next buffer")
+  "b p" '(previous-buffer :wk "previous buffer")
+  "b r" '(revert-buffer :wk "revert buffer"))
+
 (use-package org-tempo
   :ensure nil)
 
@@ -96,13 +174,9 @@
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
+  '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
 
 (use-package vertico
   :ensure t
@@ -164,7 +238,9 @@
 
 (use-package company
   :ensure t
-  :hook (prog-mode . (lambda () (company-mode 1))))
+  :hook (prog-mode . (lambda () (company-mode 1)))
+  :config
+  (setq company-idle-delay 0.1))
 
 (use-package rust-mode :ensure t)
 
@@ -285,7 +361,10 @@
   :ensure t
   :init (drag-stuff-global-mode 1)
   :config
-  (drag-stuff-define-keys))
+  (global-set-key (kbd "M-p") 'drag-stuff-up)
+  (global-set-key (kbd "M-n") 'drag-stuff-down))
+
+(use-package sudo-edit :ensure t)
 
 (use-package vterm
   :defer t
@@ -386,40 +465,4 @@
 
 (use-package pass)
 
-(global-set-key (kbd "DEL") 'backward-delete-char)
-(setq c-backspace-function 'backward-delete-char)
-
-(defun bugger/emacs-reload ()
-  (interactive)
-  (setq has-restarted t)
-  (org-babel-tangle-file (concat config-dir "config.org"))
-  (load-file (concat config-dir "init.el"))
-  (load-file (concat config-dir "init.el")))
-(global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
-
-(use-package which-key
-  :ensure t
-  :config (which-key-mode 1))
-
-(defun kill-all-buffers ()
-  (interactive)
-  (mapc 'kill-buffer (buffer-list)))
-(global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
-
-(global-set-key (kbd "M-n") #'(lambda ()
-                                (interactive)
-                                (scroll-up-line 1)
-                                (next-line)))
-(global-set-key (kbd "M-p") #'(lambda ()
-                                (interactive)
-                                (scroll-down-line 1)
-                                (previous-line)))
-
 (setq gc-cons-threshold (* 2 1024 1024))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(sudo-edit yuck-mode wttrin which-key vterm-toggle vertico-prescient uwu-theme toc-org theme-magic spinner smex rust-mode rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep pretty-mode plantuml-mode persp-projectile pass page-break-lines org-bullets org-auto-tangle octicons oauth no-littering mu4e-alert markdown-mode marginalia magit langtool indent-guide ido-completing-read+ htmlize hl-todo haskell-mode flycheck evil-nerd-commenter emms eglot-java drag-stuff doom-themes doom-modeline dired-open diminish dashboard corfu consult-projectile company clippy calfw-org calfw beacon all-the-icons aggressive-indent)))

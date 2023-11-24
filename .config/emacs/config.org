@@ -22,6 +22,17 @@
   - [[#tree-sitter][Tree Sitter]]
   - [[#beacon][Beacon]]
   - [[#visual-line-mode][Visual Line Mode]]
+  - [[#window-transparency][Window Transparency]]
+- [[#keybindings][Keybindings]]
+  - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
+  - [[#reload-emacs][Reload Emacs]]
+  - [[#which-key][Which-key]]
+  - [[#kill-all-buffers][kill-all-buffers]]
+  - [[#evil][Evil]]
+  - [[#general][General]]
+  - [[#scrolling-1][Scrolling]]
+  - [[#files][Files]]
+  - [[#buffers][Buffers]]
 - [[#org-mode][Org mode]]
   - [[#org-tempo][Org tempo]]
   - [[#indentation][Indentation]]
@@ -53,6 +64,7 @@
   - [[#disable-async-shell-command-window][Disable Async Shell Command Window]]
   - [[#goodbye-message][Goodbye message]]
   - [[#move-lines][Move Lines]]
+  - [[#sudo-edit][Sudo Edit]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#vterm][Vterm]]
   - [[#emms][EMMS]]
@@ -60,12 +72,6 @@
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
   - [[#password-storage][Password Storage]]
-- [[#keybindings][Keybindings]]
-  - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
-  - [[#reload-emacs][Reload Emacs]]
-  - [[#which-key][Which-key]]
-  - [[#kill-all-buffers][kill-all-buffers]]
-  - [[#scrolling-1][Scrolling]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -99,15 +105,17 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Terminess Nerd Font-15"))
+               '(font . "Iosevka Nerd Font-14"))
 #+end_src
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package doom-themes
+  (use-package catppuccin-theme
     :ensure t
     :init
-    (load-theme 'doom-one t))
+    (add-to-list 'default-frame-alist '(background-color . "black"))
+    (load-theme 'catppuccin t)
+    (set-frame-parameter nil 'background-color "black"))
 #+end_src
 
 ** Highlight line
@@ -183,6 +191,114 @@ Never lose your cursor again with this beacon of light
 ** Visual Line Mode
 #+begin_src emacs-lisp
   (global-visual-line-mode 1)
+#+end_src
+** Window Transparency
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(alpha-background . 60))
+#+end_src
+* Keybindings
+** Delete a tab, not 4 spaces
+#+begin_src emacs-lisp
+  (global-set-key (kbd "DEL") 'backward-delete-char)
+  (setq c-backspace-function 'backward-delete-char)
+#+end_src
+** Reload Emacs
+It's pretty useful to just reload your config on the fly rather than have to reload every time
+#+begin_src emacs-lisp
+  (defun bugger/emacs-reload ()
+    (interactive)
+    (setq has-restarted t)
+    (org-babel-tangle-file (concat config-dir "config.org"))
+    (load-file (concat config-dir "init.el"))
+    (load-file (concat config-dir "init.el")))
+  (global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
+#+end_src
+** Which-key
+Which-key displays possible completions for keybindings you have typed in a minibuffer at the bottom of the screen
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode 1))
+#+end_src
+
+** kill-all-buffers
+It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
+#+begin_src emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+#+end_src
+** Evil
+The Extensible VI Layer for emacs is a great way to add vim keys to emacs
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1))
+#+end_src
+*** Evil Collection
+The easiest way to 'ubiquitize' evil keybindings
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+#+end_src
+** General
+A modern way to customize your keybindings that lets you use space as a prefix key
+#+begin_src emacs-lisp
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup)
+
+    (general-create-definer bugger/bind
+      :states '(normal insert visual emacs)
+      :keymaps 'override
+      :prefix "SPC"
+      :global-prefix "M-SPC")
+#+end_src
+** Scrolling
+Scroll down a line while maintaining the cursor position wherever it is
+#+begin_src emacs-lisp
+  (general-define-key
+   :states '(normal visual)
+   "J" #'(lambda ()
+           (interactive)
+           (scroll-up-line 1)
+           (next-line)))
+  (general-define-key
+   :states '(normal visual)
+   "K" #'(lambda ()
+           (interactive)
+           (scroll-down-line 1)
+           (previous-line)))
+#+end_src
+** Files
+#+begin_src emacs-lisp
+  (bugger/bind
+   "." '(find-file :wk "find file")
+   "f" '(:ignore t :wk "file")
+   "f s" '(save-buffer :wk "save file")
+   "f f" '(find-file :wk "find file")
+   "f u" '(sudo-edit-find-file :wk "find file as root")
+   "f U" '(sudo-edit :wk "re-open current file as root"))
+#+end_src
+** Buffers
+#+begin_src emacs-lisp
+  (bugger/bind
+    "b" '(:ignore t :wk "buffer")
+    "b b" '(consult-buffer :wk "switch to buffer")
+    "b i" '(persp-ibuffer :wk "ibuffer")
+    "b n" '(next-buffer :wk "next buffer")
+    "b p" '(previous-buffer :wk "previous buffer")
+    "b r" '(revert-buffer :wk "revert buffer"))
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
@@ -331,7 +447,9 @@ The autocompletion framework to make code practically write itself
 #+begin_src emacs-lisp
   (use-package company
     :ensure t
-    :hook (prog-mode . (lambda () (company-mode 1))))
+    :hook (prog-mode . (lambda () (company-mode 1)))
+    :config
+    (setq company-idle-delay 0.1))
 #+end_src
 ** Languages
 #+begin_src emacs-lisp
@@ -503,7 +621,12 @@ I think that it would be pretty cute to have a little goodbye confirmation when 
     :ensure t
     :init (drag-stuff-global-mode 1)
     :config
-    (drag-stuff-define-keys))
+    (global-set-key (kbd "M-p") 'drag-stuff-up)
+    (global-set-key (kbd "M-n") 'drag-stuff-down))
+#+end_src
+** Sudo Edit
+#+begin_src emacs-lisp
+  (use-package sudo-edit :ensure t)
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
@@ -632,51 +755,6 @@ This is really just for mbsync. To actually use passwords well, see [[#password-
 Store and retrieve all your passwords with emacs!
 #+begin_src emacs-lisp
   (use-package pass)
-#+end_src
-* Keybindings
-** Delete a tab, not 4 spaces
-#+begin_src emacs-lisp
-  (global-set-key (kbd "DEL") 'backward-delete-char)
-  (setq c-backspace-function 'backward-delete-char)
-#+end_src
-** Reload Emacs
-It's pretty useful to just reload your config on the fly rather than have to reload every time
-#+begin_src emacs-lisp
-  (defun bugger/emacs-reload ()
-    (interactive)
-    (setq has-restarted t)
-    (org-babel-tangle-file (concat config-dir "config.org"))
-    (load-file (concat config-dir "init.el"))
-    (load-file (concat config-dir "init.el")))
-  (global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
-#+end_src
-** Which-key
-Which-key displays possible completions for keybindings you have typed in a minibuffer at the bottom of the screen
-#+begin_src emacs-lisp
-  (use-package which-key
-    :ensure t
-    :config (which-key-mode 1))
-#+end_src
-
-** kill-all-buffers
-It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
-#+begin_src emacs-lisp
-  (defun kill-all-buffers ()
-    (interactive)
-    (mapc 'kill-buffer (buffer-list)))
-  (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
-#+end_src
-** Scrolling
-Scroll down a line while maintaining the cursor position wherever it is
-#+begin_src emacs-lisp
-  (global-set-key (kbd "M-n") #'(lambda ()
-                                  (interactive)
-                                  (scroll-up-line 1)
-                                  (next-line)))
-  (global-set-key (kbd "M-p") #'(lambda ()
-                                  (interactive)
-                                  (scroll-down-line 1)
-                                  (previous-line)))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init
