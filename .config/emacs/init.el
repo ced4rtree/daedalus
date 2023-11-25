@@ -115,7 +115,7 @@
     :states '(normal insert visual emacs)
     :keymaps 'override
     :prefix "SPC"
-    :global-prefix "M-SPC")
+    :global-prefix "M-SPC"))
 
 (general-define-key
  :states '(normal visual)
@@ -145,6 +145,37 @@
   "b n" '(next-buffer :wk "next buffer")
   "b p" '(previous-buffer :wk "previous buffer")
   "b r" '(revert-buffer :wk "revert buffer"))
+
+(defun persp-switch-mail ()
+  (interactive)
+  (persp-switch "email")
+  (mu4e))
+
+(defun persp-switch-music ()
+  (interactive)
+  (persp-switch "music")
+  (emms-smart-browse))
+
+(defun persp-switch-cal ()
+  (interactive)
+  (persp-switch "calendar")
+  (org-agenda)
+  (delete-window)
+  (cfw:open-org-calendar))
+
+(bugger/bind
+  "o" '(:ignore t :wk "open")
+  "o e" '(persp-switch-mail :wk "email")
+  "o m" '(persp-switch-music :wk "music")
+  "o c" '(persp-switch-cal :wk "calendar")
+  "o t" '(vterm-toggle :wk "terminal"))
+
+(bugger/bind
+  "w" '(:ignore t :wk "windows")
+  "w w" '(other-window :wk "other window")
+  "w v" '(split-window-right :wk "split window right")
+  "w n" '(split-window-below :wk "split window below")
+  "w k" '(delete-window))
 
 (use-package org-tempo
   :ensure nil)

@@ -33,6 +33,8 @@
   - [[#scrolling-1][Scrolling]]
   - [[#files][Files]]
   - [[#buffers][Buffers]]
+  - [[#open][Open]]
+  - [[#windows][Windows]]
 - [[#org-mode][Org mode]]
   - [[#org-tempo][Org tempo]]
   - [[#indentation][Indentation]]
@@ -262,7 +264,7 @@ A modern way to customize your keybindings that lets you use space as a prefix k
       :states '(normal insert visual emacs)
       :keymaps 'override
       :prefix "SPC"
-      :global-prefix "M-SPC")
+      :global-prefix "M-SPC"))
 #+end_src
 ** Scrolling
 Scroll down a line while maintaining the cursor position wherever it is
@@ -299,6 +301,41 @@ Scroll down a line while maintaining the cursor position wherever it is
     "b n" '(next-buffer :wk "next buffer")
     "b p" '(previous-buffer :wk "previous buffer")
     "b r" '(revert-buffer :wk "revert buffer"))
+#+end_src
+** Open
+#+begin_src emacs-lisp
+  (defun persp-switch-mail ()
+    (interactive)
+    (persp-switch "email")
+    (mu4e))
+
+  (defun persp-switch-music ()
+    (interactive)
+    (persp-switch "music")
+    (emms-smart-browse))
+
+  (defun persp-switch-cal ()
+    (interactive)
+    (persp-switch "calendar")
+    (org-agenda)
+    (delete-window)
+    (cfw:open-org-calendar))
+
+  (bugger/bind
+    "o" '(:ignore t :wk "open")
+    "o e" '(persp-switch-mail :wk "email")
+    "o m" '(persp-switch-music :wk "music")
+    "o c" '(persp-switch-cal :wk "calendar")
+    "o t" '(vterm-toggle :wk "terminal"))
+#+end_src
+** Windows
+#+begin_src emacs-lisp
+  (bugger/bind
+    "w" '(:ignore t :wk "windows")
+    "w w" '(other-window :wk "other window")
+    "w v" '(split-window-right :wk "split window right")
+    "w n" '(split-window-below :wk "split window below")
+    "w k" '(delete-window))
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
