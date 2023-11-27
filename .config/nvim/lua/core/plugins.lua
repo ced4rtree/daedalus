@@ -127,6 +127,17 @@ return require('packer').startup(function(use)
         requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     }
 
+    -- neogit
+    use {
+        'NeogitOrg/neogit',
+        requires = {
+            { 'nvim-lua/plenary.nvim', opt = false, },
+            { 'nvim-telescope/telescope.nvim', opt = true, },
+            { 'sindrets/diffview.nvim', opt = true },
+            { 'ibhagwan/fzf-lua', opt = true }
+        },
+    }
+
     if packer_bootstrap then
         require('packer').sync()
     end
