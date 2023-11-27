@@ -123,10 +123,22 @@ _G.packer_plugins = {
     path = "/home/cedar/.local/share/nvim/site/pack/packer/opt/dashboard-nvim",
     url = "https://github.com/nvimdev/dashboard-nvim"
   },
+  ["diffview.nvim"] = {
+    loaded = false,
+    needs_bufread = false,
+    path = "/home/cedar/.local/share/nvim/site/pack/packer/opt/diffview.nvim",
+    url = "https://github.com/sindrets/diffview.nvim"
+  },
   ["friendly-snippets"] = {
     loaded = true,
     path = "/home/cedar/.local/share/nvim/site/pack/packer/start/friendly-snippets",
     url = "https://github.com/rafamadriz/friendly-snippets"
+  },
+  ["fzf-lua"] = {
+    loaded = false,
+    needs_bufread = false,
+    path = "/home/cedar/.local/share/nvim/site/pack/packer/opt/fzf-lua",
+    url = "https://github.com/ibhagwan/fzf-lua"
   },
   ["lsp-zero.nvim"] = {
     loaded = true,
@@ -147,6 +159,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/cedar/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
+  },
+  neogit = {
+    loaded = true,
+    path = "/home/cedar/.local/share/nvim/site/pack/packer/start/neogit",
+    url = "https://github.com/NeogitOrg/neogit"
   },
   ["nvim-cmp"] = {
     loaded = true,
@@ -213,6 +230,10 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: catppuccin
+time([[Config for catppuccin]], true)
+try_loadstring("\27LJ\2\nE\0\0\3\0\4\0\0066\0\0\0009\0\1\0009\0\2\0'\2\3\0B\0\2\1K\0\1\0\22catppuccin-frappe\16colorscheme\bcmd\bvim\0", "config", "catppuccin")
+time([[Config for catppuccin]], false)
 -- Config for: which-key.nvim
 time([[Config for which-key.nvim]], true)
 try_loadstring("\27LJ\2\nD\0\0\2\0\4\0\t6\0\0\0009\0\1\0+\1\2\0=\1\2\0006\0\0\0009\0\1\0)\1,\1=\1\3\0K\0\1\0\15timeoutlen\ftimeout\6o\bvim\0", "config", "which-key.nvim")
@@ -221,10 +242,6 @@ time([[Config for which-key.nvim]], false)
 time([[Config for nvim-tree.lua]], true)
 try_loadstring("\27LJ\2\nV\0\0\5\0\6\0\b6\0\0\0009\0\1\0009\0\2\0'\2\3\0'\3\4\0'\4\5\0B\0\4\1K\0\1\0\24:NvimTreeToggle<CR>\14<leader>t\6n\bset\vkeymap\bvim\0", "config", "nvim-tree.lua")
 time([[Config for nvim-tree.lua]], false)
--- Config for: catppuccin
-time([[Config for catppuccin]], true)
-try_loadstring("\27LJ\2\nE\0\0\3\0\4\0\0066\0\0\0009\0\1\0009\0\2\0'\2\3\0B\0\2\1K\0\1\0\22catppuccin-frappe\16colorscheme\bcmd\bvim\0", "config", "catppuccin")
-time([[Config for catppuccin]], false)
 vim.cmd [[augroup packer_load_aucmds]]
 vim.cmd [[au!]]
   -- Event lazy-loads
