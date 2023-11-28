@@ -87,7 +87,7 @@ return require('packer').startup(function(use)
         requires = {'tree-nvim/nvim-web-devicons'}
     }
 
-    -- telescope
+    -- telescope, a completion framework for neovim
     use {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.x",
@@ -103,16 +103,20 @@ return require('packer').startup(function(use)
         end,
     }
 
+    -- automatically pair braces
     use 'jiangmiao/auto-pairs'
 
     -- rainbow-delimiters
     use 'HiPhish/rainbow-delimiters.nvim'
 
+    -- show colors for hex values
     use 'norcalli/nvim-colorizer.lua'
 
+    -- functions to comment out lines
     use 'terrortylor/nvim-comment'
 
     -- which-key
+    -- show options for keypresses in the bottom
     use {
         "folke/which-key.nvim",
         config = function()
@@ -121,13 +125,13 @@ return require('packer').startup(function(use)
         end
     }
 
-    -- lualine
+    -- lualine, a neat little modeline
     use {
         'nvim-lualine/lualine.nvim',
         requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     }
 
-    -- neogit
+    -- neogit, magit clone for neovim
     use {
         'NeogitOrg/neogit',
         requires = {
@@ -136,6 +140,26 @@ return require('packer').startup(function(use)
             { 'sindrets/diffview.nvim', opt = true },
             { 'ibhagwan/fzf-lua', opt = true }
         },
+    }
+
+    -- haskell support
+    use {
+        'neovimhaskell/haskell-vim',
+
+       setup = function ()
+            vim.cmd([[syntax on]])
+            vim.cmd([[filetype plugin indent on]])
+        end,
+
+        config = function ()
+            vim.cmd([[let g:haskell_enable_quantification = 1]])   -- to enable highlighting of `forall`
+            vim.cmd([[let g:haskell_enable_recursivedo = 1]])      -- to enable highlighting of `mdo` and `rec`
+            vim.cmd([[let g:haskell_enable_arrowsyntax = 1]])      -- to enable highlighting of `proc`
+            vim.cmd([[let g:haskell_enable_pattern_synonyms = 1]]) -- to enable highlighting of `pattern`
+            vim.cmd([[let g:haskell_enable_typeroles = 1]])        -- to enable highlighting of type roles
+            vim.cmd([[let g:haskell_enable_static_pointers = 1]])  -- to enable highlighting of `static`
+            vim.cmd([[let g:haskell_backpack = 1]])                -- to enable highlighting of backpack keywords
+        end,
     }
 
     if packer_bootstrap then
