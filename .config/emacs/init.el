@@ -72,111 +72,6 @@
 
 (add-to-list 'default-frame-alist '(alpha-background . 60))
 
-(global-set-key (kbd "DEL") 'backward-delete-char)
-(setq c-backspace-function 'backward-delete-char)
-
-(defun bugger/emacs-reload ()
-  (interactive)
-  (setq has-restarted t)
-  (org-babel-tangle-file (concat config-dir "config.org"))
-  (load-file (concat config-dir "init.el"))
-  (load-file (concat config-dir "init.el")))
-(global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
-
-(use-package which-key
-  :ensure t
-  :config (which-key-mode 1))
-
-(defun kill-all-buffers ()
-  (interactive)
-  (mapc 'kill-buffer (buffer-list)))
-(global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
-
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1))
-
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init))
-
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup)
-
-  (general-create-definer bugger/bind
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :global-prefix "M-SPC"))
-
-(general-define-key
- :states '(normal visual)
- "J" #'(lambda ()
-         (interactive)
-         (scroll-up-line 1)
-         (next-line)))
-(general-define-key
- :states '(normal visual)
- "K" #'(lambda ()
-         (interactive)
-         (scroll-down-line 1)
-         (previous-line)))
-
-(bugger/bind
- "." '(find-file :wk "find file")
- "f" '(:ignore t :wk "file")
- "f s" '(save-buffer :wk "save file")
- "f f" '(find-file :wk "find file")
- "f u" '(sudo-edit-find-file :wk "find file as root")
- "f U" '(sudo-edit :wk "re-open current file as root"))
-
-(bugger/bind
-  "b" '(:ignore t :wk "buffer")
-  "b b" '(consult-buffer :wk "switch to buffer")
-  "b i" '(persp-ibuffer :wk "ibuffer")
-  "b n" '(next-buffer :wk "next buffer")
-  "b p" '(previous-buffer :wk "previous buffer")
-  "b r" '(revert-buffer :wk "revert buffer"))
-
-(defun persp-switch-mail ()
-  (interactive)
-  (persp-switch "email")
-  (mu4e))
-
-(defun persp-switch-music ()
-  (interactive)
-  (persp-switch "music")
-  (emms-smart-browse))
-
-(defun persp-switch-cal ()
-  (interactive)
-  (persp-switch "calendar")
-  (org-agenda)
-  (delete-window)
-  (cfw:open-org-calendar))
-
-(bugger/bind
-  "o" '(:ignore t :wk "open")
-  "o e" '(persp-switch-mail :wk "email")
-  "o m" '(persp-switch-music :wk "music")
-  "o c" '(persp-switch-cal :wk "calendar")
-  "o t" '(vterm-toggle :wk "terminal"))
-
-(bugger/bind
-  "w" '(:ignore t :wk "windows")
-  "w w" '(other-window :wk "other window")
-  "w v" '(split-window-right :wk "split window right")
-  "w n" '(split-window-below :wk "split window below")
-  "w k" '(delete-window))
-
 (use-package org-tempo
   :ensure nil)
 
@@ -495,5 +390,114 @@
       nil)))
 
 (use-package pass)
+
+(global-set-key (kbd "DEL") 'backward-delete-char)
+(setq c-backspace-function 'backward-delete-char)
+
+(defun bugger/emacs-reload ()
+  (interactive)
+  (setq has-restarted t)
+  (org-babel-tangle-file (concat config-dir "config.org"))
+  (load-file (concat config-dir "init.el"))
+  (load-file (concat config-dir "init.el")))
+(global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
+
+(use-package which-key
+  :ensure t
+  :config (which-key-mode 1))
+
+(defun kill-all-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+(global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup)
+
+  (general-create-definer bugger/bind
+    :states '(normal insert visual emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :global-prefix "M-SPC"))
+
+(general-define-key
+ :states '(normal visual)
+ "J" #'(lambda ()
+         (interactive)
+         (scroll-up-line 1)
+         (next-line)))
+(general-define-key
+ :states '(normal visual)
+ "K" #'(lambda ()
+         (interactive)
+         (scroll-down-line 1)
+         (previous-line)))
+
+(bugger/bind
+ "." '(find-file :wk "find file")
+ "f" '(:ignore t :wk "file")
+ "f s" '(save-buffer :wk "save file")
+ "f f" '(find-file :wk "find file")
+ "f u" '(sudo-edit-find-file :wk "find file as root")
+ "f U" '(sudo-edit :wk "re-open current file as root"))
+
+(bugger/bind
+  "b" '(:ignore t :wk "buffer")
+  "b b" '(consult-buffer :wk "switch to buffer")
+  "b i" '(persp-ibuffer :wk "ibuffer")
+  "b n" '(next-buffer :wk "next buffer")
+  "b p" '(previous-buffer :wk "previous buffer")
+  "b r" '(revert-buffer :wk "revert buffer"))
+
+(defun persp-switch-program (PERSP-NAME COMMAND)
+  (interactive)
+  (persp-switch PERSP-NAME)
+  (funcall COMMAND))
+
+(defun persp-switch-mail ()
+  (interactive)
+  (persp-switch-program "mail" 'mu4e))
+
+(defun persp-switch-music ()
+  (interactive)
+  (persp-switch-program "music" 'emms-smart-browse))
+
+(defun persp-switch-cal ()
+  (interactive)
+  (persp-switch-program "calendar" #'(lambda ()
+                                       (interactive)
+                                       (org-agenda-list)
+                                       (delete-window)
+                                       (cfw:open-org-calendar))))
+
+(bugger/bind
+  "o" '(:ignore t :wk "open")
+  "o e" '(persp-switch-mail :wk "email")
+  "o m" '(persp-switch-music :wk "music")
+  "o c" '(persp-switch-cal :wk "calendar")
+  "o t" '(vterm-toggle :wk "terminal"))
+
+(bugger/bind
+  "w" '(:ignore t :wk "windows")
+  "w w" '(other-window :wk "other window")
+  "w v" '(split-window-right :wk "split window right")
+  "w n" '(split-window-below :wk "split window below")
+  "w k" '(delete-window))
 
 (setq gc-cons-threshold (* 2 1024 1024))

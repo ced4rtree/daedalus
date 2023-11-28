@@ -23,18 +23,6 @@
   - [[#beacon][Beacon]]
   - [[#visual-line-mode][Visual Line Mode]]
   - [[#window-transparency][Window Transparency]]
-- [[#keybindings][Keybindings]]
-  - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
-  - [[#reload-emacs][Reload Emacs]]
-  - [[#which-key][Which-key]]
-  - [[#kill-all-buffers][kill-all-buffers]]
-  - [[#evil][Evil]]
-  - [[#general][General]]
-  - [[#scrolling-1][Scrolling]]
-  - [[#files][Files]]
-  - [[#buffers][Buffers]]
-  - [[#open][Open]]
-  - [[#windows][Windows]]
 - [[#org-mode][Org mode]]
   - [[#org-tempo][Org tempo]]
   - [[#indentation][Indentation]]
@@ -74,6 +62,18 @@
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
   - [[#password-storage][Password Storage]]
+- [[#keybindings][Keybindings]]
+  - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
+  - [[#reload-emacs][Reload Emacs]]
+  - [[#which-key][Which-key]]
+  - [[#kill-all-buffers][kill-all-buffers]]
+  - [[#evil][Evil]]
+  - [[#general][General]]
+  - [[#scrolling-1][Scrolling]]
+  - [[#files][Files]]
+  - [[#buffers][Buffers]]
+  - [[#open][Open]]
+  - [[#windows][Windows]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -197,145 +197,6 @@ Never lose your cursor again with this beacon of light
 ** Window Transparency
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(alpha-background . 60))
-#+end_src
-* Keybindings
-** Delete a tab, not 4 spaces
-#+begin_src emacs-lisp
-  (global-set-key (kbd "DEL") 'backward-delete-char)
-  (setq c-backspace-function 'backward-delete-char)
-#+end_src
-** Reload Emacs
-It's pretty useful to just reload your config on the fly rather than have to reload every time
-#+begin_src emacs-lisp
-  (defun bugger/emacs-reload ()
-    (interactive)
-    (setq has-restarted t)
-    (org-babel-tangle-file (concat config-dir "config.org"))
-    (load-file (concat config-dir "init.el"))
-    (load-file (concat config-dir "init.el")))
-  (global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
-#+end_src
-** Which-key
-Which-key displays possible completions for keybindings you have typed in a minibuffer at the bottom of the screen
-#+begin_src emacs-lisp
-  (use-package which-key
-    :ensure t
-    :config (which-key-mode 1))
-#+end_src
-
-** kill-all-buffers
-It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
-#+begin_src emacs-lisp
-  (defun kill-all-buffers ()
-    (interactive)
-    (mapc 'kill-buffer (buffer-list)))
-  (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
-#+end_src
-** Evil
-The Extensible VI Layer for emacs is a great way to add vim keys to emacs
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-    (setq evil-want-keybinding nil)
-    :config
-    (evil-mode 1))
-#+end_src
-*** Evil Collection
-The easiest way to 'ubiquitize' evil keybindings
-#+begin_src emacs-lisp
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
-
-#+end_src
-** General
-A modern way to customize your keybindings that lets you use space as a prefix key
-#+begin_src emacs-lisp
-  (use-package general
-    :ensure t
-    :config
-    (general-evil-setup)
-
-    (general-create-definer bugger/bind
-      :states '(normal insert visual emacs)
-      :keymaps 'override
-      :prefix "SPC"
-      :global-prefix "M-SPC"))
-#+end_src
-** Scrolling
-Scroll down a line while maintaining the cursor position wherever it is
-#+begin_src emacs-lisp
-  (general-define-key
-   :states '(normal visual)
-   "J" #'(lambda ()
-           (interactive)
-           (scroll-up-line 1)
-           (next-line)))
-  (general-define-key
-   :states '(normal visual)
-   "K" #'(lambda ()
-           (interactive)
-           (scroll-down-line 1)
-           (previous-line)))
-#+end_src
-** Files
-#+begin_src emacs-lisp
-  (bugger/bind
-   "." '(find-file :wk "find file")
-   "f" '(:ignore t :wk "file")
-   "f s" '(save-buffer :wk "save file")
-   "f f" '(find-file :wk "find file")
-   "f u" '(sudo-edit-find-file :wk "find file as root")
-   "f U" '(sudo-edit :wk "re-open current file as root"))
-#+end_src
-** Buffers
-#+begin_src emacs-lisp
-  (bugger/bind
-    "b" '(:ignore t :wk "buffer")
-    "b b" '(consult-buffer :wk "switch to buffer")
-    "b i" '(persp-ibuffer :wk "ibuffer")
-    "b n" '(next-buffer :wk "next buffer")
-    "b p" '(previous-buffer :wk "previous buffer")
-    "b r" '(revert-buffer :wk "revert buffer"))
-#+end_src
-** Open
-#+begin_src emacs-lisp
-  (defun persp-switch-mail ()
-    (interactive)
-    (persp-switch "email")
-    (mu4e))
-
-  (defun persp-switch-music ()
-    (interactive)
-    (persp-switch "music")
-    (emms-smart-browse))
-
-  (defun persp-switch-cal ()
-    (interactive)
-    (persp-switch "calendar")
-    (org-agenda)
-    (delete-window)
-    (cfw:open-org-calendar))
-
-  (bugger/bind
-    "o" '(:ignore t :wk "open")
-    "o e" '(persp-switch-mail :wk "email")
-    "o m" '(persp-switch-music :wk "music")
-    "o c" '(persp-switch-cal :wk "calendar")
-    "o t" '(vterm-toggle :wk "terminal"))
-#+end_src
-** Windows
-#+begin_src emacs-lisp
-  (bugger/bind
-    "w" '(:ignore t :wk "windows")
-    "w w" '(other-window :wk "other window")
-    "w v" '(split-window-right :wk "split window right")
-    "w n" '(split-window-below :wk "split window below")
-    "w k" '(delete-window))
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
@@ -792,6 +653,149 @@ This is really just for mbsync. To actually use passwords well, see [[#password-
 Store and retrieve all your passwords with emacs!
 #+begin_src emacs-lisp
   (use-package pass)
+#+end_src
+* Keybindings
+** Delete a tab, not 4 spaces
+#+begin_src emacs-lisp
+  (global-set-key (kbd "DEL") 'backward-delete-char)
+  (setq c-backspace-function 'backward-delete-char)
+#+end_src
+** Reload Emacs
+It's pretty useful to just reload your config on the fly rather than have to reload every time
+#+begin_src emacs-lisp
+  (defun bugger/emacs-reload ()
+    (interactive)
+    (setq has-restarted t)
+    (org-babel-tangle-file (concat config-dir "config.org"))
+    (load-file (concat config-dir "init.el"))
+    (load-file (concat config-dir "init.el")))
+  (global-set-key (kbd "C-c C-r") 'bugger/emacs-reload)
+#+end_src
+** Which-key
+Which-key displays possible completions for keybindings you have typed in a minibuffer at the bottom of the screen
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode 1))
+#+end_src
+
+** kill-all-buffers
+It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
+#+begin_src emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+#+end_src
+** Evil
+The Extensible VI Layer for emacs is a great way to add vim keys to emacs
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1))
+#+end_src
+*** Evil Collection
+The easiest way to 'ubiquitize' evil keybindings
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+#+end_src
+** General
+A modern way to customize your keybindings that lets you use space as a prefix key
+#+begin_src emacs-lisp
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup)
+
+    (general-create-definer bugger/bind
+      :states '(normal insert visual emacs)
+      :keymaps 'override
+      :prefix "SPC"
+      :global-prefix "M-SPC"))
+#+end_src
+** Scrolling
+Scroll down a line while maintaining the cursor position wherever it is
+#+begin_src emacs-lisp
+  (general-define-key
+   :states '(normal visual)
+   "J" #'(lambda ()
+           (interactive)
+           (scroll-up-line 1)
+           (next-line)))
+  (general-define-key
+   :states '(normal visual)
+   "K" #'(lambda ()
+           (interactive)
+           (scroll-down-line 1)
+           (previous-line)))
+#+end_src
+** Files
+#+begin_src emacs-lisp
+  (bugger/bind
+   "." '(find-file :wk "find file")
+   "f" '(:ignore t :wk "file")
+   "f s" '(save-buffer :wk "save file")
+   "f f" '(find-file :wk "find file")
+   "f u" '(sudo-edit-find-file :wk "find file as root")
+   "f U" '(sudo-edit :wk "re-open current file as root"))
+#+end_src
+** Buffers
+#+begin_src emacs-lisp
+  (bugger/bind
+    "b" '(:ignore t :wk "buffer")
+    "b b" '(consult-buffer :wk "switch to buffer")
+    "b i" '(persp-ibuffer :wk "ibuffer")
+    "b n" '(next-buffer :wk "next buffer")
+    "b p" '(previous-buffer :wk "previous buffer")
+    "b r" '(revert-buffer :wk "revert buffer"))
+#+end_src
+** Open
+#+begin_src emacs-lisp
+  (defun persp-switch-program (PERSP-NAME COMMAND)
+    (interactive)
+    (persp-switch PERSP-NAME)
+    (funcall COMMAND))
+
+  (defun persp-switch-mail ()
+    (interactive)
+    (persp-switch-program "mail" 'mu4e))
+
+  (defun persp-switch-music ()
+    (interactive)
+    (persp-switch-program "music" 'emms-smart-browse))
+
+  (defun persp-switch-cal ()
+    (interactive)
+    (persp-switch-program "calendar" #'(lambda ()
+                                         (interactive)
+                                         (org-agenda-list)
+                                         (delete-window)
+                                         (cfw:open-org-calendar))))
+
+  (bugger/bind
+    "o" '(:ignore t :wk "open")
+    "o e" '(persp-switch-mail :wk "email")
+    "o m" '(persp-switch-music :wk "music")
+    "o c" '(persp-switch-cal :wk "calendar")
+    "o t" '(vterm-toggle :wk "terminal"))
+#+end_src
+** Windows
+#+begin_src emacs-lisp
+  (bugger/bind
+    "w" '(:ignore t :wk "windows")
+    "w w" '(other-window :wk "other window")
+    "w v" '(split-window-right :wk "split window right")
+    "w n" '(split-window-below :wk "split window below")
+    "w k" '(delete-window))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init
