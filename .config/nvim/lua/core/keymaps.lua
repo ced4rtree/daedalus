@@ -30,5 +30,5 @@ vim.keymap.set('n', '<TAB>', '==')
 vim.keymap.set('v', '<TAB>', '=')
 
 -- comments
-vim.keymap.set('n', '<C-_>', ':CommentToggle<CR>')
-vim.keymap.set('v', '<C-_>', ':\'<,\'>CommentToggle<CR>')
+vim.keymap.set('n', '<C-/>', ':CommentToggle<CR>')
+vim.keymap.set('v', '<C-/>', ':\'<,\'>CommentToggle<CR>')
