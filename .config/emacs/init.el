@@ -17,12 +17,10 @@
 (add-to-list 'default-frame-alist
              '(font . "Iosevka Nerd Font-14"))
 
-(use-package catppuccin-theme
+(use-package moe-theme
   :ensure t
   :init
-  (add-to-list 'default-frame-alist '(background-color . "black"))
-  (load-theme 'catppuccin t)
-  (set-frame-parameter nil 'background-color "black"))
+  (load-theme 'moe-dark t))
 
 (global-hl-line-mode 1)
 
@@ -70,7 +68,7 @@
 
 (global-visual-line-mode 1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 60))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (use-package org-tempo
   :ensure nil)
@@ -212,7 +210,8 @@
               c-basic-offset 4
               c-ts-mode-indent-offset 4
               c-ts-mode-indent-style 'bsd
-              c-default-style "bsd")
+              c-default-style "bsd"
+              indent-tabs-mode nil)
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (indent-tabs-mode nil)
@@ -291,6 +290,16 @@
   (global-set-key (kbd "M-n") 'drag-stuff-down))
 
 (use-package sudo-edit :ensure t)
+
+(use-package yasnippet
+  :ensure t
+  :ensure yasnippet-snippets
+  :defer t
+  :init
+  (add-hook 'prog-mode-hook #'(lambda () (interactive) (yas-minor-mode 1)))
+  (setq yas-snippet-dirs
+        '((concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
+          (concat config-dir "snippets/"))))
 
 (use-package vterm
   :defer t
@@ -410,94 +419,5 @@
   (interactive)
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
-
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1))
-
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init))
-
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup)
-
-  (general-create-definer bugger/bind
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :global-prefix "M-SPC"))
-
-(general-define-key
- :states '(normal visual)
- "J" #'(lambda ()
-         (interactive)
-         (scroll-up-line 1)
-         (next-line)))
-(general-define-key
- :states '(normal visual)
- "K" #'(lambda ()
-         (interactive)
-         (scroll-down-line 1)
-         (previous-line)))
-
-(bugger/bind
- "." '(find-file :wk "find file")
- "f" '(:ignore t :wk "file")
- "f s" '(save-buffer :wk "save file")
- "f f" '(find-file :wk "find file")
- "f u" '(sudo-edit-find-file :wk "find file as root")
- "f U" '(sudo-edit :wk "re-open current file as root"))
-
-(bugger/bind
-  "b" '(:ignore t :wk "buffer")
-  "b b" '(consult-buffer :wk "switch to buffer")
-  "b i" '(persp-ibuffer :wk "ibuffer")
-  "b n" '(next-buffer :wk "next buffer")
-  "b p" '(previous-buffer :wk "previous buffer")
-  "b r" '(revert-buffer :wk "revert buffer"))
-
-(defun persp-switch-program (PERSP-NAME COMMAND)
-  (interactive)
-  (persp-switch PERSP-NAME)
-  (funcall COMMAND))
-
-(defun persp-switch-mail ()
-  (interactive)
-  (persp-switch-program "mail" 'mu4e))
-
-(defun persp-switch-music ()
-  (interactive)
-  (persp-switch-program "music" 'emms-smart-browse))
-
-(defun persp-switch-cal ()
-  (interactive)
-  (persp-switch-program "calendar" #'(lambda ()
-                                       (interactive)
-                                       (org-agenda-list)
-                                       (delete-window)
-                                       (cfw:open-org-calendar))))
-
-(bugger/bind
-  "o" '(:ignore t :wk "open")
-  "o e" '(persp-switch-mail :wk "email")
-  "o m" '(persp-switch-music :wk "music")
-  "o c" '(persp-switch-cal :wk "calendar")
-  "o t" '(vterm-toggle :wk "terminal"))
-
-(bugger/bind
-  "w" '(:ignore t :wk "windows")
-  "w w" '(other-window :wk "other window")
-  "w v" '(split-window-right :wk "split window right")
-  "w n" '(split-window-below :wk "split window below")
-  "w k" '(delete-window))
 
 (setq gc-cons-threshold (* 2 1024 1024))

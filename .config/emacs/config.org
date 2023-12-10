@@ -55,6 +55,7 @@
   - [[#goodbye-message][Goodbye message]]
   - [[#move-lines][Move Lines]]
   - [[#sudo-edit][Sudo Edit]]
+  - [[#yasnippet][YASnippet]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#vterm][Vterm]]
   - [[#emms][EMMS]]
@@ -67,13 +68,6 @@
   - [[#reload-emacs][Reload Emacs]]
   - [[#which-key][Which-key]]
   - [[#kill-all-buffers][kill-all-buffers]]
-  - [[#evil][Evil]]
-  - [[#general][General]]
-  - [[#scrolling-1][Scrolling]]
-  - [[#files][Files]]
-  - [[#buffers][Buffers]]
-  - [[#open][Open]]
-  - [[#windows][Windows]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -112,12 +106,10 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package catppuccin-theme
+  (use-package moe-theme
     :ensure t
     :init
-    (add-to-list 'default-frame-alist '(background-color . "black"))
-    (load-theme 'catppuccin t)
-    (set-frame-parameter nil 'background-color "black"))
+    (load-theme 'moe-dark t))
 #+end_src
 
 ** Highlight line
@@ -196,7 +188,7 @@ Never lose your cursor again with this beacon of light
 #+end_src
 ** Window Transparency
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 60))
+  (add-to-list 'default-frame-alist '(alpha-background . 100))
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
@@ -417,7 +409,8 @@ Automatically pair parentheses and the like
                 c-basic-offset 4
                 c-ts-mode-indent-offset 4
                 c-ts-mode-indent-style 'bsd
-                c-default-style "bsd")
+                c-default-style "bsd"
+                indent-tabs-mode nil)
   (defvaralias 'c-basic-offset 'tab-width)
   (defvaralias 'c-ts-mode-indent-offset 'tab-width)
   (indent-tabs-mode nil)
@@ -525,6 +518,19 @@ I think that it would be pretty cute to have a little goodbye confirmation when 
 ** Sudo Edit
 #+begin_src emacs-lisp
   (use-package sudo-edit :ensure t)
+#+end_src
+** YASnippet
+An autocompletion helper that will fill in snippets for you. e.g. expand =sout= to =System.out.println()=
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :ensure yasnippet-snippets
+    :defer t
+    :init
+    (add-hook 'prog-mode-hook #'(lambda () (interactive) (yas-minor-mode 1)))
+    (setq yas-snippet-dirs
+          '((concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
+            (concat config-dir "snippets/"))))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
@@ -686,116 +692,6 @@ It can be useful to kill all of the buffers to clean up your buffer list. This f
     (interactive)
     (mapc 'kill-buffer (buffer-list)))
   (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
-#+end_src
-** Evil
-The Extensible VI Layer for emacs is a great way to add vim keys to emacs
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-    (setq evil-want-keybinding nil)
-    :config
-    (evil-mode 1))
-#+end_src
-*** Evil Collection
-The easiest way to 'ubiquitize' evil keybindings
-#+begin_src emacs-lisp
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
-
-#+end_src
-** General
-A modern way to customize your keybindings that lets you use space as a prefix key
-#+begin_src emacs-lisp
-  (use-package general
-    :ensure t
-    :config
-    (general-evil-setup)
-
-    (general-create-definer bugger/bind
-      :states '(normal insert visual emacs)
-      :keymaps 'override
-      :prefix "SPC"
-      :global-prefix "M-SPC"))
-#+end_src
-** Scrolling
-Scroll down a line while maintaining the cursor position wherever it is
-#+begin_src emacs-lisp
-  (general-define-key
-   :states '(normal visual)
-   "J" #'(lambda ()
-           (interactive)
-           (scroll-up-line 1)
-           (next-line)))
-  (general-define-key
-   :states '(normal visual)
-   "K" #'(lambda ()
-           (interactive)
-           (scroll-down-line 1)
-           (previous-line)))
-#+end_src
-** Files
-#+begin_src emacs-lisp
-  (bugger/bind
-   "." '(find-file :wk "find file")
-   "f" '(:ignore t :wk "file")
-   "f s" '(save-buffer :wk "save file")
-   "f f" '(find-file :wk "find file")
-   "f u" '(sudo-edit-find-file :wk "find file as root")
-   "f U" '(sudo-edit :wk "re-open current file as root"))
-#+end_src
-** Buffers
-#+begin_src emacs-lisp
-  (bugger/bind
-    "b" '(:ignore t :wk "buffer")
-    "b b" '(consult-buffer :wk "switch to buffer")
-    "b i" '(persp-ibuffer :wk "ibuffer")
-    "b n" '(next-buffer :wk "next buffer")
-    "b p" '(previous-buffer :wk "previous buffer")
-    "b r" '(revert-buffer :wk "revert buffer"))
-#+end_src
-** Open
-#+begin_src emacs-lisp
-  (defun persp-switch-program (PERSP-NAME COMMAND)
-    (interactive)
-    (persp-switch PERSP-NAME)
-    (funcall COMMAND))
-
-  (defun persp-switch-mail ()
-    (interactive)
-    (persp-switch-program "mail" 'mu4e))
-
-  (defun persp-switch-music ()
-    (interactive)
-    (persp-switch-program "music" 'emms-smart-browse))
-
-  (defun persp-switch-cal ()
-    (interactive)
-    (persp-switch-program "calendar" #'(lambda ()
-                                         (interactive)
-                                         (org-agenda-list)
-                                         (delete-window)
-                                         (cfw:open-org-calendar))))
-
-  (bugger/bind
-    "o" '(:ignore t :wk "open")
-    "o e" '(persp-switch-mail :wk "email")
-    "o m" '(persp-switch-music :wk "music")
-    "o c" '(persp-switch-cal :wk "calendar")
-    "o t" '(vterm-toggle :wk "terminal"))
-#+end_src
-** Windows
-#+begin_src emacs-lisp
-  (bugger/bind
-    "w" '(:ignore t :wk "windows")
-    "w w" '(other-window :wk "other window")
-    "w v" '(split-window-right :wk "split window right")
-    "w n" '(split-window-below :wk "split window below")
-    "w k" '(delete-window))
 #+end_src
 * Clean up
 Just need to put gc-cons-threshold back to a normal figure after init
