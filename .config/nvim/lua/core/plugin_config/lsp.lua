@@ -1,4 +1,5 @@
 local lsp_zero = require('lsp-zero')
+local lspconfig = require('lspconfig')
 
 lsp_zero.on_attach(function(client, bufnr)
     -- see :help lsp-zero-keybindings
@@ -25,10 +26,18 @@ require('mason-lspconfig').setup({
         lsp_zero.default_setup,
         lua_ls = function()
             local lua_opts = lsp_zero.nvim_lua_ls()
-            require('lspconfig').lua_ls.setup(lua_opts)
+            lspconfig.lua_ls.setup(lua_opts)
         end,
     }
 })
+
+lspconfig.hls.setup{
+    on_attach = on_attach,
+    root_dir = vim.loop.cwd,
+    settings = {
+        rootMarkers = {".git"}
+    }
+}
 
 lsp_zero.set_sign_icons({
     error = '✘',
