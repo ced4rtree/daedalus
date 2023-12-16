@@ -297,9 +297,9 @@
   :defer t
   :init
   (add-hook 'prog-mode-hook #'(lambda () (interactive) (yas-minor-mode 1)))
-  (setq yas-snippet-dirs
-        '((concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
-          (concat config-dir "snippets/"))))
+  (setq yas-snippet-dirs (list
+                          (concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
+                          (concat config-dir "snippets/"))))
 
 (use-package vterm
   :defer t
