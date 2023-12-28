@@ -1,9 +1,2 @@
 #+AUTHOR: [[HTTPS://github.com/bugger2][bugger2]]
 #+TITLE: My configuration files for a ton of stuff
-
-** Currently used:
-- EWW
-- Zsh
-- GNU Emacs
-- Wayfire
-- Foot
