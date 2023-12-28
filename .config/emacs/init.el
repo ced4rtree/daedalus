@@ -97,10 +97,11 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-(custom-set-faces
-  '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
-  '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
-  '(org-level-3 ((t (:inherit outline-3 :height 1.1)))))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (interactive)
+                             (set-face-attribute 'org-level-1 nil :height 1.3)
+                             (set-face-attribute 'org-level-2 nil :height 1.2)
+                             (set-face-attribute 'org-level-3 nil :height 1.1)))
 
 (use-package vertico
   :ensure t
@@ -113,6 +114,8 @@
   :after vertico)
 (use-package prescient
   :ensure t
+  :ensure vertico-prescient
+  :after vertico
   :config
   (vertico-prescient-mode 1)
   (prescient-persist-mode 1)
@@ -160,13 +163,12 @@
   :ensure t
   :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 
-(use-package company
+(use-package corfu 
   :ensure t
-  :hook (prog-mode . (lambda () (company-mode 1)))
-  :config
-  (setq company-idle-delay 0.1))
+  :hook (prog-mode . corfu-mode))
 
 (use-package rust-mode :ensure t)
+(use-package haskell-mode :ensure t)
 
 (use-package page-break-lines
   :ensure t)
@@ -398,8 +400,6 @@
         (funcall (plist-get (car result) :secret))
       nil)))
 
-(use-package pass)
-
 (global-set-key (kbd "DEL") 'backward-delete-char)
 (setq c-backspace-function 'backward-delete-char)
 
@@ -421,3 +421,16 @@
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(corfu yasnippet-snippets which-key vterm-toggle vertico-prescient toc-org sudo-edit rust-mode rainbow-mode rainbow-delimiters projectile-ripgrep persp-projectile pass page-break-lines org-bullets org-auto-tangle octicons no-littering mu4e-alert moe-theme marginalia magit haskell-mode flycheck evil-nerd-commenter emms eglot-java drag-stuff doom-modeline dired-open dashboard consult-projectile company calfw-org calfw beacon aggressive-indent)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
