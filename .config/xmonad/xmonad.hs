@@ -15,6 +15,7 @@ import XMonad.Layout.SimplestFloat
 import XMonad.Layout.Renamed
 import XMonad.Layout.Simplest
 import XMonad.Layout.SubLayouts
+import XMonad.Layout.Grid
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 
 import XMonad.Hooks.ManageDocks
@@ -52,36 +53,42 @@ mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 myTerminal = "alacritty"
 
-tall    = renamed [Replace "tall"]
-        $ smartBorders
-        $ windowNavigation
-        -- $ subLayout [] (smartBorders Simplest) <- this causes issues
-        $ mySpacing 8
-        $ Tall 1 (3/100) (1/2)
-monocle = renamed [Replace "monocle"]
-        $ noBorders
-        $ windowNavigation
-        -- $ subLayout [] (smartBorders Simplest)
-        $ Full
-floats  = renamed [Replace "floats"]
-        -- $ smartBorders
-        $ simplestFloat
+myLayoutHook =
+  avoidStruts $
+  smartBorders $
+  mySpacing 8 $
+  Tall 1 (1/3) (6/10)
+  ||| Grid
+  ||| Dwindle R CW 1.5 1.1
+  ||| Spiral R CW 1.5 1.1
+  ||| Squeeze R 1.0 1.0
+  ||| noBorders Full
 
-myLayoutHook = avoidStruts
-               $ mouseResize
-               $ windowArrange
-               $ T.toggleLayouts floats
-               $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
-  where
-    myDefaultLayout = withBorder 1 tall
-                               ||| noBorders monocle
-                               ||| floats
-
+  
 myStartupHook :: X ()
 myStartupHook = do
-  spawnOnce "autostart.sh" -- autostart shell file
-  --spawnOnce "xmobar &"
-  setWMName "LG3D" -- tricks programs into thining this is LG3D, which is the only thing java can work with for some reason
+  -- sound
+  spawnOnce "pipewire"
+  spawnOnce "pipewire-pulse"
+  spawnOnce "wireplumber"
+  spawnOnce "mpv /opt/sounds/startup-01.mp3 &"
+
+  -- x settings
+  spawn "xsetroot -cursor_name left_ptr"
+  spawn "setxkbmap -option ctrl:nocaps"
+  spawn "xset r rate 200 65"
+  spawn "natScroll.sh"
+
+  -- misc
+  spawnOnce "xcompmgr &"
+  spawnOnce "emacs --daemon &"
+  spawnOnce "feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg"
+  spawnOnce "batsignal -M 'dunstify' &"
+  spawnOnce "mpd"
+  spawn "~/.config/polybar/launch.sh"
+
+  -- make java apps work
+  setWMName "LG3D"
 
 myManageHook :: XMonad.Query (Data.Monoid.Endo WindowSet)
 myManageHook = composeAll
@@ -106,16 +113,16 @@ myKeys =
         , ("M-S-x", kill)
 
         -- application launcher
-        , ("M-p", spawn ("rofi -show drun -terminal" ++ myTerminal) >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ("M-p", spawn ("rofi -show drun -terminal " ++ myTerminal) >> spawn "mpv /opt/sounds/menu-01.mp3")
 
         -- Exit XMonad
-        , ("M-S-q", io exitSuccess >> spawn "mpv /opt/sounds/shutdown-01.mp3" >> spawn "doas shutdown now")
+        , ("M-S-q", io exitSuccess)
         -- Restart XMonad
         , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
 
         -- music control
-        , ("M-S-j",                  spawn "emacsclient --eval '(emms-pause)' || mpc toggle")
-        , ("<XF86AudioPlay>",        spawn "emacsclient --eval '(emms-pause)' || mpc toggle")
+        , ("M-S-j",                  spawn "mpc toggle")
+        , ("<XF86AudioPlay>",        spawn "mpc toggle")
         , ("M-S-h",                  spawn "mpc prev")
         , ("<XF86AudioPrev>",        spawn "mpc prev")
         , ("M-S-l",                  spawn "mpc next")
@@ -137,16 +144,16 @@ myKeys =
         , ("M-l", sendMessage Expand)
         , ("M-<Return>", windows W.swapMaster)
 
-        , ("M-1", windows $ W.view $ head myWorkspaces)
-        , ("M-2", windows $ W.view $ myWorkspaces !! 1)
-        , ("M-3", windows $ W.view $ myWorkspaces !! 2)
-        , ("M-4", windows $ W.view $ myWorkspaces !! 3)
-        , ("M-5", windows $ W.view $ myWorkspaces !! 4)
-        , ("M-6", windows $ W.view $ myWorkspaces !! 5)
-        , ("M-7", windows $ W.view $ myWorkspaces !! 6)
-        , ("M-8", windows $ W.view $ myWorkspaces !! 7)
-        , ("M-9", windows $ W.view $ myWorkspaces !! 8)
-        , ("M-0", windows $ W.view $ myWorkspaces !! 9)
+        , ("M-1", windows $ W.greedyView $ head myWorkspaces)
+        , ("M-2", windows $ W.greedyView $ myWorkspaces !! 1)
+        , ("M-3", windows $ W.greedyView $ myWorkspaces !! 2)
+        , ("M-4", windows $ W.greedyView $ myWorkspaces !! 3)
+        , ("M-5", windows $ W.greedyView $ myWorkspaces !! 4)
+        , ("M-6", windows $ W.greedyView $ myWorkspaces !! 5)
+        , ("M-7", windows $ W.greedyView $ myWorkspaces !! 6)
+        , ("M-8", windows $ W.greedyView $ myWorkspaces !! 7)
+        , ("M-9", windows $ W.greedyView $ myWorkspaces !! 8)
+        , ("M-0", windows $ W.greedyView $ myWorkspaces !! 9)
 
         , ("M-S-1", windows $ W.shift $ head myWorkspaces)
         , ("M-S-2", windows $ W.shift $ myWorkspaces !! 1)
@@ -187,9 +194,6 @@ myKeys =
         , ("M-S-s s", unGrab *> spawn "import ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
         , ("M-S-s S-s", unGrab *> spawn "import -window root ~/Pictures/$(date +%Y%m%d_%H\\h%m\\m%Ss).png")
 
-        -- change background
-        , ("M-w", spawn "feh --bg-scale --randomize ~/.local/wallpapers")
-
         -- emacs
         , ("M-e", spawn "emacsclient -a 'emacs' -c")
 
@@ -204,7 +208,7 @@ myKeys =
 
 main :: IO ()
 main = do
-        xmonad $ ewmhFullscreen $ docks . ewmh $ xmobarProp $ def {
+        xmonad $ ewmhFullscreen $ docks . ewmh $ def {
         terminal                  = myTerminal
         , focusFollowsMouse       = True
         , clickJustFocuses        = False
