@@ -34,6 +34,7 @@ import XMonad.Util.Ungrab
 import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
+import XMonad.Util.Loggers
 
 import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
@@ -50,7 +51,7 @@ import System.IO
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
-myWorkspaces = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+myWorkspaces = [ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " 10 "]
 myTerminal = "alacritty"
 
 myLayoutHook =
@@ -85,7 +86,6 @@ myStartupHook = do
   spawnOnce "feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg"
   spawnOnce "batsignal -M 'dunstify' &"
   spawnOnce "mpd"
-  spawn "~/.config/polybar/launch.sh"
 
   -- make java apps work
   setWMName "LG3D"
@@ -172,7 +172,7 @@ myKeys =
         , ("M-C-4", windows (W.shift (myWorkspaces !! 3)) >> windows (W.view $ myWorkspaces !! 3))
         , ("M-C-5", windows (W.shift (myWorkspaces !! 4)) >> windows (W.view $ myWorkspaces !! 4))
         , ("M-C-6", windows (W.shift (myWorkspaces !! 5)) >> windows (W.view $ myWorkspaces !! 5))
-        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ myWorkspaces !! 6))
+n        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ myWorkspaces !! 6))
         , ("M-C-8", windows (W.shift (myWorkspaces !! 7)) >> windows (W.view $ myWorkspaces !! 7))
         , ("M-C-9", windows (W.shift (myWorkspaces !! 8)) >> windows (W.view $ myWorkspaces !! 8))
         , ("M-C-0", windows (W.shift (myWorkspaces !! 9)) >> windows (W.view $ myWorkspaces !! 9))
@@ -206,17 +206,45 @@ myKeys =
         , ("M-S-v", killAllOtherCopies) -- return to ordinary state
         ]
 
+-- Xmobar Config
+myXmobarPP :: PP
+myXmobarPP = def
+    { ppSep             = " | "
+    , ppCurrent         = white . xmobarBorder "Bottom" "#ff0000" 4
+    , ppHidden          = lowWhite
+    , ppUrgent          = red . wrap (yellow "!") (yellow "!")
+    , ppOrder           = \[ws, layout, _, window] -> [ws, window, layout]
+    , ppExtras          = [logTitles formatFocused (\w -> "")]
+    }
+  where
+    formatFocused = wrap (red "[") (red "]") . white . ppWindow
+
+    ppWindow :: String -> String
+    ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 30
+    
+    red, white, lowWhite , yellow :: String -> String
+    red      = xmobarColor "#ff5555" ""
+    white    = xmobarColor "#f8f8f2" ""
+    yellow   = xmobarColor "#f1fa8c" ""
+    lowWhite = xmobarColor "#666666" ""
+
+myConfig = def
+  { terminal                  = myTerminal
+  , focusFollowsMouse       = True
+  , clickJustFocuses        = False
+  , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? myTerminal) (return True)
+  , modMask                 = mod4Mask
+  , workspaces              = myWorkspaces
+  , keys                    = (`mkKeymap` myKeys)
+  , layoutHook              = myLayoutHook
+  , startupHook             = myStartupHook
+  , manageHook              = myManageHook
+  }
+
 main :: IO ()
-main = do
-        xmonad $ ewmhFullscreen $ docks . ewmh $ def {
-        terminal                  = myTerminal
-        , focusFollowsMouse       = True
-        , clickJustFocuses        = False
-        , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? myTerminal) (return True)
-        , modMask                 = mod4Mask
-        , workspaces              = myWorkspaces
-        , keys                    = (`mkKeymap` myKeys)
-        , layoutHook = myLayoutHook
-        , startupHook = myStartupHook
-        , manageHook = myManageHook
-        }
+main = xmonad
+     . ewmhFullscreen
+     . ewmh
+     . docks
+     . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) defToggleStrutsKey
+     $ myConfig

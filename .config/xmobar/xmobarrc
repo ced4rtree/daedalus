@@ -1,10 +1,10 @@
 Config {
   -- appearance
-  font = "Terminus (TTF) 15"
+  font = "Iosevka Nerd Font 15"
   , additionalFonts = [ "Noto Color Emoji 10" ]
   , bgColor = "black"
   , fgColor = "#646464"
-  , position = Top
+  , position = TopH 30
   , border = BottomB
   , borderColor = "#646464"
 
@@ -19,7 +19,7 @@ Config {
   -- layout
   , sepChar = "%"
   , alignSep = "}{"
-  , template = "%XMonadLog% | %multicpu% | %memory% | %dynnetwork% }{ %alsa:default:Master% | %RJTT% | %battery% | %date%"
+  , template = "%XMonadLog% | %multicpu% | %memory% }{ %mpd% | %alsa:default:Master% | %RJTT% | %date%"
 
   -- plugins
   , commands = 
@@ -92,6 +92,8 @@ Config {
           , "--"
           , "--on", ""
           ]
+
+        , Run MPD ["-t", "<state>: <artist> - <title>"] 10
 
         , Run XMonadLog
         ]
