@@ -15,12 +15,12 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "Iosevka Nerd Font-14"))
+             '(font . "Iosevka Nerd Font Mono-14"))
 
-(use-package moe-theme
+(use-package doom-themes
   :ensure t
   :init
-  (load-theme 'moe-dark t))
+  (load-theme 'doom-one t))
 
 (global-hl-line-mode 1)
 
@@ -421,16 +421,3 @@
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
 
 (setq gc-cons-threshold (* 2 1024 1024))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(corfu yasnippet-snippets which-key vterm-toggle vertico-prescient toc-org sudo-edit rust-mode rainbow-mode rainbow-delimiters projectile-ripgrep persp-projectile pass page-break-lines org-bullets org-auto-tangle octicons no-littering mu4e-alert moe-theme marginalia magit haskell-mode flycheck evil-nerd-commenter emms eglot-java drag-stuff doom-modeline dired-open dashboard consult-projectile company calfw-org calfw beacon aggressive-indent)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

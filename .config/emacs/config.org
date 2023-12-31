@@ -100,15 +100,15 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Iosevka Nerd Font-14"))
+               '(font . "Iosevka Nerd Font Mono-14"))
 #+end_src
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package moe-theme
+  (use-package doom-themes
     :ensure t
     :init
-    (load-theme 'moe-dark t))
+    (load-theme 'doom-one t))
 #+end_src
 
 ** Highlight line
