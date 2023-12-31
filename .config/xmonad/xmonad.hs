@@ -53,7 +53,7 @@ mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spaci
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
 myWorkspaces = [ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " 10 "]
-myTerminal = "alacritty"
+myTerminal = "urxvt"
 
 myLayoutHook =
   toggleLayouts (noBorders Full) (smartBorders $ mySpacing 8 $ ResizableTall 1 (1/15) (6/10) [])
