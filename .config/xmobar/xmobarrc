@@ -19,7 +19,7 @@ Config {
   -- layout
   , sepChar = "%"
   , alignSep = "}{"
-  , template = "%UnsafeXMonadLog% }{<box type=Bottom width=3 mb=2 color=#51afef>%cpu%</box> | <box type=Bottom width=3 mb=2 color=#c678dd>%memory%</box> | <box type=Bottom width=3 mb=2 color=#3071db>%mpd%</box> | <box type=Bottom width=3 mb=2 color=#5699af>%alsa:default:Master%</box> | <box type=Bottom width=3 mb=2 color=#98be65>%RJTT%</box> | <box type=Bottom width=3 mb=2 color=#19a1e1>%date%</box> "
+  , template = "%UnsafeXMonadLog% } <box type=Bottom width=3 mb=2 color=#3071db><fc=#3071db></fc>  %mpd%</box> {<box type=Bottom width=3 mb=2 color=#51afef><fc=#51afef> </fc> %cpu%</box> | <box type=Bottom width=3 mb=2 color=#c678dd><fc=#c678dd>󰘚 </fc> %memory%</box> | <box type=Bottom width=3 mb=2 color=#5699af><fc=#5699af> </fc> %alsa:default:Master%</box> | <box type=Bottom width=3 mb=2 color=#98be65>%RJTT%</box> | <box type=Bottom width=3 mb=2 color=#19a1e1><fc=#19a1e1>󰥔  </fc>%date%</box> "
 
   -- plugins
   , commands = 
@@ -37,7 +37,7 @@ Config {
                              ] 10
 
         -- cpu activity monitor
-        , Run Cpu       [ "--template" , "  <total>%"
+        , Run Cpu       [ "--template" , "<total>%"
                         , "--Low"      , "50"         -- units: %
                         , "--High"     , "85"         -- units: %
                         , "--low"      , "#ABABAB"
@@ -55,7 +55,7 @@ Config {
                              ] 50
                           
         -- memory usage monitor
-        , Run Memory         [ "--template" ,"󰘚  <usedratio>%"
+        , Run Memory         [ "--template" ,"<usedratio>%"
                              , "--Low"      , "20"        -- units: %
                              , "--High"     , "90"        -- units: %
                              , "--low"      , "#ABABAB"
@@ -82,12 +82,12 @@ Config {
 
         -- time and date indicator 
         --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
-        , Run Date "<fn=1>🕜</fn> <fc=#ABABAB>%b %d (%a) %I:%M%p</fc>" "date" 100
+        , Run Date "<fc=#ABABAB>%b %d (%a) %I:%M%p</fc>" "date" 100
 
-        , Run MPD [ "--template", "<fn=1>🎵</fn> <artist> - <title>" ] 10
+        , Run MPD [ "--template", "<state>: <artist> - <title>" ] 10
 
         , Run Alsa "default" "Master"
-          [ "--template", "<fn=1>🔊</fn> <volumestatus>"
+          [ "--template", "<volumestatus>"
           , "--suffix"  , "True"
           , "--"
           , "--on", ""
