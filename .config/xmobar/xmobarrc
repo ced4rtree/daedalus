@@ -19,7 +19,7 @@ Config {
   -- layout
   , sepChar = "%"
   , alignSep = "}{"
-  , template = "%UnsafeXMonadLog% }{<box type=Bottom width=3 mb=2 color=#51afef> %cpu%</box> | <box type=Bottom width=3 mb=2 color=#c678dd>%memory%</box> | <box type=Bottom width=3 mb=2 color=#3071db>%mpd%</box> | <box type=Bottom width=3 mb=2 color=#5699af>%alsa:default:Master%</box> | <box type=Bottom width=3 mb=2 color=#98be65>%RJTT%</box> | <box type=Bottom width=3 mb=2 color=#19a1e1>%date%</box> "
+  , template = "%UnsafeXMonadLog% }{<box type=Bottom width=3 mb=2 color=#51afef>%cpu%</box> | <box type=Bottom width=3 mb=2 color=#c678dd>%memory%</box> | <box type=Bottom width=3 mb=2 color=#3071db>%mpd%</box> | <box type=Bottom width=3 mb=2 color=#5699af>%alsa:default:Master%</box> | <box type=Bottom width=3 mb=2 color=#98be65>%RJTT%</box> | <box type=Bottom width=3 mb=2 color=#19a1e1>%date%</box> "
 
   -- plugins
   , commands = 
