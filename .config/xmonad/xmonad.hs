@@ -35,6 +35,7 @@ import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
 import XMonad.Util.Loggers
+import XMonad.Util.ClickableWorkspaces
 
 import XMonad.Actions.MouseResize
 import XMonad.Actions.NoBorders
@@ -55,23 +56,21 @@ myWorkspaces = [ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", 
 myTerminal = "alacritty"
 
 myLayoutHook =
-  avoidStruts $
-  smartBorders $
-  mySpacing 8 $
-  Tall 1 (1/3) (6/10)
-  ||| Grid
-  ||| Dwindle R CW 1.5 1.1
-  ||| Spiral R CW 1.5 1.1
-  ||| Squeeze R 1.0 1.0
-  ||| noBorders Full
+  toggleLayouts (noBorders Full) (smartBorders $ mySpacing 8 $ ResizableTall 1 (1/15) (6/10) [])
+  ||| (smartBorders $
+       mySpacing 8 $
+        Grid
+        ||| Dwindle R CW 1.5 1.1
+        ||| Spiral R CW 1.5 1.1
+        ||| Squeeze R 1.0 1.0)
 
   
 myStartupHook :: X ()
 myStartupHook = do
   -- sound
-  spawnOnce "pipewire"
-  spawnOnce "pipewire-pulse"
-  spawnOnce "wireplumber"
+  spawnOnce "pipewire &"
+  spawnOnce "pipewire-pulse &"
+  spawnOnce "wireplumber &"
   spawnOnce "mpv /opt/sounds/startup-01.mp3 &"
 
   -- x settings
@@ -82,6 +81,7 @@ myStartupHook = do
 
   -- misc
   spawnOnce "xcompmgr &"
+  spawnOnce "/usr/lib/polkit-kde-authentication-agent-1 &"
   spawnOnce "emacs --daemon &"
   spawnOnce "feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg"
   spawnOnce "batsignal -M 'dunstify' &"
@@ -142,6 +142,8 @@ myKeys =
         , ("M-k", windows W.focusUp)
         , ("M-h", sendMessage Shrink)
         , ("M-l", sendMessage Expand)
+        , ("M-z", sendMessage MirrorShrink)
+        , ("M-a", sendMessage MirrorExpand)
         , ("M-<Return>", windows W.swapMaster)
 
         , ("M-1", windows $ W.greedyView $ head myWorkspaces)
@@ -172,7 +174,7 @@ myKeys =
         , ("M-C-4", windows (W.shift (myWorkspaces !! 3)) >> windows (W.view $ myWorkspaces !! 3))
         , ("M-C-5", windows (W.shift (myWorkspaces !! 4)) >> windows (W.view $ myWorkspaces !! 4))
         , ("M-C-6", windows (W.shift (myWorkspaces !! 5)) >> windows (W.view $ myWorkspaces !! 5))
-n        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ myWorkspaces !! 6))
+        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ myWorkspaces !! 6))
         , ("M-C-8", windows (W.shift (myWorkspaces !! 7)) >> windows (W.view $ myWorkspaces !! 7))
         , ("M-C-9", windows (W.shift (myWorkspaces !! 8)) >> windows (W.view $ myWorkspaces !! 8))
         , ("M-C-0", windows (W.shift (myWorkspaces !! 9)) >> windows (W.view $ myWorkspaces !! 9))
@@ -182,7 +184,7 @@ n        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ 
         -- Force a floating window back to tiling
         , ("M-t", withFocused $ windows . W.sink)
         -- Toggle fullscreen
-        , ("M-m", sendMessage (MT.Toggle NBFULL) >> sendMessage ToggleStruts) -- >> spawn "polybar-msg cmd toggle")
+        , ("M-m", sendMessage (Toggle "Full") >> sendMessage ToggleStruts) -- >> spawn "polybar-msg cmd toggle")
         -- Toggle floating
         , ("M-f", sendMessage $ T.Toggle "floats")
         -- Toggle bar
@@ -204,13 +206,16 @@ n        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ 
         -- Copy Window functionality
         , ("M-v", windows copyToAll) -- make window always visible
         , ("M-S-v", killAllOtherCopies) -- return to ordinary state
+
+        -- logout
+        , ("M-<Escape>", spawn "archlinux-logout")
         ]
 
 -- Xmobar Config
 myXmobarPP :: PP
 myXmobarPP = def
     { ppSep             = " | "
-    , ppCurrent         = white . xmobarBorder "Bottom" "#ff0000" 4
+    , ppCurrent         = white . xmobarBorder "VBoth" "#ff0000" 2
     , ppHidden          = lowWhite
     , ppUrgent          = red . wrap (yellow "!") (yellow "!")
     , ppOrder           = \[ws, layout, _, window] -> [ws, window, layout]
@@ -220,7 +225,7 @@ myXmobarPP = def
     formatFocused = wrap (red "[") (red "]") . white . ppWindow
 
     ppWindow :: String -> String
-    ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 30
+    ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 60
     
     red, white, lowWhite , yellow :: String -> String
     red      = xmobarColor "#ff5555" ""
@@ -246,5 +251,5 @@ main = xmonad
      . ewmhFullscreen
      . ewmh
      . docks
-     . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) defToggleStrutsKey
+     . withEasySB (statusBarProp "xmobar" (clickablePP myXmobarPP)) defToggleStrutsKey
      $ myConfig
