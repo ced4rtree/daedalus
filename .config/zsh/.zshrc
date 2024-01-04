@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh//.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 #!/usr/bin/env zsh
 
 # Enable colors and change prompt:
@@ -6,6 +13,11 @@ autoload -U colors && colors
 setopt PROMPT_SUBST AUTO_CD CDABLE_VARS CHASE_DOTS AUTO_LIST AUTO_MENU COMPLETE_ALIASES INC_APPEND_HISTORY 
 unsetopt BEEP HIST_BEEP CHASE_LINKS
 zle_highlight=('paste:none')
+
+# urxvt likes to have random bad formatting
+if [ "$(cat /proc/$PPID/comm)" = "urxvt" ]; then
+	clear
+fi
 
 # set the prompt
 PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
@@ -68,14 +80,14 @@ if [ -f /etc/bash.command-not-found ]; then
     . /etc/bash.command-not-found
 fi
 
-# urxvt likes to have random bad formatting
-if [ "$(cat /proc/$PPID/comm)" = "urxvt" ]; then
-	clear
-fi
-
 if [ -r "/opt/shell-color-scripts" ]; then
 	colorscript random
 fi
 
+source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh//.p10k.zsh.
+[[ ! -f ~/.config/zsh//.p10k.zsh ]] || source ~/.config/zsh//.p10k.zsh
