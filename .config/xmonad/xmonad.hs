@@ -87,6 +87,8 @@ myStartupHook = do
   spawnOnce "batsignal -M 'dunstify' &"
   spawnOnce "mpd"
 
+  spawnOnce "~/.config/xmonad/trayer.sh &"
+
   -- make java apps work
   setWMName "LG3D"
 
@@ -105,7 +107,8 @@ myManageHook = composeAll
   , isFullscreen                                       --> doFullFloat
   ] <+> manageDocks
 
-myKeys =
+-- myKeys :: XConfig -> List
+myKeys conf =
         -- launch a terminal
         [ ("M-S-<Return>", windows W.focusMaster >> spawn myTerminal)
 
@@ -145,42 +148,15 @@ myKeys =
         , ("M-z", sendMessage MirrorShrink)
         , ("M-a", sendMessage MirrorExpand)
         , ("M-<Return>", windows W.swapMaster)
+        ] ++
 
-        , ("M-1", windows $ W.greedyView $ head myWorkspaces)
-        , ("M-2", windows $ W.greedyView $ myWorkspaces !! 1)
-        , ("M-3", windows $ W.greedyView $ myWorkspaces !! 2)
-        , ("M-4", windows $ W.greedyView $ myWorkspaces !! 3)
-        , ("M-5", windows $ W.greedyView $ myWorkspaces !! 4)
-        , ("M-6", windows $ W.greedyView $ myWorkspaces !! 5)
-        , ("M-7", windows $ W.greedyView $ myWorkspaces !! 6)
-        , ("M-8", windows $ W.greedyView $ myWorkspaces !! 7)
-        , ("M-9", windows $ W.greedyView $ myWorkspaces !! 8)
-        , ("M-0", windows $ W.greedyView $ myWorkspaces !! 9)
-
-        , ("M-S-1", windows $ W.shift $ head myWorkspaces)
-        , ("M-S-2", windows $ W.shift $ myWorkspaces !! 1)
-        , ("M-S-3", windows $ W.shift $ myWorkspaces !! 2)
-        , ("M-S-4", windows $ W.shift $ myWorkspaces !! 3)
-        , ("M-S-5", windows $ W.shift $ myWorkspaces !! 4)
-        , ("M-S-6", windows $ W.shift $ myWorkspaces !! 5)
-        , ("M-S-7", windows $ W.shift $ myWorkspaces !! 6)
-        , ("M-S-8", windows $ W.shift $ myWorkspaces !! 7)
-        , ("M-S-9", windows $ W.shift $ myWorkspaces !! 8)
-        , ("M-S-0", windows $ W.shift $ myWorkspaces !! 9)
-
-        , ("M-C-1", windows (W.shift (head myWorkspaces)) >> windows (W.view $ head myWorkspaces))
-        , ("M-C-2", windows (W.shift (myWorkspaces !! 1)) >> windows (W.view $ myWorkspaces !! 1))
-        , ("M-C-3", windows (W.shift (myWorkspaces !! 2)) >> windows (W.view $ myWorkspaces !! 2))
-        , ("M-C-4", windows (W.shift (myWorkspaces !! 3)) >> windows (W.view $ myWorkspaces !! 3))
-        , ("M-C-5", windows (W.shift (myWorkspaces !! 4)) >> windows (W.view $ myWorkspaces !! 4))
-        , ("M-C-6", windows (W.shift (myWorkspaces !! 5)) >> windows (W.view $ myWorkspaces !! 5))
-        , ("M-C-7", windows (W.shift (myWorkspaces !! 6)) >> windows (W.view $ myWorkspaces !! 6))
-        , ("M-C-8", windows (W.shift (myWorkspaces !! 7)) >> windows (W.view $ myWorkspaces !! 7))
-        , ("M-C-9", windows (W.shift (myWorkspaces !! 8)) >> windows (W.view $ myWorkspaces !! 8))
-        , ("M-C-0", windows (W.shift (myWorkspaces !! 9)) >> windows (W.view $ myWorkspaces !! 9))
+        [ ("M-" ++ modKey2 ++ [keyChar], windows $ windowOperation workspaceId)
+        | (workspaceId, keyChar) <- zip (workspaces conf) "123456789"
+        , (windowOperation, modKey2) <- [(W.view, ""), (W.shift, "S-"), (W.view, "C-"), (W.shift, "C-")]
+        ] ++
 
         -- Scroll through the layouts
-        , ("M-<Space>", sendMessage NextLayout)
+        [ ("M-<Space>", sendMessage NextLayout)
         -- Force a floating window back to tiling
         , ("M-t", withFocused $ windows . W.sink)
         -- Toggle fullscreen
@@ -225,7 +201,7 @@ myXmobarPP = def
     formatFocused = wrap (red "[") (red "]") . white . ppWindow
 
     ppWindow :: String -> String
-    ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 60
+    ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 45
     
     red, white, lowWhite , yellow :: String -> String
     red      = xmobarColor "#ff5555" ""
@@ -240,11 +216,13 @@ myConfig = def
   , handleEventHook         = windowedFullscreenFixEventHook <> swallowEventHook (className =? myTerminal) (return True)
   , modMask                 = mod4Mask
   , workspaces              = myWorkspaces
-  , keys                    = (`mkKeymap` myKeys)
+  -- , keys                    = myKeys
   , layoutHook              = myLayoutHook
   , startupHook             = myStartupHook
   , manageHook              = myManageHook
   }
+
+myConfig' = myConfig `additionalKeysP` (myKeys myConfig)
 
 main :: IO ()
 main = xmonad
@@ -252,4 +230,4 @@ main = xmonad
      . ewmh
      . docks
      . withEasySB (statusBarProp "xmobar" (clickablePP myXmobarPP)) defToggleStrutsKey
-     $ myConfig
+     $ myConfig'
