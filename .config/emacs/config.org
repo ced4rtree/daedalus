@@ -105,10 +105,10 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package doom-themes
+  (use-package kaolin-themes
     :ensure t
     :init
-    (load-theme 'doom-one t))
+    (load-theme 'kaolin-aurora t))
 #+end_src
 
 ** Highlight line

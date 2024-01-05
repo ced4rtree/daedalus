@@ -17,10 +17,10 @@
 (add-to-list 'default-frame-alist
              '(font . "Iosevka Nerd Font Mono-14"))
 
-(use-package doom-themes
+(use-package kaolin-themes
   :ensure t
   :init
-  (load-theme 'doom-one t))
+  (load-theme 'kaolin-aurora t))
 
 (global-hl-line-mode 1)
 
