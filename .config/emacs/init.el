@@ -15,7 +15,7 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "Iosevka Nerd Font Mono-14"))
+             '(font . "Iosevka Nerd Font-14"))
 
 (use-package kaolin-themes
   :ensure t
