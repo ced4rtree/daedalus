@@ -28,6 +28,7 @@ alias ll='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
 alias grep='grep --color=auto'
+alias hx='helix'
 
 # History in cache directory:
 HISTSIZE=10000
@@ -80,14 +81,16 @@ if [ -f /etc/bash.command-not-found ]; then
     . /etc/bash.command-not-found
 fi
 
-if [ -r "/opt/shell-color-scripts" ]; then
+if [ -r "/usr/local/opt/pokemon-colorscripts" ]; then
+	pokemon-colorscripts -r --no-title
+elif [ -r "/opt/shell-color-scripts" ]; then
 	colorscript random
 fi
 
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
-# Load zsh-syntax-highlighting; should be last.
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
-
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh//.p10k.zsh.
 [[ ! -f ~/.config/zsh//.p10k.zsh ]] || source ~/.config/zsh//.p10k.zsh
+
+# Load zsh-syntax-highlighting; should be last.
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
