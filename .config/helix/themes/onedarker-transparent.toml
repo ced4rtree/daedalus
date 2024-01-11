@@ -1,0 +1,7 @@
+inherits = "onedarker"
+"ui.background" = {}
+"ui.statusline" = { fg = "white" }
+"ui.statusline.inactive" = { fg = "white" }
+"ui.help" = { fg = "white" }
+"ui.popup" = {}
+"ui.menu" = { fg = "white" }
