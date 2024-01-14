@@ -17,10 +17,10 @@
 (add-to-list 'default-frame-alist
              '(font . "Iosevka Nerd Font-14"))
 
-(use-package kaolin-themes
+(use-package doom-themes
   :ensure t
   :init
-  (load-theme 'kaolin-aurora t))
+  (load-theme 'doom-one t))
 
 (global-hl-line-mode 1)
 
@@ -68,7 +68,7 @@
 
 (global-visual-line-mode 1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 100))
+(add-to-list 'default-frame-alist '(alpha-background .  80))
 
 (use-package org-tempo
   :ensure nil)
@@ -197,6 +197,7 @@
                           (agenda . 5)))
   (setq dashboard-center-content t)
   (setq dashboard-projects-switch-function 'projectile-persp-switch-project)
+  (setq dashboard-startup-banner (concat config-dir "dash.txt"))
   :config
   (dashboard-setup-startup-hook))
 

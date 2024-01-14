@@ -105,10 +105,10 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package kaolin-themes
+  (use-package doom-themes
     :ensure t
     :init
-    (load-theme 'kaolin-aurora t))
+    (load-theme 'doom-one t))
 #+end_src
 
 ** Highlight line
@@ -187,7 +187,7 @@ Never lose your cursor again with this beacon of light
 #+end_src
 ** Window Transparency
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 100))
+  (add-to-list 'default-frame-alist '(alpha-background .  80))
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
@@ -386,6 +386,7 @@ Show the recent files
                             (agenda . 5)))
     (setq dashboard-center-content t)
     (setq dashboard-projects-switch-function 'projectile-persp-switch-project)
+    (setq dashboard-startup-banner (concat config-dir "dash.txt"))
     :config
     (dashboard-setup-startup-hook))
 #+end_src
