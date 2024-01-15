@@ -32,7 +32,11 @@
   - [[#org-bullets][Org Bullets]]
   - [[#heading-sizes][Heading Sizes]]
 - [[#vertico][Vertico]]
+  - [[#marginalia][Marginalia]]
+  - [[#prescient][Prescient]]
+  - [[#consult][Consult]]
 - [[#programming-help][Programming Help]]
+  - [[#languages][Languages]]
   - [[#eglot][Eglot]]
   - [[#magit][Magit]]
   - [[#flycheck][Flycheck]]
@@ -40,14 +44,12 @@
   - [[#aggressive-indentation][Aggressive Indentation]]
   - [[#commenting][Commenting]]
   - [[#corfu][Corfu]]
-  - [[#languages][Languages]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#dashboard][Dashboard]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#electric-pairing][Electric Pairing]]
   - [[#tabbing][Tabbing]]
   - [[#too-lazy-to-type-yes][Too lazy to type yes]]
-  - [[#too-lazy-to-type-esc-esc-esc-or-c-g][Too lazy to type ESC-ESC-ESC or C-g]]
   - [[#perspectives][Perspectives]]
   - [[#dired][Dired]]
   - [[#auto-backup][Auto Backup]]
@@ -66,7 +68,7 @@
   - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
   - [[#reload-emacs][Reload Emacs]]
   - [[#which-key][Which-key]]
-  - [[#kill-all-buffers][kill-all-buffers]]
+  - [[#kill-alll-buffers][kill-alll-buffers]]
 - [[#clean-up][Clean up]]
 
 * Make .emacs.d clean again!
@@ -172,6 +174,8 @@ Tree sitter is now built into emacs as of Emacs 29
   (add-hook 'java-mode-hook 'java-ts-mode)
   (add-hook 'c-mode-hook 'c-ts-mode)
   (add-hook 'c++-mode-hook 'c++-ts-mode)
+  (with-eval-after-load 'rust-mode
+    (add-hook 'rust-mode 'rust-ts-mode))
 #+end_src
 ** Beacon
 Never lose your cursor again with this beacon of light
@@ -182,6 +186,7 @@ Never lose your cursor again with this beacon of light
     (beacon-mode 1))
 #+end_src
 ** Visual Line Mode
+I want lines to wrap around onto another line rather than spilling off the screen, and I want to be able to press =C-n= to go to the line that's spilling over
 #+begin_src emacs-lisp
   (global-visual-line-mode 1)
 #+end_src
@@ -199,6 +204,7 @@ A simple tool that simplifies writing source code blocks to just typing <s TAB, 
 #+end_src
 
 ** Indentation
+Get some nice indentation so that 1st level headings are shown left-most, and text gets progressively indented to the right as the level of the heading gets lower
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-hide-leading-stars nil)
@@ -212,8 +218,10 @@ This automatically generates a table of contents under any heading tagged :TOC:
     :hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
 #+end_src
 ** Babel settings
+Babel is the tool that lets you compile org documents (like this one!) into actual files.
+
+Here, I set up auto tangle, which will do that compilation automatically upon save
 #+begin_src emacs-lisp
-    ;; automatically tangle org files
     (use-package org-auto-tangle
       :ensure t
       :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
@@ -249,17 +257,30 @@ Make the headings larger than ordinary text
                                (set-face-attribute 'org-level-3 nil :height 1.1)))
 #+end_src
 * Vertico
-A simple and efficient completion framework for emacs
+A simple and efficient minibuffer completion framework for emacs
 #+begin_src emacs-lisp
   (use-package vertico
     :ensure t
     :config
     (vertico-mode 1))
+#+end_src
+
+** Marginalia
+This adds extra little details to what is shown in the minibuffer.
+For example, it will show the description for a function next to function name when calling functions interactively through =M-x=
+#+begin_src emacs-lisp
   (use-package marginalia
     :ensure t
     :config
     (marginalia-mode 1)
     :after vertico)
+#+end_src
+
+** Prescient
+Unlock the powers of psychic history with prescient! It will remember what commands you have issued, and order interactive lists in a way such that the commands used most frequently pop up at the top.
+
+Cool thing about this is that it's not just for vertico, or even just minibuffer completion frameworks in general! It has packages for company, corfu, ivy, and more!
+#+begin_src emacs-lisp
   (use-package prescient
     :ensure t
     :ensure vertico-prescient
@@ -268,24 +289,42 @@ A simple and efficient completion framework for emacs
     (vertico-prescient-mode 1)
     (prescient-persist-mode 1)
     :after vertico)
+#+end_src
+
+** Consult
+Even more interactive minibuffer? Yes please!
+
+This will let you preview options as you hover over them in vertico.
+For example, with =M-x consult-themes RET= you can get a preview of themes as you hover over them
+#+begin_src emacs-lisp
   (use-package consult
     :ensure t
     :after vertico)
 #+end_src
 * Programming Help
 Things like eglot and projectile are a huge help when programming
+** Languages
+#+begin_src emacs-lisp
+  (use-package rust-mode :ensure t)
+  (use-package haskell-mode :ensure t)
+#+end_src
 ** Eglot
 A lightweight LSP implementation built into emacs (as of emacs 29)
+
+This will go though your project and let you do some pretty neat things, like rename variables across the project, follow definitions of functions/variables, find references to a function/variable, and much more
 #+begin_src emacs-lisp
-  (add-hook 'c-mode-hook #'eglot-ensure)
-  (add-hook 'c++-mode-hook #'eglot-ensure)
-  (add-hook 'rust-mode #'eglot-ensure)
+  (when (< emacs-major-version 29)
+    (use-package eglot :ensure t))
+  (add-hook 'c-ts-mode-hook #'eglot-ensure)
+  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+  (add-hook 'rust-ts-mode #'eglot-ensure)
+  (add-hook 'haskell-mode #'eglot-ensure)
   (setq eglot-autoshutdown t)
   (use-package eglot-java
-    :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1))))
+    :hook (java-ts-mode . eglot-ensure))
 #+end_src
 ** Magit
-The best way to use git there is
+A git porcelain for emacs to let you use the power of emacs within git
 #+begin_src emacs-lisp
   (use-package magit
     :defer t
@@ -295,25 +334,34 @@ The best way to use git there is
 Flycheck is a program that enables essentially 'spell checking' your code
 #+begin_src emacs-lisp
   (use-package flycheck
-    :defer t
     :ensure t
     :config
     (global-flycheck-mode))
 #+end_src
 
 ** Projectile
-Projectile manages projects
+Projectile manages projects, so you can easily switch back and forth between multiple different projects
 #+begin_src emacs-lisp
   (use-package projectile
     :ensure t
     :config
-    (projectile-mode +1)
-    (setq projectile-))
+    (projectile-mode +1))
+#+end_src
 
+*** Projectile-ripgrep
+search through your projects for keywords even faster with =M-x projectile-ripgrep RET=
+
+depends on ripgrep being installed on your computer
+#+begin_src emacs-lisp
   (use-package projectile-ripgrep
     :ensure t
+    :ensure-system-package rg
     :after projectile)
+#+end_src
 
+*** Consult-projectile
+Projectile integration for consult so you can scroll through your projects with ease
+#+begin_src emacs-lisp
   (use-package consult-projectile
     :ensure t
     :after projectile
@@ -337,27 +385,17 @@ Neat package that gives some nice commenting functions
 #+end_src
 ** Corfu
 A simple integration of some neat autocomplete functionality for emacs. Like vertico but in a more general case, when typing in an ordinary buffer.
+
+To invoke autocomplete, type =C-M-i= while typing a buffer (works best in an eglot-controlled buffer)
 #+begin_src emacs-lisp
   (use-package corfu 
     :ensure t
     :hook (prog-mode . corfu-mode))
 #+end_src
-** Languages
-#+begin_src emacs-lisp
-  (use-package rust-mode :ensure t)
-  (use-package haskell-mode :ensure t)
-#+end_src
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
 ** Dashboard
 *** Dependencies
-
-Nice little lines
-#+begin_src emacs-lisp
-  (use-package page-break-lines
-    :ensure t)
-#+end_src
-
 Show the recent files
 #+begin_src emacs-lisp
   (use-package recentf
@@ -368,15 +406,11 @@ Show the recent files
     (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 #+end_src
 
-Icons
-#+begin_src emacs-lisp
-  (use-package all-the-icons :ensure t)
-#+end_src
-
 *** The actual dashboard
 #+begin_src emacs-lisp
   (use-package dashboard
-    :after page-break-lines
+    :ensure page-break-lines
+    :ensure all-the-icons
     :after projectile
     :after recentf
     :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
@@ -385,13 +419,13 @@ Icons
     :init
     (setq dashboard-page-separator "
   
-  "
-          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
+  " ;; tell dashboard to use nice looking lines for section seperation
+          
+          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")) ;; tell emacs to use dashboard as startup screen
           dashboard-items '((recents . 5)
                             (projects . 5)
                             (agenda . 5))
           dashboard-center-content t
-          ashboard-projects-switch-function 'projectile-persp-switch-project
           dashboard-startup-banner (concat config-dir "dash.txt")
           dashboard-icon-type 'all-the-icons
           dashboard-set-navigator t
@@ -403,7 +437,7 @@ Icons
     (dashboard-setup-startup-hook))
 #+end_src
 ** Keeping emacs clean
-Some things \*cough cough auto-save-list\* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
+Some things ,*cough cough auto-save-list,* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
 #+begin_src emacs-lisp
   (use-package no-littering
     :ensure t)
@@ -418,6 +452,7 @@ Automatically pair parentheses and the like
 #+end_src
 
 ** Tabbing
+Some tab settings to use 4 spaces for tabs
 #+begin_src emacs-lisp
   (setq-default tab-width 4
                 c-basic-offset 4
@@ -431,13 +466,9 @@ Automatically pair parentheses and the like
 #+end_src
 
 ** Too lazy to type yes
+Will map all calls to the =yes-or-no-p= function to =y-or-n-p= so I can just type one letter instead of two or three
 #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
-#+end_src
-
-** Too lazy to type ESC-ESC-ESC or C-g
-#+begin_src emacs-lisp
-  (global-set-key (kbd "<escape>") 'abort-minibuffers)
 #+end_src
 
 ** Perspectives
@@ -453,7 +484,11 @@ Like workspaces inside of emacs to clean up the buffer list
     (setq persp-initial-frame-name "Main")
     (setq persp-mode-prefix-key "C-c p")
     (persp-mode))
+#+end_src
 
+*** Persp-projectile
+When opening a project, I want to automatically switch to a new perspective, and this does that
+#+begin_src emacs-lisp
   (use-package persp-projectile
     :ensure t
     :after perspective
@@ -461,26 +496,19 @@ Like workspaces inside of emacs to clean up the buffer list
     :config
     (defvaralias 'projectile-switch-project #'projectile-persp-switch-project))
 #+end_src
-*** Projectile integration
-It'd be really nice if you could assign perspectives to projects, right? It is, so I did that.
-#+begin_src emacs-lisp
-  (use-package persp-projectile
-    :ensure t
-    :bind (("C-x p p" . projectile-persp-switch-project))
-    :after perspective
-    :after projectile)
-#+end_src
 ** Dired
+Dired, the DIRectory EDitor is a fantastic file manager built straight into emacs
+
 Dired has some nice extensions that let you automatically open in another program
 #+begin_src emacs-lisp
   (use-package dired-open
     :ensure t
     :after dired
     :config
-    (setq dired-open-extensions '(("gif" . "nsxiv")
+    (setq dired-open-extensions '(("gif" . "mpv --loop")
                                   ("mkv" . "mpv")
                                   ("mp4" . "mpv")
-                                  ("mp3" . "mpv")))
+                                  ("mp3" . "foot -e mpv")))
     :bind (:map dired-mode-map
                 ("f" . dired-open-file)))
 #+end_src
@@ -528,15 +556,14 @@ I think that it would be pretty cute to have a little goodbye confirmation when 
                                       (save-buffers-kill-terminal))))
 #+end_src
 ** Move Lines
+Easily move lines around using =M-p= and =M-n=
 #+begin_src emacs-lisp
   (use-package drag-stuff
     :ensure t
-    :init (drag-stuff-global-mode 1)
-    :config
-    (global-set-key (kbd "M-p") 'drag-stuff-up)
-    (global-set-key (kbd "M-n") 'drag-stuff-down))
+    :init (drag-stuff-global-mode 1))
 #+end_src
 ** Sudo Edit
+Tired of wanting to edit a root file with your emacs config but not having permission? Well no longer, with =M-x sudo-edit-find-file RET=!
 #+begin_src emacs-lisp
   (use-package sudo-edit :ensure t)
 #+end_src
@@ -606,17 +633,24 @@ The Emacs Multimedia System lets you use emacs as a music player
     (setq emms-player-mpd-server-port "6600")
     (setq mpc-host "localhost:6600")
     :bind (("C-c m m" . emms-smart-browse)
+           ("C-c m n" . emms-next)
+           ("C-c m p" . emms-previous)
+           ("C-c m t" . emms-toggle)
+           ("C-c m z" . emms-shuffle)
+           ("C-c m f" . emms-seek-forward)
+           ("C-c m b" . emms-seek-backward)
+           ("C-c m c" . emms-player-mpd-connect)
+           ("C-c m r" . emms-player-mpd-update-all-reset-cache)
+
            :map emms-playlist-mode-map
            ("Z" . emms-shuffle)))
 #+end_src
-
 ** Calfw
-A calendar within emacs!
+A calendar within emacs! This takes the data from org-agenda and visualizes it in a useful manner, similar to that of something like google calendar
 #+begin_src emacs-lisp
-  (use-package calfw
-    :ensure t)
   (use-package calfw-org
-    :ensure
+    :ensure t
+    :ensure calfw
     :after calfw
     :config
     ;; hotfix: incorrect time range display
@@ -642,14 +676,20 @@ A calendar within emacs!
 
 ** MU4E
 Maildir Utils 4 Emacs, an email client for emacs
+
+Depends on the =mu= and =isync= system package
 #+begin_src emacs-lisp
   (use-package mu4e
+    :ensure-system-package mu
+    :ensure-system-package mbsync
+
     :ensure nil
     :load-path "/usr/share/emacs/site-lisp/mu4e"
+
     :config
-    (setq smtpmail-stream-type 'starttls
-          mu4e-change-filenames-when-moving t
-          mu4e-update-interval (* 10 60)
+    (setq smtpmail-stream-type 'starttls ;; use tls for encryption
+          mu4e-change-filenames-when-moving t ;; update file names as you move them around
+          mu4e-update-interval (* 10 60) ;; update email every 10 minutes
           mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
           mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
           ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
@@ -672,7 +712,21 @@ Maildir Utils 4 Emacs, an email client for emacs
     ;;                         (mu4e-drafts-folder . "/[Gmail]/Drafts")
     ;;                         (mu4e-sent-folder . "/[Gmail]/Sent Mail")
     ;;                         (mu4e-refile-folder . "/[Gmail]/All Mail")
-    ;;                         (mu4e-trash-folder . "/[Gmail]/Trash"))))
+    ;;                         (mu4e-trash-folder . "/[Gmail]/Trash")))
+
+    ;;                (make-mu4e-context
+    ;;                 :name "My other email"
+    ;;                 :math-func (lambda (msg)
+    ;;                              (when msg
+    ;;                                (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+    ;;                 :vars '((user-mail-address . "koolkid37@example.com")
+    ;;                         (user-full-name    . "koolkid")
+    ;;                         (smtpmail-smtp-server . "smtp.example.com")
+    ;;                         (smtpmail-smtp-service . 465) ;; this is for ssl, use 587 for ssl, 25 for plain
+    ;;                         (mu4e-drafts-folder . "/Drafts")
+    ;;                         (mu4e-sent-folder . "/Sent Mail")
+    ;;                         (mu4e-refile-folder . "/All Mail")
+    ;;                         (mu4e-trash-folder . "/Trash"))))
 
     (load (concat user-emacs-directory "emails.el")))
 #+end_src
@@ -688,7 +742,7 @@ A good package to get notifications when emails come in, as well as a good model
     (mu4e-alert-enable-notifications))
 #+end_src
 ** Password Encryption
-This is really just for mbsync. To actually use passwords well, see [[#password-storage][Password Storage]]
+This is really just for mbsync, not for interactive use
 #+begin_src emacs-lisp
   (defun efs/lookup-password (&rest keys)
     (let ((result (apply #'auth-source-search keys)))
@@ -721,7 +775,7 @@ Which-key displays possible completions for keybindings you have typed in a mini
     :config (which-key-mode 1))
 #+end_src
 
-** kill-all-buffers
+** kill-alll-buffers
 It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
 #+begin_src emacs-lisp
   (defun kill-all-buffers ()

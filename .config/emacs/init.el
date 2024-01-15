@@ -60,6 +60,8 @@
 (add-hook 'java-mode-hook 'java-ts-mode)
 (add-hook 'c-mode-hook 'c-ts-mode)
 (add-hook 'c++-mode-hook 'c++-ts-mode)
+(with-eval-after-load 'rust-mode
+  (add-hook 'rust-mode 'rust-ts-mode))
 
 (use-package beacon
   :ensure t
@@ -80,7 +82,6 @@
   :ensure t
   :hook (org-mode . (lambda () (interactive) (toc-org-mode 1))))
 
-;; automatically tangle org files
 (use-package org-auto-tangle
   :ensure t
   :hook (org-mode . (lambda () (interactive) (org-auto-tangle-mode 1))))
@@ -107,11 +108,13 @@
   :ensure t
   :config
   (vertico-mode 1))
+
 (use-package marginalia
   :ensure t
   :config
   (marginalia-mode 1)
   :after vertico)
+
 (use-package prescient
   :ensure t
   :ensure vertico-prescient
@@ -120,23 +123,29 @@
   (vertico-prescient-mode 1)
   (prescient-persist-mode 1)
   :after vertico)
+
 (use-package consult
   :ensure t
   :after vertico)
 
-(add-hook 'c-mode-hook #'eglot-ensure)
-(add-hook 'c++-mode-hook #'eglot-ensure)
-(add-hook 'rust-mode #'eglot-ensure)
+(use-package rust-mode :ensure t)
+(use-package haskell-mode :ensure t)
+
+(when (< emacs-major-version 29)
+  (use-package eglot :ensure t))
+(add-hook 'c-ts-mode-hook #'eglot-ensure)
+(add-hook 'c++-ts-mode-hook #'eglot-ensure)
+(add-hook 'rust-ts-mode #'eglot-ensure)
+(add-hook 'haskell-mode #'eglot-ensure)
 (setq eglot-autoshutdown t)
 (use-package eglot-java
-  :hook (java-ts-mode . (lambda () (interactive) (eglot-java-mode 1))))
+  :hook (java-ts-mode . eglot-ensure))
 
 (use-package magit
   :defer t
   :ensure t)
 
 (use-package flycheck
-  :defer t
   :ensure t
   :config
   (global-flycheck-mode))
@@ -144,11 +153,11 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-mode +1)
-  (setq projectile-))
+  (projectile-mode +1))
 
 (use-package projectile-ripgrep
   :ensure t
+  :ensure-system-package rg
   :after projectile)
 
 (use-package consult-projectile
@@ -168,12 +177,6 @@
   :ensure t
   :hook (prog-mode . corfu-mode))
 
-(use-package rust-mode :ensure t)
-(use-package haskell-mode :ensure t)
-
-(use-package page-break-lines
-  :ensure t)
-
 (use-package recentf
   :ensure t
   :config
@@ -181,10 +184,9 @@
   (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
   (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 
-(use-package all-the-icons :ensure t)
-
 (use-package dashboard
-  :after page-break-lines
+  :ensure page-break-lines
+  :ensure all-the-icons
   :after projectile
   :after recentf
   :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
@@ -193,13 +195,13 @@
   :init
   (setq dashboard-page-separator "
 
-"
-        initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
+" ;; tell dashboard to use nice looking lines for section seperation
+
+        initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")) ;; tell emacs to use dashboard as startup screen
         dashboard-items '((recents . 5)
                           (projects . 5)
                           (agenda . 5))
         dashboard-center-content t
-        ashboard-projects-switch-function 'projectile-persp-switch-project
         dashboard-startup-banner (concat config-dir "dash.txt")
         dashboard-icon-type 'all-the-icons
         dashboard-set-navigator t
@@ -230,8 +232,6 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(global-set-key (kbd "<escape>") 'abort-minibuffers)
-
 (use-package perspective
   :ensure t
   :bind (("C-c p k" . persp-kill)
@@ -250,20 +250,14 @@
   :config
   (defvaralias 'projectile-switch-project #'projectile-persp-switch-project))
 
-(use-package persp-projectile
-  :ensure t
-  :bind (("C-x p p" . projectile-persp-switch-project))
-  :after perspective
-  :after projectile)
-
 (use-package dired-open
   :ensure t
   :after dired
   :config
-  (setq dired-open-extensions '(("gif" . "nsxiv")
+  (setq dired-open-extensions '(("gif" . "mpv --loop")
                                 ("mkv" . "mpv")
                                 ("mp4" . "mpv")
-                                ("mp3" . "mpv")))
+                                ("mp3" . "foot -e mpv")))
   :bind (:map dired-mode-map
               ("f" . dired-open-file)))
 
@@ -303,10 +297,7 @@
 
 (use-package drag-stuff
   :ensure t
-  :init (drag-stuff-global-mode 1)
-  :config
-  (global-set-key (kbd "M-p") 'drag-stuff-up)
-  (global-set-key (kbd "M-n") 'drag-stuff-down))
+  :init (drag-stuff-global-mode 1))
 
 (use-package sudo-edit :ensure t)
 
@@ -362,13 +353,21 @@
   (setq emms-player-mpd-server-port "6600")
   (setq mpc-host "localhost:6600")
   :bind (("C-c m m" . emms-smart-browse)
+         ("C-c m n" . emms-next)
+         ("C-c m p" . emms-previous)
+         ("C-c m t" . emms-toggle)
+         ("C-c m z" . emms-shuffle)
+         ("C-c m f" . emms-seek-forward)
+         ("C-c m b" . emms-seek-backward)
+         ("C-c m c" . emms-player-mpd-connect)
+         ("C-c m r" . emms-player-mpd-update-all-reset-cache)
+
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
-(use-package calfw
-  :ensure t)
 (use-package calfw-org
-  :ensure
+  :ensure t
+  :ensure calfw
   :after calfw
   :config
   ;; hotfix: incorrect time range display
@@ -392,12 +391,16 @@ If TEXT does not have a range, return nil."
                      (org-read-date nil t end-date))) text)))))))
 
 (use-package mu4e
+  :ensure-system-package mu
+  :ensure-system-package mbsync
+
   :ensure nil
   :load-path "/usr/share/emacs/site-lisp/mu4e"
+
   :config
-  (setq smtpmail-stream-type 'starttls
-        mu4e-change-filenames-when-moving t
-        mu4e-update-interval (* 10 60)
+  (setq smtpmail-stream-type 'starttls ;; use tls for encryption
+        mu4e-change-filenames-when-moving t ;; update file names as you move them around
+        mu4e-update-interval (* 10 60) ;; update email every 10 minutes
         mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
         mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
         ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
@@ -420,7 +423,21 @@ If TEXT does not have a range, return nil."
   ;;                         (mu4e-drafts-folder . "/[Gmail]/Drafts")
   ;;                         (mu4e-sent-folder . "/[Gmail]/Sent Mail")
   ;;                         (mu4e-refile-folder . "/[Gmail]/All Mail")
-  ;;                         (mu4e-trash-folder . "/[Gmail]/Trash"))))
+  ;;                         (mu4e-trash-folder . "/[Gmail]/Trash")))
+
+  ;;                (make-mu4e-context
+  ;;                 :name "My other email"
+  ;;                 :math-func (lambda (msg)
+  ;;                              (when msg
+  ;;                                (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+  ;;                 :vars '((user-mail-address . "koolkid37@example.com")
+  ;;                         (user-full-name    . "koolkid")
+  ;;                         (smtpmail-smtp-server . "smtp.example.com")
+  ;;                         (smtpmail-smtp-service . 465) ;; this is for ssl, use 587 for ssl, 25 for plain
+  ;;                         (mu4e-drafts-folder . "/Drafts")
+  ;;                         (mu4e-sent-folder . "/Sent Mail")
+  ;;                         (mu4e-refile-folder . "/All Mail")
+  ;;                         (mu4e-trash-folder . "/Trash"))))
 
   (load (concat user-emacs-directory "emails.el")))
 
@@ -458,3 +475,16 @@ If TEXT does not have a range, return nil."
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(yuck-mode yasnippet-snippets wttrin which-key vterm-toggle vertico-prescient uwu-theme toc-org theme-magic sudo-edit spinner smex rust-mode rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep pretty-mode plantuml-mode pfuture persp-projectile persp-mode pass page-break-lines org-bullets org-auto-tangle octicons oauth no-littering neotree mu4e-alert moe-theme markdown-mode marginalia magit langtool kaolin-themes indent-guide ido-completing-read+ hydra htmlize hl-todo haskell-mode groovy-mode general flycheck evil-nerd-commenter evil-collection emms eglot-java drag-stuff doom-themes doom-modeline dired-open diminish dashboard corfu consult-projectile clippy cfrs catppuccin-theme calfw-org calfw beacon all-the-icons aggressive-indent ace-window)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
