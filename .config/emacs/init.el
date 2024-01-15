@@ -68,7 +68,7 @@
 
 (global-visual-line-mode 1)
 
-(add-to-list 'default-frame-alist '(alpha-background .  80))
+(add-to-list 'default-frame-alist '(alpha-background .  100))
 
 (use-package org-tempo
   :ensure nil)
@@ -180,6 +180,8 @@
   (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
   (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 
+(use-package all-the-icons :ensure t)
+
 (use-package dashboard
   :after page-break-lines
   :after projectile
@@ -190,14 +192,20 @@
   :init
   (setq dashboard-page-separator "
 
-")
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (setq dashboard-items '((recents . 5)
+"
+        initial-buffer-choice (lambda () (get-buffer-create "*dashboard*"))
+        dashboard-items '((recents . 5)
                           (projects . 5)
-                          (agenda . 5)))
-  (setq dashboard-center-content t)
-  (setq dashboard-projects-switch-function 'projectile-persp-switch-project)
-  (setq dashboard-startup-banner (concat config-dir "dash.txt"))
+                          (agenda . 5))
+        dashboard-center-content t
+        ashboard-projects-switch-function 'projectile-persp-switch-project
+        dashboard-startup-banner (concat config-dir "dash.txt")
+        dashboard-icon-type 'all-the-icons
+        dashboard-set-navigator t
+        dashboard-set-file-icons t
+        dashboard-set-heading-icons t
+        dashboard-display-icons-p t)
+  (advice-add #'dashboard-replace-displayable :override #'identity)
   :config
   (dashboard-setup-startup-hook))
 
@@ -353,7 +361,27 @@
   :ensure t)
 (use-package calfw-org
   :ensure
-  :after calfw)
+  :after calfw
+  :config
+  ;; hotfix: incorrect time range display
+  ;; source: https://github.com/zemaye/emacs-calfw/commit/3d17649c545423d919fd3bb9de2efe6dfff210fe
+  (defun cfw:org-get-timerange (text)
+    "Return a range object (begin end text).
+If TEXT does not have a range, return nil."
+    (let* ((dotime (cfw:org-tp text 'dotime)))
+      (and (stringp dotime) (string-match org-ts-regexp dotime)
+           (let* ((matches  (s-match-strings-all org-ts-regexp dotime))
+                  (start-date (nth 1 (car matches)))
+                  (end-date (nth 1 (nth 1 matches)))
+                  (extra (cfw:org-tp text 'extra)))
+             (if (string-match "(\\([0-9]+\\)/\\([0-9]+\\)): " extra)
+                 ( list( calendar-gregorian-from-absolute
+                         (time-to-days
+                          (org-read-date nil t start-date))
+                         )
+                   (calendar-gregorian-from-absolute
+                    (time-to-days
+                     (org-read-date nil t end-date))) text)))))))
 
 (use-package mu4e
   :ensure nil
