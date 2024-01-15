@@ -144,7 +144,8 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-mode +1))
+  (projectile-mode +1)
+  (setq projectile-))
 
 (use-package projectile-ripgrep
   :ensure t
@@ -241,6 +242,13 @@
   (setq persp-initial-frame-name "Main")
   (setq persp-mode-prefix-key "C-c p")
   (persp-mode))
+
+(use-package persp-projectile
+  :ensure t
+  :after perspective
+  :after projectile
+  :config
+  (defvaralias 'projectile-switch-project #'projectile-persp-switch-project))
 
 (use-package persp-projectile
   :ensure t

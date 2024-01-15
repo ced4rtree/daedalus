@@ -307,7 +307,8 @@ Projectile manages projects
   (use-package projectile
     :ensure t
     :config
-    (projectile-mode +1))
+    (projectile-mode +1)
+    (setq projectile-))
 
   (use-package projectile-ripgrep
     :ensure t
@@ -452,6 +453,13 @@ Like workspaces inside of emacs to clean up the buffer list
     (setq persp-initial-frame-name "Main")
     (setq persp-mode-prefix-key "C-c p")
     (persp-mode))
+
+  (use-package persp-projectile
+    :ensure t
+    :after perspective
+    :after projectile
+    :config
+    (defvaralias 'projectile-switch-project #'projectile-persp-switch-project))
 #+end_src
 *** Projectile integration
 It'd be really nice if you could assign perspectives to projects, right? It is, so I did that.
