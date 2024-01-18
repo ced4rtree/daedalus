@@ -161,10 +161,10 @@ Adds rainbow parentheses and color to hex values and such
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :hook (prog-mode . rainbow-mode 1))
+    :hook (prog-mode . rainbow-mode))
   (use-package rainbow-delimiters
     :ensure t
-    :hook (prog-mode . rainbow-delimiters-mode 1))
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 ** Tree Sitter

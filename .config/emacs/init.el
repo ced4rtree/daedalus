@@ -52,10 +52,10 @@
 
 (use-package rainbow-mode
   :ensure t
-  :hook (prog-mode . rainbow-mode 1))
+  :hook (prog-mode . rainbow-mode))
 (use-package rainbow-delimiters
   :ensure t
-  :hook (prog-mode . rainbow-delimiters-mode 1))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 (add-hook 'java-mode-hook 'java-ts-mode)
 (add-hook 'c-mode-hook 'c-ts-mode)
