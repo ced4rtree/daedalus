@@ -102,7 +102,7 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Iosevka Nerd Font-14"))
+               '(font . "Source Code Pro-13"))
 #+end_src
 
 ** Theme
@@ -161,10 +161,10 @@ Adds rainbow parentheses and color to hex values and such
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t
-    :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
+    :hook (prog-mode . rainbow-mode 1))
   (use-package rainbow-delimiters
     :ensure t
-    :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
+    :hook (prog-mode . rainbow-delimiters-mode 1))
 #+end_src
 
 ** Tree Sitter

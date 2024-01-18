@@ -15,7 +15,7 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "Iosevka Nerd Font-14"))
+             '(font . "Source Code Pro-13"))
 
 (use-package doom-themes
   :ensure t
@@ -52,10 +52,10 @@
 
 (use-package rainbow-mode
   :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-mode 1))))
+  :hook (prog-mode . rainbow-mode 1))
 (use-package rainbow-delimiters
   :ensure t
-  :hook (prog-mode . (lambda () (interactive) (rainbow-delimiters-mode 1))))
+  :hook (prog-mode . rainbow-delimiters-mode 1))
 
 (add-hook 'java-mode-hook 'java-ts-mode)
 (add-hook 'c-mode-hook 'c-ts-mode)
@@ -475,16 +475,3 @@ If TEXT does not have a range, return nil."
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
 
 (setq gc-cons-threshold (* 2 1024 1024))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(yuck-mode yasnippet-snippets wttrin which-key vterm-toggle vertico-prescient uwu-theme toc-org theme-magic sudo-edit spinner smex rust-mode rainbow-mode rainbow-identifiers rainbow-delimiters projectile-ripgrep pretty-mode plantuml-mode pfuture persp-projectile persp-mode pass page-break-lines org-bullets org-auto-tangle octicons oauth no-littering neotree mu4e-alert moe-theme markdown-mode marginalia magit langtool kaolin-themes indent-guide ido-completing-read+ hydra htmlize hl-todo haskell-mode groovy-mode general flycheck evil-nerd-commenter evil-collection emms eglot-java drag-stuff doom-themes doom-modeline dired-open diminish dashboard corfu consult-projectile clippy cfrs catppuccin-theme calfw-org calfw beacon all-the-icons aggressive-indent ace-window)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
