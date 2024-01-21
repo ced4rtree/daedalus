@@ -17,10 +17,11 @@
 (add-to-list 'default-frame-alist
              '(font . "Source Code Pro-13"))
 
-(use-package doom-themes
+(use-package catppuccin-theme
   :ensure t
   :init
-  (load-theme 'doom-one t))
+  (setq catppuccin-flavor 'frappe)
+  (load-theme 'catppuccin t))
 
 (global-hl-line-mode 1)
 
@@ -173,8 +174,12 @@
   :ensure t
   :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 
-(use-package corfu 
+(use-package corfu
   :ensure t
+  :ensure nerd-icons-corfu
+  :ensure nerd-icons
+  :custom
+  (corfu-auto t "Enable auto completion")
   :hook (prog-mode . corfu-mode))
 
 (use-package recentf
@@ -234,6 +239,7 @@
 
 (use-package perspective
   :ensure t
+  :defer nil
   :bind (("C-c p k" . persp-kill)
          ("C-c p p" . persp-switch)
          ("C-c p i" . persp-ibuffer)
@@ -248,7 +254,8 @@
   :after perspective
   :after projectile
   :config
-  (defvaralias 'projectile-switch-project #'projectile-persp-switch-project))
+  (defvaralias 'projectile-switch-project #'projectile-persp-switch-project)
+  (defvaralias 'project-switch-project #'projectile-persp-switch-project))
 
 (use-package dired-open
   :ensure t

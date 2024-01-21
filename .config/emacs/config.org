@@ -107,10 +107,11 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package doom-themes
+  (use-package catppuccin-theme
     :ensure t
     :init
-    (load-theme 'doom-one t))
+    (setq catppuccin-flavor 'frappe)
+    (load-theme 'catppuccin t))
 #+end_src
 
 ** Highlight line
@@ -388,8 +389,12 @@ A simple integration of some neat autocomplete functionality for emacs. Like ver
 
 To invoke autocomplete, type =C-M-i= while typing a buffer (works best in an eglot-controlled buffer)
 #+begin_src emacs-lisp
-  (use-package corfu 
+  (use-package corfu
     :ensure t
+    :ensure nerd-icons-corfu
+    :ensure nerd-icons
+    :custom
+    (corfu-auto t "Enable auto completion")
     :hook (prog-mode . corfu-mode))
 #+end_src
 * Nice Packages and Settings
@@ -476,6 +481,7 @@ Like workspaces inside of emacs to clean up the buffer list
 #+begin_src emacs-lisp
   (use-package perspective
     :ensure t
+    :defer nil
     :bind (("C-c p k" . persp-kill)
            ("C-c p p" . persp-switch)
            ("C-c p i" . persp-ibuffer)
@@ -494,7 +500,8 @@ When opening a project, I want to automatically switch to a new perspective, and
     :after perspective
     :after projectile
     :config
-    (defvaralias 'projectile-switch-project #'projectile-persp-switch-project))
+    (defvaralias 'projectile-switch-project #'projectile-persp-switch-project)
+    (defvaralias 'project-switch-project #'projectile-persp-switch-project))
 #+end_src
 ** Dired
 Dired, the DIRectory EDitor is a fantastic file manager built straight into emacs

@@ -2,8 +2,8 @@ Config {
   -- appearance
   font = "Iosevka Nerd Font 12"
   , additionalFonts = [ "Noto Color Emoji 10" ]
-  , bgColor = "#282c34"
-  , fgColor = "#ABABAB"
+  , bgColor = "#303446"
+  , fgColor = "#C6D0F5"
   , position = TopH 30
   -- , border = BottomB
   , borderColor = "#646464"
@@ -19,7 +19,7 @@ Config {
   -- layout
   , sepChar = "%"
   , alignSep = "}{"
-  , template = "%UnsafeXMonadLog% } <box type=Bottom width=3 mb=2 color=#3071db><fc=#3071db></fc>  %mpd%</box> {<box type=Bottom width=3 mb=2 color=#51afef><fc=#51afef> </fc> %cpu%</box> | <box type=Bottom width=3 mb=2 color=#c678dd><fc=#c678dd>󰘚 </fc> %memory%</box> | <box type=Bottom width=3 mb=2 color=#5699af><fc=#5699af> </fc> %alsa:default:Master%</box> | <box type=Bottom width=3 mb=2 color=#98be65>%KBOI%</box> | <box type=Bottom width=3 mb=2 color=#19a1e1><fc=#19a1e1>󰥔  </fc>%date%</box> %systray%"
+  , template = "%UnsafeXMonadLog% } <box type=Bottom width=3 mb=2 color=#ca9ee6><fc=#ca9ee6></fc>  %mpd%</box> {<box type=Bottom width=3 mb=2 color=#8caaee><fc=#8caaee> </fc> %cpu%</box> | <box type=Bottom width=3 mb=2 color=#e78284><fc=#e78284>󰘚 </fc> %memory%</box> | <box type=Bottom width=3 mb=2 color=#a6d189><fc=#a6d189> </fc> %alsa:default:Master%</box> | <box type=Bottom width=3 mb=2 color=#ef9f76>%KBOI%</box> | <box type=Bottom width=3 mb=2 color=#81c8be><fc=#81c8be>󰥔  </fc>%date%</box> %systray%"
 
   -- plugins
   , commands = 
