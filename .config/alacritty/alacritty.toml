@@ -1,36 +1,9 @@
-[colors]
-draw_bold_text_with_bright_colors = true
-
-[colors.bright]
-black = "#5b6268"
-blue = "#2257a0"
-cyan = "#46d9ff"
-green = "#4db5bd"
-magenta = "#a9a1e1"
-red = "#da8548"
-white = "#dfdfdf"
-yellow = "#ecbe7b"
-
-[colors.cursor]
-cursor = "#528bff"
-text = "CellBackground"
-
-[colors.normal]
-black = "#1c1f24"
-blue = "#51afef"
-cyan = "#5699af"
-green = "#00cc00"
-magenta = "#c678dd"
-red = "#ff6c6b"
-white = "#abb2bf"
-yellow = "#da8548"
-
-[colors.primary]
-background = "#000000"
-foreground = "#bbc2cf"
+import = [
+    "~/.config/alacritty/catppuccin-frappe.toml"
+]
 
 [env]
-TERM = "alacritty"
+TERM = "xterm-256color"
 
 [font]
 builtin_box_drawing = true
@@ -106,10 +79,7 @@ history = 10000
 multiplier = 2
 
 [window]
-decorations = "none"
-decorations_theme_variant = "Dark"
 dynamic_title = true
-opacity = 0.6
 title = "Alacritty"
 
 [window.class]
@@ -121,5 +91,5 @@ columns = 0
 lines = 0
 
 [window.padding]
-x = 2
-y = 2
+x = 20
+y = 20

@@ -107,10 +107,11 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 
 ** Theme
 #+begin_src emacs-lisp
-  (use-package doom-themes
+  (use-package catppuccin-theme
     :ensure t
     :init
-    (load-theme 'doom-one t))
+    (setq catppuccin-flavor 'frappe)
+    (load-theme 'catppuccin t))
 #+end_src
 
 ** Highlight line
@@ -487,7 +488,6 @@ Like workspaces inside of emacs to clean up the buffer list
            ("C-c p b" . persp-switch-to-buffer*))
     :config
     (setq persp-initial-frame-name "Main")
-    (setq persp-mode-prefix-key "C-c p")
     (persp-mode))
 #+end_src
 

@@ -17,10 +17,11 @@
 (add-to-list 'default-frame-alist
              '(font . "Source Code Pro-13"))
 
-(use-package doom-themes
+(use-package catppuccin-theme
   :ensure t
   :init
-  (load-theme 'doom-one t))
+  (setq catppuccin-flavor 'frappe)
+  (load-theme 'catppuccin t))
 
 (global-hl-line-mode 1)
 
@@ -245,7 +246,6 @@
          ("C-c p b" . persp-switch-to-buffer*))
   :config
   (setq persp-initial-frame-name "Main")
-  (setq persp-mode-prefix-key "C-c p")
   (persp-mode))
 
 (use-package persp-projectile
