@@ -246,7 +246,6 @@
          ("C-c p b" . persp-switch-to-buffer*))
   :config
   (setq persp-initial-frame-name "Main")
-  (setq persp-mode-prefix-key (kbd "C-c p"))
   (persp-mode))
 
 (use-package persp-projectile
