@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/home/cedar/.cache/nvim/packer_hererocks/2.1.1700008891/share/lua/5.1/?.lua;/home/cedar/.cache/nvim/packer_hererocks/2.1.1700008891/share/lua/5.1/?/init.lua;/home/cedar/.cache/nvim/packer_hererocks/2.1.1700008891/lib/luarocks/rocks-5.1/?.lua;/home/cedar/.cache/nvim/packer_hererocks/2.1.1700008891/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/home/cedar/.cache/nvim/packer_hererocks/2.1.1700008891/lib/lua/5.1/?.so"
+local package_path_str = "/home/cedar/.cache/nvim/packer_hererocks/2.1.1702233742/share/lua/5.1/?.lua;/home/cedar/.cache/nvim/packer_hererocks/2.1.1702233742/share/lua/5.1/?/init.lua;/home/cedar/.cache/nvim/packer_hererocks/2.1.1702233742/lib/luarocks/rocks-5.1/?.lua;/home/cedar/.cache/nvim/packer_hererocks/2.1.1702233742/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/home/cedar/.cache/nvim/packer_hererocks/2.1.1702233742/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -141,8 +141,10 @@ _G.packer_plugins = {
     url = "https://github.com/ibhagwan/fzf-lua"
   },
   ["haskell-vim"] = {
+    config = { "\27LJ\2\n†\3\0\0\3\0\t\0\0296\0\0\0009\0\1\0'\2\2\0B\0\2\0016\0\0\0009\0\1\0'\2\3\0B\0\2\0016\0\0\0009\0\1\0'\2\4\0B\0\2\0016\0\0\0009\0\1\0'\2\5\0B\0\2\0016\0\0\0009\0\1\0'\2\6\0B\0\2\0016\0\0\0009\0\1\0'\2\a\0B\0\2\0016\0\0\0009\0\1\0'\2\b\0B\0\2\1K\0\1\0\31let g:haskell_backpack = 1-let g:haskell_enable_static_pointers = 1'let g:haskell_enable_typeroles = 1.let g:haskell_enable_pattern_synonyms = 1)let g:haskell_enable_arrowsyntax = 1)let g:haskell_enable_recursivedo = 1,let g:haskell_enable_quantification = 1\bcmd\bvim\0" },
     loaded = true,
-    path = "/home/cedar/.local/share/nvim/site/pack/packer/start/haskell-vim",
+    needs_bufread = true,
+    path = "/home/cedar/.local/share/nvim/site/pack/packer/opt/haskell-vim",
     url = "https://github.com/neovimhaskell/haskell-vim"
   },
   ["lsp-zero.nvim"] = {
@@ -235,18 +237,29 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
--- Config for: nvim-tree.lua
-time([[Config for nvim-tree.lua]], true)
-try_loadstring("\27LJ\2\nV\0\0\5\0\6\0\b6\0\0\0009\0\1\0009\0\2\0'\2\3\0'\3\4\0'\4\5\0B\0\4\1K\0\1\0\24:NvimTreeToggle<CR>\14<leader>t\6n\bset\vkeymap\bvim\0", "config", "nvim-tree.lua")
-time([[Config for nvim-tree.lua]], false)
--- Config for: catppuccin
-time([[Config for catppuccin]], true)
-try_loadstring("\27LJ\2\nE\0\0\3\0\4\0\0066\0\0\0009\0\1\0009\0\2\0'\2\3\0B\0\2\1K\0\1\0\22catppuccin-frappe\16colorscheme\bcmd\bvim\0", "config", "catppuccin")
-time([[Config for catppuccin]], false)
+-- Setup for: haskell-vim
+time([[Setup for haskell-vim]], true)
+try_loadstring("\27LJ\2\nW\0\0\3\0\4\0\t6\0\0\0009\0\1\0'\2\2\0B\0\2\0016\0\0\0009\0\1\0'\2\3\0B\0\2\1K\0\1\0\30filetype plugin indent on\14syntax on\bcmd\bvim\0", "setup", "haskell-vim")
+time([[Setup for haskell-vim]], false)
+time([[packadd for haskell-vim]], true)
+vim.cmd [[packadd haskell-vim]]
+time([[packadd for haskell-vim]], false)
 -- Config for: which-key.nvim
 time([[Config for which-key.nvim]], true)
 try_loadstring("\27LJ\2\nD\0\0\2\0\4\0\t6\0\0\0009\0\1\0+\1\2\0=\1\2\0006\0\0\0009\0\1\0)\1,\1=\1\3\0K\0\1\0\15timeoutlen\ftimeout\6o\bvim\0", "config", "which-key.nvim")
 time([[Config for which-key.nvim]], false)
+-- Config for: haskell-vim
+time([[Config for haskell-vim]], true)
+try_loadstring("\27LJ\2\n†\3\0\0\3\0\t\0\0296\0\0\0009\0\1\0'\2\2\0B\0\2\0016\0\0\0009\0\1\0'\2\3\0B\0\2\0016\0\0\0009\0\1\0'\2\4\0B\0\2\0016\0\0\0009\0\1\0'\2\5\0B\0\2\0016\0\0\0009\0\1\0'\2\6\0B\0\2\0016\0\0\0009\0\1\0'\2\a\0B\0\2\0016\0\0\0009\0\1\0'\2\b\0B\0\2\1K\0\1\0\31let g:haskell_backpack = 1-let g:haskell_enable_static_pointers = 1'let g:haskell_enable_typeroles = 1.let g:haskell_enable_pattern_synonyms = 1)let g:haskell_enable_arrowsyntax = 1)let g:haskell_enable_recursivedo = 1,let g:haskell_enable_quantification = 1\bcmd\bvim\0", "config", "haskell-vim")
+time([[Config for haskell-vim]], false)
+-- Config for: catppuccin
+time([[Config for catppuccin]], true)
+try_loadstring("\27LJ\2\nE\0\0\3\0\4\0\0066\0\0\0009\0\1\0009\0\2\0'\2\3\0B\0\2\1K\0\1\0\22catppuccin-frappe\16colorscheme\bcmd\bvim\0", "config", "catppuccin")
+time([[Config for catppuccin]], false)
+-- Config for: nvim-tree.lua
+time([[Config for nvim-tree.lua]], true)
+try_loadstring("\27LJ\2\nV\0\0\5\0\6\0\b6\0\0\0009\0\1\0009\0\2\0'\2\3\0'\3\4\0'\4\5\0B\0\4\1K\0\1\0\24:NvimTreeToggle<CR>\14<leader>t\6n\bset\vkeymap\bvim\0", "config", "nvim-tree.lua")
+time([[Config for nvim-tree.lua]], false)
 vim.cmd [[augroup packer_load_aucmds]]
 vim.cmd [[au!]]
   -- Event lazy-loads
