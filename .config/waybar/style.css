@@ -1,3 +1,5 @@
+@import "frappe.css";
+
 * {
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: "Iosevka Nerd Font";
@@ -6,8 +8,8 @@
 }
 
 window#waybar {
-    background-color: #16181A;
-    color: #ffffff;
+    background-color: @base;
+    color: @text;
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -46,54 +48,49 @@ button {
 }
 
 #workspaces button {
-    color: grey;
+    color: @subtext0;
     margin-bottom: 3px;
 }
 
 #workspaces button.focused {
-    color: lightgrey;
+    color: @subtext1;
 }
 
 #workspaces button.active {
-    color: white;
+    color: @text;
     margin-bottom: 0px;
-    border-bottom: 3px solid red
+    border-bottom: 3px solid @red
 }
 
 #workspaces button.urgent {
-    background-color: red;
-    color: white;
+    background-color: @red;
+    color: @text;
 }
 
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
     background: inherit;
-    color: white;
-}
-
-#mode {
-    border-bottom: 3px solid #64727D;
-    border-bottom: 3px solid #ffffff;
+    color: @text;
 }
 
 #clock {
-    border-bottom: 3px solid #64727D;
-    color: #64727D;
+    border-bottom: 3px solid @overlay2;
+    color: @overlay2;
 }
 
 #battery {
-    color: #ffffff;
-    border-bottom: 3px solid #ffffff;
+    color: @sapphire;
+    border-bottom: 3px solid @sapphire;
 }
 
 #battery.charging, #battery.plugged {
-    color: #26A65B;
-    border-bottom: 3px solid #26A65B;
+    color: @green;
+    border-bottom: 3px solid @green;
 }
 
 #battery.critical:not(.charging) {
-    border-bottom: 3px solid #f53c3c;
-    color: #f53c3c;
+    border-bottom: 3px solid @red;
+    color: @red;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -102,67 +99,52 @@ button:hover {
 }
 
 label:focus {
-    border-bottom: 3px solid #000000;
+    border-bottom: 3px solid @crust;
 }
 
 #cpu {
-    border-bottom: 3px solid #2ecc71;
-    color: #2ecc71;
+    border-bottom: 3px solid @blue;
+    color: @blue;
 }
 
 #memory {
-    border-bottom: 3px solid #9b59b6;
-    color: #9b59b6
+    border-bottom: 3px solid @lavender;
+    color: @lavender
 }
 
 #backlight {
-    border-bottom: 3px solid #90b1b1;
-    color: #90b1b1;
+    border-bottom: 3px solid @yellow;
+    color: @yellow;
 }
 
 #network {
-    border-bottom: 3px solid #2980b9;
-    color: #2980b9;
+    border-bottom: 3px solid @teal;
+    color: @teal;
 }
 
 #network.disconnected {
-    border-bottom: 3px solid #f53c3c;
-    color: #f53c3c;
+    border-bottom: 3px solid @red;
+    color: @red;
 }
 
 #pulseaudio {
-    border-bottom: 3px solid #f1c40f;
-    color: #f1c40f;
-}
-
-#pulseaudio.muted {
-    border-bottom: 3px solid #90b1b1;
-    color: #90b1b1;
-}
-
-#wireplumber {
-    border-bottom: 3px solid #fff0f5;
-    color: #fff0f5;
-}
-
-#wireplumber.muted {
-    border-bottom: 3px solid #f53c3c;
-    color: #f53c3c;
+    border-bottom: 3px solid @mauve;
+    color: @mauve;
 }
 
 #temperature {
-    border-bottom: 3px solid #f0932b;
-    color: #f0932b;
+    border-bottom: 3px solid @peach;
+    color: @peach;
 }
 
 #temperature.critical {
-    border-bottom: 3px solid #eb4d4b;
-    color: #eb4d4b;
+    border-bottom: 3px solid @red;
+    color: @red;
 }
 
 #tray {
-    border-bottom: 3px solid #2980b9;
-    color: #2980b9;
+    border-bottom: 3px solid @pink;
+    color: @pink;
 }
 
 #tray > .passive {
@@ -171,10 +153,10 @@ label:focus {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    border-bottom: 3px solid #eb4d4b;
+    border-bottom: 3px solid @red;
 }
 
 #mpd {
-    border-bottom: 3px solid #58cc8c;
-    color: lightgrey;
+    border-bottom: 3px solid @maroon;
+    color: @text;
 }
