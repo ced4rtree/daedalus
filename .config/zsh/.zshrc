@@ -27,6 +27,11 @@ HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=${HOME}/.cache/zsh/history
 
+# .zcompdump in cache directory
+compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
+# same with .zsh_history
+export HISTFILE="$XDG_STATE_HOME"/zsh/history
+
 # Basic auto/tab complete:
 autoload -U compinit
 zstyle ':completion:*' menu select
