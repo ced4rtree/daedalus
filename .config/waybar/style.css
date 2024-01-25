@@ -85,12 +85,20 @@ button:hover {
 
 #battery.charging, #battery.plugged {
     color: @green;
+    background-color: transparent;
     border-bottom: 3px solid @green;
+}
+
+#battery.warning:not(.charging) {
+    border-bottom: 3px solid @peach;
+    background-color: transparent;
+    color: @peach;
 }
 
 #battery.critical:not(.charging) {
     border-bottom: 3px solid @red;
     color: @red;
+    background-color: transparent;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
