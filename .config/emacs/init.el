@@ -105,6 +105,8 @@
                              (set-face-attribute 'org-level-2 nil :height 1.2)
                              (set-face-attribute 'org-level-3 nil :height 1.1)))
 
+(use-package org-ref :ensure t)
+
 (use-package vertico
   :ensure t
   :config
