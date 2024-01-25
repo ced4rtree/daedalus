@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 # Enable colors and change prompt:
 autoload -U colors && colors
 
@@ -27,13 +25,13 @@ HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=${HOME}/.cache/zsh/history
 
+autoload -U compinit
 # .zcompdump in cache directory
 compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
 # same with .zsh_history
 export HISTFILE="$XDG_STATE_HOME"/zsh/history
 
 # Basic auto/tab complete:
-autoload -U compinit
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 compinit
