@@ -338,12 +338,14 @@ A lightweight LSP implementation built into emacs (as of emacs 29)
 This will go though your project and let you do some pretty neat things, like rename variables across the project, follow definitions of functions/variables, find references to a function/variable, and much more
 #+begin_src emacs-lisp
   (when (< emacs-major-version 29)
-    (use-package eglot :ensure t))
+    (use-package eglot
+      :ensure t
+      :init
+      (setq eglot-autoshutdown t)))
   (add-hook 'c-ts-mode-hook #'eglot-ensure)
   (add-hook 'c++-ts-mode-hook #'eglot-ensure)
   (add-hook 'rust-ts-mode #'eglot-ensure)
   (add-hook 'haskell-mode #'eglot-ensure)
-  (setq eglot-autoshutdown t)
   (use-package eglot-java
     :hook (java-ts-mode . eglot-ensure))
 #+end_src
@@ -416,8 +418,8 @@ To invoke autocomplete, type =C-M-i= while typing a buffer (works best in an egl
     :ensure t
     :ensure nerd-icons-corfu
     :ensure nerd-icons
-    :custom
-    (corfu-auto t "Enable auto completion")
+    :init
+    (setq corfu-auto t)
     :hook (prog-mode . corfu-mode))
 #+end_src
 * Nice Packages and Settings

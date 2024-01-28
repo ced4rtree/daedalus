@@ -148,12 +148,14 @@
 (use-package haskell-mode :ensure t)
 
 (when (< emacs-major-version 29)
-  (use-package eglot :ensure t))
+  (use-package eglot
+    :ensure t
+    :init
+    (setq eglot-autoshutdown t)))
 (add-hook 'c-ts-mode-hook #'eglot-ensure)
 (add-hook 'c++-ts-mode-hook #'eglot-ensure)
 (add-hook 'rust-ts-mode #'eglot-ensure)
 (add-hook 'haskell-mode #'eglot-ensure)
-(setq eglot-autoshutdown t)
 (use-package eglot-java
   :hook (java-ts-mode . eglot-ensure))
 
@@ -193,8 +195,8 @@
   :ensure t
   :ensure nerd-icons-corfu
   :ensure nerd-icons
-  :custom
-  (corfu-auto t "Enable auto completion")
+  :init
+  (setq corfu-auto t)
   :hook (prog-mode . corfu-mode))
 
 (use-package recentf
