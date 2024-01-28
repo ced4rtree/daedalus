@@ -107,6 +107,19 @@
 
 (use-package org-ref :ensure t)
 
+(add-to-list 'org-latex-classes
+             '("apa7"
+               "\\documentclass{apa7}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+(add-to-list 'org-latex-classes
+             '("apa6"
+               "\\documentclass{apa6}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
 (use-package vertico
   :ensure t
   :config
