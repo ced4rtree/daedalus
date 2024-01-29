@@ -679,10 +679,9 @@ The Emacs Multimedia System lets you use emacs as a music player
 ** Calfw
 A calendar within emacs! This takes the data from org-agenda and visualizes it in a useful manner, similar to that of something like google calendar
 #+begin_src emacs-lisp
-  (use-package calfw-org
+  (use-package calfw
     :ensure t
-    :ensure calfw
-    :after calfw
+    :ensure calfw-org
     :config
     ;; hotfix: incorrect time range display
     ;; source: https://github.com/zemaye/emacs-calfw/commit/3d17649c545423d919fd3bb9de2efe6dfff210fe

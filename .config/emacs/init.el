@@ -388,10 +388,9 @@
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
-(use-package calfw-org
+(use-package calfw
   :ensure t
-  :ensure calfw
-  :after calfw
+  :ensure calfw-org
   :config
   ;; hotfix: incorrect time range display
   ;; source: https://github.com/zemaye/emacs-calfw/commit/3d17649c545423d919fd3bb9de2efe6dfff210fe
