@@ -1,0 +1,5 @@
+gtk-icon-theme-name = "candy-icons"
+gtk-theme-name = "Catppuccin-Frappe-Standard-Blue-Dark"
+gtk-font-name = "Iosevka Nerd Font 13"
+gtk-cursor-theme-name = "Catppuccin-Frappe-Blue-Cursors"
+gtk-cursor-theme-size = 32
