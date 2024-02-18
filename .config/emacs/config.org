@@ -523,9 +523,7 @@ When opening a project, I want to automatically switch to a new perspective, and
     :ensure t
     :after perspective
     :after projectile
-    :config
-    (defvaralias 'projectile-switch-project #'projectile-persp-switch-project)
-    (defvaralias 'project-switch-project #'projectile-persp-switch-project))
+    :bind (("C-x p p" . projectile-persp-switch-project)))
 #+end_src
 ** Dired
 Dired, the DIRectory EDitor is a fantastic file manager built straight into emacs
@@ -681,7 +679,9 @@ A calendar within emacs! This takes the data from org-agenda and visualizes it i
 #+begin_src emacs-lisp
   (use-package calfw
     :ensure t
-    :ensure calfw-org
+    :ensure calfw-org)
+  (use-package calfw-org
+    :ensure t
     :config
     ;; hotfix: incorrect time range display
     ;; source: https://github.com/zemaye/emacs-calfw/commit/3d17649c545423d919fd3bb9de2efe6dfff210fe

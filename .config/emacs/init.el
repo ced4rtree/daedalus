@@ -269,9 +269,7 @@
   :ensure t
   :after perspective
   :after projectile
-  :config
-  (defvaralias 'projectile-switch-project #'projectile-persp-switch-project)
-  (defvaralias 'project-switch-project #'projectile-persp-switch-project))
+  :bind (("C-x p p" . projectile-persp-switch-project)))
 
 (use-package dired-open
   :ensure t
@@ -390,7 +388,9 @@
 
 (use-package calfw
   :ensure t
-  :ensure calfw-org
+  :ensure calfw-org)
+(use-package calfw-org
+  :ensure t
   :config
   ;; hotfix: incorrect time range display
   ;; source: https://github.com/zemaye/emacs-calfw/commit/3d17649c545423d919fd3bb9de2efe6dfff210fe
