@@ -120,6 +120,17 @@
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
+(use-package org-present
+  :ensure t)
+
+(use-package visual-fill-column
+  :ensure t
+  :defer t
+  :hook (org-present-mode . visual-fill-column-mode)
+  :custom
+  visual-fill-column-center-text t
+  visual-fill-column-width 110)
+
 (use-package vertico
   :ensure t
   :config

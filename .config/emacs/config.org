@@ -32,6 +32,7 @@
   - [[#org-bullets][Org Bullets]]
   - [[#heading-sizes][Heading Sizes]]
   - [[#org-ref][Org-ref]]
+  - [[#org-present][Org-present]]
 - [[#vertico][Vertico]]
   - [[#marginalia][Marginalia]]
   - [[#prescient][Prescient]]
@@ -279,6 +280,22 @@ A simple and efficient tool to manage your references when writing papers with o
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
+#+end_src
+** Org-present
+In case I don't feel like going through the rigamarole of a beamer presentation, I can just present info through org mode
+#+begin_src emacs-lisp
+  (use-package org-present
+    :ensure t)
+#+end_src
+*** Centering text
+#+begin_src emacs-lisp
+  (use-package visual-fill-column
+    :ensure t
+    :defer t
+    :hook (org-present-mode . visual-fill-column-mode)
+    :custom
+    visual-fill-column-center-text t
+    visual-fill-column-width 110)
 #+end_src
 * Vertico
 A simple and efficient minibuffer completion framework for emacs
