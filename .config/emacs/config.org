@@ -238,7 +238,8 @@ Here, I set up auto tangle, which will do that compilation automatically upon sa
 ** Org agenda
 Org agenda is a full blown scheduling application with all the power of org mode built into it
 #+begin_src emacs-lisp
-  (setq org-agenda-files (list "~/org/agenda/schedule.org"))
+  (setq org-agenda-files (list "~/org/agenda/schedule.org"
+                               "~/org/agenda/daily.org"))
 #+end_src
 
 ** Org Bullets

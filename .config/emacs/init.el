@@ -92,7 +92,8 @@
       org-confirm-babel-evaluate nil ;; don't ask to evaluate code
       org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
-(setq org-agenda-files (list "~/org/agenda/schedule.org"))
+(setq org-agenda-files (list "~/org/agenda/schedule.org"
+                             "~/org/agenda/daily.org"))
 
 (use-package org-bullets
   :ensure t
