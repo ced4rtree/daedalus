@@ -99,9 +99,7 @@
         (make "https://github.com/tree-sitter/tree-sitter-make")
         (markdown "https://github.com/tree-sitter/tree-sitter-markdown")
         (cmake "https://github.com/tree-sitter/tree-sitter-cmake")))
-
-;; eglot
-(add-hook 'java-mode-hook #'eglot-ensure)
-(add-hook 'rust-mode-hook #'eglot-ensure)
-(add-hook 'c-mode-hook #'eglot-ensure)
-(add-hook 'c++-mode-hook #'eglot-ensure)
+(add-hook 'java-mode-hook #'java-ts-mode)
+(add-hook 'c-mode-hook #'c-ts-mode)
+(add-hook 'c++-mode-hook #'c++-ts-mode)
+(add-hook 'rust-mode-hook #'rust-ts-mode)
