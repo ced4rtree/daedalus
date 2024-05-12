@@ -12,6 +12,7 @@
   - [[#use-package][Use Package]]
 - [[#ux][UX]]
   - [[#fonts][Fonts]]
+  - [[#ligatures][Ligatures]]
   - [[#theme][Theme]]
   - [[#highlight-line][Highlight line]]
   - [[#doom-modeline][Doom Modeline]]
@@ -106,9 +107,30 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "JetBrainsMono Nerd Font-13"))
+               '(font . "JetBrainsMono Nerd Font-14"))
 #+end_src
 
+** Ligatures
+Turn things like -> into fancy arrows
+#+begin_src emacs-lisp
+  (use-package ligature
+    :ensure t
+    :config
+    (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
+                                "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
+                                "??" "???" "?:" "?." "?=" "<:" ":<" ":>" ">:" "<:<" "<>" "<<<" ">>>"
+                                "<<" ">>" "||" "-|" "_|_" "|-" "||-" "|=" "||=" "##" "###" "####"
+                                "#{" "#[" "]#" "#(" "#?" "#_" "#_(" "#:" "#!" "#=" "^=" "<$>" "<$"
+                                "$>" "<+>" "<+" "+>" "<*>" "<*" "*>" "</" "</>" "/>" "<!--" "<#--"
+                                "-->" "->" "->>" "<<-" "<-" "<=<" "=<<" "<<=" "<==" "<=>" "<==>"
+                                "==>" "=>" "=>>" ">=>" ">>=" ">>-" ">-" "-<" "-<<" ">->" "<-<" "<-|"
+                                "<=|" "|=>" "|->" "<->" "<~~" "<~" "<~>" "~~" "~~>" "~>" "~-" "-~"
+                                "~@" "[||]" "|]" "[|" "|}" "{|" "[<" ">]" "|>" "<|" "||>" "<||"
+                                "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
+                                ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
+                                "<:<" ";;;"))
+    (global-ligature-mode t))
+#+end_src
 ** Theme
 #+begin_src emacs-lisp
   (use-package catppuccin-theme
