@@ -42,8 +42,6 @@
   - [[#languages][Languages]]
   - [[#eglot][Eglot]]
   - [[#magit][Magit]]
-  - [[#flycheck][Flycheck]]
-  - [[#projectile][Projectile]]
   - [[#aggressive-indentation][Aggressive Indentation]]
   - [[#commenting][Commenting]]
   - [[#corfu][Corfu]]
@@ -57,14 +55,11 @@
   - [[#perspectives][Perspectives]]
   - [[#dired][Dired]]
   - [[#auto-backup][Auto Backup]]
-  - [[#disable-async-shell-command-window][Disable Async Shell Command Window]]
   - [[#goodbye-message][Goodbye message]]
   - [[#move-lines][Move Lines]]
   - [[#sudo-edit][Sudo Edit]]
   - [[#yasnippet][YASnippet]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
-  - [[#vterm][Vterm]]
-  - [[#emms][EMMS]]
   - [[#calfw][Calfw]]
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
@@ -72,7 +67,7 @@
   - [[#delete-a-tab-not-4-spaces][Delete a tab, not 4 spaces]]
   - [[#reload-emacs][Reload Emacs]]
   - [[#which-key][Which-key]]
-  - [[#kill-alll-buffers][kill-alll-buffers]]
+  - [[#kill-all-buffers][kill-all-buffers]]
   - [[#scroll][Scroll]]
 - [[#clean-up][Clean up]]
 
@@ -107,7 +102,7 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "JetBrainsMono Nerd Font-14"))
+               '(font . "Iosevka Nerd Font-14"))
 #+end_src
 
 ** Ligatures
@@ -133,10 +128,9 @@ Turn things like -> into fancy arrows
 #+end_src
 ** Theme
 #+begin_src emacs-lisp
-  (use-package catppuccin-theme
+  (use-package timu-macos-theme
     :ensure t
     :init
-    (setq catppuccin-flavor 'frappe)
     (load-theme 'catppuccin t))
 #+end_src
 
@@ -164,6 +158,7 @@ Fancy little modeline that looks a bit better than the stock one
 ** Line numbers
 #+begin_src emacs-lisp
   (global-display-line-numbers-mode 1)
+  (menu-bar--display-line-numbers-mode-relative)
 #+end_src
 
 ** Rid of ugly stuff
@@ -181,6 +176,7 @@ Fancy little modeline that looks a bit better than the stock one
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
   (setq scroll-step 1) ;; keyboard scroll one line at a time
   (setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
+  (pixel-scroll-precision-mode t)
 #+end_src
 
 ** Rainbows!
@@ -202,7 +198,7 @@ Tree sitter is now built into emacs as of Emacs 29
 	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
 	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
 	  (c "https://github.com/tree-sitter/tree-sitter-c")
-	  (c++ "https://github.com/tree-sitter/tree-sitter-c++")
+	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
 	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
 	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
 	  (java "https://github.com/tree-sitter/tree-sitter-java")
@@ -391,15 +387,15 @@ This will go though your project and let you do some pretty neat things, like re
 #+begin_src emacs-lisp
   (when (< emacs-major-version 29)
     (use-package eglot
-      :ensure t
-      :init
-      (setq eglot-autoshutdown t)))
-  (add-hook 'c-ts-mode-hook #'eglot-ensure)
-  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
-  (add-hook 'rust-ts-mode #'eglot-ensure)
-  (add-hook 'haskell-mode #'eglot-ensure)
-;;  (use-package eglot-java
-;;    :hook (java-ts-mode . eglot-ensure))
+      :ensure t))
+  (with-eval-after-load 'eglot
+    (setq eglot-autoshutdown t))
+  ;; (add-hook 'c-ts-mode-hook #'eglot-ensure)
+  ;; (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+  ;; (add-hook 'rust-ts-mode #'eglot-ensure)
+  ;; (add-hook 'haskell-mode #'eglot-ensure)
+  ;;  (use-package eglot-java
+  ;;    :hook (java-ts-mode . eglot-ensure))
 #+end_src
 ** Magit
 A git porcelain for emacs to let you use the power of emacs within git
@@ -407,43 +403,6 @@ A git porcelain for emacs to let you use the power of emacs within git
   (use-package magit
     :defer t
     :ensure t)
-#+end_src
-** Flycheck
-Flycheck is a program that enables essentially 'spell checking' your code
-#+begin_src emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :config
-    (global-flycheck-mode))
-#+end_src
-
-** Projectile
-Projectile manages projects, so you can easily switch back and forth between multiple different projects
-#+begin_src emacs-lisp
-  (use-package projectile
-    :ensure t
-    :config
-    (projectile-mode +1))
-#+end_src
-
-*** Projectile-ripgrep
-search through your projects for keywords even faster with =M-x projectile-ripgrep RET=
-
-depends on ripgrep being installed on your computer
-#+begin_src emacs-lisp
-  (use-package projectile-ripgrep
-    :ensure t
-    :ensure-system-package rg
-    :after projectile)
-#+end_src
-
-*** Consult-projectile
-Projectile integration for consult so you can scroll through your projects with ease
-#+begin_src emacs-lisp
-  (use-package consult-projectile
-    :ensure t
-    :after projectile
-    :after consult)
 #+end_src
 ** Aggressive Indentation
 I like to keep all my lisp code indented properly automatically, and aggressive indentation is really nice for that
@@ -493,7 +452,6 @@ Show the recent files
   (use-package dashboard
     :ensure page-break-lines
     :ensure all-the-icons
-    :after projectile
     :after recentf
     :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
     :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
@@ -524,7 +482,8 @@ Lines to mark indentation levels
   (use-package highlight-indent-guides
     :ensure t
     :config
-    (setq highlight-indent-guides-method 'character))
+    (setq highlight-indent-guides-method 'character)
+    :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
 #+end_src
 ** Keeping emacs clean
 Some things ,*cough cough auto-save-list,* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
@@ -549,7 +508,7 @@ Some tab settings to use 4 spaces for tabs
                 c-ts-mode-indent-offset 4
                 c-ts-mode-indent-style 'bsd
                 c-default-style "bsd"
-                indent-tabs-mode nil)
+                indent-tabs-mode t)
   (defvaralias 'c-basic-offset 'tab-width)
   (defvaralias 'c-ts-mode-indent-offset 'tab-width)
   (indent-tabs-mode nil)
@@ -583,15 +542,6 @@ Like workspaces inside of emacs to clean up the buffer list
     (persp-mode))
 #+end_src
 
-*** Persp-projectile
-When opening a project, I want to automatically switch to a new perspective, and this does that
-#+begin_src emacs-lisp
-  (use-package persp-projectile
-    :ensure t
-    :after perspective
-    :after projectile
-    :bind (("C-x p p" . projectile-persp-switch-project)))
-#+end_src
 ** Dired
 Dired, the DIRectory EDitor is a fantastic file manager built straight into emacs
 
@@ -613,12 +563,6 @@ Emacs has a feature to automatically back up files every so often, which is nice
 #+begin_src emacs-lisp
   (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
   (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-#+end_src
-** Disable Async Shell Command Window
-If I want to see the output of a shell command, I'll just do it with a compilation command. This is just annoying
-#+begin_src emacs-lisp
-(add-to-list 'display-buffer-alist
-  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 #+end_src
 ** Goodbye message
 I think that it would be pretty cute to have a little goodbye confirmation when exiting emacs
@@ -656,7 +600,9 @@ Easily move lines around using =M-p= and =M-n=
 #+begin_src emacs-lisp
   (use-package drag-stuff
     :ensure t
-    :init (drag-stuff-global-mode 1))
+    :init (drag-stuff-global-mode t)
+    :bind (("M-p" . drag-stuff-up)
+           ("M-n" . drag-stuff-down)))
 #+end_src
 ** Sudo Edit
 Tired of wanting to edit a root file with your emacs config but not having permission? Well no longer, with =M-x sudo-edit-find-file RET=!
@@ -670,77 +616,14 @@ An autocompletion helper that will fill in snippets for you. e.g. expand =sout= 
     :ensure t
     :ensure yasnippet-snippets
     :defer t
+    :hook (prog-mode . (lambda () (interactive) (yas-minor-mode 1)))
     :init
-    (add-hook 'prog-mode-hook #'(lambda () (interactive) (yas-minor-mode 1)))
     (setq yas-snippet-dirs (list
                             (concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
                             (concat config-dir "snippets/"))))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
-** Vterm
-Vterm is a fully fledged terminal within emacs
-#+begin_src emacs-lisp
-  (use-package vterm
-    :defer t
-    :ensure t
-    :config
-    (setq shell-file-name "/bin/zsh"
-          vterm-max-scrollback 5000))
-#+end_src
-*** Toggling
-It's kind of annoying to have an ordinary window stuck there at the bottom that you have to deal with and pop back up to reconfigure the window again, so why not add a toggle for it?
-#+begin_src emacs-lisp
-  (use-package vterm-toggle
-    :after vterm
-    :ensure t
-    :config
-    (setq vterm-toggle-fullscreen-p nil)
-    (setq vterm-toggle-scope 'project)
-    (add-to-list 'display-buffer-alist
-                 '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                   (display-buffer-reuse-window display-buffer-at-bottom)
-                   ;;(display-buffer-reuse-window display-buffer-in-direction)
-                   ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                   ;;(direction . bottom)
-                   ;;(dedicated . t) ;dedicated is supported in emacs27
-                   (reusable-frames . visible)
-                   (window-height . 0.3))))
-#+end_src
-** EMMS
-The Emacs Multimedia System lets you use emacs as a music player
-#+begin_src emacs-lisp
-  (use-package emms
-    :ensure t
-    ;; :after exwm ;; exwm autostart is where mpd gets started
-    :config
-    (require 'emms-setup)
-    (require 'emms-player-mpd)
-    (emms-all)
-    (setq emms-seek-seconds 5)
-    (setq emms-player-list '(emms-player-mpd))
-    (setq emms-info-functions '(emms-info-mpd))
-    (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-    (setq emms-player-mpd-server-name "localhost")
-    (setq emms-player-mpd-server-port "6600")
-    (setq mpc-host "localhost:6600")
-    :bind (("C-c m m" . emms-smart-browse)
-           ("C-c m n" . emms-next)
-           ("C-c m p" . emms-previous)
-           ("C-c m t" . emms-toggle)
-           ("C-c m z" . emms-shuffle)
-           ("C-c m f" . emms-seek-forward)
-           ("C-c m b" . emms-seek-backward)
-           ("C-c m c" . emms-player-mpd-connect)
-           ("C-c m r" . emms-player-mpd-update-all-reset-cache)
-
-           :map emms-playlist-mode-map
-           ("Z" . emms-shuffle)))
-#+end_src
 ** Calfw
 A calendar within emacs! This takes the data from org-agenda and visualizes it in a useful manner, similar to that of something like google calendar
 #+begin_src emacs-lisp
@@ -872,7 +755,7 @@ Which-key displays possible completions for keybindings you have typed in a mini
     :config (which-key-mode 1))
 #+end_src
 
-** kill-alll-buffers
+** kill-all-buffers
 It can be useful to kill all of the buffers to clean up your buffer list. This functionality doesn't exist in emacs by default
 #+begin_src emacs-lisp
   (defun kill-all-buffers ()

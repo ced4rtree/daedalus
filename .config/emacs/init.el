@@ -15,7 +15,7 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "JetBrainsMono Nerd Font-14"))
+             '(font . "Iosevka Nerd Font-14"))
 
 (use-package ligature
   :ensure t
@@ -35,10 +35,9 @@
                               "<:<" ";;;"))
   (global-ligature-mode t))
 
-(use-package catppuccin-theme
+(use-package timu-macos-theme
   :ensure t
   :init
-  (setq catppuccin-flavor 'frappe)
   (load-theme 'catppuccin t))
 
 (global-hl-line-mode 1)
@@ -57,6 +56,7 @@
         doom-modeline-mu4e t))
 
 (global-display-line-numbers-mode 1)
+(menu-bar--display-line-numbers-mode-relative)
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -68,6 +68,7 @@
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 (setq scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
+(pixel-scroll-precision-mode t)
 
 (use-package rainbow-mode
   :ensure t
@@ -80,7 +81,7 @@
       '((bash "https://github.com/tree-sitter/tree-sitter-bash")
 	(cmake "https://github.com/tree-sitter/tree-sitter-cmake")
 	(c "https://github.com/tree-sitter/tree-sitter-c")
-	(c++ "https://github.com/tree-sitter/tree-sitter-c++")
+	(cpp "https://github.com/tree-sitter/tree-sitter-cpp")
 	(rust "https://github.com/tree-sitter/tree-sitter-rust")
 	(haskell "https://github.com/tree-sitter/tree-sitter-haskell")
 	(java "https://github.com/tree-sitter/tree-sitter-java")
@@ -188,40 +189,20 @@
 (use-package haskell-mode :ensure t)
 
 (when (< emacs-major-version 29)
-    (use-package eglot
-      :ensure t
-      :init
-      (setq eglot-autoshutdown t)))
-  (add-hook 'c-ts-mode-hook #'eglot-ensure)
-  (add-hook 'c++-ts-mode-hook #'eglot-ensure)
-  (add-hook 'rust-ts-mode #'eglot-ensure)
-  (add-hook 'haskell-mode #'eglot-ensure)
+  (use-package eglot
+    :ensure t))
+(with-eval-after-load 'eglot
+  (setq eglot-autoshutdown t))
+;; (add-hook 'c-ts-mode-hook #'eglot-ensure)
+;; (add-hook 'c++-ts-mode-hook #'eglot-ensure)
+;; (add-hook 'rust-ts-mode #'eglot-ensure)
+;; (add-hook 'haskell-mode #'eglot-ensure)
 ;;  (use-package eglot-java
 ;;    :hook (java-ts-mode . eglot-ensure))
 
 (use-package magit
   :defer t
   :ensure t)
-
-(use-package flycheck
-  :ensure t
-  :config
-  (global-flycheck-mode))
-
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode +1))
-
-(use-package projectile-ripgrep
-  :ensure t
-  :ensure-system-package rg
-  :after projectile)
-
-(use-package consult-projectile
-  :ensure t
-  :after projectile
-  :after consult)
 
 (use-package aggressive-indent
   :ensure t
@@ -249,7 +230,6 @@
 (use-package dashboard
   :ensure page-break-lines
   :ensure all-the-icons
-  :after projectile
   :after recentf
   :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
   :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
@@ -277,7 +257,8 @@
 (use-package highlight-indent-guides
   :ensure t
   :config
-  (setq highlight-indent-guides-method 'character))
+  (setq highlight-indent-guides-method 'character)
+  :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
 
 (use-package no-littering
   :ensure t)
@@ -292,7 +273,7 @@
               c-ts-mode-indent-offset 4
               c-ts-mode-indent-style 'bsd
               c-default-style "bsd"
-              indent-tabs-mode nil)
+              indent-tabs-mode t)
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (indent-tabs-mode nil)
@@ -317,12 +298,6 @@
   (setq persp-initial-frame-name "Main")
   (persp-mode))
 
-(use-package persp-projectile
-  :ensure t
-  :after perspective
-  :after projectile
-  :bind (("C-x p p" . projectile-persp-switch-project)))
-
 (use-package dired-open
   :ensure t
   :after dired
@@ -336,9 +311,6 @@
 
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-
-(add-to-list 'display-buffer-alist
-  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 (defvar goodbye-message-list (list "Don't leave me!"
                                    "B-baka! It's not like I liked you anyway..."
@@ -370,7 +342,9 @@
 
 (use-package drag-stuff
   :ensure t
-  :init (drag-stuff-global-mode 1))
+  :init (drag-stuff-global-mode t)
+  :bind (("M-p" . drag-stuff-up)
+         ("M-n" . drag-stuff-down)))
 
 (use-package sudo-edit :ensure t)
 
@@ -378,65 +352,11 @@
   :ensure t
   :ensure yasnippet-snippets
   :defer t
+  :hook (prog-mode . (lambda () (interactive) (yas-minor-mode 1)))
   :init
-  (add-hook 'prog-mode-hook #'(lambda () (interactive) (yas-minor-mode 1)))
   (setq yas-snippet-dirs (list
                           (concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
                           (concat config-dir "snippets/"))))
-
-(use-package vterm
-  :defer t
-  :ensure t
-  :config
-  (setq shell-file-name "/bin/zsh"
-        vterm-max-scrollback 5000))
-
-(use-package vterm-toggle
-  :after vterm
-  :ensure t
-  :config
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                   (let ((buffer (get-buffer buffer-or-name)))
-                     (with-current-buffer buffer
-                       (or (equal major-mode 'vterm-mode)
-                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                 (display-buffer-reuse-window display-buffer-at-bottom)
-                 ;;(display-buffer-reuse-window display-buffer-in-direction)
-                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                 ;;(direction . bottom)
-                 ;;(dedicated . t) ;dedicated is supported in emacs27
-                 (reusable-frames . visible)
-                 (window-height . 0.3))))
-
-(use-package emms
-  :ensure t
-  ;; :after exwm ;; exwm autostart is where mpd gets started
-  :config
-  (require 'emms-setup)
-  (require 'emms-player-mpd)
-  (emms-all)
-  (setq emms-seek-seconds 5)
-  (setq emms-player-list '(emms-player-mpd))
-  (setq emms-info-functions '(emms-info-mpd))
-  (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-  (setq emms-player-mpd-server-name "localhost")
-  (setq emms-player-mpd-server-port "6600")
-  (setq mpc-host "localhost:6600")
-  :bind (("C-c m m" . emms-smart-browse)
-         ("C-c m n" . emms-next)
-         ("C-c m p" . emms-previous)
-         ("C-c m t" . emms-toggle)
-         ("C-c m z" . emms-shuffle)
-         ("C-c m f" . emms-seek-forward)
-         ("C-c m b" . emms-seek-backward)
-         ("C-c m c" . emms-player-mpd-connect)
-         ("C-c m r" . emms-player-mpd-update-all-reset-cache)
-
-         :map emms-playlist-mode-map
-         ("Z" . emms-shuffle)))
 
 (use-package calfw
   :ensure t
