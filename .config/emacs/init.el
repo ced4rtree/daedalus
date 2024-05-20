@@ -15,7 +15,14 @@
 (setq use-package-always-ensure t)
 
 (add-to-list 'default-frame-alist
-             '(font . "Iosevka Nerd Font-14"))
+             '(font . "JetBrains Mono Nerd Font-14"))
+
+(use-package highlight-indent-guides
+  :ensure t
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (set-face-foreground 'highlight-indent-guides-character-face "gray31")
+  :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
 
 (use-package ligature
   :ensure t
@@ -253,12 +260,6 @@
   (advice-add #'dashboard-replace-displayable :override #'identity)
   :config
   (dashboard-setup-startup-hook))
-
-(use-package highlight-indent-guides
-  :ensure t
-  :config
-  (setq highlight-indent-guides-method 'character)
-  :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
 
 (use-package no-littering
   :ensure t)

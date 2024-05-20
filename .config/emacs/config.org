@@ -12,6 +12,7 @@
   - [[#use-package][Use Package]]
 - [[#ux][UX]]
   - [[#fonts][Fonts]]
+  - [[#indent-guides][Indent guides]]
   - [[#ligatures][Ligatures]]
   - [[#theme][Theme]]
   - [[#highlight-line][Highlight line]]
@@ -47,7 +48,6 @@
   - [[#corfu][Corfu]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
   - [[#dashboard][Dashboard]]
-  - [[#indent-guides][Indent guides]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#electric-pairing][Electric Pairing]]
   - [[#tabbing][Tabbing]]
@@ -102,9 +102,19 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 ** Fonts
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Iosevka Nerd Font-14"))
+               '(font . "JetBrains Mono Nerd Font-14"))
 #+end_src
 
+** Indent guides
+Lines to mark indentation levels
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :ensure t
+    :config
+    (setq highlight-indent-guides-method 'character)
+    (set-face-foreground 'highlight-indent-guides-character-face "gray31")
+    :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
+#+end_src
 ** Ligatures
 Turn things like -> into fancy arrows
 #+begin_src emacs-lisp
@@ -475,15 +485,6 @@ Show the recent files
     (advice-add #'dashboard-replace-displayable :override #'identity)
     :config
     (dashboard-setup-startup-hook))
-#+end_src
-** Indent guides
-Lines to mark indentation levels
-#+begin_src emacs-lisp
-  (use-package highlight-indent-guides
-    :ensure t
-    :config
-    (setq highlight-indent-guides-method 'character)
-    :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
 #+end_src
 ** Keeping emacs clean
 Some things ,*cough cough auto-save-list,* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
