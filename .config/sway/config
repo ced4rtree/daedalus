@@ -258,7 +258,7 @@ bar {
 		separator #FFFFFF
     }
 
-    position top
+    # position top
 	pango_markup enabled
 	status_command i3blocks
 }
