@@ -22,7 +22,7 @@ set $term foot
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu dmenu_path | wmenu-run | xargs swaymsg exec --
+set $menu wmenu-run -f "JetBrains Mono Nerd Font 12"
 
 ### Output configuration
 #
@@ -82,6 +82,9 @@ exec mpd
 
 # dbus
 exec dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus & disown
+
+# battery notification daemon
+exec batsignal &
 
 ### Font
 font pango:JetBrains Mono Nerd Font 10
