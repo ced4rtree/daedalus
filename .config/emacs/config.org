@@ -768,11 +768,11 @@ It can be useful to kill all of the buffers to clean up your buffer list. This f
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-M-n") #'(lambda ()
                                     (interactive)
-                                    (next-line 1)
+                                    (forward-line 1)
                                     (scroll-up-line 1)))
   (global-set-key (kbd "C-M-p") #'(lambda ()
                                     (interactive)
-                                    (previous-line 1)
+                                    (forward-line -1)
                                     (scroll-down-line 1)))
 #+end_src
 * Clean up

@@ -11,4 +11,5 @@
 **/.zcompdump
 /.config/dwm/.github/
 /.config/emacs/eln-cache/
+/.config/emacs/elpa/
 /.config/nvim/plugin/packer_compiled.lua

@@ -471,11 +471,11 @@ If TEXT does not have a range, return nil."
 
 (global-set-key (kbd "C-M-n") #'(lambda ()
                                   (interactive)
-                                  (next-line 1)
+                                  (forward-line 1)
                                   (scroll-up-line 1)))
 (global-set-key (kbd "C-M-p") #'(lambda ()
                                   (interactive)
-                                  (previous-line 1)
+                                  (forward-line -1)
                                   (scroll-down-line 1)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
