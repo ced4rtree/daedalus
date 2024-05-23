@@ -1,26 +1,37 @@
 #!/usr/bin/env bash
+
+info() {
+	output="$(mpc | sed -n '1p')"
+	if ! [ "$(echo """$output""" | cut -d ' ' -f1)" == "volume:" ]; then
+		if [ ${#output} -gt 50 ]; then
+			echo "🎵 ${output}" | cut -c -50 | sed 's/$/\.\.\./'
+		else
+			echo "🎵 ${output}"
+		fi
+	else
+		echo ""
+	fi
+}
+
+paused() {
+	check="$(mpc | awk 'NR==2 {print $1}')"
+	if [ "${check}" = "[playing]" ]; then
+		printf "\n"
+	elif [ "${check}" = "[paused]" ]; then
+		printf "▶\n"
+	else
+		echo ""
+	fi
+}
+
 while [ 2 -eq 2 ]
 do
-	mpc idle 1>/dev/null
 	if [ "${1}" == "info" ]; then
-		output="$(mpc | sed -n '1p')"
-		if ! [ "$(echo """$output""" | cut -d ' ' -f1)" == "volume:" ]; then
-			if [ ${#output} -gt 50 ]; then
-				echo "🎵 ${output}" | cut -c -50 | sed 's/$/\.\.\./'
-			else
-				echo "🎵 ${output}"
-			fi
-		else
-			echo ""
-		fi
+		output
 	elif [ "${1}" == "paused" ]; then
-		check="$(mpc | awk 'NR==2 {print $1}')"
-		if [ "${check}" = "[playing]" ]; then
-			printf "\n"
-		elif [ "${check}" = "[paused]" ]; then
-			printf "▶\n"
-		else
-			echo ""
-		fi
+		paused
+	elif [ "${1}" == "all" ]; then
+		echo "$(paused) $(info)"
 	fi
+	mpc idle 1>/dev/null
 done

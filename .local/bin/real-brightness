@@ -15,8 +15,9 @@ case "$1" in
 		fi
 
 		# pkill -RTMIN+2 dwmblocks
+		pkill -RTMIN+11 i3blocks
 		# polybar-msg hook brightness 1
-		eww update brightness_value=$(real-brightness check)
+		# eww update brightness_value=$(real-brightness check)
 		;;
 
 	down)
@@ -28,8 +29,9 @@ case "$1" in
 		fi
 
 		# pkill -RTMIN+2 dwmblocks
+		pkill -RTMIN+11 i3blocks
 		# polybar-msg hook brightness 1
-		eww update brightness_value=$(real-brightness check)
+		# eww update brightness_value=$(real-brightness check)
 		;;
 
 	check)

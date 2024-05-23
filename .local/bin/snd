@@ -3,12 +3,14 @@
 case "$1" in
 	up) 
 		pactl set-sink-volume @DEFAULT_SINK@ +5%
+		pkill -RTMIN+10 i3blocks
 		# polybar-msg hook sound 1
 		# eww update volume="$(snd check)"
 		# pkill -RTMIN+1 dwmblocks
 		;;
 	down)
 		pactl set-sink-volume @DEFAULT_SINK@ -5%
+		pkill -RTMIN+10 i3blocks
 		# polybar-msg hook sound 1
 		# eww update volume="$(snd check)"
 		# pkill -RTMIN+1 dwmblocks
