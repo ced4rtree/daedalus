@@ -260,7 +260,7 @@ bar {
 
     # position top
 	pango_markup enabled
-	font JetBrains Mono Nerd Font 12
+	font JetBrains Mono Nerd Font 10
 	status_command i3blocks
 }
 
