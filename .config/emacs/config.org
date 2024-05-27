@@ -112,8 +112,9 @@ Lines to mark indentation levels
     :ensure t
     :config
     (setq highlight-indent-guides-method 'character)
-    (set-face-foreground 'highlight-indent-guides-character-face "gray31")
     :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
+  (with-eval-after-load 'highlight-indent-guides
+    (set-face-foreground 'highlight-indent-guides-character-face "gray31"))
 #+end_src
 ** Ligatures
 Turn things like -> into fancy arrows

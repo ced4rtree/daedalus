@@ -21,8 +21,9 @@
   :ensure t
   :config
   (setq highlight-indent-guides-method 'character)
-  (set-face-foreground 'highlight-indent-guides-character-face "gray31")
   :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
+(with-eval-after-load 'highlight-indent-guides
+  (set-face-foreground 'highlight-indent-guides-character-face "gray31"))
 
 (use-package ligature
   :ensure t
