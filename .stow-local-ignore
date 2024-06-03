@@ -1,0 +1,7 @@
+/flake.nix
+/configuration.nix
+/hardware-configuration.nix
+/home.nix
+/flake.lock
+
+/README.org
