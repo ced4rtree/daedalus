@@ -4,6 +4,7 @@
       ./virt-manager.nix
       ./pipewire.nix
       ./bluetooth.nix
+      ./brightness.nix
   ];
 
   # Bootloader.

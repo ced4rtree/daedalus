@@ -40,6 +40,7 @@
     openssh
     unzip
     mpv
+    light
     freetube
 
     # music
