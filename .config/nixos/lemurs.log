@@ -1,0 +1,6 @@
+[2024-06-05T06:35:04Z INFO  lemurs] Main lemurs logger is running
+[2024-06-05T06:35:04Z INFO  lemurs] UI booted up
+[2024-06-05T06:35:04Z WARN  lemurs::post_login] Failed to read from the X folder '/etc/lemurs/wms'
+[2024-06-05T06:35:04Z WARN  lemurs::post_login] Failed to read from the wayland folder '/etc/lemurs/wayland'
+[2024-06-05T06:35:04Z INFO  lemurs::info_caching] Attempting to get a cached information from '/var/cache/lemurs'
+[2024-06-05T06:35:04Z WARN  lemurs::info_caching] Unable to read cache file. Reason: 'No such file or directory (os error 2)'
