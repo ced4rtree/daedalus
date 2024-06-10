@@ -48,7 +48,7 @@
       modus-themes-bold-constructs t
       modus-themes-italic-constructs t
       modus-themes-paren-match '(bold intense underline)
-      modus-themes-syntax '(green-strings yellow-comments)
+      modus-themes-syntax nil
       modus-themes-headings '((t . (rainbow overline)))
       modus-themes-org-blocks 'gray-background
       modus-themes-markup '(bold background intense)
