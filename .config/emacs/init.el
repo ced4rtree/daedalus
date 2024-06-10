@@ -43,18 +43,11 @@
                               "<:<" ";;;"))
   (global-ligature-mode t))
 
-(setq modus-themes-mode-line '(accented 3d (padding . 3))
-      modus-themes-region '(no-extend bg-only accented)
-      modus-themes-bold-constructs t
-      modus-themes-italic-constructs t
-      modus-themes-paren-match '(bold intense underline)
-      modus-themes-syntax '(green-strings yellow-comments)
-      modus-themes-headings '((t . (rainbow overline)))
-      modus-themes-org-blocks 'gray-background
-      modus-themes-markup '(bold background intense)
-      modus-themes-prompts '(intense bold))
-
-(load-theme 'modus-vivendi t)
+(use-package catppuccin-theme
+  :custom
+  (catppuccin-flavor 'macchiato)
+  :config
+  (load-theme 'catppuccin t))
 
 (global-hl-line-mode 1)
 
