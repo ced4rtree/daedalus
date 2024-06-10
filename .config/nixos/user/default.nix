@@ -10,7 +10,11 @@
     ./wm/sway.nix
     ./bluetooth.nix
     ./theme.nix
+    ./direnv.nix
   ];
+
+#   { pkgs, ... }:
+
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -35,13 +39,17 @@
     nodejs_22
     emacs29-pgtk
     mu
-	emacsPackages.mu4e
+  	emacsPackages.mu4e
     gh
     openssh
     unzip
     mpv
     light
     freetube
+    qbittorrent
+    clonehero
+    discord
+    appimage-run
 
     # music
     mpd
@@ -51,9 +59,12 @@
     # dev tools
     cmake
     gnumake
+    jdk17
 
     wirelesstools
   ];
+
+  
 
   programs.emacs = {
     extraPackages = epkgs: [

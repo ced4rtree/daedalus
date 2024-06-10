@@ -1,5 +1,5 @@
 { config, pkgs, ... }: {
-  environment.systemPackages = [ pkgs.pulseaudio ]; # just for pactl
+  environment.systemPackages = with pkgs; [ pulseaudio pavucontrol ]; # just for pactl
 
   security.rtkit.enable = true;
   services.pipewire = {
