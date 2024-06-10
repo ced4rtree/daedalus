@@ -55,11 +55,4 @@
       PATH = "$PATH:$HOME/.local/bin/";
     };
   };
-
-  programs.bash = {
-    enable = true;
-    initExtra = ''
-      exec zsh
-    '';
-  };
 }

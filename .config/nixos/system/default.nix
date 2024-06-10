@@ -5,6 +5,7 @@
       ./pipewire.nix
       ./bluetooth.nix
       ./brightness.nix
+      ./zsh.nix
   ];
 
   # Bootloader.
