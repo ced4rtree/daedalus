@@ -17,14 +17,6 @@
 (add-to-list 'default-frame-alist
              '(font . "JetBrains Mono Nerd Font-14"))
 
-(use-package highlight-indent-guides
-  :ensure t
-  :config
-  (setq highlight-indent-guides-method 'character)
-  :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
-(with-eval-after-load 'highlight-indent-guides
-  (set-face-foreground 'highlight-indent-guides-character-face "gray31"))
-
 (use-package ligature
   :ensure t
   :config
@@ -61,6 +53,14 @@
   (catppuccin-flavor 'macchiato)
   :config
   (load-theme 'catppuccin t))
+
+(use-package highlight-indent-guides
+  :defer t
+  :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1)))
+  :hook (highlight-indent-guides-mode . (lambda ()
+                                          (interactive)
+                                          (setq highlight-indent-guides-method 'character)
+                                          (set-face-foreground 'highlight-indent-guides-character-face "gray31"))))
 
 (global-hl-line-mode 1)
 

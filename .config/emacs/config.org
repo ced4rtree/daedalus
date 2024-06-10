@@ -12,9 +12,9 @@
   - [[#use-package][Use Package]]
 - [[#ux][UX]]
   - [[#fonts][Fonts]]
-  - [[#indent-guides][Indent guides]]
   - [[#ligatures][Ligatures]]
   - [[#theme][Theme]]
+  - [[#indent-guides][Indent guides]]
   - [[#highlight-line][Highlight line]]
   - [[#doom-modeline][Doom Modeline]]
   - [[#line-numbers][Line numbers]]
@@ -102,18 +102,6 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
   (add-to-list 'default-frame-alist
                '(font . "JetBrains Mono Nerd Font-14"))
 #+end_src
-
-** Indent guides
-Lines to mark indentation levels
-#+begin_src emacs-lisp
-  (use-package highlight-indent-guides
-    :ensure t
-    :config
-    (setq highlight-indent-guides-method 'character)
-    :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1))))
-  (with-eval-after-load 'highlight-indent-guides
-    (set-face-foreground 'highlight-indent-guides-character-face "gray31"))
-#+end_src
 ** Ligatures
 Turn things like -> into fancy arrows
 #+begin_src emacs-lisp
@@ -155,6 +143,17 @@ Turn things like -> into fancy arrows
     (catppuccin-flavor 'macchiato)
     :config
     (load-theme 'catppuccin t))
+#+end_src
+** Indent guides
+Lines to mark indentation levels
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :defer t
+    :hook (prog-mode . (lambda () (interactive) (highlight-indent-guides-mode 1)))
+    :hook (highlight-indent-guides-mode . (lambda ()
+                                            (interactive)
+                                            (setq highlight-indent-guides-method 'character)
+                                            (set-face-foreground 'highlight-indent-guides-character-face "gray31"))))
 #+end_src
 ** Highlight line
 #+begin_src emacs-lisp
