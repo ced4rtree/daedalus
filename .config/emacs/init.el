@@ -46,7 +46,7 @@
 (use-package timu-macos-theme
   :ensure t
   :init
-  (load-theme 'catppuccin t))
+  (load-theme 'timu-macos t))
 
 (global-hl-line-mode 1)
 
@@ -85,22 +85,22 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(setq treesit-language-source-alist
-      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-	(cmake "https://github.com/tree-sitter/tree-sitter-cmake")
-	(c "https://github.com/tree-sitter/tree-sitter-c")
-	(cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-	(rust "https://github.com/tree-sitter/tree-sitter-rust")
-	(haskell "https://github.com/tree-sitter/tree-sitter-haskell")
-	(java "https://github.com/tree-sitter/tree-sitter-java")
-	(markdown "https://github.com/tree-sitter/tree-sitter-md")
-	(make "https://github.com/tree-sitter/tree-sitter-make")))
+;; (setq treesit-language-source-alist
+;; 	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
+;; 	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+;; 	  (c "https://github.com/tree-sitter/tree-sitter-c")
+;; 	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+;; 	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
+;; 	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+;; 	  (java "https://github.com/tree-sitter/tree-sitter-java")
+;; 	  (markdown "https://github.com/tree-sitter/tree-sitter-md")
+;; 	  (make "https://github.com/tree-sitter/tree-sitter-make")))
 
-(add-hook 'java-mode-hook 'java-ts-mode)
-(add-hook 'c-mode-hook 'c-ts-mode)
-(add-hook 'c++-mode-hook 'c++-ts-mode)
-(with-eval-after-load 'rust-mode
-  (add-hook 'rust-mode 'rust-ts-mode))
+;; (add-hook 'java-mode-hook 'java-ts-mode)
+;; (add-hook 'c-mode-hook 'c-ts-mode)
+;; (add-hook 'c++-mode-hook 'c++-ts-mode)
+;; (with-eval-after-load 'rust-mode
+;;   (add-hook 'rust-mode 'rust-ts-mode))
 
 (use-package beacon
   :ensure t
@@ -130,18 +130,23 @@
       org-confirm-babel-evaluate nil ;; don't ask to evaluate code
       org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
-(setq org-agenda-files (list "~/org/agenda/schedule.org"))
+(setq org-agenda-files '("~/org/agenda"))
 
-(use-package org-bullets
-  :ensure t
+(use-package org-modern
+  :custom
+  (org-modern-fold-stars '(("◉" . "◉")
+                           ("◯" . "◯")
+                           ("◍" . "◍")
+                           ("◈" . "◈")
+                           ("◇" . "◇")))
   :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (global-org-modern-mode t))
 
 (add-hook 'org-mode-hook #'(lambda ()
                              (interactive)
-                             (set-face-attribute 'org-level-1 nil :height 1.3)
-                             (set-face-attribute 'org-level-2 nil :height 1.2)
-                             (set-face-attribute 'org-level-3 nil :height 1.1)))
+                             (set-face-attribute 'org-level-1 nil :height 1.2)
+                             (set-face-attribute 'org-level-2 nil :height 1.1)
+                             (set-face-attribute 'org-level-3 nil :height 1.05)))
 
 (use-package org-ref :ensure t)
 
@@ -169,32 +174,9 @@
   visual-fill-column-center-text t
   visual-fill-column-width 110)
 
-(use-package vertico
-  :ensure t
-  :config
-  (vertico-mode 1))
-
-(use-package marginalia
-  :ensure t
-  :config
-  (marginalia-mode 1)
-  :after vertico)
-
-(use-package prescient
-  :ensure t
-  :ensure vertico-prescient
-  :after vertico
-  :config
-  (vertico-prescient-mode 1)
-  (prescient-persist-mode 1)
-  :after vertico)
-
-(use-package consult
-  :ensure t
-  :after vertico)
-
 (use-package rust-mode :ensure t)
 (use-package haskell-mode :ensure t)
+(use-package nix-mode :ensure t)
 
 (when (< emacs-major-version 29)
   (use-package eglot
@@ -220,6 +202,10 @@
   :ensure t
   :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 
+(use-package direnv
+  :config
+  (direnv-mode))
+
 (use-package corfu
   :ensure t
   :ensure nerd-icons-corfu
@@ -227,6 +213,30 @@
   :init
   (setq corfu-auto t)
   :hook (prog-mode . corfu-mode))
+
+(use-package vertico
+  :ensure t
+  :config
+  (vertico-mode 1))
+
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode 1)
+  :after vertico)
+
+(use-package prescient
+  :ensure t
+  :ensure vertico-prescient
+  :after vertico
+  :config
+  (vertico-prescient-mode 1)
+  (prescient-persist-mode 1)
+  :after vertico)
+
+(use-package consult
+  :ensure t
+  :after vertico)
 
 (use-package recentf
   :ensure t
@@ -264,6 +274,8 @@
 
 (use-package no-littering
   :ensure t)
+
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 
 (electric-pair-mode 1)
 (setq electric-pair-inhibit-predicate
@@ -348,8 +360,6 @@
   :bind (("M-p" . drag-stuff-up)
          ("M-n" . drag-stuff-down)))
 
-(use-package sudo-edit :ensure t)
-
 (use-package yasnippet
   :ensure t
   :ensure yasnippet-snippets
@@ -386,22 +396,22 @@ If TEXT does not have a range, return nil."
                     (time-to-days
                      (org-read-date nil t end-date))) text)))))))
 
-(use-package mu4e
-  :ensure-system-package mu
-  :ensure-system-package mbsync
+;; (use-package mu4e
+;;   :ensure-system-package mu
+;;   :ensure-system-package mbsync
 
-  :ensure nil
-  :load-path "/usr/share/emacs/site-lisp/mu4e"
+;;   :ensure nil
+;;   ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
 
-  :config
-  (setq smtpmail-stream-type 'starttls ;; use tls for encryption
-        mu4e-change-filenames-when-moving t ;; update file names as you move them around
-        mu4e-update-interval (* 10 60) ;; update email every 10 minutes
-        mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
-        mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
-        ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
-        ;; using the decryption function defined below
-        message-send-mail-function 'smtpmail-send-it)
+;;   :config
+;;   (setq smtpmail-stream-type 'starttls ;; use tls for encryption
+;;         mu4e-change-filenames-when-moving t ;; update file names as you move them around
+;;         mu4e-update-interval (* 10 60) ;; update email every 10 minutes
+;;         mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
+;;         mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
+;;         ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
+;;         ;; using the decryption function defined below
+;;         message-send-mail-function 'smtpmail-send-it)
 
   ;; this is a dummy configuration for example
   ;; my real email info is stored in ~/.local/share/emacs/emails.el
@@ -435,7 +445,7 @@ If TEXT does not have a range, return nil."
   ;;                         (mu4e-refile-folder . "/All Mail")
   ;;                         (mu4e-trash-folder . "/Trash"))))
 
-  (load (concat user-emacs-directory "emails.el")))
+  ;; (load (concat user-emacs-directory "emails.el")))
 
 (use-package mu4e-alert
   :after mu4e

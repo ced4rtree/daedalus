@@ -31,24 +31,23 @@
   - [[#toc-org][Toc-org]]
   - [[#babel-settings][Babel settings]]
   - [[#org-agenda][Org agenda]]
-  - [[#org-bullets][Org Bullets]]
+  - [[#org-modern][Org-modern]]
   - [[#heading-sizes][Heading Sizes]]
   - [[#org-ref][Org-ref]]
   - [[#org-present][Org-present]]
-- [[#vertico][Vertico]]
-  - [[#marginalia][Marginalia]]
-  - [[#prescient][Prescient]]
-  - [[#consult][Consult]]
 - [[#programming-help][Programming Help]]
   - [[#languages][Languages]]
   - [[#eglot][Eglot]]
   - [[#magit][Magit]]
   - [[#aggressive-indentation][Aggressive Indentation]]
   - [[#commenting][Commenting]]
+  - [[#direnv][Direnv]]
   - [[#corfu][Corfu]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
+  - [[#vertico][Vertico]]
   - [[#dashboard][Dashboard]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
+  - [[#color-in-the-compilation-buffer][Color in the compilation buffer]]
   - [[#electric-pairing][Electric Pairing]]
   - [[#tabbing][Tabbing]]
   - [[#too-lazy-to-type-yes][Too lazy to type yes]]
@@ -57,7 +56,6 @@
   - [[#auto-backup][Auto Backup]]
   - [[#goodbye-message][Goodbye message]]
   - [[#move-lines][Move Lines]]
-  - [[#sudo-edit][Sudo Edit]]
   - [[#yasnippet][YASnippet]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#calfw][Calfw]]
@@ -142,7 +140,7 @@ Turn things like -> into fancy arrows
   (use-package timu-macos-theme
     :ensure t
     :init
-    (load-theme 'catppuccin t))
+    (load-theme 'timu-macos t))
 #+end_src
 
 ** Highlight line
@@ -205,22 +203,22 @@ Adds rainbow parentheses and color to hex values and such
 Tree sitter is a parsing library that gives us good, fast syntax highlighting
 Tree sitter is now built into emacs as of Emacs 29
 #+begin_src emacs-lisp
-  (setq treesit-language-source-alist
-	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
-	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
-	  (c "https://github.com/tree-sitter/tree-sitter-c")
-	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
-	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
-	  (java "https://github.com/tree-sitter/tree-sitter-java")
-	  (markdown "https://github.com/tree-sitter/tree-sitter-md")
-	  (make "https://github.com/tree-sitter/tree-sitter-make")))
+  ;; (setq treesit-language-source-alist
+  ;; 	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
+  ;; 	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+  ;; 	  (c "https://github.com/tree-sitter/tree-sitter-c")
+  ;; 	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+  ;; 	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
+  ;; 	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+  ;; 	  (java "https://github.com/tree-sitter/tree-sitter-java")
+  ;; 	  (markdown "https://github.com/tree-sitter/tree-sitter-md")
+  ;; 	  (make "https://github.com/tree-sitter/tree-sitter-make")))
 
-  (add-hook 'java-mode-hook 'java-ts-mode)
-  (add-hook 'c-mode-hook 'c-ts-mode)
-  (add-hook 'c++-mode-hook 'c++-ts-mode)
-  (with-eval-after-load 'rust-mode
-    (add-hook 'rust-mode 'rust-ts-mode))
+  ;; (add-hook 'java-mode-hook 'java-ts-mode)
+  ;; (add-hook 'c-mode-hook 'c-ts-mode)
+  ;; (add-hook 'c++-mode-hook 'c++-ts-mode)
+  ;; (with-eval-after-load 'rust-mode
+  ;;   (add-hook 'rust-mode 'rust-ts-mode))
 #+end_src
 ** Beacon
 Never lose your cursor again with this beacon of light
@@ -280,16 +278,21 @@ Here, I set up auto tangle, which will do that compilation automatically upon sa
 ** Org agenda
 Org agenda is a full blown scheduling application with all the power of org mode built into it
 #+begin_src emacs-lisp
-  (setq org-agenda-files (list "~/org/agenda/schedule.org"))
+  (setq org-agenda-files '("~/org/agenda"))
 #+end_src
 
-** Org Bullets
-Use fancy bullets instead of simple *'s
+** Org-modern
+Several UI improvements to org mode, such as bulleted headings and boxed TODO's
 #+begin_src emacs-lisp
-  (use-package org-bullets
-    :ensure t
+  (use-package org-modern
+    :custom
+    (org-modern-fold-stars '(("◉" . "◉")
+                             ("◯" . "◯")
+                             ("◍" . "◍")
+                             ("◈" . "◈")
+                             ("◇" . "◇")))
     :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    (global-org-modern-mode t))
 #+end_src
 
 ** Heading Sizes
@@ -297,9 +300,9 @@ Make the headings larger than ordinary text
 #+begin_src emacs-lisp
   (add-hook 'org-mode-hook #'(lambda ()
                                (interactive)
-                               (set-face-attribute 'org-level-1 nil :height 1.3)
-                               (set-face-attribute 'org-level-2 nil :height 1.2)
-                               (set-face-attribute 'org-level-3 nil :height 1.1)))
+                               (set-face-attribute 'org-level-1 nil :height 1.2)
+                               (set-face-attribute 'org-level-2 nil :height 1.1)
+                               (set-face-attribute 'org-level-3 nil :height 1.05)))
 #+end_src
 ** Org-ref
 A simple and efficient tool to manage your references when writing papers with org mode
@@ -339,57 +342,13 @@ In case I don't feel like going through the rigamarole of a beamer presentation,
     visual-fill-column-center-text t
     visual-fill-column-width 110)
 #+end_src
-* Vertico
-A simple and efficient minibuffer completion framework for emacs
-#+begin_src emacs-lisp
-  (use-package vertico
-    :ensure t
-    :config
-    (vertico-mode 1))
-#+end_src
-
-** Marginalia
-This adds extra little details to what is shown in the minibuffer.
-For example, it will show the description for a function next to function name when calling functions interactively through =M-x=
-#+begin_src emacs-lisp
-  (use-package marginalia
-    :ensure t
-    :config
-    (marginalia-mode 1)
-    :after vertico)
-#+end_src
-
-** Prescient
-Unlock the powers of psychic history with prescient! It will remember what commands you have issued, and order interactive lists in a way such that the commands used most frequently pop up at the top.
-
-Cool thing about this is that it's not just for vertico, or even just minibuffer completion frameworks in general! It has packages for company, corfu, ivy, and more!
-#+begin_src emacs-lisp
-  (use-package prescient
-    :ensure t
-    :ensure vertico-prescient
-    :after vertico
-    :config
-    (vertico-prescient-mode 1)
-    (prescient-persist-mode 1)
-    :after vertico)
-#+end_src
-
-** Consult
-Even more interactive minibuffer? Yes please!
-
-This will let you preview options as you hover over them in vertico.
-For example, with =M-x consult-themes RET= you can get a preview of themes as you hover over them
-#+begin_src emacs-lisp
-  (use-package consult
-    :ensure t
-    :after vertico)
-#+end_src
 * Programming Help
-Things like eglot and projectile are a huge help when programming
+Things like eglot (lsp implementation) and corfu (autocompletion) are a huge help when programming
 ** Languages
 #+begin_src emacs-lisp
   (use-package rust-mode :ensure t)
   (use-package haskell-mode :ensure t)
+  (use-package nix-mode :ensure t)
 #+end_src
 ** Eglot
 A lightweight LSP implementation built into emacs (as of emacs 29)
@@ -431,6 +390,16 @@ Neat package that gives some nice commenting functions
     :ensure t
     :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 #+end_src
+** Direnv
+On NixOS (and when using the standalone Nix package manager), I like to use [[https://nix.dev/manual/nix/2.18/command-ref/nix-shell][nix-shell]] to have independent and clean development environments. By using emacs-direnv, I can get automatic loading of those dev environments.
+
+On my system, I also use [[https://github.com/nix-community/nix-direnv][nix-direnv]] to load these environments faster.
+
+#+begin_src emacs-lisp
+  (use-package direnv
+    :config
+    (direnv-mode))
+#+end_src
 ** Corfu
 A simple integration of some neat autocomplete functionality for emacs. Like vertico but in a more general case, when typing in an ordinary buffer.
 
@@ -446,6 +415,51 @@ To invoke autocomplete, type =C-M-i= while typing a buffer (works best in an egl
 #+end_src
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
+** Vertico
+A simple and efficient minibuffer completion framework for emacs
+#+begin_src emacs-lisp
+  (use-package vertico
+    :ensure t
+    :config
+    (vertico-mode 1))
+#+end_src
+
+*** Marginalia
+This adds extra little details to what is shown in the minibuffer.
+For example, it will show the description for a function next to function name when calling functions interactively through =M-x=
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :ensure t
+    :config
+    (marginalia-mode 1)
+    :after vertico)
+#+end_src
+
+*** Prescient
+Unlock the powers of psychic history with prescient! It will remember what commands you have issued, and order interactive lists in a way such that the commands used most frequently pop up at the top.
+
+Cool thing about this is that it's not just for vertico, or even just minibuffer completion frameworks in general! It has packages for company, corfu, ivy, and more!
+#+begin_src emacs-lisp
+  (use-package prescient
+    :ensure t
+    :ensure vertico-prescient
+    :after vertico
+    :config
+    (vertico-prescient-mode 1)
+    (prescient-persist-mode 1)
+    :after vertico)
+#+end_src
+
+*** Consult
+Even more interactive minibuffer? Yes please!
+
+This will let you preview options as you hover over them in vertico.
+For example, with =M-x consult-themes RET= you can get a preview of themes as you hover over them
+#+begin_src emacs-lisp
+  (use-package consult
+    :ensure t
+    :after vertico)
+#+end_src
 ** Dashboard
 *** Dependencies
 Show the recent files
@@ -492,6 +506,11 @@ Some things ,*cough cough auto-save-list,* don't like to cooperate with the sett
 #+begin_src emacs-lisp
   (use-package no-littering
     :ensure t)
+#+end_src
+** Color in the compilation buffer
+Emacs doesn't support color codes some programs use to color their output by default. No longer!
+#+begin_src emacs-lisp
+  (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 #+end_src
 ** Electric Pairing
 Automatically pair parentheses and the like
@@ -606,11 +625,6 @@ Easily move lines around using =M-p= and =M-n=
     :bind (("M-p" . drag-stuff-up)
            ("M-n" . drag-stuff-down)))
 #+end_src
-** Sudo Edit
-Tired of wanting to edit a root file with your emacs config but not having permission? Well no longer, with =M-x sudo-edit-find-file RET=!
-#+begin_src emacs-lisp
-  (use-package sudo-edit :ensure t)
-#+end_src
 ** YASnippet
 An autocompletion helper that will fill in snippets for you. e.g. expand =sout= to =System.out.println()=
 #+begin_src emacs-lisp
@@ -661,22 +675,22 @@ Maildir Utils 4 Emacs, an email client for emacs
 
 Depends on the =mu= and =isync= system package
 #+begin_src emacs-lisp
-  (use-package mu4e
-    :ensure-system-package mu
-    :ensure-system-package mbsync
+  ;; (use-package mu4e
+  ;;   :ensure-system-package mu
+  ;;   :ensure-system-package mbsync
 
-    :ensure nil
-    :load-path "/usr/share/emacs/site-lisp/mu4e"
+  ;;   :ensure nil
+  ;;   ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
 
-    :config
-    (setq smtpmail-stream-type 'starttls ;; use tls for encryption
-          mu4e-change-filenames-when-moving t ;; update file names as you move them around
-          mu4e-update-interval (* 10 60) ;; update email every 10 minutes
-          mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
-          mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
-          ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
-          ;; using the decryption function defined below
-          message-send-mail-function 'smtpmail-send-it)
+  ;;   :config
+  ;;   (setq smtpmail-stream-type 'starttls ;; use tls for encryption
+  ;;         mu4e-change-filenames-when-moving t ;; update file names as you move them around
+  ;;         mu4e-update-interval (* 10 60) ;; update email every 10 minutes
+  ;;         mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
+  ;;         mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
+  ;;         ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
+  ;;         ;; using the decryption function defined below
+  ;;         message-send-mail-function 'smtpmail-send-it)
 
     ;; this is a dummy configuration for example
     ;; my real email info is stored in ~/.local/share/emacs/emails.el
@@ -710,7 +724,7 @@ Depends on the =mu= and =isync= system package
     ;;                         (mu4e-refile-folder . "/All Mail")
     ;;                         (mu4e-trash-folder . "/Trash"))))
 
-    (load (concat user-emacs-directory "emails.el")))
+    ;; (load (concat user-emacs-directory "emails.el")))
 #+end_src
 
 *** MU4E Alert
