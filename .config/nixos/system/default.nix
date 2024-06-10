@@ -1,16 +1,13 @@
 { config, pkgs, ... }: {
   imports = [
       ./hardware-configuration.nix
+      ./grub.nix
       ./virt-manager.nix
       ./pipewire.nix
       ./bluetooth.nix
       ./brightness.nix
       ./zsh.nix
   ];
-
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
