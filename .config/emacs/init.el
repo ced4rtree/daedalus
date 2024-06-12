@@ -77,8 +77,8 @@
         doom-modeline-persp-icon t
         doom-modeline-mu4e t))
 
-(global-display-line-numbers-mode 1)
-(menu-bar--display-line-numbers-mode-relative)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-hook 'prog-mode-hook #'menu-bar--display-line-numbers-mode-relative)
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)

@@ -178,10 +178,9 @@ Fancy little modeline that looks a bit better than the stock one
 #+end_src
 ** Line numbers
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode 1)
-  (menu-bar--display-line-numbers-mode-relative)
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  (add-hook 'prog-mode-hook #'menu-bar--display-line-numbers-mode-relative)
 #+end_src
-
 ** Rid of ugly stuff
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
