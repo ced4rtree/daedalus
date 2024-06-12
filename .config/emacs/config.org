@@ -363,6 +363,7 @@ Things like eglot (lsp implementation) and corfu (autocompletion) are a huge hel
   (use-package haskell-mode :ensure t)
   (use-package nix-mode :ensure t)
   (use-package cmake-mode :ensure t)
+  (use-package markdown-mode :ensure t)
 #+end_src
 ** Eglot
 A lightweight LSP implementation built into emacs (as of emacs 29)
