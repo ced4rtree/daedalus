@@ -49,6 +49,8 @@ button {
 
 #workspaces button {
     color: @subtext0;
+	padding-left: 4px;
+	padding-right: 4px;
     margin-bottom: 3px;
 }
 
