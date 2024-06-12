@@ -191,6 +191,7 @@
 (use-package rust-mode :ensure t)
 (use-package haskell-mode :ensure t)
 (use-package nix-mode :ensure t)
+(use-package cmake-mode :ensure t)
 
 (when (< emacs-major-version 29)
   (use-package eglot
