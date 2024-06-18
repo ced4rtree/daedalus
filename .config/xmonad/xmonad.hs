@@ -30,7 +30,6 @@ import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
 
 import XMonad.Util.SpawnOnce
-import XMonad.Util.Ungrab
 import XMonad.Util.Hacks (windowedFullscreenFixEventHook)
 import XMonad.Util.WorkspaceCompare
 import XMonad.Util.EZConfig
@@ -110,18 +109,18 @@ myManageHook = composeAll
 -- myKeys :: XConfig -> List
 myKeys conf =
         -- launch a terminal
-        [ ("M-S-<Return>", windows W.focusMaster >> spawn myTerminal)
+        [ ("M-<Return>", windows W.focusMaster >> spawn myTerminal)
 
         -- Close the focused window
-        , ("M-S-x", kill)
+        , ("M-S-q", kill)
 
         -- application launcher
-        , ("M-p", spawn ("rofi -show drun -terminal " ++ myTerminal) >> spawn "mpv /opt/sounds/menu-01.mp3")
+        , ("M-d", spawn ("rofi -show drun -terminal " ++ myTerminal) >> spawn "mpv /opt/sounds/menu-01.mp3")
 
         -- Exit XMonad
-        , ("M-S-q", io exitSuccess)
+        , ("M-S-<Escape>", io exitSuccess)
         -- Restart XMonad
-        , ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
+        , ("M-S-c", spawn "xmonad --recompile && xmonad --restart")
 
         -- music control
         , ("M-S-j",                  spawn "mpc toggle")
@@ -147,7 +146,7 @@ myKeys conf =
         , ("M-l", sendMessage Expand)
         , ("M-z", sendMessage MirrorShrink)
         , ("M-a", sendMessage MirrorExpand)
-        , ("M-<Return>", windows W.swapMaster)
+        , ("M-S-<Return>", windows W.swapMaster)
         ] ++
 
         [ ("M-" ++ modKey2 ++ [keyChar], windows $ windowOperation workspaceId)
@@ -156,13 +155,13 @@ myKeys conf =
         ] ++
 
         -- Scroll through the layouts
-        [ ("M-<Space>", sendMessage NextLayout)
+        [ ("M-S-<Space>", sendMessage NextLayout)
         -- Force a floating window back to tiling
         , ("M-t", withFocused $ windows . W.sink)
         -- Toggle fullscreen
-        , ("M-m", sendMessage (Toggle "Full") >> sendMessage ToggleStruts) -- >> spawn "polybar-msg cmd toggle")
+        , ("M-f", sendMessage (Toggle "Full") >> sendMessage ToggleStruts) -- >> spawn "polybar-msg cmd toggle")
         -- Toggle floating
-        , ("M-f", sendMessage $ T.Toggle "floats")
+        , ("M-<Space>", sendMessage $ T.Toggle "floats")
         -- Toggle bar
         , ("M-b", sendMessage ToggleStruts >> spawn "polybar-msg cmd toggle")
         -- Spacing can be pretty goofy sometimes, so here's just a keybinding exclusively for struts
