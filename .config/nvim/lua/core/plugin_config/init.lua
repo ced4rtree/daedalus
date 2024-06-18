@@ -1,8 +1,0 @@
-require('core.plugin_config.tree-sitter')
-require('core.plugin_config.nvim-tree')
-require('core.plugin_config.lsp')
-require('core.plugin_config.catppuccin')
-require('core.plugin_config.colorizer')
-require('core.plugin_config.nvim-comment')
-require('core.plugin_config.lualine')
-require('core.plugin_config.neogit')
