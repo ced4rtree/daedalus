@@ -34,11 +34,6 @@ action = "Copy"
 key = "Copy"
 
 [[keyboard.bindings]]
-action = "ClearLogNotice"
-key = "L"
-mods = "Control"
-
-[[keyboard.bindings]]
 action = "ScrollPageUp"
 key = "PageUp"
 mode = "~Alt"

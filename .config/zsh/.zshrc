@@ -29,6 +29,10 @@ alias lhal='ls -lha'
 alias lhla='ls -lha'
 alias grep='grep --color=auto'
 
+# bind C-w (w for work) to create a new tmux session for a project
+bindkey -s '^w' 'tmux-sessionizer\n'
+bindkey -s '^l' ''
+
 # History in cache directory:
 HISTSIZE=10000
 SAVEHIST=10000
@@ -51,7 +55,6 @@ lfcd () {
         [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
     fi
 }
-bindkey -s '^o' 'lfcd\n'
 
 # Insult me
 if [ -f /etc/bash.command-not-found ]; then
