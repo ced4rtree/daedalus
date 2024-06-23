@@ -31,7 +31,6 @@ alias grep='grep --color=auto'
 
 # bind C-w (w for work) to create a new tmux session for a project
 bindkey -s '^w' 'tmux-sessionizer\n'
-bindkey -s '^l' ''
 
 # History in cache directory:
 HISTSIZE=10000
@@ -79,13 +78,21 @@ function zsh_add_plugin() {
 # add autosuggestions
 zsh_add_plugin "zsh-users/zsh-autosuggestions"
 
-if [ -r "/usr/local/opt/pokemon-colorscripts" ]; then
-	pokemon-colorscripts -r --no-title
-elif [ -r "/opt/shell-color-scripts" ]; then
+if pokemon-colorscripts 1>/dev/null; then
+	pokemon-colorscripts -r | awk 'NR > 1 { print $0 }'
+elif colorscript 2>/dev/null; then
 	colorscript random
 fi
 
-eval "$(starship init zsh)"
+if starship time 1>/dev/null; then
+    eval "$(starship init zsh)"
+fi
 
 # Load zsh-syntax-highlighting; should be last.
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+syntax_path=/usr/share/zsh/plugins/zsh-syntax-highlighting/
+if ! [ -d "${syntax_path}" ]; then
+    syntax_path="/nix/store/$(ls /nix/store/ | grep zsh-syntax-highlighting | awk '$0 !~ """.drv$""" { print $0 }' | tail -n 1)/share/zsh-syntax-highlighting"
+fi
+if [ -d "${syntax_path}" ]; then
+    source  "${syntax_path}/zsh-syntax-highlighting.zsh" 2>/dev/null
+fi
