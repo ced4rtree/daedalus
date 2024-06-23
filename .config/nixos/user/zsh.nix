@@ -1,12 +1,13 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
     zsh
+    zsh-syntax-highlighting
     starship
     pokemon-colorscripts-mac
   ];
 
   programs.zsh = {
-    enable = true;
+    enable = false;
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;

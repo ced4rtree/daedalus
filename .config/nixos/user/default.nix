@@ -39,7 +39,7 @@
     nodejs_22
     emacs29-pgtk
     mu
-  	emacsPackages.mu4e
+    emacsPackages.mu4e
     gh
     openssh
     unzip
@@ -50,6 +50,8 @@
     clonehero
     discord
     appimage-run
+    tmux
+    fzf
 
     # music
     mpd

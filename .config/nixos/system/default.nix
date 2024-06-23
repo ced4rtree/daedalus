@@ -7,6 +7,7 @@
       ./bluetooth.nix
       ./brightness.nix
       ./zsh.nix
+      ./graphics.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -41,10 +42,6 @@
 
   # Sway fixing
   # TODO put this in a flake
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-  };
   security.polkit.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
