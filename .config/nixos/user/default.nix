@@ -34,7 +34,7 @@
     (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" ]; })
     htop
     brave
-    firefox-unwrapped
+    firefox
     tree-sitter
     nodejs_22
     emacs29-pgtk

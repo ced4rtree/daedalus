@@ -1,4 +1,7 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: let
+  user = "cedar";
+  homeManagerSessionVars = "/etc/profiles/per-user/${user}/etc/profile.d/hm-session-vars.sh";
+in {
   home.packages = with pkgs; [
     zsh
     zsh-syntax-highlighting

@@ -19,6 +19,10 @@
 
   time.timeZone = "America/Boise";
 
+  environment.variables = {
+    PATH = "$PATH:$HOME/.local/bin/";
+  };
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
