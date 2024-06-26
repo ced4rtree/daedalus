@@ -34,6 +34,10 @@ alias grep='grep --color=auto'
 bindkey -v
 export KEYTIMEOUT=1
 
+# restore the emacs-like C-p and C-n for history
+bindkey -v '^P' up-history
+bindkey -v '^N' down-history
+
 # Change cursor shape for different vi modes.
 function zle-keymap-select () {
     case $KEYMAP in
