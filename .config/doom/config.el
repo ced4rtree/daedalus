@@ -21,8 +21,8 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 14 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "UbuntuSans Nerd Font" :size 13))
 ;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -32,11 +32,11 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-one)
+(setq doom-theme 'doom-one)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -74,32 +74,3 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-
-;; font
-(setq doom-font "JetBrainsMono Nerd Font-14")
-
-;; keybindings
-(map! :map prog-mode-map
-      :leader
-      ";" #'evilnc-comment-or-uncomment-lines)
-
-;; theme
-(use-package! catppuccin-theme
-  :init
-  (setq catppuccin-flavor 'frappe)
-  (load-theme 'catppuccin t))
-
-;; tree-sitter
-(setq treesit-language-source-alist
-      '((c "https://github.com/tree-sitter/tree-sitter-c")
-        (c++ "https://github.com/tree-sitter/tree-sitter-cpp")
-        (bash "https://github.com/tree-sitter/tree-sitter-bash")
-        (java "https://github.com/tree-sitter/tree-sitter-java")
-        (rust "https://github.com/tree-sitter/tree-sitter-rust")
-        (make "https://github.com/tree-sitter/tree-sitter-make")
-        (markdown "https://github.com/tree-sitter/tree-sitter-markdown")
-        (cmake "https://github.com/tree-sitter/tree-sitter-cmake")))
-(add-hook 'java-mode-hook #'java-ts-mode)
-(add-hook 'c-mode-hook #'c-ts-mode)
-(add-hook 'c++-mode-hook #'c++-ts-mode)
-(add-hook 'rust-mode-hook #'rust-ts-mode)
