@@ -31,7 +31,7 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" ]; })
+    (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" "UbuntuSans" ]; })
     htop
     brave
     firefox
@@ -52,6 +52,7 @@
     appimage-run
     tmux
     fzf
+    fd
 
     # music
     mpd
