@@ -13,4 +13,8 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
 
+(use-package! eldoc-box
+  :after eglot
+  :after eldoc
+  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
 
