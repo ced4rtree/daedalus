@@ -18,3 +18,4 @@
   :after eldoc
   :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
 
+(vertico-posframe-mode t)
