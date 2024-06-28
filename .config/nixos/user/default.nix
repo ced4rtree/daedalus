@@ -53,6 +53,9 @@
     tmux
     fzf
     fd
+    libtool
+    graphviz
+    edk2
 
     # music
     mpd
@@ -63,6 +66,7 @@
     cmake
     gnumake
     jdk17
+    rustup
 
     wirelesstools
   ];
