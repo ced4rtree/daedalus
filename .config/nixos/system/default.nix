@@ -8,6 +8,7 @@
       ./brightness.nix
       ./zsh.nix
       ./graphics.nix
+      ./virtualbox.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

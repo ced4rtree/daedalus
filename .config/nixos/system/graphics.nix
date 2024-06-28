@@ -5,6 +5,8 @@
     enable32Bit = true;
   };
 
+  programs.xwayland.enable = true;
+
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
