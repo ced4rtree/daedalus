@@ -19,3 +19,10 @@
   :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
 
 (vertico-posframe-mode t)
+
+(map! :after centaur-tabs
+      :map ('override evil-normal-state-map evil-visual-state-map)
+      :leader
+      :prefix "TAB"
+      "h" #'centaur-tabs-backward
+      "l" #'centaur-tabs-forward)
