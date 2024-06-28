@@ -26,3 +26,11 @@
       :prefix "TAB"
       "h" #'centaur-tabs-backward
       "l" #'centaur-tabs-forward)
+
+(map! :after dired
+      :leader
+      "d j" #'dired-jump)
+(after! dired
+  (evil-define-key '(normal visual) dired-mode-map
+    (kbd "l") #'dired-find-file
+    (kbd "h") #'dired-up-directory))
