@@ -1,5 +1,7 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'semi-light)
+      doom-variable-pitch-font (font-spec :family "UbuntuSans Nerd Font" :size 14))
 
 (setq doom-theme 'doom-one)
 
