@@ -7,5 +7,8 @@
     foot
     wlr-randr
     swaybg
+    egl-wayland
   ];
+
+  wayland.windowManager.hyprland.xwayland.enable = true;
 }
