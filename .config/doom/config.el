@@ -46,3 +46,15 @@
       :leader
       "o a c" #'cfw:open-org-calendar
       "o C" #'cfw:open-org-calendar)
+
+(use-package! org-modern
+  :custom
+  (org-modern-fold-stars '(("◉" . "◉")
+                           ("◎" . "◎")
+                           ("◯" . "◯")
+                           ("◈" . "◈")
+                           ("◇" . "◇")))
+  :hook (org-mode . org-modern-mode)
+  :hook (org-agenda-finalize . org-modern-agenda))
+(use-package! olivetti
+  :hook (org-agenda-mode . olivetti-mode))
