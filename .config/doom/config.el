@@ -34,3 +34,5 @@
   (evil-define-key '(normal visual) dired-mode-map
     (kbd "l") #'dired-find-file
     (kbd "h") #'dired-up-directory))
+
+(setq org-agenda-files '("~/org/agenda/"))
