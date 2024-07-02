@@ -9,6 +9,7 @@
       ./zsh.nix
       ./graphics.nix
       ./virtualbox.nix
+      ./printing.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
