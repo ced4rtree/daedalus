@@ -36,3 +36,7 @@
     (kbd "h") #'dired-up-directory))
 
 (setq org-agenda-files '("~/org/agenda/"))
+
+;; scrolling
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(pixel-scroll-precision-mode t)
