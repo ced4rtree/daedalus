@@ -8,6 +8,8 @@
     wlr-randr
     swaybg
     egl-wayland
+    grim
+    sway-contrib.grimshot
   ];
 
   wayland.windowManager.hyprland.xwayland.enable = true;
