@@ -40,3 +40,9 @@
 ;; scrolling
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (pixel-scroll-precision-mode t)
+
+;; calfw binding
+(map! :after calendar
+      :leader
+      "o a c" #'cfw:open-org-calendar
+      "o C" #'cfw:open-org-calendar)
