@@ -56,6 +56,8 @@
     libtool
     graphviz
     edk2
+    gimp
+    xfce.thunar
 
     # music
     mpd
