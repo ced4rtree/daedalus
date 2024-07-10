@@ -14,6 +14,20 @@
 
 (setq use-package-always-ensure t)
 
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-keybinding nil)
+  :custom
+  (evil-undo-system 'undo-redo)
+  :config
+  (evil-mode t))
+(use-package evil-collection
+  :ensure t
+  :after evil
+  :config
+  (evil-collection-init))
+
 (add-to-list 'default-frame-alist
              '(font . "JetBrains Mono Nerd Font-14"))
 
@@ -35,24 +49,15 @@
                               "<:<" ";;;"))
   (global-ligature-mode t))
 
-(setq modus-themes-mode-line '(accented 3d (padding . 3))
-      modus-themes-region '(no-extend bg-only accented)
-      modus-themes-bold-constructs t
-      modus-themes-italic-constructs t
-      modus-themes-paren-match '(bold intense underline)
-      modus-themes-syntax nil
-      modus-themes-headings '((t . (rainbow overline)))
-      modus-themes-org-blocks 'gray-background
-      modus-themes-markup '(bold background intense)
-      modus-themes-prompts '(intense bold))
-
-(load-theme 'modus-vivendi t)
-
-(use-package catppuccin-theme
+(use-package doom-themes
+  :ensure t
   :custom
-  (catppuccin-flavor 'macchiato)
+  (doom-themes-enable-bold t)
+  (doom-themes-enable-italic t)
   :config
-  (load-theme 'catppuccin t))
+  (load-theme 'doom-one t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
 
 (use-package highlight-indent-guides
   :defer t
@@ -94,9 +99,11 @@
 
 (use-package rainbow-mode
   :ensure t
+  :defer t
   :hook (prog-mode . rainbow-mode))
 (use-package rainbow-delimiters
   :ensure t
+  :defer t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; (setq treesit-language-source-alist
@@ -123,7 +130,7 @@
 
 (global-visual-line-mode 1)
 
-(add-to-list 'default-frame-alist '(alpha-background .  100))
+(add-to-list 'default-frame-alist '(alpha-background .  90))
 
 (use-package org-tempo
   :ensure nil)
@@ -226,13 +233,24 @@
   :ensure t
   :ensure nerd-icons-corfu
   :ensure nerd-icons
-  :init
-  (setq corfu-auto t)
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay .18)
+  (corfu-auto-prefix 2)
+  (corfu-cycle t)
+  (corfu-preselect 'prompt)
+  (tab-always-indent t)
   :hook (prog-mode . corfu-mode))
 
 (use-package vertico
   :ensure t
+  :custom
+  (vertico-cyle t)
   :config
+  (keymap-set vertico-map "RET" #'vertico-directory-enter)
+  (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
+  (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy):config
   (vertico-mode 1))
 
 (use-package marginalia
@@ -326,7 +344,15 @@
          ("C-c p b" . persp-switch-to-buffer*))
   :config
   (setq persp-initial-frame-name "Main")
-  (persp-mode))
+  (persp-mode)
+  (defun persp-project-switch ()
+    "Switches to a new project and creates a new perspective for that project"
+    (interactive)
+    (let ((project-dir (project-prompt-project-dir)))
+      (persp-switch (file-name-nondirectory
+                     (directory-file-name
+                      (file-name-directory project-dir))))
+      (project-switch-project project-dir))))
 
 (use-package dired-open
   :ensure t
@@ -495,6 +521,57 @@ If TEXT does not have a range, return nil."
   (interactive)
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
+
+(use-package general
+  :after evil
+  :config
+  (general-evil-setup)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC"
+   "." #'find-file
+   "g" #'magit)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC f"
+   "s" #'save-buffer
+   "f" #'find-file)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC p"
+   "." #'persp-switch
+   "p" #'persp-project-switch
+   "f" #'project-find-file
+   "c" #'project-compile)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC h"
+   "k" #'describe-key
+   "m" #'describe-map
+   "f" #'describe-function
+   "v" #'describe-variable)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC d"
+   "d" #'dired
+   "j" #'dired-jump)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC w"
+   "w" #'other-window
+   "v" #'split-window-right
+   "n" #'split-window-below
+   "c" #'delete-window
+   "k" #'kill-buffer-and-window
+   "C" #'delete-other-windows)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC b"
+   "b" #'consult-buffer
+   "i" #'persp-ibuffer
+   "I" #'ibuffer
+   "k" #'kill-buffer
+   "r" #'revert-buffer))
 
 (global-set-key (kbd "C-M-n") #'(lambda ()
                                   (interactive)
