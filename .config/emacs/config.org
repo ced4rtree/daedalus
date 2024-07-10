@@ -12,6 +12,7 @@
   - [[#use-package][Use Package]]
 - [[#ux][UX]]
   - [[#evil-mode-vim-emulation][Evil Mode (Vim Emulation)]]
+  - [[#vertico][Vertico]]
   - [[#fonts][Fonts]]
   - [[#ligatures][Ligatures]]
   - [[#theme][Theme]]
@@ -44,8 +45,8 @@
   - [[#commenting][Commenting]]
   - [[#direnv][Direnv]]
   - [[#corfu][Corfu]]
+  - [[#eldoc-box][Eldoc box]]
 - [[#nice-packages-and-settings][Nice Packages and Settings]]
-  - [[#vertico][Vertico]]
   - [[#dashboard][Dashboard]]
   - [[#keeping-emacs-clean][Keeping emacs clean]]
   - [[#color-in-the-compilation-buffer][Color in the compilation buffer]]
@@ -114,6 +115,71 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
     :after evil
     :config
     (evil-collection-init))
+#+end_src
+** Vertico
+A simple and efficient minibuffer completion framework for emacs
+#+begin_src emacs-lisp
+  (use-package vertico
+    :ensure t
+    :custom
+    (vertico-cyle t)
+    :config
+    (keymap-set vertico-map "RET" #'vertico-directory-enter)
+    (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
+    (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
+    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy):config
+    (vertico-mode 1))
+#+end_src
+
+*** Marginalia
+This adds extra little details to what is shown in the minibuffer.
+For example, it will show the description for a function next to function name when calling functions interactively through =M-x=
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :ensure t
+    :config
+    (marginalia-mode 1)
+    :after vertico)
+#+end_src
+
+*** Prescient
+Unlock the powers of psychic history with prescient! It will remember what commands you have issued, and order interactive lists in a way such that the commands used most frequently pop up at the top.
+
+Cool thing about this is that it's not just for vertico, or even just minibuffer completion frameworks in general! It has packages for company, corfu, ivy, and more!
+#+begin_src emacs-lisp
+  (use-package prescient
+    :ensure t
+    :ensure vertico-prescient
+    :after vertico
+    :config
+    (vertico-prescient-mode 1)
+    (prescient-persist-mode 1)
+    :after vertico)
+#+end_src
+
+*** Consult
+Even more interactive minibuffer? Yes please!
+
+This will let you preview options as you hover over them in vertico.
+For example, with =M-x consult-themes RET= you can get a preview of themes as you hover over them
+#+begin_src emacs-lisp
+  (use-package consult
+    :ensure t
+    :after vertico)
+#+end_src
+*** Vertico Posframe
+#+begin_src emacs-lisp
+  (use-package vertico-posframe
+    :config
+    (vertico-posframe-mode t))
+#+end_src
+*** Orderless
+#+begin_src emacs-lisp
+  (use-package orderless
+    :ensure t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 ** Fonts
 #+begin_src emacs-lisp
@@ -227,22 +293,20 @@ Tree sitter is now built into emacs as of Emacs 29
 
 It also acts real funky on nixos, so it's commented out for now
 #+begin_src emacs-lisp
-  ;; (setq treesit-language-source-alist
-  ;; 	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
-  ;; 	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
-  ;; 	  (c "https://github.com/tree-sitter/tree-sitter-c")
-  ;; 	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-  ;; 	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
-  ;; 	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
-  ;; 	  (java "https://github.com/tree-sitter/tree-sitter-java")
-  ;; 	  (markdown "https://github.com/tree-sitter/tree-sitter-md")
-  ;; 	  (make "https://github.com/tree-sitter/tree-sitter-make")))
+  (setq treesit-language-source-alist
+	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
+	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+	  (c "https://github.com/tree-sitter/tree-sitter-c")
+	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
+	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+	  (java "https://github.com/tree-sitter/tree-sitter-java")))
 
-  ;; (add-hook 'java-mode-hook 'java-ts-mode)
-  ;; (add-hook 'c-mode-hook 'c-ts-mode)
-  ;; (add-hook 'c++-mode-hook 'c++-ts-mode)
-  ;; (with-eval-after-load 'rust-mode
-  ;;   (add-hook 'rust-mode 'rust-ts-mode))
+  (add-hook 'java-mode-hook 'java-ts-mode)
+  (add-hook 'c-mode-hook 'c-ts-mode)
+  (add-hook 'c++-mode-hook 'c++-ts-mode)
+  (with-eval-after-load 'rust-mode
+    (add-hook 'rust-mode 'rust-ts-mode))
 #+end_src
 ** Beacon
 Never lose your cursor again with this beacon of light
@@ -444,59 +508,14 @@ To invoke autocomplete, type =C-M-i= while typing a buffer (works best in an egl
     (tab-always-indent t)
     :hook (prog-mode . corfu-mode))
 #+end_src
+** Eldoc box
+#+begin_src emacs-lisp
+  (use-package eldoc-box
+    :defer t
+    :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
+#+end_src
 * Nice Packages and Settings
 Things that aren't really necessary to do stuff, but nice to have
-** Vertico
-A simple and efficient minibuffer completion framework for emacs
-#+begin_src emacs-lisp
-  (use-package vertico
-    :ensure t
-    :custom
-    (vertico-cyle t)
-    :config
-    (keymap-set vertico-map "RET" #'vertico-directory-enter)
-    (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
-    (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
-    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy):config
-    (vertico-mode 1))
-#+end_src
-
-*** Marginalia
-This adds extra little details to what is shown in the minibuffer.
-For example, it will show the description for a function next to function name when calling functions interactively through =M-x=
-#+begin_src emacs-lisp
-  (use-package marginalia
-    :ensure t
-    :config
-    (marginalia-mode 1)
-    :after vertico)
-#+end_src
-
-*** Prescient
-Unlock the powers of psychic history with prescient! It will remember what commands you have issued, and order interactive lists in a way such that the commands used most frequently pop up at the top.
-
-Cool thing about this is that it's not just for vertico, or even just minibuffer completion frameworks in general! It has packages for company, corfu, ivy, and more!
-#+begin_src emacs-lisp
-  (use-package prescient
-    :ensure t
-    :ensure vertico-prescient
-    :after vertico
-    :config
-    (vertico-prescient-mode 1)
-    (prescient-persist-mode 1)
-    :after vertico)
-#+end_src
-
-*** Consult
-Even more interactive minibuffer? Yes please!
-
-This will let you preview options as you hover over them in vertico.
-For example, with =M-x consult-themes RET= you can get a preview of themes as you hover over them
-#+begin_src emacs-lisp
-  (use-package consult
-    :ensure t
-    :after vertico)
-#+end_src
 ** Dashboard
 *** Dependencies
 Show the recent files

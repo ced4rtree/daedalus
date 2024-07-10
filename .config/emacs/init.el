@@ -28,6 +28,46 @@
   :config
   (evil-collection-init))
 
+(use-package vertico
+  :ensure t
+  :custom
+  (vertico-cyle t)
+  :config
+  (keymap-set vertico-map "RET" #'vertico-directory-enter)
+  (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
+  (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy):config
+  (vertico-mode 1))
+
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode 1)
+  :after vertico)
+
+(use-package prescient
+  :ensure t
+  :ensure vertico-prescient
+  :after vertico
+  :config
+  (vertico-prescient-mode 1)
+  (prescient-persist-mode 1)
+  :after vertico)
+
+(use-package consult
+  :ensure t
+  :after vertico)
+
+(use-package vertico-posframe
+  :config
+  (vertico-posframe-mode t))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
 (add-to-list 'default-frame-alist
              '(font . "JetBrains Mono Nerd Font-14"))
 
@@ -106,22 +146,20 @@
   :defer t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;; (setq treesit-language-source-alist
-;; 	'((bash "https://github.com/tree-sitter/tree-sitter-bash")
-;; 	  (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
-;; 	  (c "https://github.com/tree-sitter/tree-sitter-c")
-;; 	  (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-;; 	  (rust "https://github.com/tree-sitter/tree-sitter-rust")
-;; 	  (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
-;; 	  (java "https://github.com/tree-sitter/tree-sitter-java")
-;; 	  (markdown "https://github.com/tree-sitter/tree-sitter-md")
-;; 	  (make "https://github.com/tree-sitter/tree-sitter-make")))
+(setq treesit-language-source-alist
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+	(cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+	(c "https://github.com/tree-sitter/tree-sitter-c")
+	(cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+	(rust "https://github.com/tree-sitter/tree-sitter-rust")
+	(haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+	(java "https://github.com/tree-sitter/tree-sitter-java")))
 
-;; (add-hook 'java-mode-hook 'java-ts-mode)
-;; (add-hook 'c-mode-hook 'c-ts-mode)
-;; (add-hook 'c++-mode-hook 'c++-ts-mode)
-;; (with-eval-after-load 'rust-mode
-;;   (add-hook 'rust-mode 'rust-ts-mode))
+(add-hook 'java-mode-hook 'java-ts-mode)
+(add-hook 'c-mode-hook 'c-ts-mode)
+(add-hook 'c++-mode-hook 'c++-ts-mode)
+(with-eval-after-load 'rust-mode
+  (add-hook 'rust-mode 'rust-ts-mode))
 
 (use-package beacon
   :ensure t
@@ -242,35 +280,9 @@
   (tab-always-indent t)
   :hook (prog-mode . corfu-mode))
 
-(use-package vertico
-  :ensure t
-  :custom
-  (vertico-cyle t)
-  :config
-  (keymap-set vertico-map "RET" #'vertico-directory-enter)
-  (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
-  (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy):config
-  (vertico-mode 1))
-
-(use-package marginalia
-  :ensure t
-  :config
-  (marginalia-mode 1)
-  :after vertico)
-
-(use-package prescient
-  :ensure t
-  :ensure vertico-prescient
-  :after vertico
-  :config
-  (vertico-prescient-mode 1)
-  (prescient-persist-mode 1)
-  :after vertico)
-
-(use-package consult
-  :ensure t
-  :after vertico)
+(use-package eldoc-box
+  :defer t
+  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
 
 (use-package recentf
   :ensure t
@@ -583,3 +595,16 @@ If TEXT does not have a range, return nil."
                                   (scroll-down-line 1)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(orderless eldoc-box vertico-posframe yasnippet-snippets which-key visual-fill-column vertico-prescient tree-sitter-langs toc-org timu-macos-theme sudo-edit rust-mode rainbow-mode rainbow-delimiters perspective page-break-lines org-ref org-present org-modern org-bullets org-auto-tangle octicons no-littering nix-mode nerd-icons-corfu mu4e-alert markdown-mode marginalia magit ligature highlight-indent-guides haskell-mode general evil-nerd-commenter evil-collection eglot drag-stuff doom-themes doom-modeline direnv dired-open dashboard corfu consult cmake-mode catppuccin-theme calfw-org calfw beacon all-the-icons aggressive-indent)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
