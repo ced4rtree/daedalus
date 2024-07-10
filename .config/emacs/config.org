@@ -456,7 +456,16 @@ This will go though your project and let you do some pretty neat things, like re
   ;; (add-hook 'haskell-mode #'eglot-ensure)
   ;;  (use-package eglot-java
   ;;    :hook (java-ts-mode . eglot-ensure))
+
+  (use-package eglot-java
+    :defer t
+    :hook (eglot-managed-mode . (lambda ()
+                                  (interactive)
+                                  (when (or (string= major-mode "java-mode")
+                                            (string= major-mode "java-ts-mode"))
+                                    (eglot-java-mode t)))))
 #+end_src
+
 ** Magit
 A git porcelain for emacs to let you use the power of emacs within git
 #+begin_src emacs-lisp

@@ -251,6 +251,14 @@
 ;;  (use-package eglot-java
 ;;    :hook (java-ts-mode . eglot-ensure))
 
+(use-package eglot-java
+  :defer t
+  :hook (eglot-managed-mode . (lambda ()
+                                (interactive)
+                                (when (or (string= major-mode "java-mode")
+                                          (string= major-mode "java-ts-mode"))
+                                  (eglot-java-mode t)))))
+
 (use-package magit
   :defer t
   :ensure t)
@@ -595,16 +603,3 @@ If TEXT does not have a range, return nil."
                                   (scroll-down-line 1)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(orderless eldoc-box vertico-posframe yasnippet-snippets which-key visual-fill-column vertico-prescient tree-sitter-langs toc-org timu-macos-theme sudo-edit rust-mode rainbow-mode rainbow-delimiters perspective page-break-lines org-ref org-present org-modern org-bullets org-auto-tangle octicons no-littering nix-mode nerd-icons-corfu mu4e-alert markdown-mode marginalia magit ligature highlight-indent-guides haskell-mode general evil-nerd-commenter evil-collection eglot drag-stuff doom-themes doom-modeline direnv dired-open dashboard corfu consult cmake-mode catppuccin-theme calfw-org calfw beacon all-the-icons aggressive-indent)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
