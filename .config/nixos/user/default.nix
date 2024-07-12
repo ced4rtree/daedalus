@@ -58,7 +58,7 @@
     edk2
     gimp
     xfce.thunar
-    qutebrowser
+    # qutebrowser
 
     # music
     mpd
