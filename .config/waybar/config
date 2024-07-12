@@ -1,7 +1,7 @@
 {
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
-    "height": 30, // Waybar height (to be removed for auto height)
+    "height": 25, // Waybar height (to be removed for auto height)
     "spacing": 4, // Gaps between modules (4px)
 
     "modules-left": ["hyprland/workspaces", "hyprland/window"],
@@ -32,7 +32,7 @@
     },
 
     "mpd": {
-        "format": "{stateIcon} {artist} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ",
+        "format": "{stateIcon} {artist} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})  ",
         "format-disconnected": "Disconnected ",
         "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon} Stopped ",
         "unknown-tag": "N/A",
@@ -79,12 +79,12 @@
     },
 
     "cpu": {
-        "format": "{usage}% ",
+        "format": "{usage}%  ",
         "tooltip": false
     },
 
     "memory": {
-        "format": "{}% "
+        "format": "{}%  "
     },
 
     "temperature": {
@@ -98,7 +98,7 @@
 
     "backlight": {
         // "device": "acpi_video1",
-        "format": "{percent}% {icon}",
+        "format": "{percent}% {icon} ",
         "format-icons": ["", "", "", "", "", "", "", "", ""]
     },
 
@@ -108,7 +108,7 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{capacity}% {icon}",
+        "format": "{capacity}% {icon} ",
         "format-charging": "{capacity}% 󱐋",
         "format-plugged": "{capacity}% ",
         "format-alt": "{time} {icon}",
@@ -119,7 +119,7 @@
 
     "network": {
         "interface": "wlp4s0", // (Optional) To force the use of this interface
-        "format-wifi": " {signalStrength}%",
+        "format-wifi": "{signalStrength}%  ",
         "format-ethernet": "{ipaddr}/{cidr}",
         "tooltip-format": "{essid}",
         "format-linked": "{ifname} (No IP)",

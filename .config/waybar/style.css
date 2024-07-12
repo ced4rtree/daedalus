@@ -3,13 +3,16 @@
 * {
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: "Iosevka Nerd Font";
-    font-size: 16px;
+    font-size: 15px;
+	min-height: 0px;
     border-radius: 0px;
+	margin: 1px;
+	margin-bottom: 0px;
 }
 
 window#waybar {
-    background-color: @base;
-    color: @text;
+    background-color: transparent;
+    color: @surface0;
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -41,10 +44,25 @@ button {
 #mode,
 #idle_inhibitor,
 #scratchpad,
+#workspaces,
 #mpd {
-    padding: 0px 8px;
-    margin-left: 10px;
-    margin-bottom: 2px;
+    padding: 0px 11px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+	border-radius: 8px;
+}
+
+.modules-left {
+	color: @text;
+	padding-right: 8px;
+	background-color: @base;
+	margin-left: 1px;
+	border-radius: 8px;
+}
+
+#workspaces {
+	margin-left: 0px;
+	padding-left: 0px;
 }
 
 #workspaces button {
@@ -55,13 +73,13 @@ button {
 }
 
 #workspaces button.focused {
-    color: @subtext1;
+    color: @blue;
 }
 
 #workspaces button.active {
     color: @text;
     margin-bottom: 0px;
-    border-bottom: 3px solid @red
+    border-bottom: 3px solid @blue
 }
 
 #workspaces button.urgent {
@@ -72,35 +90,35 @@ button {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
     background: inherit;
-    color: @text;
+    color: @blue;
 }
 
 #clock {
     border-bottom: 3px solid @overlay2;
-    color: @overlay2;
+    background-color: @overlay2;
 }
 
 #battery {
-    color: @sapphire;
+    background-color: @sapphire;
     border-bottom: 3px solid @sapphire;
 }
 
 #battery.charging, #battery.plugged {
-    color: @green;
-    background-color: transparent;
+    background-color: @green;
+    /* background-color: transparent; */
     border-bottom: 3px solid @green;
 }
 
 #battery.warning:not(.charging) {
     border-bottom: 3px solid @peach;
-    background-color: transparent;
-    color: @peach;
+    /* color: transparent; */
+    background-color: @peach;
 }
 
 #battery.critical:not(.charging) {
     border-bottom: 3px solid @red;
-    color: @red;
-    background-color: transparent;
+    background-color: @red;
+    /* background-color: transparent; */
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -108,52 +126,39 @@ button:hover {
     animation-direction: alternate;
 }
 
-label:focus {
-    border-bottom: 3px solid @crust;
-}
-
 #cpu {
-    border-bottom: 3px solid @blue;
-    color: @blue;
+    background-color: @blue;
 }
 
 #memory {
-    border-bottom: 3px solid @lavender;
-    color: @lavender
+    background-color: @lavender
 }
 
 #backlight {
-    border-bottom: 3px solid @yellow;
-    color: @yellow;
+    background-color: @yellow;
 }
 
 #network {
-    border-bottom: 3px solid @teal;
-    color: @teal;
+    background-color: @teal;
 }
 
 #network.disconnected {
-    border-bottom: 3px solid @red;
-    color: @red;
+    background-color: @red;
 }
 
 #pulseaudio {
-    border-bottom: 3px solid @mauve;
-    color: @mauve;
+    background-color: @mauve;
 }
 
 #temperature {
-    border-bottom: 3px solid @peach;
-    color: @peach;
+    background-color: @peach;
 }
 
 #temperature.critical {
-    border-bottom: 3px solid @red;
-    color: @red;
+    background-color: @red;
 }
 
 #tray {
-    border-bottom: 3px solid @pink;
     color: @pink;
 }
 
@@ -167,6 +172,5 @@ label:focus {
 }
 
 #mpd {
-    border-bottom: 3px solid @maroon;
-    color: @text;
+    background-color: @maroon;
 }
