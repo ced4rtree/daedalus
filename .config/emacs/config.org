@@ -10,7 +10,7 @@
 - [[#package-setup][Package Setup]]
   - [[#melpa][Melpa]]
   - [[#use-package][Use Package]]
-- [[#ux][UX]]
+- [[#uiux][UI/UX]]
   - [[#evil-mode-vim-emulation][Evil Mode (Vim Emulation)]]
   - [[#vertico][Vertico]]
   - [[#fonts][Fonts]]
@@ -26,7 +26,23 @@
   - [[#tree-sitter][Tree Sitter]]
   - [[#beacon][Beacon]]
   - [[#visual-line-mode][Visual Line Mode]]
+  - [[#tabbing][Tabbing]]
+  - [[#electric-pairing][Electric Pairing]]
+  - [[#color-in-the-compilation-buffer][Color in the compilation buffer]]
+  - [[#dashboard][Dashboard]]
   - [[#window-transparency][Window Transparency]]
+  - [[#keeping-emacs-clean][Keeping emacs clean]]
+  - [[#too-lazy-to-type-yes][Too lazy to type yes]]
+  - [[#perspectives][Perspectives]]
+  - [[#dired][Dired]]
+  - [[#auto-backup][Auto Backup]]
+  - [[#goodbye-message][Goodbye message]]
+  - [[#move-lines][Move Lines]]
+  - [[#yasnippet][YASnippet]]
+  - [[#expand-region][Expand Region]]
+  - [[#hideshow-mode][HideShow Mode]]
+  - [[#esh-autosuggest][Esh-Autosuggest]]
+  - [[#screensaver][Screensaver]]
 - [[#org-mode][Org mode]]
   - [[#org-tempo][Org tempo]]
   - [[#indentation][Indentation]]
@@ -45,20 +61,9 @@
   - [[#commenting][Commenting]]
   - [[#direnv][Direnv]]
   - [[#corfu][Corfu]]
+  - [[#diff-hl][Diff-hl]]
+  - [[#blamer][Blamer]]
   - [[#eldoc-box][Eldoc box]]
-- [[#nice-packages-and-settings][Nice Packages and Settings]]
-  - [[#dashboard][Dashboard]]
-  - [[#keeping-emacs-clean][Keeping emacs clean]]
-  - [[#color-in-the-compilation-buffer][Color in the compilation buffer]]
-  - [[#electric-pairing][Electric Pairing]]
-  - [[#tabbing][Tabbing]]
-  - [[#too-lazy-to-type-yes][Too lazy to type yes]]
-  - [[#perspectives][Perspectives]]
-  - [[#dired][Dired]]
-  - [[#auto-backup][Auto Backup]]
-  - [[#goodbye-message][Goodbye message]]
-  - [[#move-lines][Move Lines]]
-  - [[#yasnippet][YASnippet]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
   - [[#calfw][Calfw]]
   - [[#mu4e][MU4E]]
@@ -81,7 +86,7 @@ I like to keep just the things I want in my user-emacs-directory, so I tell emac
 
   (when (not has-restarted)
     (setq config-dir user-emacs-directory)) ;; to use for some stuff like autostart.sh for example, which I do want in my default user-emacs-directory
-  (setq user-emacs-directory "~/.local/share/emacs/")
+  (setq user-emacs-directory "~/.cache/emacs/")
 #+end_src
 
 * Package Setup
@@ -97,9 +102,10 @@ Melpa is a repository for emacs that enables a lot more than what is in the stan
 ** Use Package
 As of Emacs 29, use-package is built in, so you don't need to install it, but I like to set some settings for it
 #+begin_src emacs-lisp
+  (require 'use-package-ensure)
   (setq use-package-always-ensure t)
 #+end_src
-* UX
+* UI/UX
 ** Evil Mode (Vim Emulation)
 #+begin_src emacs-lisp
   (defvar bugger/use-evil nil "Whether or not to use evil mode and the additional SPC- bindings")
@@ -324,9 +330,216 @@ I want lines to wrap around onto another line rather than spilling off the scree
 #+begin_src emacs-lisp
   (global-visual-line-mode 1)
 #+end_src
+** Tabbing
+Some tab settings to use 4 spaces for tabs
+#+begin_src emacs-lisp
+  (setq-default tab-width 4
+                c-basic-offset 4
+                c-ts-mode-indent-offset 4
+                c-ts-mode-indent-style 'bsd
+                c-default-style "bsd"
+                indent-tabs-mode t)
+  (defvaralias 'c-basic-offset 'tab-width)
+  (defvaralias 'c-ts-mode-indent-offset 'tab-width)
+  (indent-tabs-mode nil)
+  (defun bugger/change-tab-width (WIDTH)
+    "Set the width of a tab to WIDTH in the current buffer"
+    (setq-local tab-width WIDTH
+                c-basic-offset WIDTH
+                c-ts-mode-indent-offset WIDTH
+                java-ts-mode-indent-offset WIDTH))
+  ;; (add-hook 'java-ts-mode-hook #'(lambda () (interactive) (bugger/change-tab-width 2)))
+#+end_src
+
+** Electric Pairing
+Automatically pair parentheses and the like
+#+begin_src emacs-lisp
+  (electric-pair-mode 1)
+  (setq electric-pair-inhibit-predicate
+        `(lambda (c)
+           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+#+end_src
+
+** Color in the compilation buffer
+Emacs doesn't support color codes some programs use to color their output by default. No longer!
+#+begin_src emacs-lisp
+  (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+#+end_src
+** Dashboard
+*** Dependencies
+Show the recent files
+#+begin_src emacs-lisp
+  (use-package recentf
+    :ensure t
+    :config
+    ;; remove boilerplate files from recentf list
+    (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+    (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
+#+end_src
+
+*** The actual dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure page-break-lines
+    :ensure all-the-icons
+    :after recentf
+    :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
+    :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
+    :ensure t
+    :init
+    (setq dashboard-page-separator "
+  
+  " ;; tell dashboard to use nice looking lines for section seperation
+
+          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")) ;; tell emacs to use dashboard as startup screen
+          dashboard-items '((recents . 5)
+                            (projects . 5)
+                            (agenda . 5))
+          dashboard-center-content t
+          dashboard-startup-banner (concat config-dir "dash.txt")
+          dashboard-icon-type 'all-the-icons
+          dashboard-set-navigator t
+          dashboard-set-file-icons t
+          dashboard-set-heading-icons t
+          dashboard-display-icons-p t)
+    (advice-add #'dashboard-replace-displayable :override #'identity)
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
 ** Window Transparency
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(alpha-background .  90))
+#+end_src
+** Keeping emacs clean
+Some things ,*cough cough auto-save-list,* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
+#+begin_src emacs-lisp
+  (use-package no-littering
+    :ensure t)
+#+end_src
+** Too lazy to type yes
+Will map all calls to the =yes-or-no-p= function to =y-or-n-p= so I can just type one letter instead of two or three
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+** Perspectives
+Like workspaces inside of emacs to clean up the buffer list
+#+begin_src emacs-lisp
+  (use-package perspective
+    :ensure t
+    :defer nil
+    :commands persp-project-switch
+    :bind (("C-c p k" . persp-kill)
+           ("C-c p p" . persp-project-switch)
+           ("C-c p i" . persp-ibuffer)
+           ("C-c p b" . persp-switch-to-buffer*)
+           ("C-c p ." . persp-switch))
+    :config
+    (setq persp-initial-frame-name "Main")
+    (persp-mode)
+    (defun persp-project-switch ()
+      "Switches to a new project and creates a new perspective for that project"
+      (interactive)
+      (let ((project-dir (project-prompt-project-dir)))
+        (persp-switch (file-name-nondirectory
+                       (directory-file-name
+                        (file-name-directory project-dir))))
+        (project-switch-project project-dir))))
+#+end_src
+
+** Dired
+Dired, the DIRectory EDitor is a fantastic file manager built straight into emacs
+
+Dired has some nice extensions that let you automatically open in another program
+#+begin_src emacs-lisp
+  (use-package dired-open
+    :ensure t
+    :after dired
+    :config
+    (setq dired-open-extensions '(("gif" . "mpv --loop")
+                                  ("mkv" . "mpv")
+                                  ("mp4" . "mpv")
+                                  ("mp3" . "foot -e mpv")))
+    :bind (:map dired-mode-map
+                ("f" . dired-open-file)))
+#+end_src
+** Auto Backup
+Emacs has a feature to automatically back up files every so often, which is nice, but clogs up the directory and git, so I moved it
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+#+end_src
+** Goodbye message
+I think that it would be pretty cute to have a little goodbye confirmation when exiting emacs
+#+begin_src emacs-lisp
+  (defvar goodbye-message-list (list "Don't leave me!"
+                                     "B-baka! It's not like I liked you anyway..."
+                                     "Thank you for participating in this Aperture Science computer-aided enrichment activity."
+                                     "Emacs, Emacs never changes."
+                                     "Wake up, Mr. Stallman. Wake up and smell the ashes."
+                                     "I don't think you want to do that."
+                                     (concat "I'm sorry " user-login-name ", I'm afraid I can't do that.")
+                                     "In case I don't see ya, good afternoon, good evening, and good night!"
+                                     "Here's looking at you, kid."
+                                     "I do wish we could chat longer, but I'm having an old friend for dinner..."
+                                     "Life moves pretty fast. If you don't stop and look around once and a while you might miss it."
+                                     "So long... partner."
+                                     "I'll be right here..."
+                                     "I think this just might be my masterpiece."
+                                     "Where we go from there is a choice I leave to you."
+                                     "Daisy, Daisy, give me your answer do."
+                                     "Leaving? Emacs? Are you well?")
+    "A list of messages used as prompts for the user when quiting emacs")
+  (defun quit-emacs (&rest STUFF)
+    (interactive)
+    (y-or-n-p (concat (nth (random (length goodbye-message-list))
+                           goodbye-message-list)
+                      " Really quit emacs?")))
+  (global-set-key (kbd "C-x C-c") (lambda ()
+                                    (interactive)
+                                    (when (quit-emacs)
+                                      (save-buffers-kill-terminal))))
+#+end_src
+** Move Lines
+Easily move lines around using =M-p= and =M-n=
+#+begin_src emacs-lisp
+  (use-package drag-stuff
+    :ensure t
+    :init (drag-stuff-global-mode t)
+    :bind (("M-p" . drag-stuff-up)
+           ("M-n" . drag-stuff-down)))
+#+end_src
+** YASnippet
+An autocompletion helper that will fill in snippets for you. e.g. expand =sout= to =System.out.println()=
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :ensure yasnippet-snippets
+    :defer t
+    :hook (prog-mode . (lambda () (interactive) (yas-minor-mode 1)))
+    :init
+    (setq yas-snippet-dirs (list
+                            (concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
+                            (concat config-dir "snippets/"))))
+#+end_src
+** Expand Region
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+#+end_src
+
+** HideShow Mode
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook #'hs-minor-mode)
+#+end_src
+** Esh-Autosuggest
+#+begin_src emacs-lisp
+  (use-package esh-autosuggest
+    :hook (eshell-mode . esh-autosuggest-mode))
+#+end_src
+** Screensaver
+#+begin_src emacs-lisp
+(zone-when-idle 300)
 #+end_src
 * Org mode
 Org mode is an extremely helpful tool that allows you to do anything from writing scientific papers, take notes, even write entire programs!
@@ -520,199 +733,36 @@ To invoke autocomplete, type =C-M-i= while typing a buffer (works best in an egl
     (tab-always-indent t)
     :hook (prog-mode . corfu-mode))
 #+end_src
+** Diff-hl
+#+begin_src emacs-lisp
+  (use-package diff-hl
+    :hook ((prog-mode . diff-hl-mode)
+           (dired-mode . diff-hl-dired-mode)
+           (magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
+           (magit-post-refresh-hook . diff-hl-magit-post-refresh)))
+#+end_src
+** Blamer
+#+begin_src emacs-lisp
+  (use-package blamer
+    :bind (("s-i" . blamer-show-commit-info)
+           ("C-c i" . blamer-show-posframe-commit-info))
+    :defer 20
+    :custom
+    (blamer-idle-time 0.3)
+    (blamer-min-offset 70)
+    :custom-face
+    (blamer-face ((t :foreground "#7a88cf"
+                      :background nil
+                      :height 140
+                      :italic t)))
+    :config
+    (global-blamer-mode 1))
+#+end_src
 ** Eldoc box
 #+begin_src emacs-lisp
   (use-package eldoc-box
     :defer t
     :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
-#+end_src
-* Nice Packages and Settings
-Things that aren't really necessary to do stuff, but nice to have
-** Dashboard
-*** Dependencies
-Show the recent files
-#+begin_src emacs-lisp
-  (use-package recentf
-    :ensure t
-    :config
-    ;; remove boilerplate files from recentf list
-    (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
-    (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
-#+end_src
-
-*** The actual dashboard
-#+begin_src emacs-lisp
-  (use-package dashboard
-    :ensure page-break-lines
-    :ensure all-the-icons
-    :after recentf
-    :hook (dashboard-mode . (lambda () (interactive) (page-break-lines-mode 1)))
-    :hook (dashboard-mode . (lambda () (interactive) (display-line-numbers-mode -1)))
-    :ensure t
-    :init
-    (setq dashboard-page-separator "
-  
-  " ;; tell dashboard to use nice looking lines for section seperation
-
-          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")) ;; tell emacs to use dashboard as startup screen
-          dashboard-items '((recents . 5)
-                            (projects . 5)
-                            (agenda . 5))
-          dashboard-center-content t
-          dashboard-startup-banner (concat config-dir "dash.txt")
-          dashboard-icon-type 'all-the-icons
-          dashboard-set-navigator t
-          dashboard-set-file-icons t
-          dashboard-set-heading-icons t
-          dashboard-display-icons-p t)
-    (advice-add #'dashboard-replace-displayable :override #'identity)
-    :config
-    (dashboard-setup-startup-hook))
-#+end_src
-** Keeping emacs clean
-Some things ,*cough cough auto-save-list,* don't like to cooperate with the settings I put earlier, so I use the no-littering package to fix that
-#+begin_src emacs-lisp
-  (use-package no-littering
-    :ensure t)
-#+end_src
-** Color in the compilation buffer
-Emacs doesn't support color codes some programs use to color their output by default. No longer!
-#+begin_src emacs-lisp
-  (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
-#+end_src
-** Electric Pairing
-Automatically pair parentheses and the like
-#+begin_src emacs-lisp
-  (electric-pair-mode 1)
-  (setq electric-pair-inhibit-predicate
-        `(lambda (c)
-           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
-#+end_src
-
-** Tabbing
-Some tab settings to use 4 spaces for tabs
-#+begin_src emacs-lisp
-  (setq-default tab-width 4
-                c-basic-offset 4
-                c-ts-mode-indent-offset 4
-                c-ts-mode-indent-style 'bsd
-                c-default-style "bsd"
-                indent-tabs-mode t)
-  (defvaralias 'c-basic-offset 'tab-width)
-  (defvaralias 'c-ts-mode-indent-offset 'tab-width)
-  (indent-tabs-mode nil)
-  (defun bugger/change-tab-width (WIDTH)
-    "Set the width of a tab to WIDTH in the current buffer"
-    (setq-local tab-width WIDTH
-                c-basic-offset WIDTH
-                c-ts-mode-indent-offset WIDTH
-                java-ts-mode-indent-offset WIDTH))
-  ;; (add-hook 'java-ts-mode-hook #'(lambda () (interactive) (bugger/change-tab-width 2)))
-#+end_src
-
-** Too lazy to type yes
-Will map all calls to the =yes-or-no-p= function to =y-or-n-p= so I can just type one letter instead of two or three
-#+begin_src emacs-lisp
-  (defalias 'yes-or-no-p 'y-or-n-p)
-#+end_src
-
-** Perspectives
-Like workspaces inside of emacs to clean up the buffer list
-#+begin_src emacs-lisp
-  (use-package perspective
-    :ensure t
-    :defer nil
-    :bind (("C-c p k" . persp-kill)
-           ("C-c p p" . persp-switch)
-           ("C-c p i" . persp-ibuffer)
-           ("C-c p b" . persp-switch-to-buffer*))
-    :config
-    (setq persp-initial-frame-name "Main")
-    (persp-mode)
-    (defun persp-project-switch ()
-      "Switches to a new project and creates a new perspective for that project"
-      (interactive)
-      (let ((project-dir (project-prompt-project-dir)))
-        (persp-switch (file-name-nondirectory
-                       (directory-file-name
-                        (file-name-directory project-dir))))
-        (project-switch-project project-dir))))
-#+end_src
-
-** Dired
-Dired, the DIRectory EDitor is a fantastic file manager built straight into emacs
-
-Dired has some nice extensions that let you automatically open in another program
-#+begin_src emacs-lisp
-  (use-package dired-open
-    :ensure t
-    :after dired
-    :config
-    (setq dired-open-extensions '(("gif" . "mpv --loop")
-                                  ("mkv" . "mpv")
-                                  ("mp4" . "mpv")
-                                  ("mp3" . "foot -e mpv")))
-    :bind (:map dired-mode-map
-                ("f" . dired-open-file)))
-#+end_src
-** Auto Backup
-Emacs has a feature to automatically back up files every so often, which is nice, but clogs up the directory and git, so I moved it
-#+begin_src emacs-lisp
-  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
-  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-#+end_src
-** Goodbye message
-I think that it would be pretty cute to have a little goodbye confirmation when exiting emacs
-#+begin_src emacs-lisp
-  (defvar goodbye-message-list (list "Don't leave me!"
-                                     "B-baka! It's not like I liked you anyway..."
-                                     "Thank you for participating in this Aperture Science computer-aided enrichment activity."
-                                     "Emacs, Emacs never changes."
-                                     "Wake up, Mr. Stallman. Wake up and smell the ashes."
-                                     "I don't think you want to do that."
-                                     (concat "I'm sorry " user-login-name ", I'm afraid I can't do that.")
-                                     "In case I don't see ya, good afternoon, good evening, and good night!"
-                                     "Here's looking at you, kid."
-                                     "I do wish we could chat longer, but I'm having an old friend for dinner..."
-                                     "Life moves pretty fast. If you don't stop and look around once and a while you might miss it."
-                                     "So long... partner."
-                                     "I'll be right here..."
-                                     "I think this just might be my masterpiece."
-                                     "Where we go from there is a choice I leave to you."
-                                     "Daisy, Daisy, give me your answer do."
-                                     "Leaving? Emacs? Are you well?")
-    "A list of messages used as prompts for the user when quiting emacs")
-  (defun quit-emacs (&rest STUFF)
-    (interactive)
-    (y-or-n-p (concat (nth (random (length goodbye-message-list))
-                           goodbye-message-list)
-                      " Really quit emacs?")))
-  (global-set-key (kbd "C-x C-c") (lambda ()
-                                    (interactive)
-                                    (when (quit-emacs)
-                                      (save-buffers-kill-terminal))))
-#+end_src
-** Move Lines
-Easily move lines around using =M-p= and =M-n=
-#+begin_src emacs-lisp
-  (use-package drag-stuff
-    :ensure t
-    :init (drag-stuff-global-mode t)
-    :bind (("M-p" . drag-stuff-up)
-           ("M-n" . drag-stuff-down)))
-#+end_src
-** YASnippet
-An autocompletion helper that will fill in snippets for you. e.g. expand =sout= to =System.out.println()=
-#+begin_src emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :ensure yasnippet-snippets
-    :defer t
-    :hook (prog-mode . (lambda () (interactive) (yas-minor-mode 1)))
-    :init
-    (setq yas-snippet-dirs (list
-                            (concat user-emacs-directory ".local/elpa/yasnippet-snippets-20230815.820/snippets/")
-                            (concat config-dir "snippets/"))))
 #+end_src
 * Emacs as an Operating System
 The packages that let me use emacs instead of some external package
