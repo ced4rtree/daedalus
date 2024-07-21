@@ -501,7 +501,7 @@ If TEXT does not have a range, return nil."
 
 (use-package mu4e
   :ensure-system-package mu
-  :ensure-system-package isync
+  :ensure-system-package mbsync
 
   :ensure nil
   ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
