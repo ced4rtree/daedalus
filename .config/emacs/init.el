@@ -456,7 +456,8 @@
   :defer 20
   :custom
   (blamer-idle-time 0.3)
-  (blamer-min-offset 70)
+  (blamer-min-offset 30)
+  (blamer-max-commit-message-length 50)
   :custom-face
   (blamer-face ((t :foreground "#7a88cf"
                     :background nil
