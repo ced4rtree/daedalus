@@ -102,19 +102,22 @@ As of Emacs 29, use-package is built in, so you don't need to install it, but I 
 * UX
 ** Evil Mode (Vim Emulation)
 #+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-keybinding nil)
-    :custom
-    (evil-undo-system 'undo-redo)
-    :config
-    (evil-mode t))
-  (use-package evil-collection
-    :ensure t
-    :after evil
-    :config
-    (evil-collection-init))
+  (defvar bugger/use-evil nil "Whether or not to use evil mode and the additional SPC- bindings")
+
+  (when bugger/use-evil
+    (use-package evil
+      :ensure t
+      :init
+      (setq evil-want-keybinding nil)
+      :custom
+      (evil-undo-system 'undo-redo)
+      :config
+      (evil-mode t))
+    (use-package evil-collection
+      :ensure t
+      :after evil
+      :config
+      (evil-collection-init)))
 #+end_src
 ** Vertico
 A simple and efficient minibuffer completion framework for emacs
@@ -855,56 +858,57 @@ It can be useful to kill all of the buffers to clean up your buffer list. This f
 ** Evil keybinds
 Doom-like keybindings that only work for evil mode
 #+begin_src emacs-lisp
-  (use-package general
-    :after evil
-    :config
-    (general-evil-setup)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC"
-     "." #'find-file
-     "g" #'magit)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC f"
-     "s" #'save-buffer
-     "f" #'find-file)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC p"
-     "." #'persp-switch
-     "p" #'persp-project-switch
-     "f" #'project-find-file
-     "c" #'project-compile)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC h"
-     "k" #'describe-key
-     "m" #'describe-map
-     "f" #'describe-function
-     "v" #'describe-variable)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC d"
-     "d" #'dired
-     "j" #'dired-jump)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC w"
-     "w" #'other-window
-     "v" #'split-window-right
-     "n" #'split-window-below
-     "c" #'delete-window
-     "k" #'kill-buffer-and-window
-     "C" #'delete-other-windows)
-    (general-define-key
-     :states 'normal
-     :prefix "SPC b"
-     "b" #'consult-buffer
-     "i" #'persp-ibuffer
-     "I" #'ibuffer
-     "k" #'kill-buffer
-     "r" #'revert-buffer))
+  (when bugger/use-evil
+    (use-package general
+      :after evil
+      :config
+      (general-evil-setup)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC"
+       "." #'find-file
+       "g" #'magit)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC f"
+       "s" #'save-buffer
+       "f" #'find-file)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC p"
+       "." #'persp-switch
+       "p" #'persp-project-switch
+       "f" #'project-find-file
+       "c" #'project-compile)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC h"
+       "k" #'describe-key
+       "m" #'describe-map
+       "f" #'describe-function
+       "v" #'describe-variable)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC d"
+       "d" #'dired
+       "j" #'dired-jump)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC w"
+       "w" #'other-window
+       "v" #'split-window-right
+       "n" #'split-window-below
+       "c" #'delete-window
+       "k" #'kill-buffer-and-window
+       "C" #'delete-other-windows)
+      (general-define-key
+       :states 'normal
+       :prefix "SPC b"
+       "b" #'consult-buffer
+       "i" #'persp-ibuffer
+       "I" #'ibuffer
+       "k" #'kill-buffer
+       "r" #'revert-buffer)))
 #+end_src
 ** Scroll
 #+begin_src emacs-lisp

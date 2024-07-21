@@ -14,19 +14,22 @@
 
 (setq use-package-always-ensure t)
 
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-keybinding nil)
-  :custom
-  (evil-undo-system 'undo-redo)
-  :config
-  (evil-mode t))
-(use-package evil-collection
-  :ensure t
-  :after evil
-  :config
-  (evil-collection-init))
+(defvar bugger/use-evil nil "Whether or not to use evil mode and the additional SPC- bindings")
+
+(when bugger/use-evil
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-keybinding nil)
+    :custom
+    (evil-undo-system 'undo-redo)
+    :config
+    (evil-mode t))
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :config
+    (evil-collection-init)))
 
 (use-package vertico
   :ensure t
@@ -542,56 +545,57 @@ If TEXT does not have a range, return nil."
   (mapc 'kill-buffer (buffer-list)))
 (global-set-key (kbd "C-c C-M-k") #'kill-all-buffers)
 
-(use-package general
-  :after evil
-  :config
-  (general-evil-setup)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC"
-   "." #'find-file
-   "g" #'magit)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC f"
-   "s" #'save-buffer
-   "f" #'find-file)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC p"
-   "." #'persp-switch
-   "p" #'persp-project-switch
-   "f" #'project-find-file
-   "c" #'project-compile)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC h"
-   "k" #'describe-key
-   "m" #'describe-map
-   "f" #'describe-function
-   "v" #'describe-variable)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC d"
-   "d" #'dired
-   "j" #'dired-jump)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC w"
-   "w" #'other-window
-   "v" #'split-window-right
-   "n" #'split-window-below
-   "c" #'delete-window
-   "k" #'kill-buffer-and-window
-   "C" #'delete-other-windows)
-  (general-define-key
-   :states 'normal
-   :prefix "SPC b"
-   "b" #'consult-buffer
-   "i" #'persp-ibuffer
-   "I" #'ibuffer
-   "k" #'kill-buffer
-   "r" #'revert-buffer))
+(when bugger/use-evil
+  (use-package general
+    :after evil
+    :config
+    (general-evil-setup)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC"
+     "." #'find-file
+     "g" #'magit)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC f"
+     "s" #'save-buffer
+     "f" #'find-file)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC p"
+     "." #'persp-switch
+     "p" #'persp-project-switch
+     "f" #'project-find-file
+     "c" #'project-compile)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC h"
+     "k" #'describe-key
+     "m" #'describe-map
+     "f" #'describe-function
+     "v" #'describe-variable)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC d"
+     "d" #'dired
+     "j" #'dired-jump)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC w"
+     "w" #'other-window
+     "v" #'split-window-right
+     "n" #'split-window-below
+     "c" #'delete-window
+     "k" #'kill-buffer-and-window
+     "C" #'delete-other-windows)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC b"
+     "b" #'consult-buffer
+     "i" #'persp-ibuffer
+     "I" #'ibuffer
+     "k" #'kill-buffer
+     "r" #'revert-buffer)))
 
 (global-set-key (kbd "C-M-n") #'(lambda ()
                                   (interactive)
