@@ -391,11 +391,11 @@
   visual-fill-column-center-text t
   visual-fill-column-width 110)
 
-(use-package rust-mode :ensure t)
-(use-package haskell-mode :ensure t)
-(use-package nix-mode :ensure t)
-(use-package cmake-mode :ensure t)
-(use-package markdown-mode :ensure t)
+(use-package rust-mode)
+(use-package haskell-mode)
+(use-package nix-mode)
+(use-package cmake-mode)
+(use-package markdown-mode)
 
 (when (< emacs-major-version 29)
   (use-package eglot
