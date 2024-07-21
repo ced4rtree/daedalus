@@ -58,6 +58,9 @@
     edk2
     gimp
     xfce.thunar
+    isync
+    gnupg
+    pinentry-qt
     # qutebrowser
 
     # music
