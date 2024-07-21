@@ -261,7 +261,8 @@
 
 (use-package magit
   :defer t
-  :ensure t)
+  :ensure t
+  :hook (magit-post-commit . evil-insert))
 
 (use-package aggressive-indent
   :ensure t
@@ -458,22 +459,22 @@ If TEXT does not have a range, return nil."
                     (time-to-days
                      (org-read-date nil t end-date))) text)))))))
 
-;; (use-package mu4e
-;;   :ensure-system-package mu
-;;   :ensure-system-package mbsync
+(use-package mu4e
+  :ensure-system-package mu
+  :ensure-system-package isync
 
-;;   :ensure nil
-;;   ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
+  :ensure nil
+  ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
 
-;;   :config
-;;   (setq smtpmail-stream-type 'starttls ;; use tls for encryption
-;;         mu4e-change-filenames-when-moving t ;; update file names as you move them around
-;;         mu4e-update-interval (* 10 60) ;; update email every 10 minutes
-;;         mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
-;;         mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
-;;         ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
-;;         ;; using the decryption function defined below
-;;         message-send-mail-function 'smtpmail-send-it)
+  :config
+  (setq smtpmail-stream-type 'starttls ;; use tls for encryption
+        mu4e-change-filenames-when-moving t ;; update file names as you move them around
+        mu4e-update-interval (* 10 60) ;; update email every 10 minutes
+        mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
+        mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
+        ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
+        ;; using the decryption function defined below
+        message-send-mail-function 'smtpmail-send-it)
 
   ;; this is a dummy configuration for example
   ;; my real email info is stored in ~/.local/share/emacs/emails.el
@@ -507,7 +508,7 @@ If TEXT does not have a range, return nil."
   ;;                         (mu4e-refile-folder . "/All Mail")
   ;;                         (mu4e-trash-folder . "/Trash"))))
 
-  ;; (load (concat user-emacs-directory "emails.el")))
+  (load (concat user-emacs-directory "emails.el")))
 
 (use-package mu4e-alert
   :after mu4e
@@ -591,7 +592,12 @@ If TEXT does not have a range, return nil."
    "i" #'persp-ibuffer
    "I" #'ibuffer
    "k" #'kill-buffer
-   "r" #'revert-buffer))
+   "r" #'revert-buffer)
+  (general-define-key
+   :states 'normal
+   :prefix "SPC o"
+   "a" #'org-agenda
+   "c" #'cfw:open-org-calendar))
 
 (global-set-key (kbd "C-M-n") #'(lambda ()
                                   (interactive)
