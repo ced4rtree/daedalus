@@ -434,8 +434,9 @@ Like workspaces inside of emacs to clean up the buffer list
            ("C-c p i" . persp-ibuffer)
            ("C-c p b" . persp-switch-to-buffer*)
            ("C-c p ." . persp-switch))
+    :custom ((persp-initial-frame-name "Main")
+             (persp-suppress-no-prefix-key-warning t))
     :config
-    (setq persp-initial-frame-name "Main")
     (persp-mode)
     (defun persp-project-switch ()
       "Switches to a new project and creates a new perspective for that project"
