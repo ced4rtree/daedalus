@@ -14,3 +14,4 @@
 /.config/emacs/elpa/
 /.config/nvim/plugin/packer_compiled.lua
 /.config/tmux/plugins
+/.config/emacs/emails.el
