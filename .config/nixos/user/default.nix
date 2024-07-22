@@ -11,6 +11,7 @@
     ./bluetooth.nix
     ./theme.nix
     ./direnv.nix
+    ./homestuck.nix
   ];
 
 #   { pkgs, ... }:
@@ -77,7 +78,6 @@
     wirelesstools
   ];
 
-  
 
   programs.emacs = {
     extraPackages = epkgs: [
