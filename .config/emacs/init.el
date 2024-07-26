@@ -200,7 +200,8 @@
   :ensure t
   :config
   ;; remove boilerplate files from recentf list
-  (add-to-list 'recentf-exclude "~/org/agenda/schedule.org")
+  (dolist (agenda-file (directory-files "~/org/agenda"))
+    (add-to-list 'recentf-exclude agenda-file))
   (add-to-list 'recentf-exclude (concat user-emacs-directory "bookmarks")))
 
 (use-package dashboard
