@@ -62,6 +62,8 @@
     isync
     gnupg
     pinentry-qt
+    heroic
+    pass-wayland
     # qutebrowser
 
     # music
