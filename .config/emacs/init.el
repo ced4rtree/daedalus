@@ -113,18 +113,18 @@
 
 (global-hl-line-mode 1)
 
-(use-package doom-modeline
-  :ensure t
-  :ensure octicons
-  :init
-  (doom-modeline-mode 1)
-  :config
-  (setq doom-modeline-height 35
-        doom-modeline-project-detection 'file-name
-        doom-modeline-buffer-encoding nil
-        doom-modeline-persp-name t
-        doom-modeline-persp-icon t
-        doom-modeline-mu4e t))
+;; (use-package doom-modeline
+;;   :ensure t
+;;   :ensure octicons
+;;   :init
+;;   (doom-modeline-mode 1)
+;;   :config
+;;   (setq doom-modeline-height 35
+;;         doom-modeline-project-detection 'file-name
+;;         doom-modeline-buffer-encoding nil
+;;         doom-modeline-persp-name t
+;;         doom-modeline-persp-icon t
+;;         doom-modeline-mu4e t))
 
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'prog-mode-hook #'menu-bar--display-line-numbers-mode-relative)
