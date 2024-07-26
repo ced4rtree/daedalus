@@ -455,13 +455,7 @@
          (magit-post-refresh-hook . diff-hl-magit-post-refresh)))
 
 (use-package blamer
-  :bind (("s-i" . blamer-show-commit-info)
-         ("C-c i" . blamer-show-posframe-commit-info))
   :defer 20
-  :custom
-  (blamer-idle-time 0.3)
-  (blamer-min-offset 30)
-  (blamer-max-commit-message-length 50)
   :custom-face
   (blamer-face ((t :foreground "#7a88cf"
                     :background nil
