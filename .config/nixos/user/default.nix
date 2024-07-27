@@ -62,7 +62,7 @@
     isync
     gnupg
     pinentry-qt
-    heroic
+    lutris
     pass-wayland
     # qutebrowser
 
