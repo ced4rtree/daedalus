@@ -271,16 +271,3 @@ If TEXT does not have a range, return nil."
                      (directory-file-name
                       (file-name-directory project-dir))))
       (project-switch-project project-dir))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(orderless consult vertico-prescient prescient which-key toc-org solaire-mode rust-mode rainbow-delimiters perspective org-modern org-auto-tangle nix-mode mu4e-alert markdown-mode magit haskell-mode evil-nerd-commenter eglot-java direnv corfu cmake-mode catppuccin-theme calfw-org calfw)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
