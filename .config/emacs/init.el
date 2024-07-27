@@ -1,3 +1,4 @@
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 (require 'package)
