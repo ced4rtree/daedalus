@@ -79,9 +79,10 @@
       (vertico-mode 1))
 
 (use-package marginalia
-  :config
-  (marginalia-mode 1)
-  :after vertico)
+      :ensure t
+      :config
+      (marginalia-mode 1)
+      :after vertico)
 
 (use-package prescient
   :ensure t

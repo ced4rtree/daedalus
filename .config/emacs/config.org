@@ -178,9 +178,10 @@
 
 #+begin_src emacs-lisp
   (use-package marginalia
-    :config
-    (marginalia-mode 1)
-    :after vertico)
+	:ensure t
+	:config
+	(marginalia-mode 1)
+	:after vertico)
 #+end_src
 
 *** Prescient
