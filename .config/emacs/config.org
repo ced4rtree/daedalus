@@ -6,6 +6,7 @@
 * Table of contents :toc:
 - [[#misc-settings][Misc Settings]]
   - [[#use-package][Use-Package]]
+  - [[#diminish][Diminish]]
   - [[#melpa-packge-repo][MELPA Packge Repo]]
 - [[#uiux][UI/UX]]
   - [[#font][Font]]
@@ -53,6 +54,10 @@
   (setq use-package-always-ensure t)
 #+end_src
 
+** Diminish
+#+begin_src emacs-lisp
+  (use-package diminish)
+#+end_src
 ** MELPA Packge Repo
 
 #+begin_src emacs-lisp
@@ -127,7 +132,8 @@
 
 #+begin_src emacs-lisp
   (use-package which-key
-    :config (which-key-mode 1))
+    :config (which-key-mode 1)
+    :diminish which-key-mode)
 #+end_src
 
 ** Tabbing
@@ -162,7 +168,9 @@
 #+end_src
 ** HideShow Mode
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook #'hs-minor-mode)
+  (use-package hideshow
+    :hook (prog-mode . hs-minor-mode)
+    :diminish hs-minor-mode)
 #+end_src
 ** Vertico
 
@@ -250,7 +258,7 @@
 ** Org Agenda
 
 #+begin_src emacs-lisp
-  (setq org-agenda-files "~/org/agenda/")
+  (setq org-agenda-files '("~/org/agenda/"))
 #+end_src
 
 ** Tables of Contents

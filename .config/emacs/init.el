@@ -1,6 +1,8 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
+(use-package diminish)
+
 (require 'package)
 (setq package-user-dir (concat user-emacs-directory ".local/elpa"))
 (setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
@@ -40,7 +42,8 @@
 (pixel-scroll-precision-mode t)
 
 (use-package which-key
-  :config (which-key-mode 1))
+  :config (which-key-mode 1)
+  :diminish which-key-mode)
 
 (setq-default tab-width 4
               c-basic-offset 4
@@ -66,7 +69,9 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-(add-hook 'prog-mode-hook #'hs-minor-mode)
+(use-package hideshow
+  :hook (prog-mode . hs-minor-mode)
+  :diminish hs-minor-mode)
 
 (use-package vertico
       :custom
@@ -118,7 +123,7 @@
 (use-package org-tempo
   :ensure nil)
 
-(setq org-agenda-files "~/org/agenda/")
+(setq org-agenda-files '("~/org/agenda/"))
 
 (use-package toc-org
   :hook (org-mode . toc-org-mode))
