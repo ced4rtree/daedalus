@@ -64,6 +64,7 @@
     pinentry-qt
     lutris
     pass-wayland
+    wineWowPackages.waylandFull
 
     # music
     mpd
