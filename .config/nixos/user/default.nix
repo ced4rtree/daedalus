@@ -64,7 +64,6 @@
     pinentry-qt
     lutris
     pass-wayland
-    # qutebrowser
 
     # music
     mpd
