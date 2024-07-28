@@ -113,6 +113,8 @@
   :config
   (setq highlight-indent-guides-method 'character))
 
+(setq split-width-threshold 150)
+
 (use-package org-tempo
   :ensure nil)
 

@@ -23,6 +23,7 @@
   - [[#vertico][Vertico]]
   - [[#highlight-line][Highlight Line]]
   - [[#indent-guides][Indent Guides]]
+  - [[#smart-window-splitting][Smart Window Splitting]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -232,6 +233,10 @@
                                             (set-face-foreground 'highlight-indent-guides-character-face "gray31")))
     :config
     (setq highlight-indent-guides-method 'character))
+#+end_src
+** Smart Window Splitting
+#+begin_src emacs-lisp
+  (setq split-width-threshold 150)
 #+end_src
 * Org Mode
 ** Org Tempo
