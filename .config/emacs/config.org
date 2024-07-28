@@ -346,7 +346,6 @@
 #+end_src
 
 * Emacs as an Operating System
-
 ** Calfw
 
 #+begin_src emacs-lisp
@@ -380,55 +379,55 @@
 
 #+begin_src emacs-lisp
   (use-package mu4e
-	:ensure-system-package mu
-	:ensure-system-package mbsync
+    :ensure-system-package mu
+    :ensure-system-package mbsync
 
-	:ensure nil
-	;; :load-path "/usr/share/emacs/site-lisp/mu4e"
+    :ensure nil
+    ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
 
-	:config
-	(setq smtpmail-stream-type 'starttls ;; use tls for encryption
-	  mu4e-change-filenames-when-moving t ;; update file names as you move them around
-	  mu4e-update-interval (* 10 60) ;; update email every 10 minutes
-	  mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
-	  mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
-	  ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
-	  ;; using the decryption function defined below
-	  message-send-mail-function 'smtpmail-send-it)
+    :config
+    (setq smtpmail-stream-type 'starttls ;; use tls for encryption
+      mu4e-change-filenames-when-moving t ;; update file names as you move them around
+      mu4e-update-interval (* 10 60) ;; update email every 10 minutes
+      mu4e-hide-index-messages t ;; stop flashing my email to everyone around me
+      mu4e-get-mail-command "mbsync -a" ;; requires isync to be installed and configured for your emails
+      ;; NOTE: I recommend using .authinfo.gpg to store an encrypted set of your email usernames and passwords that mbsync pulls from
+      ;; using the decryption function defined below
+      message-send-mail-function 'smtpmail-send-it)
 
-	;; this is a dummy configuration for example
-	;; my real email info is stored in ~/.config/emacs/emails.el
+    ;; this is a dummy configuration for example
+    ;; my real email info is stored in ~/.config/emacs/emails.el
 
-	;; mu4e-contexts (list
-	;;                (make-mu4e-context
-	;;                 :name "My email"
-	;;                 :match-func (lambda (msg)
-	;;                               (when msg
-	;;                                 (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-	;;                 :vars '((user-mail-address . "myemail@gmail.com")
-	;;                         (user-full-name    . "My Name")
-	;;                         (smtpmail-smtp-server . "smtp.gmail.com")
-	;;                         (smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
-	;;                         (mu4e-drafts-folder . "/[Gmail]/Drafts")
-	;;                         (mu4e-sent-folder . "/[Gmail]/Sent Mail")
-	;;                         (mu4e-refile-folder . "/[Gmail]/All Mail")
-	;;                         (mu4e-trash-folder . "/[Gmail]/Trash")))
+    ;; mu4e-contexts (list
+    ;;                (make-mu4e-context
+    ;;                 :name "My email"
+    ;;                 :match-func (lambda (msg)
+    ;;                               (when msg
+    ;;                                 (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+    ;;                 :vars '((user-mail-address . "myemail@gmail.com")
+    ;;                         (user-full-name    . "My Name")
+    ;;                         (smtpmail-smtp-server . "smtp.gmail.com")
+    ;;                         (smtpmail-smtp-service . 587) ;; this is for tls, use 465 for ssl, 25 for plain
+    ;;                         (mu4e-drafts-folder . "/[Gmail]/Drafts")
+    ;;                         (mu4e-sent-folder . "/[Gmail]/Sent Mail")
+    ;;                         (mu4e-refile-folder . "/[Gmail]/All Mail")
+    ;;                         (mu4e-trash-folder . "/[Gmail]/Trash")))
 
-	;;                (make-mu4e-context
-	;;                 :name "My other email"
-	;;                 :math-func (lambda (msg)
-	;;                              (when msg
-	;;                                (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-	;;                 :vars '((user-mail-address . "koolkid37@example.com")
-	;;                         (user-full-name    . "koolkid")
-	;;                         (smtpmail-smtp-server . "smtp.example.com")
-	;;                         (smtpmail-smtp-service . 465) ;; this is for ssl, use 587 for ssl, 25 for plain
-	;;                         (mu4e-drafts-folder . "/Drafts")
-	;;                         (mu4e-sent-folder . "/Sent Mail")
-	;;                         (mu4e-refile-folder . "/All Mail")
-	;;                         (mu4e-trash-folder . "/Trash"))))
+    ;;                (make-mu4e-context
+    ;;                 :name "My other email"
+    ;;                 :math-func (lambda (msg)
+    ;;                              (when msg
+    ;;                                (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+    ;;                 :vars '((user-mail-address . "koolkid37@example.com")
+    ;;                         (user-full-name    . "koolkid")
+    ;;                         (smtpmail-smtp-server . "smtp.example.com")
+    ;;                         (smtpmail-smtp-service . 465) ;; this is for ssl, use 587 for ssl, 25 for plain
+    ;;                         (mu4e-drafts-folder . "/Drafts")
+    ;;                         (mu4e-sent-folder . "/Sent Mail")
+    ;;                         (mu4e-refile-folder . "/All Mail")
+    ;;                         (mu4e-trash-folder . "/Trash"))))
 
-	(load (concat user-emacs-directory "emails.el")))
+    (load (concat user-emacs-directory "emails.el")))
 #+end_src
 
 *** MU4E Alert
@@ -475,4 +474,11 @@ This is really just for mbsync, not for interactive use
                        (directory-file-name
                         (file-name-directory project-dir))))
         (project-switch-project project-dir))))
+#+end_src
+
+** Moving Auto Backup Files
+
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 #+end_src
