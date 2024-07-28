@@ -43,6 +43,7 @@
   - [[#password-encryption][Password Encryption]]
 - [[#extra-features][Extra Features]]
   - [[#perspectives][Perspectives]]
+  - [[#moving-auto-backup-files][Moving Auto Backup Files]]
 
 * Misc Settings
 ** Use-Package

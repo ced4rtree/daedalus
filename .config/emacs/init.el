@@ -283,3 +283,6 @@ If TEXT does not have a range, return nil."
                      (directory-file-name
                       (file-name-directory project-dir))))
       (project-switch-project project-dir))))
+
+(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
