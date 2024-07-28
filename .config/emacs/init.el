@@ -47,7 +47,7 @@
               c-ts-mode-indent-offset 4
               c-ts-mode-indent-style 'bsd
               c-default-style "bsd"
-              indent-tabs-mode t)
+              indent-tabs-mode nil)
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (indent-tabs-mode nil)
