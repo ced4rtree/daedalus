@@ -8,7 +8,7 @@
 (package-initialize)
 
 (add-to-list 'default-frame-alist
-	     '(font . "FiraMono Nerd Font-14"))
+	     '(font . "FiraCode Nerd Font-15"))
 
 (use-package solaire-mode
   :config (solaire-global-mode t))

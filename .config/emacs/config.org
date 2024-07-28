@@ -63,7 +63,7 @@
 ** Font
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-	       '(font . "FiraMono Nerd Font-14"))
+	       '(font . "FiraCode Nerd Font-15"))
 #+end_src
 ** Solaire Mode
 
