@@ -22,6 +22,7 @@
   - [[#hideshow-mode][HideShow Mode]]
   - [[#vertico][Vertico]]
   - [[#highlight-line][Highlight Line]]
+  - [[#indent-guides][Indent Guides]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -220,6 +221,17 @@
 
 #+begin_src emacs-lisp
   (global-hl-line-mode 1)
+#+end_src
+** Indent Guides
+
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :hook (prog-mode . highlight-indent-guides-mode)
+    ;; this is so dumb i just want to use :custom-face so bad
+    :hook (highlight-indent-guides-mode . (lambda ()
+                                            (set-face-foreground 'highlight-indent-guides-character-face "gray31")))
+    :config
+    (setq highlight-indent-guides-method 'character))
 #+end_src
 * Org Mode
 ** Org Tempo

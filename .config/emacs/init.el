@@ -104,6 +104,15 @@
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (global-hl-line-mode 1)
+
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
+  ;; this is so dumb i just want to use :custom-face so bad
+  :hook (highlight-indent-guides-mode . (lambda ()
+                                          (set-face-foreground 'highlight-indent-guides-character-face "gray31")))
+  :config
+  (setq highlight-indent-guides-method 'character))
+
 (use-package org-tempo
   :ensure nil)
 
