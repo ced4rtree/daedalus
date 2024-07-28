@@ -45,6 +45,7 @@
 - [[#extra-features][Extra Features]]
   - [[#perspectives][Perspectives]]
   - [[#moving-auto-backup-files][Moving Auto Backup Files]]
+- [[#cleanup][Cleanup]]
 
 * Misc Settings
 ** Use-Package
@@ -489,4 +490,10 @@ This is really just for mbsync, not for interactive use
 #+begin_src emacs-lisp
   (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
   (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+#+end_src
+
+* Cleanup
+
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 2 1024 1024))
 #+end_src

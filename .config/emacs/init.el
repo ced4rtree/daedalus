@@ -291,3 +291,5 @@ If TEXT does not have a range, return nil."
 
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+
+(setq gc-cons-threshold (* 2 1024 1024))
