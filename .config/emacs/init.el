@@ -103,6 +103,7 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+(global-hl-line-mode 1)
 (use-package org-tempo
   :ensure nil)
 

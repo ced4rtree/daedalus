@@ -21,6 +21,7 @@
   - [[#expand-region][Expand Region]]
   - [[#hideshow-mode][HideShow Mode]]
   - [[#vertico][Vertico]]
+  - [[#highlight-line][Highlight Line]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -215,6 +216,11 @@
     (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
+** Highlight Line
+
+#+begin_src emacs-lisp
+  (global-hl-line-mode 1)
+#+end_src
 * Org Mode
 ** Org Tempo
 
