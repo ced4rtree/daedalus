@@ -74,14 +74,15 @@
   :diminish hs-minor-mode)
 
 (use-package vertico
-      :custom
-      (vertico-cyle t)
-      :config
-      (keymap-set vertico-map "RET" #'vertico-directory-enter)
-      (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
-      (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
-      (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-      (vertico-mode 1))
+  :custom
+  (vertico-cyle t)
+  :config
+  (require 'vertico-directory)
+  (keymap-set vertico-map "RET" #'vertico-directory-enter)
+  (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
+  (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  (vertico-mode 1))
 
 (use-package marginalia
       :ensure t
@@ -93,10 +94,10 @@
   :ensure t
   :ensure vertico-prescient
   :after vertico
+  :after vertico-prescient
   :config
   (vertico-prescient-mode 1)
-  (prescient-persist-mode 1)
-  :after vertico)
+  (prescient-persist-mode 1))
 
 (use-package consult
   :ensure t
@@ -279,7 +280,7 @@ If TEXT does not have a range, return nil."
   :custom ((persp-initial-frame-name "Main")
            (persp-suppress-no-prefix-key-warning t))
   :config
-  (persp-mode)
+  (persp-mode 1)
   (defun persp-project-switch ()
     "Switches to a new project and creates a new perspective for that project"
     (interactive)
