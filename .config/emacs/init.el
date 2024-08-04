@@ -3,7 +3,6 @@
 
 (use-package diminish)
 
-(require 'package)
 (setq package-user-dir (concat user-emacs-directory ".local/elpa"))
 (setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -120,6 +119,23 @@
   (setq highlight-indent-guides-method 'character))
 
 (setq split-width-threshold 150)
+
+(use-package ligature
+  :config
+  (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
+                              "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
+                              "??" "???" "?:" "?." "?=" "<:" ":<" ":>" ">:" "<:<" "<>" "<<<" ">>>"
+                              "<<" ">>" "||" "-|" "_|_" "|-" "||-" "|=" "||=" "##" "###" "####"
+                              "#{" "#[" "]#" "#(" "#?" "#_" "#_(" "#:" "#!" "#=" "^=" "<$>" "<$"
+                              "$>" "<+>" "<+" "+>" "<*>" "<*" "*>" "</" "</>" "/>" "<!--" "<#--"
+                              "-->" "->" "->>" "<<-" "<-" "<=<" "=<<" "<<=" "<==" "<=>" "<==>"
+                              "==>" "=>" "=>>" ">=>" ">>=" ">>-" ">-" "-<" "-<<" ">->" "<-<" "<-|"
+                              "<=|" "|=>" "|->" "<->" "<~~" "<~" "<~>" "~~" "~~>" "~>" "~-" "-~"
+                              "~@" "[||]" "|]" "[|" "|}" "{|" "[<" ">]" "|>" "<|" "||>" "<||"
+                              "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
+                              ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
+                              "<:<" ";;;"))
+  (global-ligature-mode t))
 
 (use-package org-tempo
   :ensure nil)
@@ -254,7 +270,8 @@ If TEXT does not have a range, return nil."
   ;;                         (mu4e-refile-folder . "/All Mail")
   ;;                         (mu4e-trash-folder . "/Trash"))))
 
-  (load (concat user-emacs-directory "emails.el")))
+  ;; (load (concat user-emacs-directory "emails.el")))
+  )
 
 (use-package mu4e-alert
   :after mu4e

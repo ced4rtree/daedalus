@@ -25,6 +25,7 @@
   - [[#highlight-line][Highlight Line]]
   - [[#indent-guides][Indent Guides]]
   - [[#smart-window-splitting][Smart Window Splitting]]
+  - [[#ligatures][Ligatures]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -62,7 +63,6 @@
 ** MELPA Packge Repo
 
 #+begin_src emacs-lisp
-  (require 'package)
   (setq package-user-dir (concat user-emacs-directory ".local/elpa"))
   (setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -248,6 +248,25 @@
 ** Smart Window Splitting
 #+begin_src emacs-lisp
   (setq split-width-threshold 150)
+#+end_src
+** Ligatures
+#+begin_src emacs-lisp
+  (use-package ligature
+    :config
+    (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
+                                "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
+                                "??" "???" "?:" "?." "?=" "<:" ":<" ":>" ">:" "<:<" "<>" "<<<" ">>>"
+                                "<<" ">>" "||" "-|" "_|_" "|-" "||-" "|=" "||=" "##" "###" "####"
+                                "#{" "#[" "]#" "#(" "#?" "#_" "#_(" "#:" "#!" "#=" "^=" "<$>" "<$"
+                                "$>" "<+>" "<+" "+>" "<*>" "<*" "*>" "</" "</>" "/>" "<!--" "<#--"
+                                "-->" "->" "->>" "<<-" "<-" "<=<" "=<<" "<<=" "<==" "<=>" "<==>"
+                                "==>" "=>" "=>>" ">=>" ">>=" ">>-" ">-" "-<" "-<<" ">->" "<-<" "<-|"
+                                "<=|" "|=>" "|->" "<->" "<~~" "<~" "<~>" "~~" "~~>" "~>" "~-" "-~"
+                                "~@" "[||]" "|]" "[|" "|}" "{|" "[<" ">]" "|>" "<|" "||>" "<||"
+                                "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
+                                ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
+                                "<:<" ";;;"))
+    (global-ligature-mode t))
 #+end_src
 * Org Mode
 ** Org Tempo
@@ -437,7 +456,8 @@
     ;;                         (mu4e-refile-folder . "/All Mail")
     ;;                         (mu4e-trash-folder . "/Trash"))))
 
-    (load (concat user-emacs-directory "emails.el")))
+    ;; (load (concat user-emacs-directory "emails.el")))
+    )
 #+end_src
 
 *** MU4E Alert
