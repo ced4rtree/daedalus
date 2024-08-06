@@ -1,12 +1,54 @@
+;; -*- lexical-binding: t; -*-
+(defvar elpaca-installer-version 0.7)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil :depth 1
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                 ,@(when-let ((depth (plist-get order :depth)))
+                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                 ,(plist-get order :repo) ,repo))))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                                       (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+
+(elpaca elpaca-use-package
+  ;; Enable use-package :ensure support for Elpaca.
+  (elpaca-use-package-mode)
+  (setq elpaca-use-package-by-default t))
+
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
-(use-package diminish)
-
-(setq package-user-dir (concat user-emacs-directory ".local/elpa"))
-(setq package-gnupghome-dir (concat user-emacs-directory ".local/elpa/gnupg"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+(use-package diminish
+  :ensure (:wait t)
+  :demand t)
 
 (add-to-list 'default-frame-alist
 	     '(font . "JetBrainsMono Nerd Font-15"))
@@ -68,9 +110,8 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-(use-package hideshow
-  :hook (prog-mode . hs-minor-mode)
-  :diminish hs-minor-mode)
+(with-eval-after-load 'hideshow
+  (add-hook 'prog-mode-hook #'hs-minor-mode))
 
 (use-package vertico
   :custom
@@ -90,11 +131,10 @@
       :after vertico)
 
 (use-package prescient
-  :ensure t
-  :ensure vertico-prescient
   :after vertico
-  :after vertico-prescient
+  :ensure vertico-prescient
   :config
+  (require 'vertico-prescient)
   (vertico-prescient-mode 1)
   (prescient-persist-mode 1))
 
@@ -110,13 +150,22 @@
 
 (global-hl-line-mode 1)
 
-(use-package highlight-indent-guides
-  :hook (prog-mode . highlight-indent-guides-mode)
-  ;; this is so dumb i just want to use :custom-face so bad
-  :hook (highlight-indent-guides-mode . (lambda ()
-                                          (set-face-foreground 'highlight-indent-guides-character-face "gray31")))
-  :config
-  (setq highlight-indent-guides-method 'character))
+(elpaca (indent-bars
+  :type git
+  :host github
+  :repo "jdtsmith/indent-bars"
+  :custom
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  ;; Add other languages as needed
+  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+      if_statement with_statement while_statement)))
+  ;; wrap may not be needed if no-descend-list is enough
+  ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
+  ;;				      list list_comprehension
+  ;;				      dictionary dictionary_comprehension
+  ;;				      parenthesized_expression subscript)))
+  :hook (prog-mode . indent-bars-mode)))
 
 (setq split-width-threshold 150)
 
@@ -157,10 +206,10 @@
       org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
 (use-package rust-mode)
-(use-package haskell-mode)
-(use-package nix-mode)
-(use-package cmake-mode)
-(use-package markdown-mode)
+  (use-package haskell-mode)
+  (use-package nix-mode)
+;;  (use-package cmake-mode)
+  (use-package markdown-mode)
 
 (when (< emacs-major-version 29)
   (use-package eglot))
@@ -196,9 +245,12 @@
   (tab-always-indent t)
   :hook (eglot-managed-mode . corfu-mode))
 
-(use-package calfw
-  :ensure t
-  :ensure calfw-org)
+(setq major-mode-remap-alist
+      '((java-mode  . java-ts-mode)
+        (c-mode . c-ts-mode)
+        (rust-mode . rust-ts-mode)))
+
+(use-package calfw)
 (use-package calfw-org
   :config
   ;; hotfix: incorrect time range display

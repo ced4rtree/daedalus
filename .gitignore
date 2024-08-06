@@ -19,4 +19,3 @@
 ^/.config/emacs/config.org
 ^/.config/emacs/init.el
 ^/.config/emacs/early-init.el
-^/.config/emacs/dash.txt
