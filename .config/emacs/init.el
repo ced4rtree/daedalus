@@ -69,7 +69,6 @@
   (menu-bar--display-line-numbers-mode-relative))
 
 (add-hook 'prog-mode-hook #'bugger/line-nums)
-(add-hook 'org-mode-hook #'bugger/line-nums)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))

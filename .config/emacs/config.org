@@ -150,7 +150,6 @@
     (menu-bar--display-line-numbers-mode-relative))
 
   (add-hook 'prog-mode-hook #'bugger/line-nums)
-  (add-hook 'org-mode-hook #'bugger/line-nums)
 #+end_src
 
 ** Rainbow Parentheses
