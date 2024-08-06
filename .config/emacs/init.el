@@ -150,22 +150,27 @@
 
 (global-hl-line-mode 1)
 
-(elpaca (indent-bars
-  :type git
-  :host github
-  :repo "jdtsmith/indent-bars"
+(use-package indent-bars
+  :ensure (:host github :repo "jdtsmith/indent-bars")
   :custom
   (indent-bars-treesit-support t)
   (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-starting-column 0)
   ;; Add other languages as needed
   (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-      if_statement with_statement while_statement)))
+                                       if_statement with_statement while_statement)))
   ;; wrap may not be needed if no-descend-list is enough
   ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
   ;;				      list list_comprehension
   ;;				      dictionary dictionary_comprehension
   ;;				      parenthesized_expression subscript)))
-  :hook (prog-mode . indent-bars-mode)))
+  :config
+  (defun turn-off-indent-bars-mode ()
+    "Turn off indent-bars-mode"
+    (interactive)
+    (indent-bars-mode -1))
+  :hook (prog-mode . indent-bars-mode)
+  :hook (emacs-lisp-mode . turn-off-indent-bars-mode))
 
 (setq split-width-threshold 150)
 
@@ -243,7 +248,7 @@
   (corfu-cycle t)
   (corfu-preselect 'prompt)
   (tab-always-indent t)
-  :hook (eglot-managed-mode . corfu-mode))
+  :hook ((eglot-managed-mode emacs-lisp-mode) . corfu-mode))
 
 (setq major-mode-remap-alist
       '((java-mode  . java-ts-mode)
