@@ -228,6 +228,11 @@
 					  (string= major-mode "java-ts-mode"))
 				  (eglot-java-mode t)))))
 
+(use-package eglot-booster
+  :ensure (:host github :repo "jdtsmith/eglot-booster" :protocol ssh)
+  :after eglot
+  :config (eglot-booster-mode))
+
 (use-package magit
   :defer t)
 

@@ -392,6 +392,15 @@
 				    (eglot-java-mode t)))))
 #+end_src
 
+*** Eglot Booster
+
+#+begin_src emacs-lisp
+  (use-package eglot-booster
+    :ensure (:host github :repo "jdtsmith/eglot-booster" :protocol ssh)
+    :after eglot
+    :config (eglot-booster-mode))
+#+end_src
+
 ** Magit
 
 #+begin_src emacs-lisp
