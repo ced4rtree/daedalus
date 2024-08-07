@@ -84,7 +84,7 @@ myStartupHook = do
   spawnOnce "emacs --daemon &"
   spawnOnce "feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg"
   spawnOnce "batsignal -M 'dunstify' &"
-  spawnOnce "mpd"
+  -- spawnOnce "mpd"
 
   spawnOnce "~/.config/xmonad/trayer.sh &"
 
