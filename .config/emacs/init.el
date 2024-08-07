@@ -283,9 +283,6 @@ If TEXT does not have a range, return nil."
                      (org-read-date nil t end-date))) text)))))))
 
 (use-package mu4e
-  :ensure-system-package mu
-  :ensure-system-package mbsync
-
   :ensure nil
   ;; :load-path "/usr/share/emacs/site-lisp/mu4e"
 
@@ -331,8 +328,7 @@ If TEXT does not have a range, return nil."
   ;;                         (mu4e-refile-folder . "/All Mail")
   ;;                         (mu4e-trash-folder . "/Trash"))))
 
-  ;; (load (concat user-emacs-directory "emails.el")))
-  )
+  (load (concat user-emacs-directory "emails.el")))
 
 (use-package mu4e-alert
   :after mu4e
