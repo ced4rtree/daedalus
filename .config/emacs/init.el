@@ -343,6 +343,24 @@ If TEXT does not have a range, return nil."
         (funcall (plist-get (car result) :secret))
       nil)))
 
+(use-package emms
+  :custom
+  (emms-seek-seconds 5)
+  (emms-player-list '(emms-player-mpv))
+  (emms-info-functions '(emms-info-native))
+  :config
+  (require 'emms-setup)
+  (emms-all)
+  ;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+  ;; (setq emms-player-mpd-server-name "localhost")
+  ;; (setq emms-player-mpd-server-port "6600")
+  ;; (setq mpc-host "localhost:6600")
+  :bind (("C-c m m" . emms-smart-browse)
+         ("C-c m n" . emms-next)
+         ("C-c m p" . emms-prev)
+         :map emms-playlist-mode-map
+         ("Z" . emms-shuffle)))
+
 (use-package perspective
   :defer nil
   :commands persp-project-switch

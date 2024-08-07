@@ -44,6 +44,7 @@
   - [[#calfw][Calfw]]
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
+  - [[#emms][EMMS]]
 - [[#extra-features][Extra Features]]
   - [[#perspectives][Perspectives]]
   - [[#moving-auto-backup-files][Moving Auto Backup Files]]
@@ -545,6 +546,27 @@ This is really just for mbsync, not for interactive use
         nil)))
 #+end_src
 
+** EMMS
+
+#+begin_src emacs-lisp
+  (use-package emms
+    :custom
+    (emms-seek-seconds 5)
+    (emms-player-list '(emms-player-mpv))
+    (emms-info-functions '(emms-info-native))
+    :config
+    (require 'emms-setup)
+    (emms-all)
+    ;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+    ;; (setq emms-player-mpd-server-name "localhost")
+    ;; (setq emms-player-mpd-server-port "6600")
+    ;; (setq mpc-host "localhost:6600")
+    :bind (("C-c m m" . emms-smart-browse)
+           ("C-c m n" . emms-next)
+           ("C-c m p" . emms-prev)
+           :map emms-playlist-mode-map
+           ("Z" . emms-shuffle)))
+#+end_src
 * Extra Features
 ** Perspectives
 
