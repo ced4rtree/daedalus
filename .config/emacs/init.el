@@ -50,6 +50,8 @@
   :ensure (:wait t)
   :demand t)
 
+(setq vc-follow-symlinks nil)
+
 (add-to-list 'default-frame-alist
 	     '(font . "JetBrainsMono Nerd Font-15"))
 
@@ -210,10 +212,23 @@
       org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
 (use-package rust-mode)
-  (use-package haskell-mode)
-  (use-package nix-mode)
-;;  (use-package cmake-mode)
-  (use-package markdown-mode)
+(use-package haskell-mode)
+(use-package nix-mode)
+;; (use-package cmake-mode)
+(use-package markdown-mode)
+(use-package web-mode
+  :ensure t
+  :mode
+  (("\\.phtml\\'" . web-mode)
+   ("\\.php\\'" . web-mode)
+   ("\\.tpl\\'" . web-mode)
+   ("\\.[agj]sp\\'" . web-mode)
+   ("\\.as[cp]x\\'" . web-mode)
+   ("\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.djhtml\\'" . web-mode)))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
 (when (< emacs-major-version 29)
   (use-package eglot))
@@ -361,6 +376,107 @@ If TEXT does not have a range, return nil."
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
+(use-package app-launcher
+  :ensure (:host github :repo "SebastienWae/app-launcher" :protocol ssh))
+
+(defun exwm/keybindings ()
+  ;; Keys that are always sent to emacs
+  (setq exwm-input-prefix-keys
+        '(?\C-x
+          ?\C-u
+          ?\C-h
+          ?\M-x
+          ?\M-&
+          ?\M-:
+          ?\C-\ ))
+
+  ;; C-q C-c will send C-c to an application
+  (define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
+
+  ;; Pressin C-c C-c will send C-c to an application
+  (setq exwm-input-simulation-keys
+        '(([?\C-c ?\C-c] . ?\C-c)
+          ([?\C-n] . [down])
+          ([?\C-p] . [up])
+          ([?\C-f] . [right])
+          ([?\C-b] . [left])))
+
+  (setq exwm-input-global-keys
+        `((,(kbd "s-r") . exwm-reset) ;; reset to line-mode
+          (,(kbd "s-<escape>") . (lambda ()
+                                   (interactive)
+                                   (start-process-shell-command "killall emacs" nil "killall emacs")))
+          (,(kbd "s-d") . app-launcher-run-app)
+          (,(kbd "s-b") . windmove-left)
+          (,(kbd "s-n") . windmove-down)
+          (,(kbd "s-p") . windmove-up)
+          (,(kbd "s-f") . windmove-right)
+
+          (,(kbd "s-C-b") . windmove-left)
+          (,(kbd "s-C-n") . windmove-down)
+          (,(kbd "s-C-p") . windmove-up)
+          (,(kbd "s-C-f") . windmove-right)
+
+          ;; terminal
+          (,(kbd "s-<return>") . (lambda ()
+                                  (interactive)
+                                  (split-window-right)
+                                  (eshell)))
+
+          ;; audio
+          (,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
+                                               (interactive)
+                                               (start-process-shell-command
+                                                "volume-raise"
+                                                nil
+                                                "snd up")))
+          (,(kbd "<XF86AudioLowerVolume>") . (lambda ()
+                                               (interactive)
+                                               (start-process-shell-command
+                                                "volume-lower"
+                                                nil
+                                                "snd down")))
+
+          ;; layout stuff
+          (,(kbd "s-f") . exwm-layout-toggle-fullscreen)
+          (,(kbd "s-<space>") . exwm-layout-toggle-floating))))
+
+(defun exwm/gpg-fix ()
+  (use-package pinentry
+    :config
+    (setenv "GPG_AGENT_INFO" nil)
+    (setq auth-source-debug t)
+
+    (setq epg-gpg-program "gpg2")
+    (require 'epa-file)
+    (epa-file-enable)
+    (setq epg-pinentry-mode 'loopback)
+    (pinentry-start))
+
+  (require 'org-crypt)
+  (org-crypt-use-before-save-magic))
+
+(defun exwm/rename-buffer ()
+  (interactive)
+  (exwm-workspace-rename-buffer exwm-class-name))
+
+(defun exwm/settings ()
+  (add-hook 'exwm-update-class-hook #'exwm/rename-buffer)
+  (add-hook 'exwm-update-title-hook #'exwm/rename-buffer))
+
+(defun exwm/autostart ()
+  (call-process "/bin/sh" (concat user-emacs-directory "autostart.sh")))
+
+(use-package exwm
+  :config
+  (exwm/settings)
+  (exwm/gpg-fix)
+  (exwm/keybindings)
+
+  (exwm-enable)
+
+  (exwm/autostart))
+
 (use-package perspective
   :defer nil
   :commands persp-project-switch
@@ -386,3 +502,4 @@ If TEXT does not have a range, return nil."
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(server-start)

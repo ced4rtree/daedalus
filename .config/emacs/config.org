@@ -8,6 +8,7 @@
   - [[#elpaca][Elpaca]]
   - [[#use-package][Use-Package]]
   - [[#diminish][Diminish]]
+  - [[#vc-follow-symlinks][vc-follow-symlinks]]
 - [[#uiux][UI/UX]]
   - [[#font][Font]]
   - [[#solaire-mode][Solaire Mode]]
@@ -45,6 +46,8 @@
   - [[#mu4e][MU4E]]
   - [[#password-encryption][Password Encryption]]
   - [[#emms][EMMS]]
+  - [[#app-launcher][App Launcher]]
+  - [[#exwm][EXWM]]
 - [[#extra-features][Extra Features]]
   - [[#perspectives][Perspectives]]
   - [[#moving-auto-backup-files][Moving Auto Backup Files]]
@@ -113,6 +116,10 @@
   (use-package diminish
     :ensure (:wait t)
     :demand t)
+#+end_src
+** vc-follow-symlinks
+#+begin_src emacs-lisp
+  (setq vc-follow-symlinks nil)
 #+end_src
 * UI/UX
 ** Font
@@ -372,8 +379,21 @@
   (use-package rust-mode)
   (use-package haskell-mode)
   (use-package nix-mode)
-;;  (use-package cmake-mode)
+  ;; (use-package cmake-mode)
   (use-package markdown-mode)
+  (use-package web-mode
+    :ensure t
+    :mode
+    (("\\.phtml\\'" . web-mode)
+     ("\\.php\\'" . web-mode)
+     ("\\.tpl\\'" . web-mode)
+     ("\\.[agj]sp\\'" . web-mode)
+     ("\\.as[cp]x\\'" . web-mode)
+     ("\\.erb\\'" . web-mode)
+     ("\\.mustache\\'" . web-mode)
+     ("\\.djhtml\\'" . web-mode)))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 #+end_src
 
 ** Eglot
@@ -567,6 +587,127 @@ This is really just for mbsync, not for interactive use
            :map emms-playlist-mode-map
            ("Z" . emms-shuffle)))
 #+end_src
+** App Launcher
+#+begin_src emacs-lisp
+  (use-package app-launcher
+    :ensure (:host github :repo "SebastienWae/app-launcher" :protocol ssh))
+#+end_src
+** EXWM
+*** EXWM Keys
+#+begin_src emacs-lisp
+  (defun exwm/keybindings ()
+    ;; Keys that are always sent to emacs
+    (setq exwm-input-prefix-keys
+          '(?\C-x
+            ?\C-u
+            ?\C-h
+            ?\M-x
+            ?\M-&
+            ?\M-:
+            ?\C-\ ))
+
+    ;; C-q C-c will send C-c to an application
+    (define-key exwm-mode-map (kbd "C-q") 'exwm-input-send-next-key)
+
+    ;; Pressin C-c C-c will send C-c to an application
+    (setq exwm-input-simulation-keys
+          '(([?\C-c ?\C-c] . ?\C-c)
+            ([?\C-n] . [down])
+            ([?\C-p] . [up])
+            ([?\C-f] . [right])
+            ([?\C-b] . [left])))
+
+    (setq exwm-input-global-keys
+          `((,(kbd "s-r") . exwm-reset) ;; reset to line-mode
+            (,(kbd "s-<escape>") . (lambda ()
+                                     (interactive)
+                                     (start-process-shell-command "killall emacs" nil "killall emacs")))
+            (,(kbd "s-d") . app-launcher-run-app)
+            (,(kbd "s-b") . windmove-left)
+            (,(kbd "s-n") . windmove-down)
+            (,(kbd "s-p") . windmove-up)
+            (,(kbd "s-f") . windmove-right)
+
+            (,(kbd "s-C-b") . windmove-left)
+            (,(kbd "s-C-n") . windmove-down)
+            (,(kbd "s-C-p") . windmove-up)
+            (,(kbd "s-C-f") . windmove-right)
+
+            ;; terminal
+            (,(kbd "s-<return>") . (lambda ()
+                                    (interactive)
+                                    (split-window-right)
+                                    (eshell)))
+
+            ;; audio
+            (,(kbd "<XF86AudioRaiseVolume>") . (lambda ()
+                                                 (interactive)
+                                                 (start-process-shell-command
+                                                  "volume-raise"
+                                                  nil
+                                                  "snd up")))
+            (,(kbd "<XF86AudioLowerVolume>") . (lambda ()
+                                                 (interactive)
+                                                 (start-process-shell-command
+                                                  "volume-lower"
+                                                  nil
+                                                  "snd down")))
+
+            ;; layout stuff
+            (,(kbd "s-f") . exwm-layout-toggle-fullscreen)
+            (,(kbd "s-<space>") . exwm-layout-toggle-floating))))
+#+end_src
+*** GPG Fix
+#+begin_src emacs-lisp
+  (defun exwm/gpg-fix ()
+    (use-package pinentry
+      :config
+      (setenv "GPG_AGENT_INFO" nil)
+      (setq auth-source-debug t)
+
+      (setq epg-gpg-program "gpg2")
+      (require 'epa-file)
+      (epa-file-enable)
+      (setq epg-pinentry-mode 'loopback)
+      (pinentry-start))
+
+    (require 'org-crypt)
+    (org-crypt-use-before-save-magic))
+#+end_src
+
+To fully fix, add the following to =~/.gnupg/gpg-agent.conf=
+#+begin_example
+allow-emacs-pinentry
+allow-loopback-pinentry
+#+end_example
+
+*** EXWM Settings
+#+begin_src emacs-lisp
+  (defun exwm/rename-buffer ()
+    (interactive)
+    (exwm-workspace-rename-buffer exwm-class-name))
+
+  (defun exwm/settings ()
+    (add-hook 'exwm-update-class-hook #'exwm/rename-buffer)
+    (add-hook 'exwm-update-title-hook #'exwm/rename-buffer))
+#+end_src
+*** EXWM Autostart
+#+begin_src emacs-lisp
+  (defun exwm/autostart ()
+    (call-process "/bin/sh" (concat user-emacs-directory "autostart.sh")))
+#+end_src
+*** Main Declaration
+#+begin_src emacs-lisp
+  (use-package exwm
+    :config
+    (exwm/settings)
+    (exwm/gpg-fix)
+    (exwm/keybindings)
+
+    (exwm-enable)
+
+    (exwm/autostart))
+#+end_src
 * Extra Features
 ** Perspectives
 
@@ -604,4 +745,5 @@ This is really just for mbsync, not for interactive use
 
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 2 1024 1024))
+  (server-start)
 #+end_src
