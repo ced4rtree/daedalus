@@ -5,3 +5,5 @@ setxkbmap -option ctrl:nocaps
 pipewire &
 pipewire-pulse &
 wireplumber &
+
+picom --vsync &
