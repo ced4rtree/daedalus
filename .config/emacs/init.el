@@ -194,6 +194,9 @@
                               "<:<" ";;;"))
   (global-ligature-mode t))
 
+(setq display-time-format "  %I:%M:%S%p")
+(display-time-mode)
+
 (use-package org-tempo
   :ensure nil)
 

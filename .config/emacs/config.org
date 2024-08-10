@@ -28,6 +28,7 @@
   - [[#indent-guides][Indent Guides]]
   - [[#smart-window-splitting][Smart Window Splitting]]
   - [[#ligatures][Ligatures]]
+  - [[#display-time-mode][Display-time-mode]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -335,6 +336,11 @@
                                 ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                                 "<:<" ";;;"))
     (global-ligature-mode t))
+#+end_src
+** Display-time-mode
+#+begin_src emacs-lisp
+  (setq display-time-format "  %I:%M:%S%p")
+  (display-time-mode)
 #+end_src
 * Org Mode
 ** Org Tempo
