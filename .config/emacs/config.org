@@ -339,7 +339,7 @@
 #+end_src
 ** Display-time-mode
 #+begin_src emacs-lisp
-  (setq display-time-format "  %I:%M:%S%p")
+  (setq display-time-format "  %I:%M %p %a %b %d")
   (display-time-mode)
 #+end_src
 * Org Mode

@@ -194,7 +194,7 @@
                               "<:<" ";;;"))
   (global-ligature-mode t))
 
-(setq display-time-format "  %I:%M:%S%p")
+(setq display-time-format "  %I:%M %p %a %b %d")
 (display-time-mode)
 
 (use-package org-tempo
