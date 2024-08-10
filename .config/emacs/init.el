@@ -52,6 +52,8 @@
 
 (setq vc-follow-symlinks nil)
 
+(global-set-key (kbd "C-c e") #'eshell)
+
 (add-to-list 'default-frame-alist
 	     '(font . "JetBrainsMono Nerd Font-15"))
 
@@ -407,20 +409,22 @@ If TEXT does not have a range, return nil."
                                    (interactive)
                                    (start-process-shell-command "killall emacs" nil "killall emacs")))
           (,(kbd "s-d") . app-launcher-run-app)
-          (,(kbd "s-b") . windmove-left)
-          (,(kbd "s-n") . windmove-down)
-          (,(kbd "s-p") . windmove-up)
-          (,(kbd "s-f") . windmove-right)
 
-          (,(kbd "s-C-b") . windmove-left)
-          (,(kbd "s-C-n") . windmove-down)
-          (,(kbd "s-C-p") . windmove-up)
-          (,(kbd "s-C-f") . windmove-right)
+          (,(kbd "s-h") . windmove-left)
+          (,(kbd "s-j") . windmove-down)
+          (,(kbd "s-k") . windmove-up)
+          (,(kbd "s-l") . windmove-right)
+
+          (,(kbd "s-C-h") . windmove-swap-states-left)
+          (,(kbd "s-C-j") . windmove-swap-states-down)
+          (,(kbd "s-C-k") . windmove-swap-states-up)
+          (,(kbd "s-C-l") . windmove-swap-states-right)
 
           ;; terminal
           (,(kbd "s-<return>") . (lambda ()
                                   (interactive)
                                   (split-window-right)
+                                  (other-window)
                                   (eshell)))
 
           ;; audio

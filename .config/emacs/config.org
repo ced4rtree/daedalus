@@ -9,6 +9,7 @@
   - [[#use-package][Use-Package]]
   - [[#diminish][Diminish]]
   - [[#vc-follow-symlinks][vc-follow-symlinks]]
+  - [[#keybindings][Keybindings]]
 - [[#uiux][UI/UX]]
   - [[#font][Font]]
   - [[#solaire-mode][Solaire Mode]]
@@ -120,6 +121,10 @@
 ** vc-follow-symlinks
 #+begin_src emacs-lisp
   (setq vc-follow-symlinks nil)
+#+end_src
+** Keybindings
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c e") #'eshell)
 #+end_src
 * UI/UX
 ** Font
@@ -623,20 +628,22 @@ This is really just for mbsync, not for interactive use
                                      (interactive)
                                      (start-process-shell-command "killall emacs" nil "killall emacs")))
             (,(kbd "s-d") . app-launcher-run-app)
-            (,(kbd "s-b") . windmove-left)
-            (,(kbd "s-n") . windmove-down)
-            (,(kbd "s-p") . windmove-up)
-            (,(kbd "s-f") . windmove-right)
 
-            (,(kbd "s-C-b") . windmove-left)
-            (,(kbd "s-C-n") . windmove-down)
-            (,(kbd "s-C-p") . windmove-up)
-            (,(kbd "s-C-f") . windmove-right)
+            (,(kbd "s-h") . windmove-left)
+            (,(kbd "s-j") . windmove-down)
+            (,(kbd "s-k") . windmove-up)
+            (,(kbd "s-l") . windmove-right)
+
+            (,(kbd "s-C-h") . windmove-swap-states-left)
+            (,(kbd "s-C-j") . windmove-swap-states-down)
+            (,(kbd "s-C-k") . windmove-swap-states-up)
+            (,(kbd "s-C-l") . windmove-swap-states-right)
 
             ;; terminal
             (,(kbd "s-<return>") . (lambda ()
                                     (interactive)
                                     (split-window-right)
+                                    (other-window)
                                     (eshell)))
 
             ;; audio
