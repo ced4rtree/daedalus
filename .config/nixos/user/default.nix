@@ -7,7 +7,7 @@
   imports = [
     ./virt-manager.nix
     ./zsh.nix
-    ./wm/hyprland.nix
+    # ./wm/hyprland.nix
     ./bluetooth.nix
     ./theme.nix
     ./direnv.nix
@@ -38,7 +38,7 @@
     firefox
     tree-sitter
     nodejs_22
-    emacs29-pgtk
+    emacs29
     mu
     emacsPackages.mu4e
     gh
@@ -63,8 +63,7 @@
     gnupg
     pinentry-qt
     lutris
-    pass-wayland
-    wineWowPackages.waylandFull
+    pass
 
     # music
     mpd
