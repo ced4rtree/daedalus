@@ -29,6 +29,7 @@
   - [[#smart-window-splitting][Smart Window Splitting]]
   - [[#ligatures][Ligatures]]
   - [[#display-time-mode][Display-time-mode]]
+  - [[#bell][Bell]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -342,6 +343,11 @@
   (setq display-time-format "  %I:%M %p %a %b %d")
   (display-time-mode)
 #+end_src
+** Bell
+#+begin_src emacs-lisp
+  (setq ring-bell-function nil)
+  (setq visible-bell t)
+#+end_src
 * Org Mode
 ** Org Tempo
 
@@ -353,7 +359,16 @@
 ** Org Agenda
 
 #+begin_src emacs-lisp
-  (setq org-agenda-files '("~/org/agenda/"))
+  (setq org-agenda-files '("~/org/agenda/")
+        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-timestamp-if-done t
+        org-agenda-skip-scheduled-if-deadline-is-shown t
+        org-agenda-skip-timestamp-if-deadline-is-shown t
+        org-agenda-start-day "-2d"
+        org-agenda-start-on-weekday nil
+        org-agenda-span 7
+        org-agenda-window-setup 'current-window)
 #+end_src
 
 ** Tables of Contents

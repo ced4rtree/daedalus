@@ -197,10 +197,22 @@
 (setq display-time-format "  %I:%M %p %a %b %d")
 (display-time-mode)
 
+(setq ring-bell-function nil)
+(setq visible-bell t)
+
 (use-package org-tempo
   :ensure nil)
 
-(setq org-agenda-files '("~/org/agenda/"))
+(setq org-agenda-files '("~/org/agenda/")
+      org-agenda-skip-deadline-if-done t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-timestamp-if-done t
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-timestamp-if-deadline-is-shown t
+      org-agenda-start-day "-2d"
+      org-agenda-start-on-weekday nil
+      org-agenda-span 7
+      org-agenda-window-setup 'current-window)
 
 (use-package toc-org
   :hook (org-mode . toc-org-mode))
