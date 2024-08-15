@@ -34,8 +34,7 @@
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" "UbuntuSans" "FiraMono" "FiraCode" ]; })
     htop
-    brave
-    firefox
+    librewolf
     tree-sitter
     nodejs_22
     emacs29
@@ -64,6 +63,7 @@
     pinentry-qt
     lutris
     pass
+    drawio
 
     # music
     mpd
