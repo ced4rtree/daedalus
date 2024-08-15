@@ -283,7 +283,6 @@
   (corfu-auto-prefix 2)
   (corfu-cycle t)
   (corfu-preselect 'prompt)
-  (tab-always-indent t)
   :hook ((eglot-managed-mode emacs-lisp-mode) . corfu-mode))
 
 (setq major-mode-remap-alist
@@ -522,3 +521,15 @@ If TEXT does not have a range, return nil."
 
 (setq gc-cons-threshold (* 2 1024 1024))
 (server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(pdf-tools toc-org diminish)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

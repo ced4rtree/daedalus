@@ -481,7 +481,6 @@
     (corfu-auto-prefix 2)
     (corfu-cycle t)
     (corfu-preselect 'prompt)
-    (tab-always-indent t)
     :hook ((eglot-managed-mode emacs-lisp-mode) . corfu-mode))
 #+end_src
 
