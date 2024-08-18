@@ -54,6 +54,7 @@
 - [[#extra-features][Extra Features]]
   - [[#perspectives][Perspectives]]
   - [[#moving-auto-backup-files][Moving Auto Backup Files]]
+  - [[#pdf-support][PDF Support]]
 - [[#cleanup][Cleanup]]
 
 * Misc Settings
@@ -768,6 +769,12 @@ allow-loopback-pinentry
   (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 #+end_src
 
+** PDF Support
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :mode ("\\.pdf\\'" . pdf-view-mode)
+    :magic ("%PDF" . pdf-view-mode))
+#+end_src
 * Cleanup
 
 #+begin_src emacs-lisp
