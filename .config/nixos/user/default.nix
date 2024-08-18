@@ -64,7 +64,7 @@
     lutris
     pass
     drawio
-    texliveSmall
+    texliveFull
 
     # music
     mpd
