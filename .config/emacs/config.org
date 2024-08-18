@@ -161,11 +161,7 @@
 ** Line Numbers
 
 #+begin_src emacs-lisp
-  (defun bugger/line-nums ()
-    (display-line-numbers-mode 1)
-    (menu-bar--display-line-numbers-mode-relative))
-
-  (add-hook 'prog-mode-hook #'bugger/line-nums)
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 #+end_src
 
 ** Rainbow Parentheses
@@ -318,7 +314,7 @@
 #+end_src
 ** Smart Window Splitting
 #+begin_src emacs-lisp
-  (setq split-width-threshold 150)
+  (setq split-width-threshold 140)
 #+end_src
 ** Ligatures
 #+begin_src emacs-lisp
@@ -627,6 +623,7 @@ This is really just for mbsync, not for interactive use
           '(?\C-x
             ?\C-u
             ?\C-h
+            ?\C-g
             ?\M-x
             ?\M-&
             ?\M-:
@@ -773,7 +770,8 @@ allow-loopback-pinentry
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :mode ("\\.pdf\\'" . pdf-view-mode)
-    :magic ("%PDF" . pdf-view-mode))
+    :magic ("%PDF" . pdf-view-mode)
+    :config (pdf-tools-install))
 #+end_src
 * Cleanup
 

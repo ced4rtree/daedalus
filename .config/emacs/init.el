@@ -68,11 +68,7 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 
-(defun bugger/line-nums ()
-  (display-line-numbers-mode 1)
-  (menu-bar--display-line-numbers-mode-relative))
-
-(add-hook 'prog-mode-hook #'bugger/line-nums)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -175,7 +171,7 @@
   :hook (prog-mode . indent-bars-mode)
   :hook (emacs-lisp-mode . turn-off-indent-bars-mode))
 
-(setq split-width-threshold 150)
+(setq split-width-threshold 140)
 
 (use-package ligature
   :config
@@ -401,6 +397,7 @@ If TEXT does not have a range, return nil."
         '(?\C-x
           ?\C-u
           ?\C-h
+          ?\C-g
           ?\M-x
           ?\M-&
           ?\M-:
@@ -521,7 +518,8 @@ If TEXT does not have a range, return nil."
 
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
-  :magic ("%PDF" . pdf-view-mode))
+  :magic ("%PDF" . pdf-view-mode)
+  :config (pdf-tools-install))
 
 (setq gc-cons-threshold (* 2 1024 1024))
 (server-start)
