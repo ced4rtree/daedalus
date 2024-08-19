@@ -65,6 +65,7 @@
     pass
     drawio
     texliveFull
+    ispell
 
     # music
     mpd
