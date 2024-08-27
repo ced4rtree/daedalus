@@ -1,8 +1,9 @@
 { config, lib, pkgs, ... }: {
-  hardware.graphics = {
+  hardware.opengl = {
     enable = true;
-    #driSupport = true;
-    enable32Bit = true;
+    driSupport = true;
+    #enable32Bit = true;
+    driSupport32Bit = true;
   };
 
   # programs.xwayland.enable = true;

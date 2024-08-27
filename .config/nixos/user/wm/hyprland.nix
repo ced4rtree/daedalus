@@ -12,5 +12,6 @@
     sway-contrib.grimshot
   ];
 
+  # wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.xwayland.enable = true;
 }

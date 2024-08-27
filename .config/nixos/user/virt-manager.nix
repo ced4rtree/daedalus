@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
-    qemu_full
+    # qemu_full
   ];
 
   dconf.settings = {

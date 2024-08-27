@@ -10,9 +10,9 @@
       ./graphics.nix
       ./virtualbox.nix
       ./printing.nix
-      ./xorg.nix
-      ./exwm.nix
-      ./sddm.nix
+      # ./xorg.nix
+      # ./exwm.nix
+      # ./sddm.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

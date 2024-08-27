@@ -7,7 +7,7 @@
   imports = [
     ./virt-manager.nix
     ./zsh.nix
-    # ./wm/hyprland.nix
+    ./wm/hyprland.nix
     ./bluetooth.nix
     ./theme.nix
     ./direnv.nix
@@ -37,7 +37,7 @@
     librewolf
     tree-sitter
     nodejs_22
-    emacs29
+    emacs29-pgtk
     mu
     emacsPackages.mu4e
     gh
