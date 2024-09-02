@@ -417,4 +417,6 @@ If TEXT does not have a range, return nil."
   :magic ("%PDF" . pdf-view-mode)
   :config (pdf-tools-install))
 
+(defalias #'yes-or-no-p #'y-or-n-p)
+
 (setq gc-cons-threshold (* 2 1024 1024))

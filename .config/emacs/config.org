@@ -53,6 +53,7 @@
   - [[#perspectives][Perspectives]]
   - [[#moving-auto-backup-files][Moving Auto Backup Files]]
   - [[#pdf-support][PDF Support]]
+  - [[#use-y-or-n-for-yes-or-no][Use y-or-n for yes-or-no]]
 - [[#cleanup][Cleanup]]
 
 * Misc Settings
@@ -646,6 +647,10 @@ This is really just for mbsync, not for interactive use
     :mode ("\\.pdf\\'" . pdf-view-mode)
     :magic ("%PDF" . pdf-view-mode)
     :config (pdf-tools-install))
+#+end_src
+** Use y-or-n for yes-or-no
+#+begin_src emacs-lisp
+  (defalias #'yes-or-no-p #'y-or-n-p)
 #+end_src
 * Cleanup
 
