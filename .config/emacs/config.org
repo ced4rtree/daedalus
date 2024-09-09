@@ -21,16 +21,11 @@
   - [[#scrolling][Scrolling]]
   - [[#which-key][Which Key]]
   - [[#tabbing][Tabbing]]
-  - [[#electric-pairing][Electric Pairing]]
-  - [[#expand-region][Expand Region]]
-  - [[#hideshow][HideShow]]
   - [[#vertico][Vertico]]
   - [[#highlight-line][Highlight Line]]
   - [[#indent-guides][Indent Guides]]
   - [[#smart-window-splitting][Smart Window Splitting]]
   - [[#ligatures][Ligatures]]
-  - [[#display-time-mode][Display-time-mode]]
-  - [[#bell][Bell]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -54,6 +49,11 @@
   - [[#perspectives][Perspectives]]
   - [[#moving-auto-backup-files][Moving Auto Backup Files]]
   - [[#pdf-support][PDF Support]]
+  - [[#use-y-or-n-for-yes-or-no][Use y-or-n for yes-or-no]]
+  - [[#electric-pairing][Electric Pairing]]
+  - [[#expand-region][Expand Region]]
+  - [[#hideshow][HideShow]]
+  - [[#drag-stuff][Drag stuff]]
 - [[#cleanup][Cleanup]]
 
 * Misc Settings
@@ -171,23 +171,6 @@
                 c-ts-mode-indent-offset WIDTH
                 java-ts-mode-indent-offset WIDTH))
 #+end_src
-** Electric Pairing
-#+begin_src emacs-lisp
-  (electric-pair-mode 1)
-  (setq electric-pair-inhibit-predicate
-        `(lambda (c)
-           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
-#+end_src
-** Expand Region
-#+begin_src emacs-lisp
-  (use-package expand-region
-    :bind ("C-=" . er/expand-region))
-#+end_src
-** HideShow
-#+begin_src emacs-lisp
-  (with-eval-after-load 'hideshow
-    (add-hook 'prog-mode-hook #'hs-minor-mode))
-#+end_src
 ** Vertico
 
 #+begin_src emacs-lisp
@@ -296,16 +279,6 @@
                                 ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                                 "<:<" ";;;"))
     (global-ligature-mode t))
-#+end_src
-** Display-time-mode
-#+begin_src emacs-lisp
-  (setq display-time-format "  %I:%M %p %a %b %d")
-  (display-time-mode)
-#+end_src
-** Bell
-#+begin_src emacs-lisp
-  (setq ring-bell-function nil)
-  (setq visible-bell t)
 #+end_src
 * Org Mode
 ** Org Tempo
@@ -601,6 +574,35 @@ This is really just for mbsync, not for interactive use
     :mode ("\\.pdf\\'" . pdf-view-mode)
     :magic ("%PDF" . pdf-view-mode)
     :config (pdf-tools-install))
+#+end_src
+** Use y-or-n for yes-or-no
+#+begin_src emacs-lisp
+  (defalias #'yes-or-no-p #'y-or-n-p)
+#+end_src
+** Electric Pairing
+#+begin_src emacs-lisp
+  (electric-pair-mode 1)
+  (setq electric-pair-inhibit-predicate
+        `(lambda (c)
+           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+#+end_src
+** Expand Region
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+#+end_src
+** HideShow
+#+begin_src emacs-lisp
+  (with-eval-after-load 'hideshow
+    (add-hook 'prog-mode-hook #'hs-minor-mode))
+#+end_src
+
+** Drag stuff
+#+begin_src emacs-lisp
+  (use-package drag-stuff
+    :config
+    (drag-stuff-global-mode 1)
+    (drag-stuff-define-keys))
 #+end_src
 * Cleanup
 

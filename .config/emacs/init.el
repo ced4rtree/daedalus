@@ -64,17 +64,6 @@
               c-ts-mode-indent-offset WIDTH
               java-ts-mode-indent-offset WIDTH))
 
-(electric-pair-mode 1)
-(setq electric-pair-inhibit-predicate
-      `(lambda (c)
-         (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
-
-(use-package expand-region
-  :bind ("C-=" . er/expand-region))
-
-(with-eval-after-load 'hideshow
-  (add-hook 'prog-mode-hook #'hs-minor-mode))
-
 (use-package vertico
   :custom
   (vertico-cyle t)
@@ -153,12 +142,6 @@
                               ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                               "<:<" ";;;"))
   (global-ligature-mode t))
-
-(setq display-time-format "  %I:%M %p %a %b %d")
-(display-time-mode)
-
-(setq ring-bell-function nil)
-(setq visible-bell t)
 
 (use-package org-tempo
   :ensure nil)
@@ -375,5 +358,23 @@ If TEXT does not have a range, return nil."
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
   :config (pdf-tools-install))
+
+(defalias #'yes-or-no-p #'y-or-n-p)
+
+(electric-pair-mode 1)
+(setq electric-pair-inhibit-predicate
+      `(lambda (c)
+         (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
+(with-eval-after-load 'hideshow
+  (add-hook 'prog-mode-hook #'hs-minor-mode))
+
+(use-package drag-stuff
+  :config
+  (drag-stuff-global-mode 1)
+  (drag-stuff-define-keys))
 
 (setq gc-cons-threshold (* 2 1024 1024))
