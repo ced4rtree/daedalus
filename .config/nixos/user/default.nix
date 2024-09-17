@@ -35,6 +35,7 @@
     (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" "UbuntuSans" "FiraMono" "FiraCode" ]; })
     htop
     librewolf
+    brave
     tree-sitter
     nodejs_22
     emacs29-pgtk
@@ -66,6 +67,7 @@
     drawio
     texliveFull
     ispell
+    steam
 
     # music
     mpd
