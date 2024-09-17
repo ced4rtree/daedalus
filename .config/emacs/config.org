@@ -26,6 +26,7 @@
   - [[#indent-guides][Indent Guides]]
   - [[#smart-window-splitting][Smart Window Splitting]]
   - [[#ligatures][Ligatures]]
+  - [[#splash-screen][Splash Screen]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -106,9 +107,8 @@
 ** Theme
 
 #+begin_src emacs-lisp
-  (use-package catppuccin-theme
-    :custom (catppuccin-flavor 'frappe)
-    :config (load-theme 'catppuccin t))
+  (use-package monokai-theme
+    :config (load-theme 'monokai t))
 #+end_src
 
 ** Removal of Default UI Elements
@@ -234,8 +234,6 @@
 ** Indent Guides
 
 #+begin_src emacs-lisp
-  (unless (package-installed-p 'indent-bars)
-    (package-vc-install "https://github.com/jdtsmith/indent-bars"))
   (use-package indent-bars
     :custom
     (indent-bars-treesit-support t)
@@ -280,6 +278,10 @@
                                 "<:<" ";;;"))
     (global-ligature-mode t))
 #+end_src
+** Splash Screen
+#+begin_src emacs-lisp
+  (add-hook 'server-after-make-frame-hook #'display-splash-screen)
+#+end_src
 * Org Mode
 ** Org Tempo
 
@@ -315,6 +317,15 @@
 #+begin_src emacs-lisp
   (use-package org-modern
     :hook (org-mode . org-modern-mode))
+#+end_src
+
+*** Org Indent Fix
+#+begin_src emacs-lisp
+  (use-package org-modern-indent
+    :vc (:url "https://github.com/jdtsmith/org-modern-indent")
+    :hook (org-mode . (lambda ()
+                        (org-indent-mode t)
+                        (org-modern-indent-mode t))))
 #+end_src
 
 ** Org Babel
