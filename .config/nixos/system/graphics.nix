@@ -1,12 +1,19 @@
 { config, lib, pkgs, ... }: {
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    #enable32Bit = true;
-    driSupport32Bit = true;
+    # driSupport = true;
+    enable32Bit = true;
+    # driSupport32Bit = true;
   };
 
   # programs.xwayland.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    libGL
+    libglvnd
+  ];
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
