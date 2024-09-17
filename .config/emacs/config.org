@@ -319,6 +319,15 @@
     :hook (org-mode . org-modern-mode))
 #+end_src
 
+*** Org Indent Fix
+#+begin_src emacs-lisp
+  (use-package org-modern-indent
+    :vc (:url "https://github.com/jdtsmith/org-modern-indent")
+    :hook (org-mode . (lambda ()
+                        (org-indent-mode t)
+                        (org-modern-indent-mode t))))
+#+end_src
+
 ** Org Babel
 
 #+begin_src emacs-lisp

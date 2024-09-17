@@ -162,6 +162,12 @@
 (use-package org-modern
   :hook (org-mode . org-modern-mode))
 
+(use-package org-modern-indent
+  :vc (:url "https://github.com/jdtsmith/org-modern-indent")
+  :hook (org-mode . (lambda ()
+                      (org-indent-mode t)
+                      (org-modern-indent-mode t))))
+
 (use-package org-auto-tangle
   :hook (org-mode . org-auto-tangle-mode))
 
