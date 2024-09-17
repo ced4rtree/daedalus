@@ -18,7 +18,7 @@
 (global-set-key (kbd "C-c e") #'eshell)
 
 (add-to-list 'default-frame-alist
-	     '(font . "JetBrainsMono Nerd Font-15"))
+	       '(font . "JetBrainsMono Nerd Font-15"))
 
 (use-package solaire-mode
   :config (solaire-global-mode t))
@@ -38,10 +38,10 @@
 
 ;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
-      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
-      mouse-wheel-follow-mouse 't ;; scroll window under mouse
-      scroll-step 1 ;; keyboard scroll one line at a time
-      scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
+	mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+	mouse-wheel-follow-mouse 't ;; scroll window under mouse
+	scroll-step 1 ;; keyboard scroll one line at a time
+	scroll-conservatively 101) ;; scroll one line at a time when moving the cursor down the page
 (pixel-scroll-precision-mode t)
 
 (use-package which-key
@@ -76,10 +76,10 @@
   (vertico-mode 1))
 
 (use-package marginalia
-      :ensure t
-      :config
-      (marginalia-mode 1)
-      :after vertico)
+	:ensure t
+	:config
+	(marginalia-mode 1)
+	:after vertico)
 
 (use-package prescient
   :after vertico
@@ -101,8 +101,6 @@
 
 (global-hl-line-mode 1)
 
-(unless (package-installed-p 'indent-bars)
-  (package-vc-install "https://github.com/jdtsmith/indent-bars"))
 (use-package indent-bars
   :custom
   (indent-bars-treesit-support t)
@@ -167,9 +165,9 @@
   :hook (org-mode . org-auto-tangle-mode))
 
 (setq org-src-fontify-natively t ;; use the font like it is in a normal buffer
-      org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
-      org-confirm-babel-evaluate nil ;; don't ask to evaluate code
-      org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
+	org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
+	org-confirm-babel-evaluate nil ;; don't ask to evaluate code
+	org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
 
 (use-package rust-mode)
 (use-package haskell-mode)
@@ -198,10 +196,10 @@
 (use-package eglot-java
   :defer t
   :hook (eglot-managed-mode . (lambda ()
-				(interactive)
-				(when (or (string= major-mode "java-mode")
-					  (string= major-mode "java-ts-mode"))
-				  (eglot-java-mode t)))))
+				  (interactive)
+				  (when (or (string= major-mode "java-mode")
+					    (string= major-mode "java-ts-mode"))
+				    (eglot-java-mode t)))))
 
 (use-package magit
   :defer t)
