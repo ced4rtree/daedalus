@@ -23,9 +23,8 @@
 (use-package solaire-mode
   :config (solaire-global-mode t))
 
-(use-package catppuccin-theme
-  :custom (catppuccin-flavor 'frappe)
-  :config (load-theme 'catppuccin t))
+(use-package monokai-theme
+  :config (load-theme 'monokai t))
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -140,6 +139,8 @@
                               ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                               "<:<" ";;;"))
   (global-ligature-mode t))
+
+(add-hook 'server-after-make-frame-hook #'display-splash-screen)
 
 (use-package org-tempo
   :ensure nil)
