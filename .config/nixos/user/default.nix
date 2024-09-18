@@ -12,6 +12,7 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
+    ./emacs.nix
   ];
 
 #   { pkgs, ... }:
@@ -38,7 +39,6 @@
     brave
     tree-sitter
     nodejs_22
-    emacs29-pgtk
     mu
     emacsPackages.mu4e
     gh
