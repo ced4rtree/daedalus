@@ -24,6 +24,8 @@
 
   time.timeZone = "America/Boise";
 
+  programs.dconf.enable = true;
+
   environment.variables = {
     PATH = "$PATH:$HOME/.local/bin/";
   };
