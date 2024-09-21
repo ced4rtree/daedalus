@@ -27,6 +27,7 @@
   - [[#smart-window-splitting][Smart Window Splitting]]
   - [[#ligatures][Ligatures]]
   - [[#splash-screen][Splash Screen]]
+  - [[#display-column-indicator][Display Column Indicator]]
 - [[#org-mode][Org Mode]]
   - [[#org-tempo][Org Tempo]]
   - [[#org-agenda][Org Agenda]]
@@ -282,6 +283,10 @@
 ** Splash Screen
 #+begin_src emacs-lisp
   (add-hook 'server-after-make-frame-hook #'display-splash-screen)
+#+end_src
+** Display Column Indicator
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
 * Org Mode
 ** Org Tempo

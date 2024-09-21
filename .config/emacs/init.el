@@ -143,6 +143,8 @@
 
 (add-hook 'server-after-make-frame-hook #'display-splash-screen)
 
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+
 (use-package org-tempo
   :ensure nil)
 
