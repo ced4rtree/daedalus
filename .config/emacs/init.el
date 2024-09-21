@@ -143,7 +143,7 @@
 
 (add-hook 'server-after-make-frame-hook #'display-splash-screen)
 
-(setq fill-column 80)
+(setq-default fill-column 80)
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 (use-package org-tempo
