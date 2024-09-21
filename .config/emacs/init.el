@@ -101,6 +101,7 @@
 (global-hl-line-mode 1)
 
 (use-package indent-bars
+  :vc (:url "https://github.com/jdtsmith/indent-bars")
   :custom
   (indent-bars-treesit-support t)
   (indent-bars-treesit-ignore-blank-lines-types '("module"))
