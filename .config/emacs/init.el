@@ -325,27 +325,29 @@ If TEXT does not have a range, return nil."
   (emms-seek-seconds 5)
   (emms-player-list '(emms-player-mpv))
   (emms-info-functions '(emms-info-native))
+
   :config
   (require 'emms-setup)
   (emms-all)
+
   ;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
   ;; (setq emms-player-mpd-server-name "localhost")
   ;; (setq emms-player-mpd-server-port "6600")
   ;; (setq mpc-host "localhost:6600")
-  :bind (("C-c m m" . emms-smart-browse)
-         ("C-c m n" . emms-next)
+  :bind (("C-c m n" . emms-next)
          ("C-c m p" . emms-prev)
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
 (use-package perspective
   :defer nil
-  :commands persp-project-switch
+  :commands (persp-project-switch persp-emms-switch)
   :bind (("C-c p k" . persp-kill)
          ("C-c p p" . persp-project-switch)
          ("C-c p i" . persp-ibuffer)
          ("C-c p b" . persp-switch-to-buffer*)
-         ("C-c p ." . persp-switch))
+         ("C-c p ." . persp-switch)
+         ("C-c m m" . persp-emms-switch))
   :custom ((persp-initial-frame-name "Main")
            (persp-suppress-no-prefix-key-warning t))
   :config
@@ -357,7 +359,12 @@ If TEXT does not have a range, return nil."
       (persp-switch (file-name-nondirectory
                      (directory-file-name
                       (file-name-directory project-dir))))
-      (project-switch-project project-dir))))
+      (project-switch-project project-dir)))
+  (defun persp-emms-switch ()
+    "Switches to a new perspective with emms open"
+    (interactive)
+    (persp-switch "Music")
+    (emms-smart-browse)))
 
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
