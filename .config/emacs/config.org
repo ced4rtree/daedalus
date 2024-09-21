@@ -286,6 +286,7 @@
 #+end_src
 ** Display Column Indicator
 #+begin_src emacs-lisp
+  (setq fill-column 80)
   (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
 * Org Mode
