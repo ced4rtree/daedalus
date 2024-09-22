@@ -14,6 +14,7 @@
     name = "muh-emacs";
     src = builtins.fetchGit {
       url = "https://git.savannah.gnu.org/git/emacs";
+      rev = "3fb966dc6392e1908304a1b6fe481da9f670cfbb";
     };
 
     configurePhase = ''
