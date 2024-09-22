@@ -49,7 +49,7 @@
     freetube
     qbittorrent
     clonehero
-    discord
+    vesktop
     appimage-run
     tmux
     fzf
