@@ -335,7 +335,8 @@ If TEXT does not have a range, return nil."
   ;; (setq emms-player-mpd-server-name "localhost")
   ;; (setq emms-player-mpd-server-port "6600")
   ;; (setq mpc-host "localhost:6600")
-  :bind (("C-c m n" . emms-next)
+  :bind (("C-c m t" . emms-pause) ;; t for toggle
+         ("C-c m n" . emms-next)
          ("C-c m p" . emms-prev)
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
