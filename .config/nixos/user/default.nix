@@ -40,7 +40,6 @@
     tree-sitter
     nodejs_22
     mu
-    emacsPackages.mu4e
     gh
     openssh
     unzip

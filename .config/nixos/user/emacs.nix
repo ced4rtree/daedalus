@@ -10,6 +10,7 @@
       tree-sitter
       ncurses
       libgccjit
+      emacsPackages.mu4e
     ];
     name = "muh-emacs";
     src = builtins.fetchGit {
