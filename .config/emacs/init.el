@@ -23,8 +23,8 @@
 (use-package solaire-mode
   :config (solaire-global-mode t))
 
-(use-package monokai-theme
-  :config (load-theme 'monokai t))
+(use-package doom-themes
+  :config (load-theme 'doom-one t))
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -183,7 +183,7 @@
 (use-package rust-mode)
 (use-package haskell-mode)
 (use-package nix-mode)
-;; (use-package cmake-mode)
+(use-package cmake-mode)
 (use-package markdown-mode)
 (use-package web-mode
   :ensure t
@@ -199,18 +199,26 @@
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
-(when (< emacs-major-version 29)
-  (use-package eglot))
-(with-eval-after-load 'eglot
-  (setq eglot-autoshutdown t))
+(use-package eglot
+  :custom
+  (eglot-autoshutdown t)
+  :config
+  ;; this is so dumb
+  (defun bugger/eglot-ensure ()
+    (eglot-ensure))
+  :bind (:map prog-mode-map
+              ("C-c c c" . bugger/eglot-ensure)
+              ("C-c c r" . eglot-rename)
+              ("C-c c k" . eglot-shutdown)
+              ("C-c c f" . eglot-code-action-quickfix)))
 
 (use-package eglot-java
   :defer t
   :hook (eglot-managed-mode . (lambda ()
-				  (interactive)
-				  (when (or (string= major-mode "java-mode")
-					    (string= major-mode "java-ts-mode"))
-				    (eglot-java-mode t)))))
+  			  (interactive)
+  			  (when (or (string= major-mode "java-mode")
+  				    (string= major-mode "java-ts-mode"))
+  			    (eglot-java-mode t)))))
 
 (use-package magit
   :defer t)
@@ -395,3 +403,25 @@ If TEXT does not have a range, return nil."
   (drag-stuff-define-keys))
 
 (setq gc-cons-threshold (* 2 1024 1024))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(brutalist-theme calfw calfw-org cmake-mode consult corfu diminish direnv
+                     doom-themes drag-stuff dream-theme eglot-java emms
+                     evil-nerd-commenter expand-region flucui-themes goose-theme
+                     haskell-mode helix-theme indent-bars ligature magit
+                     marginalia markdown-mode melancholy-theme moe-theme
+                     monokai-theme mu4e-alert nix-mode nyx-theme orderless
+                     org-auto-tangle org-modern org-modern-indent pdf-tools
+                     perspective rainbow-delimiters rust-mode solaire-mode
+                     toc-org toxi-theme uwu-theme vertico-prescient web-mode))
+ '(safe-local-variable-values '((org-latex-default-packages-alist))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

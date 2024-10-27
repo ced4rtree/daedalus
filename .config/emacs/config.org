@@ -108,8 +108,8 @@
 ** Theme
 
 #+begin_src emacs-lisp
-  (use-package monokai-theme
-    :config (load-theme 'monokai t))
+  (use-package doom-themes
+    :config (load-theme 'doom-one t))
 #+end_src
 
 ** Removal of Default UI Elements
@@ -355,7 +355,7 @@
   (use-package rust-mode)
   (use-package haskell-mode)
   (use-package nix-mode)
-  ;; (use-package cmake-mode)
+  (use-package cmake-mode)
   (use-package markdown-mode)
   (use-package web-mode
     :ensure t
@@ -375,18 +375,26 @@
 ** Eglot
 
 #+begin_src emacs-lisp
-  (when (< emacs-major-version 29)
-    (use-package eglot))
-  (with-eval-after-load 'eglot
-    (setq eglot-autoshutdown t))
+  (use-package eglot
+    :custom
+    (eglot-autoshutdown t)
+    :config
+    ;; this is so dumb
+    (defun bugger/eglot-ensure ()
+      (eglot-ensure))
+    :bind (:map prog-mode-map
+                ("C-c c c" . bugger/eglot-ensure)
+                ("C-c c r" . eglot-rename)
+                ("C-c c k" . eglot-shutdown)
+                ("C-c c f" . eglot-code-action-quickfix)))
 
   (use-package eglot-java
     :defer t
     :hook (eglot-managed-mode . (lambda ()
-				  (interactive)
-				  (when (or (string= major-mode "java-mode")
-					    (string= major-mode "java-ts-mode"))
-				    (eglot-java-mode t)))))
+    			  (interactive)
+    			  (when (or (string= major-mode "java-mode")
+    				    (string= major-mode "java-ts-mode"))
+    			    (eglot-java-mode t)))))
 #+end_src
 
 ** Magit
