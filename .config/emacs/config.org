@@ -394,7 +394,8 @@
     			  (interactive)
     			  (when (or (string= major-mode "java-mode")
     				    (string= major-mode "java-ts-mode"))
-    			    (eglot-java-mode t)))))
+    			    (eglot-java-mode t))))
+    :hook (java-mode . eglot-java-mode))
 #+end_src
 
 ** Magit
