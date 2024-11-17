@@ -30,7 +30,7 @@ location_id = subprocess.run(
     priv_env_cmd, shell=True, capture_output=True).stdout.decode('utf8').strip()
 
 # get html page
-url = "https://weather.com/en-IN/weather/today/l/" + location_id
+url = "https://weather.com/en-IN/weather/today/l/" + location_id + "?unit=f"
 html_data = PyQuery(url=url)
 
 # current temperature
