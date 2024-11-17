@@ -2,7 +2,7 @@
 
 * {
     /* `otf-font-awesome` is required to be installed for icons */
-    font-family: "Iosevka Nerd Font";
+    font-family: 'Iosevka Nerd Font','Inter Medium','Font Awesome 6 Brands';
     font-size: 16px;
 	min-height: 0px;
     border-radius: 0px;
@@ -45,7 +45,8 @@ button {
 #idle_inhibitor,
 #scratchpad,
 #workspaces,
-#mpd {
+#mpd,
+#custom-weather {
     padding: 0px 11px;
     margin-left: 0px;
     margin-bottom: 0px;
@@ -173,4 +174,32 @@ button:hover {
 
 #mpd {
     background-color: @maroon;
+}
+
+#custom-weather.severe {
+    background-color: #eb937d;
+}
+
+#custom-weather.sunnyDay {
+    background-color: #c2ca76;
+}
+
+#custom-weather.clearNight {
+    background-color: #2b2b2a;
+}
+pp
+#custom-weather.cloudyFoggyDay, #custom-weather.cloudyFoggyNight {
+    background-color: #c2ddda;
+}
+
+#custom-weather.rainyDay, #custom-weather.rainyNight {
+    background-color: #5aaca5;
+}
+
+#custom-weather.showyIcyDay, #custom-weather.snowyIcyNight {
+    background-color: #d6e7e5;
+}
+
+#custom-weather.default {
+    background-color: #dbd9d8;
 }
