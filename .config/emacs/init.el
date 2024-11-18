@@ -228,10 +228,6 @@
   :ensure t
   :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
 
-(use-package direnv
-  :config
-  (direnv-mode))
-
 (use-package corfu
   :custom
   (corfu-auto t)

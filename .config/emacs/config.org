@@ -39,7 +39,6 @@
   - [[#eglot][Eglot]]
   - [[#magit][Magit]]
   - [[#commenting][Commenting]]
-  - [[#direnv][Direnv]]
   - [[#corfu][Corfu]]
   - [[#tree-sitter][Tree Sitter]]
 - [[#emacs-as-an-operating-system][Emacs as an Operating System]]
@@ -411,14 +410,6 @@
   (use-package evil-nerd-commenter
     :ensure t
     :bind ("C-c C-/" . evilnc-comment-or-uncomment-lines))
-#+end_src
-
-** Direnv
-
-#+begin_src emacs-lisp
-  (use-package direnv
-    :config
-    (direnv-mode))
 #+end_src
 
 ** Corfu
