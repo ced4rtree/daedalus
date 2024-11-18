@@ -342,7 +342,7 @@ If TEXT does not have a range, return nil."
   ;; (setq mpc-host "localhost:6600")
   :bind (("C-c m t" . emms-pause) ;; t for toggle
          ("C-c m n" . emms-next)
-         ("C-c m p" . emms-prev)
+         ("C-c m p" . emms-previous)
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
