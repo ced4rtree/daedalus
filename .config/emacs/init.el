@@ -18,7 +18,7 @@
 (global-set-key (kbd "C-c e") #'eshell)
 
 (add-to-list 'default-frame-alist
-         '(font . "Source Code Pro-13"))
+         '(font . "JetBrainsMono Nerd Font-13"))
 
 (use-package solaire-mode
   :config (solaire-global-mode t))

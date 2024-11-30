@@ -95,7 +95,7 @@
 ** Font
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist
-           '(font . "Source Code Pro-13"))
+           '(font . "JetBrainsMono Nerd Font-13"))
 #+end_src
 ** Solaire Mode
 
