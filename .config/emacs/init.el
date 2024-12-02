@@ -152,10 +152,6 @@
 ;; tab bar mode
 (tab-bar-mode t)
 
-;; magit
-(use-package magit
-  :defer t)
-
 ;; tree-sitter
 (setq major-mode-remap-alist
       '((java-mode  . java-ts-mode)
