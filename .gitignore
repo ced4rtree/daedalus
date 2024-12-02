@@ -21,3 +21,14 @@
 ^/.config/emacs/early-init.el
 ^/.config/emacs/autostart.sh
 /.local/share/nvim/
+.local/share/recently-used.xbel
+.local/share/Trash/files/CameraIOPhoton.java
+.local/share/Trash/files/TatorPipelineResult.java
+.local/share/Trash/files/TatorTargetCorner.java
+.local/share/Trash/files/TatorTrackedTarget.java
+.local/share/Trash/files/photonlib-json-1.0.json
+.local/share/Trash/info/CameraIOPhoton.java.trashinfo
+.local/share/Trash/info/TatorPipelineResult.java.trashinfo
+.local/share/Trash/info/TatorTargetCorner.java.trashinfo
+.local/share/Trash/info/TatorTrackedTarget.java.trashinfo
+.local/share/Trash/info/photonlib-json-1.0.json.trashinfo
