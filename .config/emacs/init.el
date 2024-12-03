@@ -18,11 +18,14 @@
 (menu-bar-mode -1)
 
 ;; flash modeline instead of the screen
-(setq visible-bell nil)
-(setq ring-bell-function
+(setq visible-bell t
+      ring-bell-function
       (lambda ()
-        (invert-face 'mode-line)
-        (run-with-timer 0.1 nil #'invert-face 'mode-line)))
+        (let ((orig-bg (face-background 'mode-line)))
+          (set-face-background 'mode-line "brown1")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (bg) (set-face-background 'mode-line bg))
+                               orig-bg))))
 
 ;; completion
 (icomplete-mode t)
