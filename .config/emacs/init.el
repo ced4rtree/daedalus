@@ -87,6 +87,7 @@
 
 ;; emms
 (use-package emms
+  :ensure nil
   :custom
   (emms-seek-seconds 5)
   (emms-player-list '(emms-player-mpv))
@@ -125,26 +126,6 @@
       scroll-step 1 ;; keyboard scroll one line at a time
       scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
       scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
-
-;; programming langs
-(use-package rust-mode)
-(use-package haskell-mode)
-(use-package nix-mode)
-(use-package cmake-mode)
-(use-package markdown-mode)
-(use-package web-mode
-  :ensure t
-  :mode
-  (("\\.phtml\\'" . web-mode)
-   ("\\.php\\'" . web-mode)
-   ("\\.tpl\\'" . web-mode)
-   ("\\.[agj]sp\\'" . web-mode)
-   ("\\.as[cp]x\\'" . web-mode)
-   ("\\.erb\\'" . web-mode)
-   ("\\.mustache\\'" . web-mode)
-   ("\\.djhtml\\'" . web-mode)))
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
 ;; eglot
 (use-package eglot
@@ -198,40 +179,3 @@
               c-basic-offset WIDTH
               c-ts-mode-indent-offset WIDTH
               java-ts-mode-indent-offset WIDTH))
-
-;; indent bars
-(use-package indent-bars
-  :vc (:url "https://github.com/jdtsmith/indent-bars")
-  :custom
-  (indent-bars-treesit-support t)
-  (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (indent-bars-starting-column 0)
-  ;; Add other languages as needed
-  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-                                       if_statement with_statement while_statement)))
-  ;; wrap may not be needed if no-descend-list is enough
-  ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
-  ;;				      list list_comprehension
-  ;;				      dictionary dictionary_comprehension
-  ;;				      parenthesized_expression subscript)))
-  :config
-  (defun turn-off-indent-bars-mode ()
-    "Turn off indent-bars-mode"
-    (interactive)
-    (indent-bars-mode -1))
-  :hook (prog-mode . indent-bars-mode)
-  :hook (emacs-lisp-mode . turn-off-indent-bars-mode))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil)
- '(package-vc-selected-packages
-   '((indent-bars :url "https://github.com/jdtsmith/indent-bars"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
