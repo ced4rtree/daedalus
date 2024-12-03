@@ -24,8 +24,25 @@
         (invert-face 'mode-line)
         (run-with-timer 0.1 nil #'invert-face 'mode-line)))
 
-;; fido
+;; completion
+(icomplete-mode t)
+(icomplete-vertical-mode t)
 (fido-vertical-mode t)
+
+(keymap-set icomplete-fido-mode-map "TAB" 'icomplete-force-complete)
+
+;;; Match completion substrings that may be out of order
+(defun bugger/override-fido-completion-styles ()
+  (setq-local completion-styles '(flex partial-completion emacs22 emacs21)))
+
+(defun bugger/insert-dash ()
+  "Inserts the dash character, also known as a hyphen or minus (-)."
+  (interactive)
+  (insert-char (char-from-name "HYPHEN_MINUS")))
+
+(add-hook 'icomplete-minibuffer-setup-hook 'bugger/override-fido-completion-styles)
+(define-key icomplete-minibuffer-map (kbd "SPC") #'bugger/insert-dash)
+
 
 ;; autocomplete
 (electric-pair-mode t)
