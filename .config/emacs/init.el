@@ -1,21 +1,27 @@
 ;; -*- lexical-binding: t -*-
 
 ;; use-package stuff
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 ;; register melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
-;; and `package-pinned-packages`. Most users will not need or want to do this.
-;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
 ;; ui improvements
+(setq modus-themes-italic-constructs t
+      modus-themes-bold-constructs t
+      modus-themes-mixed-fonts t
+      modus-themes-completions
+      '((matches . (underline italic))
+        (selection . (extrabold))))
 (load-theme 'modus-vivendi-tinted t)
 (setopt mode-line-end-spaces nil)
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
 (add-to-list 'default-frame-alist '(alpha-background . 75))
 
@@ -43,7 +49,7 @@
 (defun bugger/insert-dash ()
   "Inserts the dash character, also known as a hyphen or minus (-)."
   (interactive)
-  (insert-char (char-from-name "HYPHEN_MINUS")))
+  (insert-char (char-from-name "HYPHEN-MINUS")))
 
 (add-hook 'icomplete-minibuffer-setup-hook 'bugger/override-fido-completion-styles)
 (define-key icomplete-minibuffer-map (kbd "SPC") #'bugger/insert-dash)
@@ -210,3 +216,6 @@
 
 ;;; org indent
 (add-hook 'org-mode-hook #'org-indent-mode)
+
+;; magit
+(use-package magit :defer t)
