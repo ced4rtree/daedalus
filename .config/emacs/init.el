@@ -39,6 +39,7 @@
 (icomplete-mode t)
 (icomplete-vertical-mode t)
 (fido-vertical-mode t)
+(global-completion-preview-mode t)
 
 (keymap-set icomplete-fido-mode-map "TAB" 'icomplete-force-complete)
 
