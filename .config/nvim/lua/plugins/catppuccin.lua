@@ -1,5 +1,10 @@
 return {
-  { "catppuccin/nvim" },
+  {
+      "catppuccin/nvim",
+      opts = {
+          transparent_background = true,
+      }
+  },
   {
     "LazyVim/LazyVim",
     opts = {

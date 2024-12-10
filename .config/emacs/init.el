@@ -16,6 +16,8 @@
 (setopt mode-line-end-spaces nil)
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 (menu-bar-mode -1)
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
+(add-to-list 'default-frame-alist '(alpha-background . 75))
 
 ;; flash modeline instead of the screen
 (setq visible-bell t
