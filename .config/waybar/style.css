@@ -1,19 +1,17 @@
 @import "frappe.css";
 
 * {
-    /* `otf-font-awesome` is required to be installed for icons */
-    font-family: 'Iosevka Nerd Font','Inter Medium','Font Awesome 6 Brands';
-    font-size: 15px;
-	min-height: 0px;
+    font-family: 'Iosevka Nerd Font';
+    font-size: 16px;
     border-radius: 0px;
 	margin: 0px;
+    padding: 0px;
+    min-height: 0px;
 }
 
 window#waybar {
     background-color: @base;
     color: @surface0;
-    transition-property: background-color;
-    transition-duration: .5s;
 }
 
 window#waybar.hidden {
@@ -21,9 +19,6 @@ window#waybar.hidden {
 }
 
 button {
-    /* Use box-shadow instead of border so the text isn't offset */
-    /* box-shadow: inset 0 -3px transparent; */
-    /* Avoid rounded borders under each button name */
     border: none;
     border-radius: 0;
 }
@@ -46,7 +41,7 @@ button {
 #workspaces,
 #mpd,
 #custom-weather {
-    padding: 0px 10px;
+    padding: 0px 7px;
 }
 
 .modules-left {
@@ -54,11 +49,16 @@ button {
 	background-color: @base;
 }
 
+#workspaces {
+    padding-left: 0px;
+}
+
 #workspaces button {
     color: @subtext0;
-	padding-left: 4px;
-	padding-right: 4px;
-    margin-bottom: 3px;
+	padding: 0px 2px;
+    /* padding-bottom: 2px; */
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 #workspaces button.focused {
@@ -67,7 +67,7 @@ button {
 
 #workspaces button.active {
     color: @text;
-    border-bottom: 3px solid @blue
+    padding-bottom: 0px;
 }
 
 #workspaces button.urgent {
@@ -76,9 +76,10 @@ button {
 }
 
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
-button:hover {
+#workspaces button:hover {
+    box-shadow: inherit;
+    /* text-shadow: inherit; */
     background: inherit;
-    color: @blue;
 }
 
 #clock {
@@ -98,7 +99,6 @@ button:hover {
 }
 
 #battery.critical:not(.charging) {
-    border-bottom: 3px solid @red;
     background-color: @red;
     /* background-color: transparent; */
     animation-name: blink;
@@ -146,7 +146,6 @@ button:hover {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    border-bottom: 3px solid @red;
 }
 
 #mpd {

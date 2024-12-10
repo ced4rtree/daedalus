@@ -1,9 +1,8 @@
 {
   "layer": "top", // Waybar at top layer
   "position": "top", // Waybar position (top|bottom|left|right)
-
+  "height": 10,
   "modules-left": ["hyprland/workspaces", "hyprland/window"],
-  "modules-center": ["mpd"],
   "modules-right": ["custom/weather", "pulseaudio", "network", "cpu", "memory", "temperature", "backlight", "battery", "clock", "tray"],
 
   // Modules configuration
