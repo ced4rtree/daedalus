@@ -179,3 +179,32 @@
               c-basic-offset WIDTH
               c-ts-mode-indent-offset WIDTH
               java-ts-mode-indent-offset WIDTH))
+
+;; comment-line keybinding
+(define-key prog-mode-map (kbd "C-c C-/") #'comment-line)
+(define-key prog-mode-map (kbd "C-c C-_") #'comment-line)
+
+;; let me just scroll through completions regularly
+(define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
+(define-key completion-in-region-mode-map (kbd "M-p") #'minibuffer-previous-completion)
+(define-key completion-in-region-mode-map (kbd "TAB") #'minibuffer-choose-completion)
+
+;; org mode settings
+
+;;; org tempo to enable various shortcuts for blocks in org mode
+(use-package org-tempo :ensure nil)
+
+;;; agenda settings
+(setq org-agenda-files '("~/org/agenda/")
+      org-agenda-skip-deadline-if-done t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-timestamp-if-done t
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-timestamp-if-deadline-is-shown t
+      org-agenda-start-day "-2d"
+      org-agenda-start-on-weekday nil
+      org-agenda-span 7
+      org-agenda-window-setup 'current-window)
+
+;;; org indent
+(add-hook 'org-mode-hook #'org-indent-mode)
