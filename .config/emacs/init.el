@@ -45,16 +45,16 @@
 (keymap-set icomplete-fido-mode-map "TAB" 'icomplete-force-complete)
 
 ;;; Match completion substrings that may be out of order
-(defun bugger/override-fido-completion-styles ()
+(defun cedar/override-fido-completion-styles ()
   (setq-local completion-styles '(flex partial-completion emacs22 emacs21)))
 
-(defun bugger/insert-dash ()
+(defun cedar/insert-dash ()
   "Inserts the dash character, also known as a hyphen or minus (-)."
   (interactive)
   (insert-char (char-from-name "HYPHEN-MINUS")))
 
-(add-hook 'icomplete-minibuffer-setup-hook 'bugger/override-fido-completion-styles)
-(define-key icomplete-minibuffer-map (kbd "SPC") #'bugger/insert-dash)
+(add-hook 'icomplete-minibuffer-setup-hook 'cedar/override-fido-completion-styles)
+(define-key icomplete-minibuffer-map (kbd "SPC") #'cedar/insert-dash)
 
 
 ;; autocomplete
@@ -163,6 +163,17 @@
 ;; tab bar mode
 (tab-bar-mode t)
 
+(defun cedar/project-switch-project-tab ()
+  "Switch to the tab containing a project, or create that tab and open the project if a tab for it does not exist."
+  (interactive)
+  (let* ((project-name (project-prompt-project-dir))
+         (tab-names (mapcar (lambda (tab) (cdr (assoc-string'name tab))) (tab-bar-tabs))))
+    (if (eq (member project-name tab-names) t)
+        (tab-bar-switch-to-tab project-name)
+      (progn
+        (tab-bar-switch-to-tab project-name)
+        (project-switch-project project-name)))))
+
 ;; tree-sitter
 (setq major-mode-remap-alist
       '((java-mode  . java-ts-mode)
@@ -183,7 +194,7 @@
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (indent-tabs-mode nil)
-(defun bugger/change-tab-width (WIDTH)
+(defun cedar/change-tab-width (WIDTH)
   "Set the width of a tab to WIDTH in the current buffer"
   (setq-local tab-width WIDTH
               c-basic-offset WIDTH
