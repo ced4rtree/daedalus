@@ -174,6 +174,14 @@
         (tab-bar-switch-to-tab project-name)
         (project-switch-project project-name)))))
 
+(defun cedar/project-kill-buffers-and-tab ()
+  "Kill all buffers in the current project and close the current tab"
+  (interactive)
+  (project-kill-buffers)
+  (tab-bar-close-tab))
+(global-set-key (kbd "C-x p p") #'cedar/project-switch-project-tab)
+(global-set-key (kbd "C-x p k") #'cedar/project-kill-buffers-and-tab)
+
 ;; tree-sitter
 (setq major-mode-remap-alist
       '((java-mode  . java-ts-mode)
