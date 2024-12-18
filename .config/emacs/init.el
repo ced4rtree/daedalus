@@ -251,3 +251,19 @@
      compilation-filter-start (point))))
 
 (add-hook 'compilation-filter-hook #'endless/colorize-compilation)
+
+;; indent bars
+(use-package indent-bars
+  :vc (:url "https://github.com/jdtsmith/indent-bars")
+  :custom
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-starting-column 0)
+  (indent-bars-color '(highlight :face-bg t :blend 0.7))
+  :config
+  (defun turn-off-indent-bars-mode ()
+    "Turn off indent-bars-mode"
+    (interactive)
+    (indent-bars-mode -1))
+  :hook (prog-mode . indent-bars-mode)
+  :hook (emacs-lisp-mode . turn-off-indent-bars-mode))
