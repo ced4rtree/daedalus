@@ -56,7 +56,6 @@
 (add-hook 'icomplete-minibuffer-setup-hook 'cedar/override-fido-completion-styles)
 (define-key icomplete-minibuffer-map (kbd "SPC") #'cedar/insert-dash)
 
-
 ;; autocomplete
 (electric-pair-mode t)
 
@@ -94,6 +93,32 @@
       (if result
           (funcall (plist-get (car result) :secret))
         nil)))
+;; tab bar mode
+(tab-bar-mode t)
+
+(defun cedar/open-name-in-tab (name callback &rest callback-args)
+  "If NAME is already a tab that exists, switch to it. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK"
+  (let* ((tab-names (mapcar (lambda (tab) (cdr (assoc-string 'name tab))) (tab-bar-tabs))))
+    (if (member name tab-names)
+        (tab-bar-switch-to-tab name)
+      (progn
+        (tab-bar-switch-to-tab name)
+        (apply callback callback-args)))))
+
+;; project.el and tab-bar-mode integration
+(defun cedar/project-switch-project-tab ()
+  "Switch to the tab containing a project, or create that tab and open the project if a tab for it does not exist."
+  (interactive)
+  (let* ((project-name (project-prompt-project-dir)))
+    (cedar/open-name-in-tab project-name 'project-switch-project project-name)))
+
+(defun cedar/project-kill-buffers-and-tab ()
+  "Kill all buffers in the current project and close the current tab"
+  (interactive)
+  (project-kill-buffers)
+  (tab-bar-close-tab))
+(global-set-key (kbd "C-x p p") #'cedar/project-switch-project-tab)
+(global-set-key (kbd "C-x p k") #'cedar/project-kill-buffers-and-tab)
 
 ;; emms
 (use-package emms
@@ -111,10 +136,14 @@
   (require 'emms-setup)
   (emms-all)
 
+  (defun cedar/emms-smart-browse-in-tab ()
+    (interactive)
+    (cedar/open-name-in-tab "EMMS (Music)" #'emms-smart-browse))
+
   :bind (("C-c m t" . emms-pause) ;; t for toggle
          ("C-c m n" . emms-next)
          ("C-c m p" . emms-previous)
-         ("C-c m m" . emms-smart-browse)
+         ("C-c m m" . cedar/emms-smart-browse-in-tab)
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
@@ -159,28 +188,6 @@
     					  (string= major-mode "java-ts-mode"))
     				  (eglot-java-mode t))))
   :hook (java-mode . eglot-java-mode))
-
-;; tab bar mode
-(tab-bar-mode t)
-
-(defun cedar/project-switch-project-tab ()
-  "Switch to the tab containing a project, or create that tab and open the project if a tab for it does not exist."
-  (interactive)
-  (let* ((project-name (project-prompt-project-dir))
-         (tab-names (mapcar (lambda (tab) (cdr (assoc-string'name tab))) (tab-bar-tabs))))
-    (if (eq (member project-name tab-names) t)
-        (tab-bar-switch-to-tab project-name)
-      (progn
-        (tab-bar-switch-to-tab project-name)
-        (project-switch-project project-name)))))
-
-(defun cedar/project-kill-buffers-and-tab ()
-  "Kill all buffers in the current project and close the current tab"
-  (interactive)
-  (project-kill-buffers)
-  (tab-bar-close-tab))
-(global-set-key (kbd "C-x p p") #'cedar/project-switch-project-tab)
-(global-set-key (kbd "C-x p k") #'cedar/project-kill-buffers-and-tab)
 
 ;; tree-sitter
 (setq major-mode-remap-alist
