@@ -249,7 +249,6 @@
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region
      compilation-filter-start (point))))
-
 (add-hook 'compilation-filter-hook #'endless/colorize-compilation)
 
 ;; indent bars
@@ -267,3 +266,31 @@
     (indent-bars-mode -1))
   :hook (prog-mode . indent-bars-mode)
   :hook (emacs-lisp-mode . turn-off-indent-bars-mode))
+
+;; discord integration
+(use-package elcord
+  :custom
+  (elcord-editor-icon "emacs_pen_icon")
+  :config
+  (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
+  (elcord-mode))
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(cmake-mode eglot-java elcord emms haskell-mode indent-bars magit
+                markdown-mode nix-mode rust-mode web-mode)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
