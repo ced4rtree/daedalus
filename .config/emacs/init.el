@@ -272,13 +272,36 @@
   :custom
   (elcord-editor-icon "emacs_pen_icon")
   :config
+  ;; https://github.com/Mstrodl/elcord/issues/17
+  (defun elcord--disable-elcord-if-no-frames (f)
+    (declare (ignore f))
+    (when (let ((frames (delete f (visible-frame-list))))
+            (or (null frames)
+                (and (null (cdr frames))
+                     (eq (car frames) terminal-frame))))
+      (elcord-mode -1)
+      (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
+
+  (defun elcord--enable-on-frame-created (f)
+    (declare (ignore f))
+    (elcord-mode +1))
+
+  (defun my/elcord-mode-hook ()
+    (if elcord-mode
+        (add-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)
+      (remove-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)))
+
+  (add-hook 'elcord-mode-hook 'my/elcord-mode-hook)
+
+  ;; elcord only has language icons setup for non-tree-sitter major modes, so I
+  ;; have to add that manually
   (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
   (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
   (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
   (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
   (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
+  
   (elcord-mode))
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
