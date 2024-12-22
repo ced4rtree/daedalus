@@ -103,17 +103,17 @@
   "Returns the name of the specified tab as a string"
   (cdr (assoc-string 'name tab)))
 
-(defun cedar/open-name-in-tab (name callback &rest callback-args)
+(defun cedar/open-name-in-tab (name always-perform-callback callback &rest callback-args)
   "If NAME is already a tab that exists, switch to it. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK with the optionally supplied CALLBACK-ARGS.
 
-If there is only 1 tab open, and that tab is open to the *scratch* buffer, the current tab is reused for the callback"
+If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the current tab is reused for the callback"
   (if (and (eq (length (tab-bar-tabs)) 1)
            (string-equal (cedar/tab-name (car (tab-bar-tabs))) "*scratch*"))
       (progn
         (tab-rename name)
         (apply callback callback-args))
     (let* ((tab-names (mapcar #'cedar/tab-name (tab-bar-tabs))))
-      (if (member name tab-names)
+      (if (and (member name tab-names) (not always-perform-callback))
           (tab-bar-switch-to-tab name)
         (progn
           (tab-bar-switch-to-tab name)
@@ -124,7 +124,7 @@ If there is only 1 tab open, and that tab is open to the *scratch* buffer, the c
   "Switch to the tab containing a project, or create that tab and open the project if a tab for it does not exist."
   (interactive)
   (let* ((project-name (project-prompt-project-dir)))
-    (cedar/open-name-in-tab project-name 'project-switch-project project-name)))
+    (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
 
 (defun cedar/project-kill-buffers-and-tab ()
   "Kill all buffers in the current project and close the current tab"
@@ -152,7 +152,7 @@ If there is only 1 tab open, and that tab is open to the *scratch* buffer, the c
 
   (defun cedar/emms-smart-browse-in-tab ()
     (interactive)
-    (cedar/open-name-in-tab "EMMS (Music)" #'emms-smart-browse))
+    (cedar/open-name-in-tab nil "EMMS (Music)" #'emms-smart-browse))
 
   :bind (("C-c m t" . emms-pause) ;; t for toggle
          ("C-c m n" . emms-next)
@@ -255,6 +255,11 @@ If there is only 1 tab open, and that tab is open to the *scratch* buffer, the c
       org-agenda-start-on-weekday nil
       org-agenda-span 7
       org-agenda-window-setup 'current-window)
+(defun cedar/open-agenda-in-tab ()
+  "Open org agenda in a new tab. If there's already an org agenda tab open, switch to it."
+  (interactive)
+  (cedar/open-name-in-tab "Agenda" t #'org-agenda nil "n"))
+(global-set-key (kbd "C-c o a") #'cedar/open-agenda-in-tab)
 
 ;;; org indent
 (add-hook 'org-mode-hook #'org-indent-mode)
