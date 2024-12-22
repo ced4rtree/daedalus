@@ -104,7 +104,7 @@
   (cdr (assoc-string 'name tab)))
 
 (defun cedar/open-name-in-tab (name callback &rest callback-args)
-  "If NAME is already a tab that exists, switch to it. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK.
+  "If NAME is already a tab that exists, switch to it. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK with the optionally supplied CALLBACK-ARGS.
 
 If there is only 1 tab open, and that tab is open to the *scratch* buffer, the current tab is reused for the callback"
   (if (and (eq (length (tab-bar-tabs)) 1)
