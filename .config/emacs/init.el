@@ -96,14 +96,25 @@
 ;; tab bar mode
 (tab-bar-mode t)
 
+(defun cedar/tab-name (tab)
+  "Returns the name of the specified tab as a string"
+  (cdr (assoc-string 'name tab)))
+
 (defun cedar/open-name-in-tab (name callback &rest callback-args)
-  "If NAME is already a tab that exists, switch to it. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK"
-  (let* ((tab-names (mapcar (lambda (tab) (cdr (assoc-string 'name tab))) (tab-bar-tabs))))
-    (if (member name tab-names)
-        (tab-bar-switch-to-tab name)
+  "If NAME is already a tab that exists, switch to it. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK.
+
+If there is only 1 tab open, and that tab is open to the *scratch* buffer, the current tab is reused for the callback"
+  (if (and (eq (length (tab-bar-tabs)) 1)
+           (string-equal (cedar/tab-name (car (tab-bar-tabs))) "*scratch*"))
       (progn
-        (tab-bar-switch-to-tab name)
-        (apply callback callback-args)))))
+        (tab-rename name)
+        (apply callback callback-args))
+    (let* ((tab-names (mapcar #'cedar/tab-name (tab-bar-tabs))))
+      (if (member name tab-names)
+          (tab-bar-switch-to-tab name)
+        (progn
+          (tab-bar-switch-to-tab name)
+          (apply callback callback-args))))))
 
 ;; project.el and tab-bar-mode integration
 (defun cedar/project-switch-project-tab ()
