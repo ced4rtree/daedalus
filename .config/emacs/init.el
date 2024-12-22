@@ -95,6 +95,9 @@
         nil)))
 ;; tab bar mode
 (tab-bar-mode t)
+(setq tab-bar-show 1
+      tab-bar-close-button-show nil
+      tab-bar-format '(tab-bar-format-tabs tab-bar-separator))
 
 (defun cedar/tab-name (tab)
   "Returns the name of the specified tab as a string"
