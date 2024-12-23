@@ -180,3 +180,8 @@ button {
 #custom-weather.default {
     background-color: #dbd9d8;
 }
+
+#idle_inhibitor {
+    background-color: @overlay2;
+    padding-right: 15px;
+}
