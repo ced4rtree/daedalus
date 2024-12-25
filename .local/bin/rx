@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-oldrxbytes=$(cat /sys/class/net/wlan0/statistics/rx_bytes)
-sleep 1s
-rxbytes=$(cat /sys/class/net/wlan0/statistics/rx_bytes)
-nettraffic=$(expr $rxbytes - $oldrxbytes)
-echo $nettraffic
