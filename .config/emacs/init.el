@@ -57,7 +57,7 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; autocomplete
+;; automatically pair parentheses, braces, quotes, etc.
 (electric-pair-mode t)
 
 ;; line numbers
