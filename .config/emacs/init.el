@@ -46,6 +46,7 @@
   :ensure t
   :commands (vertico-mode marginalia-mode vertico-prescient-mode vertico-posframe-mode)
 
+  :demand t
   :config
   (vertico-mode)
   (vertico-prescient-mode)
@@ -135,7 +136,7 @@ its arguments, even if NAME is already an existing tab."
 ;; project.el and tab-bar-mode integration
 (use-package project
   :ensure nil
-  :commands project-prompt-project-dir
+  :commands (project-prompt-project-dir)
   :config
   (defun cedar/project-switch-project-tab ()
     "Switch to a project tab, or create one if the prompted project doesn't exist."
@@ -154,6 +155,7 @@ its arguments, even if NAME is already an existing tab."
 ;; emms
 (use-package emms
   :ensure nil
+  :commands emms-all
   :custom
   (emms-seek-seconds 5)
   (emms-player-list '(emms-player-mpv))
@@ -165,7 +167,6 @@ its arguments, even if NAME is already an existing tab."
 ;;; (setq emms-player-mpd-server-port "6600")
 ;;; (setq mpc-host "localhost:6600")
   (require 'emms-setup)
-  :commands emms-all
   (emms-all)
 
   (defun cedar/emms-smart-browse-in-tab ()
@@ -351,7 +352,7 @@ its arguments, even if NAME is already an existing tab."
 
 ;; ligatures
 (use-package ligature
-  :commands ligature-set-ligatures global-ligature-mode
+  :commands (ligature-set-ligatures global-ligature-mode)
   :config
   (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
                                        "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
