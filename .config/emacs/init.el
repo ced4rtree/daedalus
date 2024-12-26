@@ -37,24 +37,25 @@
                                orig-bg))))
 
 ;; completion
-(icomplete-mode t)
-(icomplete-vertical-mode t)
-(fido-vertical-mode t)
-(global-completion-preview-mode t)
+(use-package vertico
+  :ensure marginalia
+  :ensure vertico-prescient
+  :ensure prescient
+  :ensure vertico-posframe
+  :ensure orderless
+  :ensure t
+  :commands (vertico-mode marginalia-mode vertico-prescient-mode vertico-posframe-mode)
 
-(keymap-set icomplete-fido-mode-map "TAB" 'icomplete-force-complete)
-
-;;; Match completion substrings that may be out of order
-(defun cedar/override-fido-completion-styles ()
-  (setq-local completion-styles '(flex partial-completion emacs22 emacs21)))
-
-(defun cedar/insert-dash ()
-  "Inserts the dash character, also known as a hyphen or minus (-)."
-  (interactive)
-  (insert-char (char-from-name "HYPHEN-MINUS")))
-
-(add-hook 'icomplete-minibuffer-setup-hook 'cedar/override-fido-completion-styles)
-(define-key icomplete-minibuffer-map (kbd "SPC") #'cedar/insert-dash)
+  :config
+  (vertico-mode)
+  (vertico-prescient-mode)
+  (marginalia-mode)
+  (vertico-posframe-mode))
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 ;; autocomplete
 (electric-pair-mode t)
