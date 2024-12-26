@@ -170,7 +170,7 @@ its arguments, even if NAME is already an existing tab."
 
   (defun cedar/emms-smart-browse-in-tab ()
     (interactive)
-    (cedar/open-name-in-tab nil "EMMS (Music)" #'emms-smart-browse))
+    (cedar/open-name-in-tab "EMMS (Music)" nil #'emms-smart-browse))
 
   :bind (("C-c m t" . emms-pause) ;; t for toggle
          ("C-c m n" . emms-next)
