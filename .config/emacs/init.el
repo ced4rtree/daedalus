@@ -10,12 +10,12 @@
 (package-initialize)
 
 ;; ui improvements
-(setq modus-themes-italic-constructs t
-      modus-themes-bold-constructs t
-      modus-themes-mixed-fonts t
-      modus-themes-completions
-      '((matches . (underline italic))
-        (selection . (extrabold))))
+(setopt modus-themes-italic-constructs t
+        modus-themes-bold-constructs t
+        modus-themes-mixed-fonts t
+        modus-themes-completions
+        '((matches . (underline italic))
+          (selection . (extrabold))))
 (load-theme 'modus-vivendi-tinted t)
 (setopt mode-line-end-spaces nil)
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
@@ -90,10 +90,14 @@
 
 ;; password decryption (for mbsync)
 (defun efs/lookup-password (&rest keys)
+  "Lookup a password from ~/.authinfo.gpg using KEYS to index the desired password.
+
+e.g. (efs/lookup-password :host \"example.com\" :user \"user\"), which
+will find the password for user@example.com"
+
   (let ((result (apply #'auth-source-search keys)))
-    (if result
-        (funcall (plist-get (car result) :secret))
-      nil)))
+    (when result
+        (funcall (plist-get (car result) :secret)))))
 
 ;; tab bar mode
 (tab-bar-mode t)
@@ -103,13 +107,19 @@
 (set-face-attribute 'tab-bar nil :height 130)
 
 (defun cedar/tab-name (tab)
-  "Returns the name of the specified tab as a string"
+  "Returns the name of TAB as a string."
   (cdr (assoc-string 'name tab)))
 
 (defun cedar/open-name-in-tab (name always-perform-callback callback &rest callback-args)
-  "If NAME is already a tab that exists, switch to it, and optionally call CALLBACK if ALWAYS-PERFORM-CALLBACK is t. If there's not a tab with the name NAME, then create a new tab with the name NAME and call CALLBACK with the optionally supplied CALLBACK-ARGS.
+  "Open/create a tab called NAME, and call CALLBACK upon opening.
 
-If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the current tab is reused for the callback"
+If NAME is already a tab that exists, switch to it.  If there's not a
+tab with the name NAME, then create a new tab with the name NAME and
+call CALLBACK with the optionally supplied CALLBACK-ARGS.
+
+If ALWAYS-PERFORM-CALLBACK is t, CALLBACK will always be performed with
+its arguments, even if NAME is already an existing tab."
+
   (if (and (eq (length (tab-bar-tabs)) 1)
            (string-equal (cedar/tab-name (car (tab-bar-tabs))) "*scratch*"))
       (progn
@@ -123,19 +133,23 @@ If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the
           (apply callback callback-args))))))
 
 ;; project.el and tab-bar-mode integration
-(defun cedar/project-switch-project-tab ()
-  "Switch to the tab containing a project, or create that tab and open the project if a tab for it does not exist."
-  (interactive)
-  (let* ((project-name (project-prompt-project-dir)))
-    (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
+(use-package project
+  :ensure nil
+  :commands project-prompt-project-dir
+  :config
+  (defun cedar/project-switch-project-tab ()
+    "Switch to a project tab, or create one if the prompted project doesn't exist."
+    (interactive)
+    (let* ((project-name (project-prompt-project-dir)))
+      (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
 
-(defun cedar/project-kill-buffers-and-tab ()
-  "Kill all buffers in the current project and close the current tab"
-  (interactive)
-  (project-kill-buffers)
-  (tab-bar-close-tab))
-(global-set-key (kbd "C-x p p") #'cedar/project-switch-project-tab)
-(global-set-key (kbd "C-x p k") #'cedar/project-kill-buffers-and-tab)
+  (defun cedar/project-kill-buffers-and-tab ()
+    "Kill all buffers in the current project and close the current tab."
+    (interactive)
+    (project-kill-buffers)
+    (tab-bar-close-tab))
+  :bind (("C-x p p" . cedar/project-switch-project-tab)
+         ("C-x p k" . cedar/project-kill-buffers-and-tab)))
 
 ;; emms
 (use-package emms
@@ -151,6 +165,7 @@ If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the
 ;;; (setq emms-player-mpd-server-port "6600")
 ;;; (setq mpc-host "localhost:6600")
   (require 'emms-setup)
+  :commands emms-all
   (emms-all)
 
   (defun cedar/emms-smart-browse-in-tab ()
@@ -227,7 +242,7 @@ If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the
 (defvaralias 'c-ts-mode-indent-offset 'tab-width)
 (indent-tabs-mode nil)
 (defun cedar/change-tab-width (WIDTH)
-  "Set the width of a tab to WIDTH in the current buffer"
+  "Set the width of a tab to WIDTH in the current buffer."
   (setq-local tab-width WIDTH
               c-basic-offset WIDTH
               c-ts-mode-indent-offset WIDTH
@@ -248,23 +263,24 @@ If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the
 (use-package org-tempo :ensure nil)
 
 ;;; agenda settings
-(setq org-agenda-files '("~/org/agenda/")
-      org-agenda-skip-deadline-if-done t
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-timestamp-if-done t
-      org-agenda-skip-scheduled-if-deadline-is-shown t
-      org-agenda-skip-timestamp-if-deadline-is-shown t
-      org-agenda-start-day "-2d"
-      org-agenda-start-on-weekday nil
-      org-agenda-span 7
-      org-agenda-window-setup 'current-window)
+(setopt org-agenda-files '("~/org/agenda/")
+        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-timestamp-if-done t
+        org-agenda-skip-scheduled-if-deadline-is-shown t
+        org-agenda-skip-timestamp-if-deadline-is-shown t
+        org-agenda-start-day "-2d"
+        org-agenda-start-on-weekday nil
+        org-agenda-span 7
+        org-agenda-window-setup 'current-window)
 (defun cedar/open-agenda-in-tab ()
-  "Open org agenda in a new tab. If there's already an org agenda tab open, switch to it."
+  "Go to an org agenda tab, creating one if it doesn't exist."
   (interactive)
   (cedar/open-name-in-tab "Agenda" t #'org-agenda nil "n"))
 (global-set-key (kbd "C-c o a") #'cedar/open-agenda-in-tab)
 
 ;;; org indent
+(require 'org-indent)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
 ;; magit
@@ -300,20 +316,21 @@ If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the
 (use-package elcord
   :custom
   (elcord-editor-icon "emacs_pen_icon")
+  :commands elcord-mode
+  :defines elcord-mode elcord-mode-icon-alist
   :config
   ;; https://github.com/Mstrodl/elcord/issues/17
+  (defun elcord--enable-on-frame-created (f)
+    (ignore f)
+    (elcord-mode +1))
+
   (defun elcord--disable-elcord-if-no-frames (f)
-    (declare (ignore f))
     (when (let ((frames (delete f (visible-frame-list))))
             (or (null frames)
                 (and (null (cdr frames))
                      (eq (car frames) terminal-frame))))
       (elcord-mode -1)
       (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
-
-  (defun elcord--enable-on-frame-created (f)
-    (declare (ignore f))
-    (elcord-mode +1))
 
   (defun my/elcord-mode-hook ()
     (if elcord-mode
@@ -334,6 +351,7 @@ If there is only 1 tab open, and that tab is open to the `*scratch*' buffer, the
 
 ;; ligatures
 (use-package ligature
+  :commands ligature-set-ligatures global-ligature-mode
   :config
   (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
                                        "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
