@@ -155,7 +155,8 @@ its arguments, even if NAME is already an existing tab."
 ;; emms
 (use-package emms
   :ensure nil
-  :commands emms-all
+  :commands (emms-all emms-smart-browse)
+  :defines emms-playlist-mode-map
   :custom
   (emms-seek-seconds 5)
   (emms-player-list '(emms-player-mpv))
@@ -171,7 +172,7 @@ its arguments, even if NAME is already an existing tab."
 
   (defun cedar/emms-smart-browse-in-tab ()
     (interactive)
-    (cedar/open-name-in-tab "EMMS (Music)" nil #'emms-smart-browse))
+    (cedar/open-name-in-tab "EMMS (Music)" t #'emms-smart-browse))
 
   :bind (("C-c m t" . emms-pause) ;; t for toggle
          ("C-c m n" . emms-next)
