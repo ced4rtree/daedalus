@@ -44,14 +44,34 @@
   :ensure vertico-posframe
   :ensure orderless
   :ensure t
-  :commands (vertico-mode marginalia-mode vertico-prescient-mode vertico-posframe-mode)
+
+  :commands (vertico-mode
+             marginalia-mode
+             vertico-prescient-mode
+             prescient-persist-mode
+             vertico-posframe-mode
+             vertico-directory-enter
+             vertico-directory-delete-char
+             vertico-directory-delete-word
+             vertico-directory-tidy)
+  :defines vertico-map
 
   :demand t
   :config
   (vertico-mode)
   (vertico-prescient-mode)
+  (prescient-persist-mode)
   (marginalia-mode)
-  (vertico-posframe-mode))
+  (vertico-posframe-mode)
+
+  (require 'vertico-directory)
+  (keymap-set vertico-map "RET" #'vertico-directory-enter)
+  (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
+  (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+
+  :custom
+  (vertico-cycle t))
 (use-package orderless
   :ensure t
   :custom
