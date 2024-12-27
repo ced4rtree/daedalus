@@ -370,6 +370,10 @@ its arguments, even if NAME is already an existing tab."
   
   (elcord-mode))
 
+;; languages
+(use-package haskell-mode)
+(use-package stumpwm-mode)
+
 ;; ligatures
 (use-package ligature
   :commands (ligature-set-ligatures global-ligature-mode)
