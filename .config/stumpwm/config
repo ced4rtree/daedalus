@@ -125,7 +125,7 @@
 (define-key *root-map* (kbd "C-c") "exec alacritty")
 
 ;;; dmenu
-(define-key *top-map* (kbd "s-d") "exec dmenu_run")
+(define-key *top-map* (kbd "s-d") "exec dmenu_run -fn terminus")
 
 ;;; emacs
 (define-key *top-map* (kbd "s-e") "exec emacsclient -c -a emacs")
