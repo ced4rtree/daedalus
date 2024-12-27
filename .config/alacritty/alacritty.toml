@@ -83,8 +83,8 @@ columns = 0
 lines = 0
 
 [window.padding]
-x = 20
-y = 20
+x = 5
+y = 5
 
 [general]
 import = [
