@@ -93,6 +93,12 @@
 
 ;; keybindings
 
+;;; groups
+(dotimes (i 9)
+  (let ((group (write-to-string (+ i 1))))
+    (define-key *top-map* (kbd (concatenate 'string "s-" group)) (concatenate 'string "gselect " group))))
+(define-key *top-map* (kbd "s-0") "gselect 10")
+
 ;;; brightness
 (define-key *top-map* (kbd "XF86MonBrightnessUp") "exec brightnessctl set 5%+")
 (define-key *top-map* (kbd "XF86MonBrightnessDown") "exec brightnessctl set 5%-")
