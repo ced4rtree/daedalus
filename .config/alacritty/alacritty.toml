@@ -1,6 +1,3 @@
-import = [
-    "~/.config/alacritty/catppuccin-frappe.toml"
-]
 
 [env]
 TERM = "xterm-256color"
@@ -88,3 +85,8 @@ lines = 0
 [window.padding]
 x = 20
 y = 20
+
+[general]
+import = [
+    "~/.config/alacritty/catppuccin-frappe.toml"
+]
