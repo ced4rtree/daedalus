@@ -20,8 +20,10 @@
 (run-shell-command "setxkbmap -option ctrl:nocaps")
 (run-shell-command "feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg")
 (run-shell-command "xsetroot -cursor_name left_ptr")
+(run-shell-command "~/.local/bin/nat-scroll.sh")
+(run-shell-command "picom &")
 (when *initializing*
-  (run-shell-command "emacs --daemon"))
+  (run-shell-command "pidof emacs || emacs --daemon"))
 
 ;; modeline configuration
 (defun current-volume ()
@@ -47,9 +49,9 @@
       *screen-mode-line-format* (list "^7[^B^4%g^b^7] ^1%W"
                                       "^>"
                                       '(:eval (format nil "^5|Volume: ~D" (current-volume)))
-                                      '(:eval (format nil "^6|Backlight: ~D%" (current-brightness)))
+                                      '(:eval (format nil "^3|Backlight: ~D%" (current-brightness)))
                                       '(:eval (format nil "^2|Battery: ~D" (current-battery)))
-                                      "^5|%d")
+                                      "^6|%d")
       *time-modeline-string* "%B %d, %Y %I:%M%p"
       *mode-line-timeout* 2
       ;; *mode-line-background-color* *background*
@@ -77,6 +79,7 @@
 (gnew "Web")
 (gnew "Discord")
 (gnew "Games")
+(gselect 1)
 
 ;; keybindings
 
@@ -88,28 +91,40 @@
 (define-key *top-map* (kbd "XF86AudioRaiseVolume") "exec pamixer --increase 5")
 (define-key *top-map* (kbd "XF86AudioLowerVolume") "exec pamixer --decrease 5")
 
-;; window movement
+;;; window movement
 (define-key *top-map* (kbd "s-h") "move-focus left")
 (define-key *top-map* (kbd "s-j") "move-focus up")
 (define-key *top-map* (kbd "s-k") "move-focus down")
 (define-key *top-map* (kbd "s-l") "move-focus right")
 
 (defcommand hsplit-and-focus () ()
-  "Create a new frame on the right and focus it."
-  (hsplit)
-  (move-focus :right))
+            "Create a new frame on the right and focus it."
+            (hsplit)
+            (move-focus :right))
 
 (defcommand vsplit-and-focus () ()
-  "Create a new frame below and move focus to it."
-  (vsplit)
-  (move-focus :down))
+            "Create a new frame below and move focus to it."
+            (vsplit)
+            (move-focus :down))
 (define-key *root-map* (kbd "S") "hsplit-and-focus")
-(define-key *root-map* (kbd "s") "hsplit-and-focus")
+(define-key *root-map* (kbd "s") "vsplit-and-focus")
 
-;; terminal
+;;; terminal
 (define-key *top-map* (kbd "s-RET") "exec alacritty")
 (define-key *root-map* (kbd "c") "exec alacritty")
 (define-key *root-map* (kbd "C-c") "exec alacritty")
 
-;; dmenu
+;;; dmenu
 (define-key *top-map* (kbd "s-d") "exec dmenu_run")
+
+;;; emacs
+(define-key *top-map* (kbd "s-e") "exec emacsclient -c -a emacs")
+(define-key *root-map* (kbd "e") "exec emacsclient -c -a emacs")
+(define-key *root-map* (kbd "C-e") "exec emacsclient -c -a emacs")
+
+;;; automatically remove a frame upon window deletion
+(defcommand delete-window-and-remove-frame () ()
+            "Delete a window and remove a frame in one fell swoop."
+            (delete-window)
+            (remove-split))
+(define-key *root-map* (kbd "k") "delete-window-and-remove-frame")
