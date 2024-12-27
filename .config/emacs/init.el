@@ -332,7 +332,7 @@ its arguments, even if NAME is already an existing tab."
     (interactive)
     (indent-bars-mode -1))
   :hook (prog-mode . indent-bars-mode)
-  :hook (emacs-lisp-mode . turn-off-indent-bars-mode))
+  :hook ((emacs-lisp-mode lisp-mode) . turn-off-indent-bars-mode))
 
 ;; discord integration
 (use-package elcord
