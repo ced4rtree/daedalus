@@ -29,7 +29,6 @@ alias lalh='ls -lha'
 alias lhal='ls -lha'
 alias lhla='ls -lha'
 alias grep='grep --color=auto'
-alias emacs='emacsclient -nw'
 
 # # vim mode
 # bindkey -v
