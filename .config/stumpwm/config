@@ -1,0 +1,115 @@
+;; -*- mode: lisp; stumpwm-mode: t -*-
+#-quicklisp ;; initialize quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
+(in-package :stumpwm)
+(setf *default-package* :stumpwm)
+
+;; tell stumpwm where the modules are located
+(set-module-dir "/usr/share/stupmwm/contrib/")
+(init-load-path "/usr/share/stumpwm/contrib/")
+
+;; disable startup message
+(setf *startup-message* nil)
+
+;; autostart stuff
+(run-shell-command "xset r rate 200 65")
+(run-shell-command "setxkbmap -option ctrl:nocaps")
+(run-shell-command "feh --bg-scale ~/.local/share/wallpapers/wallpaper.jpg")
+(run-shell-command "xsetroot -cursor_name left_ptr")
+(when *initializing*
+  (run-shell-command "emacs --daemon"))
+
+;; modeline configuration
+(defun current-volume ()
+  (remove #\Newline
+          (run-shell-command "echo $(pamixer --get-volume)%" t)))
+
+(defun current-brightness ()
+  (let ((max-brightness
+         (parse-integer
+          (run-shell-command
+           "brightnessctl max" t)))
+        (current-brightness
+         (parse-integer
+          (run-shell-command
+           "brightnessctl get" t))))
+    (floor (* (/ current-brightness max-brightness) 100))))
+
+(defun current-battery ()
+  (remove #\Newline
+          (run-shell-command "echo $(cat /sys/class/power_supply/BAT1/capacity)% $(cat /sys/class/power_supply/BAT1/status)" t)))
+
+(setf *window-format* "%m%t"
+      *screen-mode-line-format* (list "^7[^B^4%g^b^7] ^1%W"
+                                      "^>"
+                                      '(:eval (format nil "^5|Volume: ~D" (current-volume)))
+                                      '(:eval (format nil "^6|Backlight: ~D%" (current-brightness)))
+                                      '(:eval (format nil "^2|Battery: ~D" (current-battery)))
+                                      "^5|%d")
+      *time-modeline-string* "%B %d, %Y %I:%M%p"
+      *mode-line-timeout* 2
+      ;; *mode-line-background-color* *background*
+      ;; *mode-line-foreground-color* *foreground*
+      ;; *mode-line-border-color* *color2*
+      *mode-line-border-width* 0)
+(mode-line)
+
+;; focus window on hover
+(setf *mouse-focus-policy* :sloppy)
+
+(load-module "swm-gaps")
+(setf swm-gaps:*head-gaps-size*  0
+      swm-gaps:*inner-gaps-size* 4
+      swm-gaps:*outer-gaps-size* 4)
+(when *initializing*
+  (swm-gaps:toggle-gaps))
+
+;; window configuration
+(setf *ignore-wm-inc-hints* t)
+
+;; groups
+(grename "Main")
+(gnew "Dev")
+(gnew "Web")
+(gnew "Discord")
+(gnew "Games")
+
+;; keybindings
+
+;;; brightness
+(define-key *top-map* (kbd "XF86MonBrightnessUp") "exec brightnessctl set 5%+")
+(define-key *top-map* (kbd "XF86MonBrightnessDown") "exec brightnessctl set 5%-")
+
+;;; sound
+(define-key *top-map* (kbd "XF86AudioRaiseVolume") "exec pamixer --increase 5")
+(define-key *top-map* (kbd "XF86AudioLowerVolume") "exec pamixer --decrease 5")
+
+;; window movement
+(define-key *top-map* (kbd "s-h") "move-focus left")
+(define-key *top-map* (kbd "s-j") "move-focus up")
+(define-key *top-map* (kbd "s-k") "move-focus down")
+(define-key *top-map* (kbd "s-l") "move-focus right")
+
+(defcommand hsplit-and-focus () ()
+  "Create a new frame on the right and focus it."
+  (hsplit)
+  (move-focus :right))
+
+(defcommand vsplit-and-focus () ()
+  "Create a new frame below and move focus to it."
+  (vsplit)
+  (move-focus :down))
+(define-key *root-map* (kbd "S") "hsplit-and-focus")
+(define-key *root-map* (kbd "s") "hsplit-and-focus")
+
+;; terminal
+(define-key *top-map* (kbd "s-RET") "exec alacritty")
+(define-key *root-map* (kbd "c") "exec alacritty")
+(define-key *root-map* (kbd "C-c") "exec alacritty")
+
+;; dmenu
+(define-key *top-map* (kbd "s-d") "exec dmenu_run")
