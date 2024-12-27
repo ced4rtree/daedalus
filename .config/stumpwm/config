@@ -25,6 +25,16 @@
 (when *initializing*
   (run-shell-command "pidof emacs || emacs --daemon"))
 
+;; font
+(ql:quickload :clx-truetype)
+(xft:cache-fonts)
+(load-module "ttf-fonts")
+(set-font `(,(make-instance 'xft:font
+                            :family "Terminess Nerd Font"
+                            :subfamily "Regular"
+                            :size 11
+                            :antialias t)))
+
 ;; modeline configuration
 (defun current-volume ()
   (remove #\Newline
