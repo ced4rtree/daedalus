@@ -125,7 +125,6 @@ will find the password for user@example.com"
 (setq tab-bar-show 1
       tab-bar-close-button-show nil
       tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
-(set-face-attribute 'tab-bar nil :height 130)
 
 (defun cedar/tab-name (tab)
   "Returns the name of TAB as a string."
