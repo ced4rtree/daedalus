@@ -79,7 +79,7 @@
 (gnew "Web")
 (gnew "Discord")
 (gnew "Games")
-(gselect 1)
+(gselect "1")
 
 ;; keybindings
 
