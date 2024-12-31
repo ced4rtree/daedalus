@@ -93,11 +93,23 @@
 
 ;; keybindings
 
-;;; groups
+;;; go to group
 (dotimes (i 9)
   (let ((group (write-to-string (+ i 1))))
     (define-key *top-map* (kbd (concatenate 'string "s-" group)) (concatenate 'string "gselect " group))))
 (define-key *top-map* (kbd "s-0") "gselect 10")
+
+;;; move window to group
+(define-key *top-map* (kbd "s-!") "gmove 1")
+(define-key *top-map* (kbd "s-@") "gmove 2")
+(define-key *top-map* (kbd "s-#") "gmove 3")
+(define-key *top-map* (kbd "s-$") "gmove 4")
+(define-key *top-map* (kbd "s-%") "gmove 5")
+(define-key *top-map* (kbd "s-^") "gmove 6")
+(define-key *top-map* (kbd "s-&") "gmove 7")
+(define-key *top-map* (kbd "s-*") "gmove 8")
+(define-key *top-map* (kbd "s-(") "gmove 9")
+(define-key *top-map* (kbd "s-)") "gmove 10")
 
 ;;; brightness
 (define-key *top-map* (kbd "XF86MonBrightnessUp") "exec brightnessctl set 5%+")
