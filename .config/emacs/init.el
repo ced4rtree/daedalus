@@ -10,13 +10,8 @@
 (package-initialize)
 
 ;; ui improvements
-(setopt modus-themes-italic-constructs t
-        modus-themes-bold-constructs t
-        modus-themes-mixed-fonts t
-        modus-themes-completions
-        '((matches . (underline italic))
-          (selection . (extrabold))))
-(load-theme 'modus-vivendi-tinted t)
+(use-package doom-themes
+  :config (load-theme 'doom-acario-dark t))
 (setopt mode-line-end-spaces nil)
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 (menu-bar-mode -1)
