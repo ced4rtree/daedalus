@@ -46,6 +46,7 @@
   - [[#org-agenda][Org Agenda]]
   - [[#org-indent][Org Indent]]
   - [[#org-toc][Org TOC]]
+  - [[#babel][Babel]]
 - [[#miscellaneous-settings][Miscellaneous Settings]]
   - [[#discord-integration][Discord Integration]]
   - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
@@ -662,6 +663,26 @@ document
 #+begin_src emacs-lisp
   (use-package toc-org
     :hook (org-mode . toc-org-mode))
+#+end_src
+
+** Babel
+Babel allows us to export code from an org document to a file, much
+like this org document does.
+
+#+begin_src emacs-lisp
+  (setq org-src-fontify-natively t ;; use the font like it is in a normal buffer
+        org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
+        org-confirm-babel-evaluate nil ;; don't ask to evaluate code
+        org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
+#+end_src
+
+*** Auto Tangling
+Auto tangling makes sure that when we save a file, it will get
+tangled automatically
+
+#+begin_src emacs-lisp
+  (use-package org-auto-tangle
+    :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
 * Miscellaneous Settings

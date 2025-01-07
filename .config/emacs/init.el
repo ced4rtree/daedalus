@@ -1,5 +1,8 @@
 ;; -*- lexical-binding: t -*-
 
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -307,6 +310,17 @@ will find the password for user@example.com"
 
 (require 'org-indent)
 (add-hook 'org-mode-hook #'org-indent-mode)
+
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
+
+(setq org-src-fontify-natively t ;; use the font like it is in a normal buffer
+      org-src-tab-acts-natively t ;; tab works like it does in a normal buffer
+      org-confirm-babel-evaluate nil ;; don't ask to evaluate code
+      org-src-window-setup 'current-window) ;; have the org-edit-special command consume the current window
+
+(use-package org-auto-tangle
+  :hook (org-mode . org-auto-tangle-mode))
 
 (use-package elcord
   :custom
