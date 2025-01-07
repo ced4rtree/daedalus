@@ -1,27 +1,71 @@
 ;; -*- lexical-binding: t -*-
 
-;; use-package stuff
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
-
-;; register melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-;; ui improvements
+(tab-bar-mode t)
+(setq tab-bar-show 1
+      tab-bar-close-button-show nil
+      tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+
+(defun cedar/tab-name (tab)
+  "Returns the name of TAB as a string."
+  (cdr (assoc-string 'name tab)))
+
+(defun cedar/open-name-in-tab (name always-perform-callback callback &rest callback-args)
+  "Open/create a tab called NAME, and call CALLBACK upon opening.
+
+If NAME is already a tab that exists, switch to it.  If there's not a
+tab with the name NAME, then create a new tab with the name NAME and
+call CALLBACK with the optionally supplied CALLBACK-ARGS.
+
+If ALWAYS-PERFORM-CALLBACK is t, CALLBACK will always be performed with
+its arguments, even if NAME is already an existing tab."
+
+  (if (and (eq (length (tab-bar-tabs)) 1)
+           (string-equal (cedar/tab-name (car (tab-bar-tabs))) "*scratch*"))
+      (progn
+        (tab-rename name)
+        (apply callback callback-args))
+    (let* ((tab-names (mapcar #'cedar/tab-name (tab-bar-tabs))))
+      (if (and (member name tab-names) (not always-perform-callback))
+          (tab-bar-switch-to-tab name)
+        (progn
+          (tab-bar-switch-to-tab name)
+          (apply callback callback-args))))))
+
+(use-package project
+  :ensure nil
+  :commands (project-prompt-project-dir)
+  :config
+  (defun cedar/project-switch-project-tab ()
+    "Switch to a project tab, or create one if the prompted project doesn't exist."
+    (interactive)
+    (let* ((project-name (project-prompt-project-dir)))
+      (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
+
+  (defun cedar/project-kill-buffers-and-tab ()
+    "Kill all buffers in the current project and close the current tab."
+    (interactive)
+    (project-kill-buffers)
+    (tab-bar-close-tab))
+  :bind (("C-x p p" . cedar/project-switch-project-tab)
+         ("C-x p k" . cedar/project-kill-buffers-and-tab)))
+
 (use-package doom-themes
   :config (load-theme 'doom-acario-dark t))
-(setopt mode-line-end-spaces nil)
+
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
+
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
-(add-to-list 'default-frame-alist '(alpha-background . 75))
-(pixel-scroll-precision-mode t)
 
-;; flash modeline instead of the screen
+(add-to-list 'default-frame-alist '(alpha-background . 75))
+
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
+
 (setq visible-bell t
       ring-bell-function
       (lambda ()
@@ -31,7 +75,15 @@
                                (lambda (bg) (set-face-background 'mode-line bg))
                                orig-bg))))
 
-;; completion
+(electric-pair-mode t)
+(setq electric-pair-inhibit-predicate
+      `(lambda (c)
+         (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+(defalias #'yes-or-no-p #'y-or-n-p)
+
 (use-package vertico
   :ensure marginalia
   :ensure vertico-prescient
@@ -67,29 +119,122 @@
 
   :custom
   (vertico-cycle t))
+
 (use-package orderless
   :ensure t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; automatically pair parentheses, braces, quotes, etc.
-(electric-pair-mode t)
+(define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
+(define-key completion-in-region-mode-map (kbd "M-p") #'minibuffer-previous-completion)
+(define-key completion-in-region-mode-map (kbd "TAB") #'minibuffer-choose-completion)
 
-;; line numbers
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(xterm-mouse-mode 1)
 
-;; fun squigglies
-(add-hook 'prog-mode-hook #'flymake-mode-on)
+(which-key-mode t)
 
-;; just have y-or-n not yes-or-no
-(defalias #'yes-or-no-p #'y-or-n-p)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
+      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+      mouse-wheel-follow-mouse 't ;; scroll window under mouse
+      scroll-step 1 ;; keyboard scroll one line at a time
+      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
+      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
 
-;; hideshow mode
+(setq-default tab-width 4
+              c-basic-offset 4
+              c-ts-mode-indent-offset 4
+              c-ts-mode-indent-style 'bsd
+              c-default-style "bsd"
+              indent-tabs-mode nil)
+(defvaralias 'c-basic-offset 'tab-width)
+(defvaralias 'c-ts-mode-indent-offset 'tab-width)
+(indent-tabs-mode nil)
+(defun cedar/change-tab-width (WIDTH)
+  "Set the width of a tab to WIDTH in the current buffer."
+  (setq-local tab-width WIDTH
+              c-basic-offset WIDTH
+              c-ts-mode-indent-offset WIDTH
+              java-ts-mode-indent-offset WIDTH))
+
+(require 'ansi-color)
+(defun endless/colorize-compilation ()
+  "Colorize from `compilation-filter-start' to `point'."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region
+     compilation-filter-start (point))))
+(add-hook 'compilation-filter-hook #'endless/colorize-compilation)
+
+(use-package indent-bars
+  :vc (:url "https://github.com/jdtsmith/indent-bars")
+  :custom
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-starting-column 0)
+  (indent-bars-color '(highlight :face-bg t :blend 0.7))
+  :config
+  (defun turn-off-indent-bars-mode ()
+    "Turn off indent-bars-mode"
+    (interactive)
+    (indent-bars-mode -1))
+  :hook (prog-mode . indent-bars-mode)
+  :hook ((emacs-lisp-mode lisp-mode) . turn-off-indent-bars-mode))
+
+(use-package ligature
+  :commands (ligature-set-ligatures global-ligature-mode)
+  :config
+  (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
+                                       "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
+                                       "??" "???" "?:" "?." "?=" "<:" ":<" ":>" ">:" "<:<" "<>" "<<<" ">>>"
+                                       "<<" ">>" "||" "-|" "_|_" "|-" "||-" "|=" "||=" "##" "###" "####"
+                                       "#{" "#[" "]#" "#(" "#?" "#_" "#_(" "#:" "#!" "#=" "^=" "<$>" "<$"
+                                       "$>" "<+>" "<+" "+>" "<*>" "<*" "*>" "</" "</>" "/>" "<!--" "<#--"
+                                       "-->" "->" "->>" "<<-" "<-" "<=<" "=<<" "<<=" "<==" "<=>" "<==>"
+                                       "==>" "=>" "=>>" ">=>" ">>=" ">>-" ">-" "-<" "-<<" ">->" "<-<" "<-|"
+                                       "<=|" "|=>" "|->" "<->" "<~~" "<~" "<~>" "~~" "~~>" "~>" "~-" "-~"
+                                       "~@" "[||]" "|]" "[|" "|}" "{|" "[<" ">]" "|>" "<|" "||>" "<||"
+                                       "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
+                                       ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
+                                       "<:<" ";;;"))
+  (global-ligature-mode t))
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
-;; mu4e
+(use-package eglot
+  :ensure nil
+  :custom
+  (eglot-autoshutdown t)
+  :config
+  :bind (:map prog-mode-map
+              ("C-c c c" . (lambda ()
+			     (interactive)
+			     (eglot-ensure)))
+              ("C-c c r" . eglot-rename)
+              ("C-c c k" . eglot-shutdown)
+              ("C-c c f" . eglot-code-action-quickfix)))
+
+(use-package eglot-java
+  :defer t
+  :hook (eglot-managed-mode . (lambda ()
+    				(interactive)
+    				(when (or (string= major-mode "java-mode")
+    					  (string= major-mode "java-ts-mode"))
+    				  (eglot-java-mode t))))
+  :hook (java-mode . eglot-java-mode))
+
+(setq major-mode-remap-alist
+      '((java-mode  . java-ts-mode)
+        (c-mode . c-ts-mode)
+        (c++-mode . c++-ts-mode)
+        (rust-mode . rust-ts-mode)))
+
+(use-package magit :defer t)
+
+(use-package haskell-mode)
+(use-package stumpwm-mode)
+(use-package cmake-mode)
+
 (use-package mu4e
   :ensure nil
   :load-path "/usr/share/emacs/site-lisp/mu4e"
@@ -102,9 +247,8 @@
   (mu4e-get-mail-command "mbsync -a") ;; requires isync to be installed and configured for your emails
 
   :config
-  (load (concat user-emacs-directory "emails.el")))
+  (load (concat user-emacs-directory "emails.el"))) ;; where all my private info is stored
 
-;; password decryption (for mbsync)
 (defun efs/lookup-password (&rest keys)
   "Lookup a password from ~/.authinfo.gpg using KEYS to index the desired password.
 
@@ -115,60 +259,7 @@ will find the password for user@example.com"
     (when result
         (funcall (plist-get (car result) :secret)))))
 
-;; tab bar mode
-(tab-bar-mode t)
-(setq tab-bar-show 1
-      tab-bar-close-button-show nil
-      tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
-
-(defun cedar/tab-name (tab)
-  "Returns the name of TAB as a string."
-  (cdr (assoc-string 'name tab)))
-
-(defun cedar/open-name-in-tab (name always-perform-callback callback &rest callback-args)
-  "Open/create a tab called NAME, and call CALLBACK upon opening.
-
-If NAME is already a tab that exists, switch to it.  If there's not a
-tab with the name NAME, then create a new tab with the name NAME and
-call CALLBACK with the optionally supplied CALLBACK-ARGS.
-
-If ALWAYS-PERFORM-CALLBACK is t, CALLBACK will always be performed with
-its arguments, even if NAME is already an existing tab."
-
-  (if (and (eq (length (tab-bar-tabs)) 1)
-           (string-equal (cedar/tab-name (car (tab-bar-tabs))) "*scratch*"))
-      (progn
-        (tab-rename name)
-        (apply callback callback-args))
-    (let* ((tab-names (mapcar #'cedar/tab-name (tab-bar-tabs))))
-      (if (and (member name tab-names) (not always-perform-callback))
-          (tab-bar-switch-to-tab name)
-        (progn
-          (tab-bar-switch-to-tab name)
-          (apply callback callback-args))))))
-
-;; project.el and tab-bar-mode integration
-(use-package project
-  :ensure nil
-  :commands (project-prompt-project-dir)
-  :config
-  (defun cedar/project-switch-project-tab ()
-    "Switch to a project tab, or create one if the prompted project doesn't exist."
-    (interactive)
-    (let* ((project-name (project-prompt-project-dir)))
-      (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
-
-  (defun cedar/project-kill-buffers-and-tab ()
-    "Kill all buffers in the current project and close the current tab."
-    (interactive)
-    (project-kill-buffers)
-    (tab-bar-close-tab))
-  :bind (("C-x p p" . cedar/project-switch-project-tab)
-         ("C-x p k" . cedar/project-kill-buffers-and-tab)))
-
-;; emms
 (use-package emms
-  :ensure nil
   :commands (emms-all emms-smart-browse)
   :defines emms-playlist-mode-map
   :custom
@@ -195,90 +286,8 @@ its arguments, even if NAME is already an existing tab."
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 
-;; move backup files
-(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
-(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-
-;; let me use the mouse in emacs pwetty pwease
-(xterm-mouse-mode 1)
-
-;; which-key
-(which-key-mode t)
-
-;; scrolling
-;;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
-      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
-      mouse-wheel-follow-mouse 't ;; scroll window under mouse
-      scroll-step 1 ;; keyboard scroll one line at a time
-      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
-      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
-
-;; eglot
-(use-package eglot
-  :ensure nil
-  :custom
-  (eglot-autoshutdown t)
-  :config
-  :bind (:map prog-mode-map
-              ("C-c c c" . (lambda ()
-			     (interactive)
-			     (eglot-ensure)))
-              ("C-c c r" . eglot-rename)
-              ("C-c c k" . eglot-shutdown)
-              ("C-c c f" . eglot-code-action-quickfix)))
-
-(use-package eglot-java
-  :defer t
-  :hook (eglot-managed-mode . (lambda ()
-    				(interactive)
-    				(when (or (string= major-mode "java-mode")
-    					  (string= major-mode "java-ts-mode"))
-    				  (eglot-java-mode t))))
-  :hook (java-mode . eglot-java-mode))
-
-;; tree-sitter
-(setq major-mode-remap-alist
-      '((java-mode  . java-ts-mode)
-        (c-mode . c-ts-mode)
-        (c++-mode . c++-ts-mode)
-        (rust-mode . rust-ts-mode)))
-
-;; configure gc-cons-threshold to be reasonable
-(setq gc-cons-threshold (* 2 1024 1024))
-
-;; tabbing
-(setq-default tab-width 4
-              c-basic-offset 4
-              c-ts-mode-indent-offset 4
-              c-ts-mode-indent-style 'bsd
-              c-default-style "bsd"
-              indent-tabs-mode nil)
-(defvaralias 'c-basic-offset 'tab-width)
-(defvaralias 'c-ts-mode-indent-offset 'tab-width)
-(indent-tabs-mode nil)
-(defun cedar/change-tab-width (WIDTH)
-  "Set the width of a tab to WIDTH in the current buffer."
-  (setq-local tab-width WIDTH
-              c-basic-offset WIDTH
-              c-ts-mode-indent-offset WIDTH
-              java-ts-mode-indent-offset WIDTH))
-
-;; comment-line keybinding
-(define-key prog-mode-map (kbd "C-c C-/") #'comment-line)
-(define-key prog-mode-map (kbd "C-c C-_") #'comment-line)
-
-;; let me just scroll through completions regularly
-(define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
-(define-key completion-in-region-mode-map (kbd "M-p") #'minibuffer-previous-completion)
-(define-key completion-in-region-mode-map (kbd "TAB") #'minibuffer-choose-completion)
-
-;; org mode settings
-
-;;; org tempo to enable various shortcuts for blocks in org mode
 (use-package org-tempo :ensure nil)
 
-;;; agenda settings
 (setopt org-agenda-files '("~/org/agenda/")
         org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-done t
@@ -289,46 +298,16 @@ its arguments, even if NAME is already an existing tab."
         org-agenda-start-on-weekday nil
         org-agenda-span 7
         org-agenda-window-setup 'current-window)
+
 (defun cedar/open-agenda-in-tab ()
   "Go to an org agenda tab, creating one if it doesn't exist."
   (interactive)
   (cedar/open-name-in-tab "Agenda" t #'org-agenda nil "n"))
 (global-set-key (kbd "C-c o a") #'cedar/open-agenda-in-tab)
 
-;;; org indent
 (require 'org-indent)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
-;; magit
-(use-package magit :defer t)
-
-;; ansi colors in compilation buffer
-;; (http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html)
-(require 'ansi-color)
-(defun endless/colorize-compilation ()
-  "Colorize from `compilation-filter-start' to `point'."
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region
-     compilation-filter-start (point))))
-(add-hook 'compilation-filter-hook #'endless/colorize-compilation)
-
-;; indent bars
-(use-package indent-bars
-  :vc (:url "https://github.com/jdtsmith/indent-bars")
-  :custom
-  (indent-bars-treesit-support t)
-  (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (indent-bars-starting-column 0)
-  (indent-bars-color '(highlight :face-bg t :blend 0.7))
-  :config
-  (defun turn-off-indent-bars-mode ()
-    "Turn off indent-bars-mode"
-    (interactive)
-    (indent-bars-mode -1))
-  :hook (prog-mode . indent-bars-mode)
-  :hook ((emacs-lisp-mode lisp-mode) . turn-off-indent-bars-mode))
-
-;; discord integration
 (use-package elcord
   :custom
   (elcord-editor-icon "emacs_pen_icon")
@@ -365,28 +344,9 @@ its arguments, even if NAME is already an existing tab."
   
   (elcord-mode))
 
-;; languages
-(use-package haskell-mode)
-(use-package stumpwm-mode)
-
-;; ligatures
-(use-package ligature
-  :commands (ligature-set-ligatures global-ligature-mode)
-  :config
-  (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
-                                       "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
-                                       "??" "???" "?:" "?." "?=" "<:" ":<" ":>" ">:" "<:<" "<>" "<<<" ">>>"
-                                       "<<" ">>" "||" "-|" "_|_" "|-" "||-" "|=" "||=" "##" "###" "####"
-                                       "#{" "#[" "]#" "#(" "#?" "#_" "#_(" "#:" "#!" "#=" "^=" "<$>" "<$"
-                                       "$>" "<+>" "<+" "+>" "<*>" "<*" "*>" "</" "</>" "/>" "<!--" "<#--"
-                                       "-->" "->" "->>" "<<-" "<-" "<=<" "=<<" "<<=" "<==" "<=>" "<==>"
-                                       "==>" "=>" "=>>" ">=>" ">>=" ">>-" ">-" "-<" "-<<" ">->" "<-<" "<-|"
-                                       "<=|" "|=>" "|->" "<->" "<~~" "<~" "<~>" "~~" "~~>" "~>" "~-" "-~"
-                                       "~@" "[||]" "|]" "[|" "|}" "{|" "[<" ">]" "|>" "<|" "||>" "<||"
-                                       "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
-                                       ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
-                                       "<:<" ";;;"))
-  (global-ligature-mode t))
-
-;; move custom nonsense to a different file
 (setq custom-file (concat user-emacs-directory "custom.el"))
+
+(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+
+(setq gc-cons-threshold (* 2 1024 1024))

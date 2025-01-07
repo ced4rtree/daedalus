@@ -1,0 +1,681 @@
+#+PROPERTY: header-args :tangle init.el
+#+OPTIONS: toc:2
+#+AUTO_TANGLE: t
+#+STARTUP: overview
+
+* Setup
+** Early Init
+Some settings that get evaluated before =init.el=
+
+#+begin_src emacs-lisp :tangle early-init.el
+(setq gc-cons-threshold most-positive-fixnum)
+#+end_src
+
+** Lexical Binding
+Lexical binding enables a lexical scope for variables, which opens up some
+opportunities for optimization.
+#+begin_src emacs-lisp
+;; -*- lexical-binding: t -*-
+#+end_src
+
+** Use-Package Initialization
+Use package is a declarative package manager for emacs. The lines below allow
+you to declare a package dependency without having to use =:ensure t= to
+actually fetch said package dependency
+
+#+begin_src 
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+#+end_src
+
+** Melpa
+Melpa is an external package archive for emacs that is far more expansive the ones provided by default
+
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+#+end_src
+
+* Tab Bar Workflow
+The tab bar in emacs allows me to organize all of my projects and
+applications while still allowing easy access to buffers between them
+if need be. Perspective, the package I used to use for organization
+did not allow simple trading and viewing of buffers in other
+workspaces, which was a little annoying
+
+#+begin_src emacs-lisp
+  (tab-bar-mode t)
+  (setq tab-bar-show 1
+        tab-bar-close-button-show nil
+        tab-bar-format '(tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right tab-bar-format-global))
+
+  (defun cedar/tab-name (tab)
+    "Returns the name of TAB as a string."
+    (cdr (assoc-string 'name tab)))
+
+  (defun cedar/open-name-in-tab (name always-perform-callback callback &rest callback-args)
+    "Open/create a tab called NAME, and call CALLBACK upon opening.
+
+  If NAME is already a tab that exists, switch to it.  If there's not a
+  tab with the name NAME, then create a new tab with the name NAME and
+  call CALLBACK with the optionally supplied CALLBACK-ARGS.
+
+  If ALWAYS-PERFORM-CALLBACK is t, CALLBACK will always be performed with
+  its arguments, even if NAME is already an existing tab."
+
+    (if (and (eq (length (tab-bar-tabs)) 1)
+             (string-equal (cedar/tab-name (car (tab-bar-tabs))) "*scratch*"))
+        (progn
+          (tab-rename name)
+          (apply callback callback-args))
+      (let* ((tab-names (mapcar #'cedar/tab-name (tab-bar-tabs))))
+        (if (and (member name tab-names) (not always-perform-callback))
+            (tab-bar-switch-to-tab name)
+          (progn
+            (tab-bar-switch-to-tab name)
+            (apply callback callback-args))))))
+#+end_src
+
+** Project.el Integration
+Project.el provides some really nice project management functions for
+emacs. The defaults are stellar, I just need to add some integration
+with tab-bar-mode
+
+#+begin_src emacs-lisp
+(use-package project
+  :ensure nil
+  :commands (project-prompt-project-dir)
+  :config
+  (defun cedar/project-switch-project-tab ()
+    "Switch to a project tab, or create one if the prompted project doesn't exist."
+    (interactive)
+    (let* ((project-name (project-prompt-project-dir)))
+      (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
+
+  (defun cedar/project-kill-buffers-and-tab ()
+    "Kill all buffers in the current project and close the current tab."
+    (interactive)
+    (project-kill-buffers)
+    (tab-bar-close-tab))
+  :bind (("C-x p p" . cedar/project-switch-project-tab)
+         ("C-x p k" . cedar/project-kill-buffers-and-tab)))
+#+end_src
+
+* UI/UX Improvements
+** Themes
+Changes all the colors and whatnot
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :config (load-theme 'doom-acario-dark t))
+#+end_src
+
+** Continuous Vertical Border in Terminal Emacs
+The default border symbol in terminal emacs is the ~|~ symbol, which
+doesn't make a continuous line. ~│~ makes one continuous line with no
+gaps, and thus makes me happy as well.
+
+#+begin_src emacs-lisp
+  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
+#+end_src
+
+** Removal of Ugly GUI Features
+I don't use any of the clickable GUI features, and they're quite
+grotesque, so I'll just go ahead and remove them.
+
+#+begin_src emacs-lisp
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+#+end_src
+
+** Frame Opacity
+This enables a transparent background with completely opaque text so I
+can see my background while working
+
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(alpha-background . 75))
+#+end_src
+
+** Font
+Sets the font in the GUI to the one specified
+
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
+#+end_src
+
+** Modeline Bell Flash
+I like the feedback from emacs telling me I'm doing something wrong,
+but I don't like the whole frame flashbanging me. It's just obnoxious
+and distracting, so I'm going to opt for a simple red flash in the
+modeline instead
+
+#+begin_src emacs-lisp
+  (setq visible-bell t
+        ring-bell-function
+        (lambda ()
+          (let ((orig-bg (face-background 'mode-line)))
+            (set-face-background 'mode-line "brown1")
+            (run-with-idle-timer 0.1 nil
+                                 (lambda (bg) (set-face-background 'mode-line bg))
+                                 orig-bg))))
+#+end_src
+
+** Auto Pair
+Automatically pair parentheses, braces, quotes, etc.
+
+#+begin_src emacs-lisp
+  (electric-pair-mode t)
+  (setq electric-pair-inhibit-predicate
+        `(lambda (c)
+           (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))
+#+end_src
+
+** Line Numbers
+Displays the line number on the left hand side of the window
+
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+#+end_src
+
+** Yes or No Prompt
+Switch out all calls to the ~yes-or-no-p~ function to the ~y-or-n-p~
+function so I only have to type one character for any yes/no questions
+
+#+begin_src emacs-lisp
+  (defalias #'yes-or-no-p #'y-or-n-p)
+#+end_src
+
+** Vertico
+Vertico is the thing that pops up to provide an interface for
+completion so you can see and scroll through all of your different
+options
+
+This also includes a few other packages that do some other stuff, such as
+ - Marginalia, which adds some useful information in vertico, such as
+   keybindings and docstrings
+ - Prescient, which sorts things in vertico before typing by how
+   frequently that selection is used
+ - Vertico Posframe, which puts vertico in another window in the
+   middle of the frame
+ - Vertico Directory, which automatically deletes the name of a
+   directory when hitting ~DEL~ in an interactive file selection in
+   vertico
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :ensure marginalia
+    :ensure vertico-prescient
+    :ensure prescient
+    :ensure vertico-posframe
+    :ensure orderless
+    :ensure t
+
+    :commands (vertico-mode
+               marginalia-mode
+               vertico-prescient-mode
+               prescient-persist-mode
+               vertico-posframe-mode
+               vertico-directory-enter
+               vertico-directory-delete-char
+               vertico-directory-delete-word
+               vertico-directory-tidy)
+    :defines vertico-map
+
+    :demand t
+    :config
+    (vertico-mode)
+    (vertico-prescient-mode)
+    (prescient-persist-mode)
+    (marginalia-mode)
+    (vertico-posframe-mode)
+
+    (require 'vertico-directory)
+    (keymap-set vertico-map "RET" #'vertico-directory-enter)
+    (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
+    (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
+    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+
+    :custom
+    (vertico-cycle t))
+#+end_src
+
+** Orderless
+Orderless is a fuzzy finding algorithm that provides an intuitive
+selection for random things, and is significantly more intuitive than
+emacs' built in fuzzy finding system, flex
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :ensure t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
+#+end_src
+
+** Completion Scrolling
+The default keybindings for scrolling through the completions provided
+by =C-S-i= take your hands off the home row, so I like to rebind them
+to =M-n= and =M-p=
+
+#+begin_src emacs-lisp
+  (define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
+  (define-key completion-in-region-mode-map (kbd "M-p") #'minibuffer-previous-completion)
+  (define-key completion-in-region-mode-map (kbd "TAB") #'minibuffer-choose-completion)
+#+end_src
+
+** Mouse Usage in Terminal Emacs
+The mouse in terminal emacs by default behaves as it would if you were
+not in emacs, i.e. it selects text in the terminal. Sometimes I want
+to click something in emacs, and this default behavior makes that kind
+of annoying. This makes the mouse behave as though it were in
+graphical emacs
+
+#+begin_src emacs-lisp
+  (xterm-mouse-mode 1)
+#+end_src
+
+** Which Key
+Which key displays a little help menu showing what keybindings are
+available when you've begun a keychord so you can remember/learn
+whatever keybinding you need
+
+#+begin_src emacs-lisp
+(which-key-mode t)
+#+end_src
+
+** Scrolling
+Scrolling in emacs is very strange by default. I just want scrolling
+to behave like every other application I've ever used
+
+#+begin_src emacs-lisp
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
+      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+      mouse-wheel-follow-mouse 't ;; scroll window under mouse
+      scroll-step 1 ;; keyboard scroll one line at a time
+      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
+      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
+#+end_src
+
+** Indentation
+I do not like 8 space indentation.
+
+I would not like them here or there,
+
+I would not like them anywhere.
+
+I do not like 8 space indentation,
+
+I do not like that notation.
+
+#+begin_src emacs-lisp
+  (setq-default tab-width 4
+                c-basic-offset 4
+                c-ts-mode-indent-offset 4
+                c-ts-mode-indent-style 'bsd
+                c-default-style "bsd"
+                indent-tabs-mode nil)
+  (defvaralias 'c-basic-offset 'tab-width)
+  (defvaralias 'c-ts-mode-indent-offset 'tab-width)
+  (indent-tabs-mode nil)
+  (defun cedar/change-tab-width (WIDTH)
+    "Set the width of a tab to WIDTH in the current buffer."
+    (setq-local tab-width WIDTH
+                c-basic-offset WIDTH
+                c-ts-mode-indent-offset WIDTH
+                java-ts-mode-indent-offset WIDTH))
+#+end_src
+
+** ANSI Colors in Compilation Buffer
+Emacs by default doesn't support ANSI color codes in the compilation
+buffer, but I consider them really nice, especially CMake generates
+makefiles
+
+See this [[http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html][Endless Parentheses blog post]] for more details
+
+#+begin_src emacs-lisp
+  (require 'ansi-color)
+  (defun endless/colorize-compilation ()
+    "Colorize from `compilation-filter-start' to `point'."
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region
+       compilation-filter-start (point))))
+  (add-hook 'compilation-filter-hook #'endless/colorize-compilation)
+#+end_src
+
+** Indent Bars
+Creates a bar for each indentation scope in C-style code with scope
+aware highlighting such that the currently focused scope is
+highlighted
+
+#+begin_src emacs-lisp
+  (use-package indent-bars
+    :vc (:url "https://github.com/jdtsmith/indent-bars")
+    :custom
+    (indent-bars-treesit-support t)
+    (indent-bars-treesit-ignore-blank-lines-types '("module"))
+    (indent-bars-starting-column 0)
+    (indent-bars-color '(highlight :face-bg t :blend 0.7))
+    :config
+    (defun turn-off-indent-bars-mode ()
+      "Turn off indent-bars-mode"
+      (interactive)
+      (indent-bars-mode -1))
+    :hook (prog-mode . indent-bars-mode)
+    :hook ((emacs-lisp-mode lisp-mode) . turn-off-indent-bars-mode))
+#+end_src
+
+** Ligatures
+Turns basic text into fancy ligatures, e.g. =->= becomes a fancy arrow
+glyph
+
+#+begin_src emacs-lisp
+  (use-package ligature
+    :commands (ligature-set-ligatures global-ligature-mode)
+    :config
+    (ligature-set-ligatures 'prog-mode '("--" "---" "==" "===" "!=" "!==" "=!="
+                                         "=:=" "=/=" "<=" ">=" "&&" "&&&" "&=" "++" "+++" "***" ";;" "!!"
+                                         "??" "???" "?:" "?." "?=" "<:" ":<" ":>" ">:" "<:<" "<>" "<<<" ">>>"
+                                         "<<" ">>" "||" "-|" "_|_" "|-" "||-" "|=" "||=" "##" "###" "####"
+                                         "#{" "#[" "]#" "#(" "#?" "#_" "#_(" "#:" "#!" "#=" "^=" "<$>" "<$"
+                                         "$>" "<+>" "<+" "+>" "<*>" "<*" "*>" "</" "</>" "/>" "<!--" "<#--"
+                                         "-->" "->" "->>" "<<-" "<-" "<=<" "=<<" "<<=" "<==" "<=>" "<==>"
+                                         "==>" "=>" "=>>" ">=>" ">>=" ">>-" ">-" "-<" "-<<" ">->" "<-<" "<-|"
+                                         "<=|" "|=>" "|->" "<->" "<~~" "<~" "<~>" "~~" "~~>" "~>" "~-" "-~"
+                                         "~@" "[||]" "|]" "[|" "|}" "{|" "[<" ">]" "|>" "<|" "||>" "<||"
+                                         "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
+                                         ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
+                                         "<:<" ";;;"))
+    (global-ligature-mode t))
+#+end_src
+
+* Code Features
+Emacs is pretty unopinionated about coding and how it should be
+done. I like my LSPs and my tree-sitters and whatnot, so I have to
+configure those here
+
+** Code Folding
+If I'm scrolling past a bunch of code that isn't particularly relevant
+at the moment, it's pretty nice to be able to just fold it up and not
+see it
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'hideshow
+    (add-hook 'prog-mode-hook #'hs-minor-mode))
+#+end_src
+
+** LSP
+Modern emacs (29+) actually ships with an LSP client out of the
+box. It's called eglot, and it's pretty powerful
+
+#+begin_src emacs-lisp
+(use-package eglot
+  :ensure nil
+  :custom
+  (eglot-autoshutdown t)
+  :config
+  :bind (:map prog-mode-map
+              ("C-c c c" . (lambda ()
+			     (interactive)
+			     (eglot-ensure)))
+              ("C-c c r" . eglot-rename)
+              ("C-c c k" . eglot-shutdown)
+              ("C-c c f" . eglot-code-action-quickfix)))
+#+end_src
+
+*** Java Support
+Java is one of the worst languages on the planet because it is
+extremely mediocre (often bad in some areas), and yet it is widely
+used (including in projects I have to work on). Thankfully, despite
+Eclipse's best efforts to make their LSP server as difficult as
+possible to configure externally, somebody has done the noble work of
+making it work seamlessly with eglot.
+
+#+begin_src emacs-lisp
+(use-package eglot-java
+  :defer t
+  :hook (eglot-managed-mode . (lambda ()
+    				(interactive)
+    				(when (or (string= major-mode "java-mode")
+    					  (string= major-mode "java-ts-mode"))
+    				  (eglot-java-mode t))))
+  :hook (java-mode . eglot-java-mode))
+#+end_src
+
+** Tree Sitter
+Emacs has historically used regex for syntax highlighting. Apparently
+this newfangled tree sitter thing does this all with some fancy thing
+called an "abstract syntax tree" that's supposed to be faster and
+better
+
+#+begin_src emacs-lisp
+(setq major-mode-remap-alist
+      '((java-mode  . java-ts-mode)
+        (c-mode . c-ts-mode)
+        (c++-mode . c++-ts-mode)
+        (rust-mode . rust-ts-mode)))
+#+end_src
+
+** Magit
+This git porcelain for emacs provides an extremely useful and fast way
+to manage git repositories from within emacs that enables you to just
+get work done, and get it done quickly and intuitively.
+
+#+begin_src emacs-lisp
+  (use-package magit :defer t)
+#+end_src
+
+** Languages
+Adds extra support for languages that emacs doesn't support out of the
+box
+
+#+begin_src emacs-lisp
+  (use-package haskell-mode)
+  (use-package stumpwm-mode)
+  (use-package cmake-mode)
+#+end_src
+
+* The Emacs Ecosystem
+An important fact about emacs is that it is not an editor. Emacs is an
+interpreter for emacs lisp that happens to come with a pretty decent
+and customizable editor out of the box. Once you realize this, you can
+take that idea pretty far and make emacs not only your tool for text
+editing, but for email, music, etc.
+
+** MU4E
+Maildir Utils 4 Emacs. This allows you to send, receive, reply to, and view email all from within emacs
+
+#+begin_src emacs-lisp
+  (use-package mu4e
+    :ensure nil
+    :load-path "/usr/share/emacs/site-lisp/mu4e"
+
+    :custom
+    (smtpmail-stream-type 'starttls) ;; use tls for encryption
+    (mu4e-change-filenames-when-moving t) ;; update file names as you move them around
+    (mu4e-update-interval (* 10 60)) ;; update email every 10 minutes
+    (mu4e-hide-index-messages t) ;; stop flashing my email to everyone around me
+    (mu4e-get-mail-command "mbsync -a") ;; requires isync to be installed and configured for your emails
+
+    :config
+    (load (concat user-emacs-directory "emails.el"))) ;; where all my private info is stored
+#+end_src
+
+
+** Password Decryption
+This provides a utility function that can be used from outside of
+emacs (e.g. in your ~~/.mbsyncrc~) to decrypt the passwords for your
+emails stored in ~~/.authinfo.gpg~
+
+#+begin_src emacs-lisp
+  (defun efs/lookup-password (&rest keys)
+    "Lookup a password from ~/.authinfo.gpg using KEYS to index the desired password.
+
+  e.g. (efs/lookup-password :host \"example.com\" :user \"user\"), which
+  will find the password for user@example.com"
+
+    (let ((result (apply #'auth-source-search keys)))
+      (when result
+          (funcall (plist-get (car result) :secret)))))
+#+end_src
+
+** EMMS
+The Emacs Multimedia System allows you to play music directly from emacs
+
+#+begin_src emacs-lisp
+(use-package emms
+  :commands (emms-all emms-smart-browse)
+  :defines emms-playlist-mode-map
+  :custom
+  (emms-seek-seconds 5)
+  (emms-player-list '(emms-player-mpv))
+  (emms-info-functions '(emms-info-native))
+
+  :config
+;;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+;;; (setq emms-player-mpd-server-name "localhost")
+;;; (setq emms-player-mpd-server-port "6600")
+;;; (setq mpc-host "localhost:6600")
+  (require 'emms-setup)
+  (emms-all)
+
+  (defun cedar/emms-smart-browse-in-tab ()
+    (interactive)
+    (cedar/open-name-in-tab "EMMS (Music)" t #'emms-smart-browse))
+
+  :bind (("C-c m t" . emms-pause) ;; t for toggle
+         ("C-c m n" . emms-next)
+         ("C-c m p" . emms-previous)
+         ("C-c m m" . cedar/emms-smart-browse-in-tab)
+         :map emms-playlist-mode-map
+         ("Z" . emms-shuffle)))
+#+end_src
+
+* Org Mode
+Org mode is the best thing since sliced bread. It allows you to write
+documents in emacs that export to PDFs, HTML, latex, ODT, and more
+with external packages. If you pay close attention, you may notice
+that you're reading an org document right now, since org mode also
+lets you write documented code and export it to a file with a built-in
+tool called babel
+
+** Org Tempo
+This lets use some handy shortcuts like =<s= followed by =TAB= to
+create a code block in org mode
+
+#+begin_src emacs-lisp
+  (use-package org-tempo :ensure nil)
+#+end_src
+
+** Org Agenda
+Yes, you can even create your agenda with org mode since it supports
+task lists and scheduling
+
+#+begin_src emacs-lisp
+  (setopt org-agenda-files '("~/org/agenda/")
+          org-agenda-skip-deadline-if-done t
+          org-agenda-skip-scheduled-if-done t
+          org-agenda-skip-timestamp-if-done t
+          org-agenda-skip-scheduled-if-deadline-is-shown t
+          org-agenda-skip-timestamp-if-deadline-is-shown t
+          org-agenda-start-day "-2d"
+          org-agenda-start-on-weekday nil
+          org-agenda-span 7
+          org-agenda-window-setup 'current-window)
+#+end_src
+
+*** Integrating Org Agenda With Tab Bar Mode
+As explained in the [[*Tab Bar Workflow][Tab Bar Workflow]] section, this allows me to open
+my agenda in a new tab
+
+#+begin_src emacs-lisp
+  (defun cedar/open-agenda-in-tab ()
+    "Go to an org agenda tab, creating one if it doesn't exist."
+    (interactive)
+    (cedar/open-name-in-tab "Agenda" t #'org-agenda nil "n"))
+  (global-set-key (kbd "C-c o a") #'cedar/open-agenda-in-tab)
+#+end_src
+
+** Org Indent
+Provides visual indentation for heading levels such that a subheading
+will be further indented than its parent heading
+
+#+begin_src emacs-lisp
+  (require 'org-indent)
+  (add-hook 'org-mode-hook #'org-indent-mode)
+#+end_src
+
+* Miscellaneous Settings
+For anything too niche to fit into any specific category
+
+** Discord Integration
+Displays that you're in emacs and what file you're editing in discord,
+like how you can see what games your friends are playing
+
+#+begin_src emacs-lisp
+  (use-package elcord
+    :custom
+    (elcord-editor-icon "emacs_pen_icon")
+    :commands elcord-mode
+    :defines elcord-mode elcord-mode-icon-alist
+    :config
+    ;; https://github.com/Mstrodl/elcord/issues/17
+    (defun elcord--enable-on-frame-created (f)
+      (ignore f)
+      (elcord-mode +1))
+
+    (defun elcord--disable-elcord-if-no-frames (f)
+      (when (let ((frames (delete f (visible-frame-list))))
+              (or (null frames)
+                  (and (null (cdr frames))
+                       (eq (car frames) terminal-frame))))
+        (elcord-mode -1)
+        (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
+
+    (defun my/elcord-mode-hook ()
+      (if elcord-mode
+          (add-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)
+        (remove-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)))
+
+    (add-hook 'elcord-mode-hook 'my/elcord-mode-hook)
+
+    ;; elcord only has language icons setup for non-tree-sitter major modes, so I
+    ;; have to add that manually
+    (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
+    
+    (elcord-mode))
+#+end_src
+
+** Move Custom Settings Elsewhere
+By default, custom appends all of its settings to the end of
+=init.el=, which is pretty annoying. I just want that junk in a file I
+don't care about
+
+#+begin_src emacs-lisp
+  (setq custom-file (concat user-emacs-directory "custom.el"))
+#+end_src
+
+** Move Backup Files
+Emacs' backup files are really useful, and in a really annoying
+spot. I don't want them clogging up git and my filesystem, so just put
+them in the cache directory
+
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+#+end_src
+
+** Reset Garbage Collector Settings
+In [[*Early Init][Early Init]], we set the garbage collector threshold insanely high to
+prevent garbage collection runs slowing down initialization. We want
+garbage collection while running though, so let's set that back to a
+reasonable figure
+
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 2 1024 1024))
+#+end_src
