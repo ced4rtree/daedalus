@@ -3,6 +3,55 @@
 #+AUTO_TANGLE: t
 #+STARTUP: overview
 
+* Table of Contents :TOC:
+- [[#setup][Setup]]
+  - [[#early-init][Early Init]]
+  - [[#lexical-binding][Lexical Binding]]
+  - [[#use-package-initialization][Use-Package Initialization]]
+  - [[#melpa][Melpa]]
+- [[#tab-bar-workflow][Tab Bar Workflow]]
+  - [[#projectel-integration][Project.el Integration]]
+- [[#uiux-improvements][UI/UX Improvements]]
+  - [[#themes][Themes]]
+  - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
+  - [[#removal-of-ugly-gui-features][Removal of Ugly GUI Features]]
+  - [[#frame-opacity][Frame Opacity]]
+  - [[#font][Font]]
+  - [[#modeline-bell-flash][Modeline Bell Flash]]
+  - [[#auto-pair][Auto Pair]]
+  - [[#line-numbers][Line Numbers]]
+  - [[#yes-or-no-prompt][Yes or No Prompt]]
+  - [[#vertico][Vertico]]
+  - [[#orderless][Orderless]]
+  - [[#completion-scrolling][Completion Scrolling]]
+  - [[#mouse-usage-in-terminal-emacs][Mouse Usage in Terminal Emacs]]
+  - [[#which-key][Which Key]]
+  - [[#scrolling][Scrolling]]
+  - [[#indentation][Indentation]]
+  - [[#ansi-colors-in-compilation-buffer][ANSI Colors in Compilation Buffer]]
+  - [[#indent-bars][Indent Bars]]
+  - [[#ligatures][Ligatures]]
+- [[#code-features][Code Features]]
+  - [[#code-folding][Code Folding]]
+  - [[#lsp][LSP]]
+  - [[#tree-sitter][Tree Sitter]]
+  - [[#magit][Magit]]
+  - [[#languages][Languages]]
+- [[#the-emacs-ecosystem][The Emacs Ecosystem]]
+  - [[#mu4e][MU4E]]
+  - [[#password-decryption][Password Decryption]]
+  - [[#emms][EMMS]]
+- [[#org-mode][Org Mode]]
+  - [[#org-tempo][Org Tempo]]
+  - [[#org-agenda][Org Agenda]]
+  - [[#org-indent][Org Indent]]
+  - [[#org-toc][Org TOC]]
+- [[#miscellaneous-settings][Miscellaneous Settings]]
+  - [[#discord-integration][Discord Integration]]
+  - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
+  - [[#move-backup-files][Move Backup Files]]
+  - [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
+
 * Setup
 ** Early Init
 Some settings that get evaluated before =init.el=
@@ -23,11 +72,11 @@ Use package is a declarative package manager for emacs. The lines below allow
 you to declare a package dependency without having to use =:ensure t= to
 actually fetch said package dependency
 
-#+begin_src 
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
+#+begin_src emacs-lisp
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
 #+end_src
-
+n
 ** Melpa
 Melpa is an external package archive for emacs that is far more expansive the ones provided by default
 
@@ -604,6 +653,15 @@ will be further indented than its parent heading
 #+begin_src emacs-lisp
   (require 'org-indent)
   (add-hook 'org-mode-hook #'org-indent-mode)
+#+end_src
+
+** Org TOC
+Provides a simple way to create a table of contents for an org
+document
+
+#+begin_src emacs-lisp
+  (use-package toc-org
+    :hook (org-mode . toc-org-mode))
 #+end_src
 
 * Miscellaneous Settings
