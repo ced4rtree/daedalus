@@ -323,7 +323,7 @@ will find the password for user@example.com"
   :hook (org-mode . org-auto-tangle-mode))
 
 (use-package visual-fill-column
-  :custom visual-fill-column-width 80
+  :custom visual-fill-column-width 90
   :config
   (defun org-enable-center-text ()
     "Enables centered text in org mode."
