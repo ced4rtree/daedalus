@@ -47,6 +47,7 @@
   - [[#org-indent][Org Indent]]
   - [[#org-toc][Org TOC]]
   - [[#babel][Babel]]
+  - [[#centering-text][Centering text]]
 - [[#miscellaneous-settings][Miscellaneous Settings]]
   - [[#discord-integration][Discord Integration]]
   - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
@@ -552,7 +553,6 @@ Maildir Utils 4 Emacs. This allows you to send, receive, reply to, and view emai
     (load (concat user-emacs-directory "emails.el"))) ;; where all my private info is stored
 #+end_src
 
-
 ** Password Decryption
 This provides a utility function that can be used from outside of
 emacs (e.g. in your ~~/.mbsyncrc~) to decrypt the passwords for your
@@ -683,6 +683,35 @@ tangled automatically
 #+begin_src emacs-lisp
   (use-package org-auto-tangle
     :hook (org-mode . org-auto-tangle-mode))
+#+end_src
+
+** Centering text
+It's just nicer to have org mode text centered sometimes when
+reading/writing org documents for easier readability. This package
+does just that
+
+#+begin_src emacs-lisp
+  (use-package visual-fill-column
+    :custom visual-fill-column-width 80
+    :config
+    (defun org-enable-center-text ()
+      "Enables centered text in org mode."
+      (interactive)
+      (visual-fill-column-mode t)
+      (setq visual-fill-column-center-text t))
+
+    (defun org-disable-center-text ()
+      "Disables centered text in org mode."
+      (interactive)
+      (visual-fill-column-mode nil)
+      (setq visual-fill-column-center-text nil))
+
+    (defun org-toggle-center-text ()
+      "Toggles centered text in org mode."
+      (interactive)
+      (setq visual-fill-column-center-text
+            (not visual-fill-column-center-text))
+      (visual-fill-column-mode visual-fill-column-center-text)))
 #+end_src
 
 * Miscellaneous Settings

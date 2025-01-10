@@ -322,6 +322,28 @@ will find the password for user@example.com"
 (use-package org-auto-tangle
   :hook (org-mode . org-auto-tangle-mode))
 
+(use-package visual-fill-column
+  :custom visual-fill-column-width 80
+  :config
+  (defun org-enable-center-text ()
+    "Enables centered text in org mode."
+    (interactive)
+    (visual-fill-column-mode t)
+    (setq visual-fill-column-center-text t))
+
+  (defun org-disable-center-text ()
+    "Disables centered text in org mode."
+    (interactive)
+    (visual-fill-column-mode nil)
+    (setq visual-fill-column-center-text nil))
+
+  (defun org-toggle-center-text ()
+    "Toggles centered text in org mode."
+    (interactive)
+    (setq visual-fill-column-center-text
+          (not visual-fill-column-center-text))
+    (visual-fill-column-mode visual-fill-column-center-text)))
+
 (use-package elcord
   :custom
   (elcord-editor-icon "emacs_pen_icon")
