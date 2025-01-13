@@ -52,7 +52,13 @@ its arguments, even if NAME is already an existing tab."
     "Kill all buffers in the current project and close the current tab."
     (interactive)
     (project-kill-buffers)
-    (tab-bar-close-tab))
+    ;; when the only tab open is a project, blindly closing it leaves
+    ;; you on *scratch* but doesn't rename the buffer, which messes
+    ;; with some tab opening settings
+    (if (> (length (tab-bar-tabs)) 1)
+        (tab-bar-close-tab)
+      (when (string-equal (buffer-name) "*scratch*")
+        (tab-bar-rename-tab "*scratch*"))))
   :bind (("C-x p p" . cedar/project-switch-project-tab)
          ("C-x p k" . cedar/project-kill-buffers-and-tab)))
 
