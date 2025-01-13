@@ -29,6 +29,7 @@
   - [[#yes-or-no-prompt][Yes or No Prompt]]
   - [[#vertico][Vertico]]
   - [[#orderless][Orderless]]
+  - [[#completion-window][Completion Window]]
   - [[#completion-scrolling][Completion Scrolling]]
   - [[#mouse-usage-in-terminal-emacs][Mouse Usage in Terminal Emacs]]
   - [[#which-key][Which Key]]
@@ -415,6 +416,22 @@ emacs' built in fuzzy finding system, flex
     :custom
     (completion-styles '(orderless basic))
     (completion-category-overrides '((file (styles basic partial-completion)))))
+#+end_src
+
+** Completion Window
+Emacs has completion help that pops up in the minibuffer, but it isn't
+super easy to navigate, nor is it close to what you're editing. Corfu
+has a window pop up just under the point that looks quite a bit nicer
+
+#+begin_src emacs-lisp
+  (use-package corfu
+    :hook
+    (prog-mode . corfu-mode)
+    (corfu-mode . corfu-history-mode)
+    (corfu-mode . corfu-echo-mode)
+    :custom
+    (corfu-cycle t)
+    (corfu-echo-delay 0))
 #+end_src
 
 ** Completion Scrolling

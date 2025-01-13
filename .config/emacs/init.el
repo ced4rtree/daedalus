@@ -190,6 +190,15 @@ its arguments, even if NAME is already an existing tab."
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+(use-package corfu
+  :hook
+  (prog-mode . corfu-mode)
+  (corfu-mode . corfu-history-mode)
+  (corfu-mode . corfu-echo-mode)
+  :custom
+  (corfu-cycle t)
+  (corfu-echo-delay 0))
+
 (define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
 (define-key completion-in-region-mode-map (kbd "M-p") #'minibuffer-previous-completion)
 (define-key completion-in-region-mode-map (kbd "TAB") #'minibuffer-choose-completion)
