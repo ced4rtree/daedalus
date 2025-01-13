@@ -199,7 +199,7 @@ can see my background while working
 Sets the font in the GUI to the one specified
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
+  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
 #+end_src
 
 ** Modeline Bell Flash

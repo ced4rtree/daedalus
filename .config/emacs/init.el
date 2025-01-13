@@ -73,7 +73,7 @@ its arguments, even if NAME is already an existing tab."
 
 (add-to-list 'default-frame-alist '(alpha-background . 80))
 
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-11"))
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
 
 (setq visible-bell t
       ring-bell-function
