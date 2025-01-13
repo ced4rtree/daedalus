@@ -297,7 +297,7 @@ grotesque, so I'll just go ahead and remove them.
 
 ** Frame Opacity
 This enables a transparent background with completely opaque text so I
-can see my background while working
+can see my background while working (disabled for now)
 
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(alpha-background . 100))
