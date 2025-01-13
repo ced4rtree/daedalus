@@ -199,7 +199,7 @@ its arguments, even if NAME is already an existing tab."
                                        "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
                                        ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                                        "<:<" ";;;"))
-  (global-ligature-mode t))
+  :hook (prog-mode . ligature-mode))
 
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
