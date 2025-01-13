@@ -9,8 +9,14 @@
   - [[#lexical-binding][Lexical Binding]]
   - [[#use-package-initialization][Use-Package Initialization]]
   - [[#melpa][Melpa]]
-- [[#tab-bar-workflow][Tab Bar Workflow]]
-  - [[#projectel-integration][Project.el Integration]]
+- [[#miscellaneous-settings][Miscellaneous Settings]]
+  - [[#tab-bar-workflow][Tab Bar Workflow]]
+  - [[#discord-integration][Discord Integration]]
+  - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
+  - [[#move-backup-files][Move Backup Files]]
+  - [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
+  - [[#expand-region][Expand Region]]
+  - [[#avy][Avy]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#themes][Themes]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -49,12 +55,6 @@
   - [[#org-toc][Org TOC]]
   - [[#babel][Babel]]
   - [[#centering-text][Centering text]]
-- [[#miscellaneous-settings][Miscellaneous Settings]]
-  - [[#discord-integration][Discord Integration]]
-  - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
-  - [[#move-backup-files][Move Backup Files]]
-  - [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
-  - [[#expand-region][Expand Region]]
 
 * Setup
 ** Early Init
@@ -90,7 +90,10 @@ Melpa is an external package archive for emacs that is far more expansive the on
   (package-initialize)
 #+end_src
 
-* Tab Bar Workflow
+* Miscellaneous Settings
+For anything too niche to fit into any specific category
+
+** Tab Bar Workflow
 The tab bar in emacs allows me to organize all of my projects and
 applications while still allowing easy access to buffers between them
 if need be. Perspective, the package I used to use for organization
@@ -130,7 +133,7 @@ workspaces, which was a little annoying
             (apply callback callback-args))))))
 #+end_src
 
-** Project.el Integration
+*** Project.el Integration
 Project.el provides some really nice project management functions for
 emacs. The defaults are stellar, I just need to add some integration
 with tab-bar-mode
@@ -161,7 +164,102 @@ with tab-bar-mode
            ("C-x p k" . cedar/project-kill-buffers-and-tab)))
 #+end_src
 
+** Discord Integration
+Displays that you're in emacs and what file you're editing in discord,
+like how you can see what games your friends are playing
+
+#+begin_src emacs-lisp
+  (use-package elcord
+    :custom
+    (elcord-editor-icon "emacs_pen_icon")
+    :commands elcord-mode
+    :defines elcord-mode elcord-mode-icon-alist
+    :config
+    ;; https://github.com/Mstrodl/elcord/issues/17
+    (defun elcord--enable-on-frame-created (f)
+      (ignore f)
+      (elcord-mode +1))
+
+    (defun elcord--disable-elcord-if-no-frames (f)
+      (when (let ((frames (delete f (visible-frame-list))))
+              (or (null frames)
+                  (and (null (cdr frames))
+                       (eq (car frames) terminal-frame))))
+        (elcord-mode -1)
+        (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
+
+    (defun my/elcord-mode-hook ()
+      (if elcord-mode
+          (add-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)
+        (remove-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)))
+
+    (add-hook 'elcord-mode-hook 'my/elcord-mode-hook)
+
+    ;; elcord only has language icons setup for non-tree-sitter major modes, so I
+    ;; have to add that manually
+    (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
+    (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
+    
+    (elcord-mode))
+#+end_src
+
+** Move Custom Settings Elsewhere
+By default, custom appends all of its settings to the end of
+=init.el=, which is pretty annoying. I just want that junk in a file I
+don't care about
+
+#+begin_src emacs-lisp
+  (setq custom-file (concat user-emacs-directory "custom.el"))
+#+end_src
+
+** Move Backup Files
+Emacs' backup files are really useful, and in a really annoying
+spot. I don't want them clogging up git and my filesystem, so just put
+them in the cache directory
+
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+#+end_src
+
+** Reset Garbage Collector Settings
+In [[*Early Init][Early Init]], we set the garbage collector threshold insanely high to
+prevent garbage collection runs slowing down initialization. We want
+garbage collection while running though, so let's set that back to a
+reasonable figure
+
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 2 1024 1024))
+#+end_src
+
+** Expand Region
+This is a nifty package that marks the entire word your on, then
+sentence, paragraph, etc. It works well with code and things like
+parentheses too
+
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+#+end_src
+
+** Avy
+Avy lets you quickly select different things like characters, lines,
+words, etc. by hitting just a couple buttons instead of navigating
+where you need to go manually
+
+#+begin_src emacs-lisp
+  (use-package avy
+    :config
+    (avy-setup-default))
+#+end_src
+
 * UI/UX Improvements
+Emacs' default look and feel doesn't look or feel good, to be
+blunt. Below are some settings to change that
+
 ** Themes
 Changes all the colors and whatnot
 
@@ -732,86 +830,3 @@ does just that
       (visual-fill-column-mode visual-fill-column-center-text)))
 #+end_src
 
-* Miscellaneous Settings
-For anything too niche to fit into any specific category
-
-** Discord Integration
-Displays that you're in emacs and what file you're editing in discord,
-like how you can see what games your friends are playing
-
-#+begin_src emacs-lisp
-  (use-package elcord
-    :custom
-    (elcord-editor-icon "emacs_pen_icon")
-    :commands elcord-mode
-    :defines elcord-mode elcord-mode-icon-alist
-    :config
-    ;; https://github.com/Mstrodl/elcord/issues/17
-    (defun elcord--enable-on-frame-created (f)
-      (ignore f)
-      (elcord-mode +1))
-
-    (defun elcord--disable-elcord-if-no-frames (f)
-      (when (let ((frames (delete f (visible-frame-list))))
-              (or (null frames)
-                  (and (null (cdr frames))
-                       (eq (car frames) terminal-frame))))
-        (elcord-mode -1)
-        (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
-
-    (defun my/elcord-mode-hook ()
-      (if elcord-mode
-          (add-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)
-        (remove-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)))
-
-    (add-hook 'elcord-mode-hook 'my/elcord-mode-hook)
-
-    ;; elcord only has language icons setup for non-tree-sitter major modes, so I
-    ;; have to add that manually
-    (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
-    (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
-    (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
-    (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
-    (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
-    
-    (elcord-mode))
-#+end_src
-
-** Move Custom Settings Elsewhere
-By default, custom appends all of its settings to the end of
-=init.el=, which is pretty annoying. I just want that junk in a file I
-don't care about
-
-#+begin_src emacs-lisp
-  (setq custom-file (concat user-emacs-directory "custom.el"))
-#+end_src
-
-** Move Backup Files
-Emacs' backup files are really useful, and in a really annoying
-spot. I don't want them clogging up git and my filesystem, so just put
-them in the cache directory
-
-#+begin_src emacs-lisp
-  (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
-  (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-#+end_src
-
-** Reset Garbage Collector Settings
-In [[*Early Init][Early Init]], we set the garbage collector threshold insanely high to
-prevent garbage collection runs slowing down initialization. We want
-garbage collection while running though, so let's set that back to a
-reasonable figure
-
-#+begin_src emacs-lisp
-  (setq gc-cons-threshold (* 2 1024 1024))
-#+end_src
-
-** Expand Region
-This is a nifty package that marks the entire word your on, then
-sentence, paragraph, etc. It works well with code and things like
-parentheses too
-
-#+begin_src emacs-lisp
-  (use-package expand-region
-    :bind ("C-=" . er/expand-region))
-#+end_src

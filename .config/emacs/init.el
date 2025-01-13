@@ -62,6 +62,56 @@ its arguments, even if NAME is already an existing tab."
   :bind (("C-x p p" . cedar/project-switch-project-tab)
          ("C-x p k" . cedar/project-kill-buffers-and-tab)))
 
+(use-package elcord
+  :custom
+  (elcord-editor-icon "emacs_pen_icon")
+  :commands elcord-mode
+  :defines elcord-mode elcord-mode-icon-alist
+  :config
+  ;; https://github.com/Mstrodl/elcord/issues/17
+  (defun elcord--enable-on-frame-created (f)
+    (ignore f)
+    (elcord-mode +1))
+
+  (defun elcord--disable-elcord-if-no-frames (f)
+    (when (let ((frames (delete f (visible-frame-list))))
+            (or (null frames)
+                (and (null (cdr frames))
+                     (eq (car frames) terminal-frame))))
+      (elcord-mode -1)
+      (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
+
+  (defun my/elcord-mode-hook ()
+    (if elcord-mode
+        (add-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)
+      (remove-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)))
+
+  (add-hook 'elcord-mode-hook 'my/elcord-mode-hook)
+
+  ;; elcord only has language icons setup for non-tree-sitter major modes, so I
+  ;; have to add that manually
+  (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
+  (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
+  
+  (elcord-mode))
+
+(setq custom-file (concat user-emacs-directory "custom.el"))
+
+(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
+(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
+
+(setq gc-cons-threshold (* 2 1024 1024))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
+(use-package avy
+  :config
+  (avy-setup-default))
+
 (use-package spacemacs-theme
   :config (load-theme 'spacemacs-dark t))
 
@@ -352,49 +402,3 @@ will find the password for user@example.com"
     (setq visual-fill-column-center-text
           (not visual-fill-column-center-text))
     (visual-fill-column-mode visual-fill-column-center-text)))
-
-(use-package elcord
-  :custom
-  (elcord-editor-icon "emacs_pen_icon")
-  :commands elcord-mode
-  :defines elcord-mode elcord-mode-icon-alist
-  :config
-  ;; https://github.com/Mstrodl/elcord/issues/17
-  (defun elcord--enable-on-frame-created (f)
-    (ignore f)
-    (elcord-mode +1))
-
-  (defun elcord--disable-elcord-if-no-frames (f)
-    (when (let ((frames (delete f (visible-frame-list))))
-            (or (null frames)
-                (and (null (cdr frames))
-                     (eq (car frames) terminal-frame))))
-      (elcord-mode -1)
-      (add-hook 'after-make-frame-functions 'elcord--enable-on-frame-created)))
-
-  (defun my/elcord-mode-hook ()
-    (if elcord-mode
-        (add-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)
-      (remove-hook 'delete-frame-functions 'elcord--disable-elcord-if-no-frames)))
-
-  (add-hook 'elcord-mode-hook 'my/elcord-mode-hook)
-
-  ;; elcord only has language icons setup for non-tree-sitter major modes, so I
-  ;; have to add that manually
-  (add-to-list 'elcord-mode-icon-alist '(java-ts-mode . "java-mode_icon"))
-  (add-to-list 'elcord-mode-icon-alist '(c++-ts-mode . "cpp-mode_icon"))
-  (add-to-list 'elcord-mode-icon-alist '(c-ts-mode . "c-mode_icon"))
-  (add-to-list 'elcord-mode-icon-alist '(rust-ts-mode . "rust-mode_icon"))
-  (add-to-list 'elcord-mode-icon-alist '(haskell-ts-mode . "haskell-mode_icon"))
-  
-  (elcord-mode))
-
-(setq custom-file (concat user-emacs-directory "custom.el"))
-
-(setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
-(setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-
-(setq gc-cons-threshold (* 2 1024 1024))
-
-(use-package expand-region
-  :bind ("C-=" . er/expand-region))
