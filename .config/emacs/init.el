@@ -392,3 +392,6 @@ will find the password for user@example.com"
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
 (setq gc-cons-threshold (* 2 1024 1024))
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))

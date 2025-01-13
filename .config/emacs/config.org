@@ -53,6 +53,7 @@
   - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
   - [[#move-backup-files][Move Backup Files]]
   - [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
+  - [[#expand-region][Expand Region]]
 
 * Setup
 ** Early Init
@@ -792,4 +793,14 @@ reasonable figure
 
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 2 1024 1024))
+#+end_src
+
+** Expand Region
+This is a nifty package that marks the entire word your on, then
+sentence, paragraph, etc. It works well with code and things like
+parentheses too
+
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
 #+end_src
