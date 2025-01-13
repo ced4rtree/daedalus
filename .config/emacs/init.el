@@ -109,8 +109,13 @@ its arguments, even if NAME is already an existing tab."
   :bind ("C-=" . er/expand-region))
 
 (use-package avy
-  :config
-  (avy-setup-default))
+  :config (avy-setup-default)
+  :bind (("M-s" . avy-goto-char)
+         ("C-:" . avy-goto-char)
+         ("C-'" . avy-goto-char-2)
+         ("M-g f" . avy-goto-line)
+         ("M-g w" . avy-goto-word-1)
+         ("M-g e" . avy-goto-word-0)))
 
 (use-package spacemacs-theme
   :config (load-theme 'spacemacs-dark t))
