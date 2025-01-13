@@ -71,7 +71,7 @@ its arguments, even if NAME is already an existing tab."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
 

@@ -194,7 +194,7 @@ This enables a transparent background with completely opaque text so I
 can see my background while working
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 80))
+  (add-to-list 'default-frame-alist '(alpha-background . 100))
 #+end_src
 
 ** Font
