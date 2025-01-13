@@ -62,8 +62,8 @@ its arguments, even if NAME is already an existing tab."
   :bind (("C-x p p" . cedar/project-switch-project-tab)
          ("C-x p k" . cedar/project-kill-buffers-and-tab)))
 
-(use-package doom-themes
-  :config (load-theme 'doom-acario-dark t))
+(use-package spacemacs-theme
+  :config (load-theme 'spacemacs-dark t))
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 

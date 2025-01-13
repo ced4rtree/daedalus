@@ -164,8 +164,8 @@ with tab-bar-mode
 Changes all the colors and whatnot
 
 #+begin_src emacs-lisp
-  (use-package doom-themes
-    :config (load-theme 'doom-acario-dark t))
+  (use-package spacemacs-theme
+    :config (load-theme 'spacemacs-dark t))
 #+end_src
 
 ** Continuous Vertical Border in Terminal Emacs
