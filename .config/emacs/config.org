@@ -40,6 +40,7 @@
   - [[#ligatures][Ligatures]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#highlight-line][Highlight Line]]
+  - [[#dired-icons][Dired Icons]]
 - [[#code-features][Code Features]]
   - [[#code-folding][Code Folding]]
   - [[#lsp][LSP]]
@@ -587,6 +588,16 @@ normal background
 
 #+begin_src emacs-lisp
   (global-hl-line-mode t)
+#+end_src
+
+** Dired Icons
+It's nice to have some nice little icons that indicate the file type
+next to a file in dired
+
+#+begin_src emacs-lisp
+  (use-package nerd-icons-dired
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
 * Code Features

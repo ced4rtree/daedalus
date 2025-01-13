@@ -276,6 +276,10 @@ its arguments, even if NAME is already an existing tab."
 
 (global-hl-line-mode t)
 
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
