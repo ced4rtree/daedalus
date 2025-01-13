@@ -31,6 +31,7 @@
   - [[#ansi-colors-in-compilation-buffer][ANSI Colors in Compilation Buffer]]
   - [[#indent-bars][Indent Bars]]
   - [[#ligatures][Ligatures]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#code-features][Code Features]]
   - [[#code-folding][Code Folding]]
   - [[#lsp][LSP]]
@@ -446,6 +447,16 @@ glyph
                                          ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                                          "<:<" ";;;"))
     :hook (prog-mode . ligature-mode))
+#+end_src
+
+** Rainbow Delimiters
+Delimiters like parentheses and curly brackets, especially in lisp
+code, can be kinda hard to follow at times. It'd be a lot nicer if
+they were color coded, don't you think?
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook ((prog-mode org-mode) . rainbow-delimiters-mode))
 #+end_src
 
 * Code Features

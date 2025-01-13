@@ -207,6 +207,9 @@ its arguments, even if NAME is already an existing tab."
                                        "<:<" ";;;"))
   :hook (prog-mode . ligature-mode))
 
+(use-package rainbow-delimiters
+  :hook ((prog-mode org-mode) . rainbow-delimiters-mode))
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
