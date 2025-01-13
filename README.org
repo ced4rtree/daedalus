@@ -1,2 +1,6 @@
 #+AUTHOR: [[HTTPS://github.com/bugger2][bugger2]]
 #+TITLE: My configuration files for a ton of stuff
+
+Everything here is meant to be installed via GNU Stow. Some things,
+like my NixOS configuration, should be installed through their
+respective documentation.
