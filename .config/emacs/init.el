@@ -260,6 +260,8 @@ its arguments, even if NAME is already an existing tab."
 (use-package rainbow-delimiters
   :hook ((prog-mode org-mode) . rainbow-delimiters-mode))
 
+(global-hl-line-mode t)
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
