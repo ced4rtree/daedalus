@@ -134,15 +134,15 @@ emacs. The defaults are stellar, I just need to add some integration
 with tab-bar-mode
 
 #+begin_src emacs-lisp
-(use-package project
-  :ensure nil
-  :commands (project-prompt-project-dir)
-  :config
-  (defun cedar/project-switch-project-tab ()
-    "Switch to a project tab, or create one if the prompted project doesn't exist."
-    (interactive)
-    (let* ((project-name (project-prompt-project-dir)))
-      (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
+  (use-package project
+    :ensure nil
+    :commands (project-prompt-project-dir)
+    :config
+    (defun cedar/project-switch-project-tab ()
+      "Switch to a project tab, or create one if the prompted project doesn't exist."
+      (interactive)
+      (let* ((project-name (project-prompt-project-dir)))
+        (cedar/open-name-in-tab project-name nil 'project-switch-project project-name)))
 
   (defun cedar/project-kill-buffers-and-tab ()
     "Kill all buffers in the current project and close the current tab."
