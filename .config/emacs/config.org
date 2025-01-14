@@ -42,6 +42,7 @@
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#highlight-line][Highlight Line]]
   - [[#dired-icons][Dired Icons]]
+  - [[#beacon][Beacon]]
 - [[#code-features][Code Features]]
   - [[#code-folding][Code Folding]]
   - [[#lsp][LSP]]
@@ -610,6 +611,15 @@ next to a file in dired
   (use-package nerd-icons-dired
     :hook
     (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
+** Beacon
+Adding a nice flash for where your cursor is upon movements makes it
+really easy and really pretty when finding the point
+
+#+begin_src emacs-lisp
+  (use-package beacon
+    :config (beacon-mode))
 #+end_src
 
 * Code Features

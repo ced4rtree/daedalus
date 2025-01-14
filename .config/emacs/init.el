@@ -285,6 +285,9 @@ its arguments, even if NAME is already an existing tab."
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
+(use-package beacon
+  :config (beacon-mode))
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
