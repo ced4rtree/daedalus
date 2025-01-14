@@ -298,8 +298,8 @@ its arguments, even if NAME is already an existing tab."
   :config
   :bind (:map prog-mode-map
               ("C-c c c" . (lambda ()
-			     (interactive)
-			     (eglot-ensure)))
+			                 (interactive)
+			                 (eglot-ensure)))
               ("C-c c r" . eglot-rename)
               ("C-c c k" . eglot-shutdown)
               ("C-c c f" . eglot-code-action-quickfix)))
@@ -307,10 +307,10 @@ its arguments, even if NAME is already an existing tab."
 (use-package eglot-java
   :defer t
   :hook (eglot-managed-mode . (lambda ()
-    				(interactive)
-    				(when (or (string= major-mode "java-mode")
-    					  (string= major-mode "java-ts-mode"))
-    				  (eglot-java-mode t))))
+    				            (interactive)
+    				            (when (or (string= major-mode "java-mode")
+    					                  (string= major-mode "java-ts-mode"))
+    				              (eglot-java-mode t))))
   :hook (java-mode . eglot-java-mode))
 
 (setq major-mode-remap-alist
@@ -347,7 +347,7 @@ will find the password for user@example.com"
 
   (let ((result (apply #'auth-source-search keys)))
     (when result
-        (funcall (plist-get (car result) :secret)))))
+      (funcall (plist-get (car result) :secret)))))
 
 (use-package emms
   :commands (emms-all emms-smart-browse)

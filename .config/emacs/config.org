@@ -66,14 +66,14 @@
 Some settings that get evaluated before =init.el=
 
 #+begin_src emacs-lisp :tangle early-init.el
-(setq gc-cons-threshold most-positive-fixnum)
+  (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
 
 ** Lexical Binding
 Lexical binding enables a lexical scope for variables, which opens up some
 opportunities for optimization.
 #+begin_src emacs-lisp
-;; -*- lexical-binding: t -*-
+  ;; -*- lexical-binding: t -*-
 #+end_src
 
 ** Use-Package Initialization
@@ -371,15 +371,15 @@ completion so you can see and scroll through all of your different
 options
 
 This also includes a few other packages that do some other stuff, such as
- - Marginalia, which adds some useful information in vertico, such as
-   keybindings and docstrings
- - Prescient, which sorts things in vertico before typing by how
-   frequently that selection is used
- - Vertico Posframe, which puts vertico in another window in the
-   middle of the frame
- - Vertico Directory, which automatically deletes the name of a
-   directory when hitting ~DEL~ in an interactive file selection in
-   vertico
+- Marginalia, which adds some useful information in vertico, such as
+  keybindings and docstrings
+- Prescient, which sorts things in vertico before typing by how
+  frequently that selection is used
+- Vertico Posframe, which puts vertico in another window in the
+  middle of the frame
+- Vertico Directory, which automatically deletes the name of a
+  directory when hitting ~DEL~ in an interactive file selection in
+  vertico
 
 #+begin_src emacs-lisp
   (use-package vertico
@@ -476,7 +476,7 @@ available when you've begun a keychord so you can remember/learn
 whatever keybinding you need
 
 #+begin_src emacs-lisp
-(which-key-mode t)
+  (which-key-mode t)
 #+end_src
 
 ** Scrolling
@@ -484,12 +484,12 @@ Scrolling in emacs is very strange by default. I just want scrolling
 to behave like every other application I've ever used
 
 #+begin_src emacs-lisp
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
-      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
-      mouse-wheel-follow-mouse 't ;; scroll window under mouse
-      scroll-step 1 ;; keyboard scroll one line at a time
-      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
-      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
+        mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+        mouse-wheel-follow-mouse 't ;; scroll window under mouse
+        scroll-step 1 ;; keyboard scroll one line at a time
+        scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
+        scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
 #+end_src
 
 ** Indentation
@@ -642,18 +642,18 @@ Modern emacs (29+) actually ships with an LSP client out of the
 box. It's called eglot, and it's pretty powerful
 
 #+begin_src emacs-lisp
-(use-package eglot
-  :ensure nil
-  :custom
-  (eglot-autoshutdown t)
-  :config
-  :bind (:map prog-mode-map
-              ("C-c c c" . (lambda ()
-			     (interactive)
-			     (eglot-ensure)))
-              ("C-c c r" . eglot-rename)
-              ("C-c c k" . eglot-shutdown)
-              ("C-c c f" . eglot-code-action-quickfix)))
+  (use-package eglot
+    :ensure nil
+    :custom
+    (eglot-autoshutdown t)
+    :config
+    :bind (:map prog-mode-map
+                ("C-c c c" . (lambda ()
+  			                 (interactive)
+  			                 (eglot-ensure)))
+                ("C-c c r" . eglot-rename)
+                ("C-c c k" . eglot-shutdown)
+                ("C-c c f" . eglot-code-action-quickfix)))
 #+end_src
 
 *** Java Support
@@ -665,14 +665,14 @@ possible to configure externally, somebody has done the noble work of
 making it work seamlessly with eglot.
 
 #+begin_src emacs-lisp
-(use-package eglot-java
-  :defer t
-  :hook (eglot-managed-mode . (lambda ()
-    				(interactive)
-    				(when (or (string= major-mode "java-mode")
-    					  (string= major-mode "java-ts-mode"))
-    				  (eglot-java-mode t))))
-  :hook (java-mode . eglot-java-mode))
+  (use-package eglot-java
+    :defer t
+    :hook (eglot-managed-mode . (lambda ()
+      				            (interactive)
+      				            (when (or (string= major-mode "java-mode")
+      					                  (string= major-mode "java-ts-mode"))
+      				              (eglot-java-mode t))))
+    :hook (java-mode . eglot-java-mode))
 #+end_src
 
 ** Tree Sitter
@@ -682,11 +682,11 @@ called an "abstract syntax tree" that's supposed to be faster and
 better
 
 #+begin_src emacs-lisp
-(setq major-mode-remap-alist
-      '((java-mode  . java-ts-mode)
-        (c-mode . c-ts-mode)
-        (c++-mode . c++-ts-mode)
-        (rust-mode . rust-ts-mode)))
+  (setq major-mode-remap-alist
+        '((java-mode  . java-ts-mode)
+          (c-mode . c-ts-mode)
+          (c++-mode . c++-ts-mode)
+          (rust-mode . rust-ts-mode)))
 #+end_src
 
 ** Magit
@@ -748,39 +748,39 @@ emails stored in ~~/.authinfo.gpg~
 
     (let ((result (apply #'auth-source-search keys)))
       (when result
-          (funcall (plist-get (car result) :secret)))))
+        (funcall (plist-get (car result) :secret)))))
 #+end_src
 
 ** EMMS
 The Emacs Multimedia System allows you to play music directly from emacs
 
 #+begin_src emacs-lisp
-(use-package emms
-  :commands (emms-all emms-smart-browse)
-  :defines emms-playlist-mode-map
-  :custom
-  (emms-seek-seconds 5)
-  (emms-player-list '(emms-player-mpv))
-  (emms-info-functions '(emms-info-native))
+  (use-package emms
+    :commands (emms-all emms-smart-browse)
+    :defines emms-playlist-mode-map
+    :custom
+    (emms-seek-seconds 5)
+    (emms-player-list '(emms-player-mpv))
+    (emms-info-functions '(emms-info-native))
 
-  :config
-;;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-;;; (setq emms-player-mpd-server-name "localhost")
-;;; (setq emms-player-mpd-server-port "6600")
-;;; (setq mpc-host "localhost:6600")
-  (require 'emms-setup)
-  (emms-all)
+    :config
+  ;;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+  ;;; (setq emms-player-mpd-server-name "localhost")
+  ;;; (setq emms-player-mpd-server-port "6600")
+  ;;; (setq mpc-host "localhost:6600")
+    (require 'emms-setup)
+    (emms-all)
 
-  (defun cedar/emms-smart-browse-in-tab ()
-    (interactive)
-    (cedar/open-name-in-tab "EMMS (Music)" t #'emms-smart-browse))
+    (defun cedar/emms-smart-browse-in-tab ()
+      (interactive)
+      (cedar/open-name-in-tab "EMMS (Music)" t #'emms-smart-browse))
 
-  :bind (("C-c m t" . emms-pause) ;; t for toggle
-         ("C-c m n" . emms-next)
-         ("C-c m p" . emms-previous)
-         ("C-c m m" . cedar/emms-smart-browse-in-tab)
-         :map emms-playlist-mode-map
-         ("Z" . emms-shuffle)))
+    :bind (("C-c m t" . emms-pause) ;; t for toggle
+           ("C-c m n" . emms-next)
+           ("C-c m p" . emms-previous)
+           ("C-c m m" . cedar/emms-smart-browse-in-tab)
+           :map emms-playlist-mode-map
+           ("Z" . emms-shuffle)))
 #+end_src
 
 * Org Mode
