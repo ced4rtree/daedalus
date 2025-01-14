@@ -17,6 +17,7 @@
   - [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
   - [[#expand-region][Expand Region]]
   - [[#avy][Avy]]
+  - [[#hungry-delete][Hungry Delete]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#themes][Themes]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -262,6 +263,17 @@ where you need to go manually
            ("M-g f" . avy-goto-line)
            ("M-g w" . avy-goto-word-1)
            ("M-g e" . avy-goto-word-0)))
+#+end_src
+
+** Hungry Delete
+When I delete whitespace, there is never a situation where I want more
+whitespace. Just delete all of it!
+
+#+begin_src emacs-lisp
+  (use-package smart-hungry-delete
+    :bind (("<backspace>" . smart-hungry-delete-backward-char)
+           ("<delete>" . smart-hungry-delete-backward-char)
+           ("C-d" . smart-hungry-delete-forward-char)))
 #+end_src
 
 * UI/UX Improvements
