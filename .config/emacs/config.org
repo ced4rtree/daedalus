@@ -18,6 +18,7 @@
   - [[#expand-region][Expand Region]]
   - [[#avy][Avy]]
   - [[#hungry-delete][Hungry Delete]]
+  - [[#scroll-one-line][Scroll one line]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#themes][Themes]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -275,6 +276,43 @@ whitespace. Just delete all of it!
     :bind (("<backspace>" . smart-hungry-delete-backward-char)
            ("<delete>" . smart-hungry-delete-backward-char)
            ("C-d" . smart-hungry-delete-forward-char)))
+#+end_src
+
+** Scroll one line
+Sometimes it's just nice to scroll the page without moving my point
+all the way to the bottom of the screen
+
+#+begin_src emacs-lisp
+  (defun cedar/scroll-page-and-point-up (&optional arg)
+    "Scroll ARG lines up in a buffer, and maintain physical position of
+  the point.
+
+  The point does not change physical position on the screen, but does
+  scroll by ARG lines up to negate the buffer scrolling ARG lines down.
+
+  If LINES is not specified, 1 is assumed."
+
+    (interactive)
+    (let ((lines (if arg arg 1)))
+      (scroll-down lines)
+      (previous-line lines)))
+
+  (defun cedar/scroll-page-and-point-down (&optional arg)
+    "Scroll ARG lines down in a buffer, and maintain physical position of
+  the point.
+
+  The point does not change physical position on the screen, but does
+  scroll by ARG lines down to negate the buffer scrolling ARG lines up.
+
+  If LINES is not specified, 1 is assumed."
+
+    (interactive)
+    (let ((lines (if arg arg 1)))
+      (scroll-up lines)
+      (next-line lines)))
+
+  (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
+  (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 #+end_src
 
 * UI/UX Improvements

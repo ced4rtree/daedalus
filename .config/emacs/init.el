@@ -122,6 +122,37 @@ its arguments, even if NAME is already an existing tab."
          ("<delete>" . smart-hungry-delete-backward-char)
          ("C-d" . smart-hungry-delete-forward-char)))
 
+(defun cedar/scroll-page-and-point-up (&optional arg)
+  "Scroll ARG lines up in a buffer, and maintain physical position of
+the point.
+
+The point does not change physical position on the screen, but does
+scroll by ARG lines up to negate the buffer scrolling ARG lines down.
+
+If LINES is not specified, 1 is assumed."
+
+  (interactive)
+  (let ((lines (if arg arg 1)))
+    (scroll-down lines)
+    (previous-line lines)))
+
+(defun cedar/scroll-page-and-point-down (&optional arg)
+  "Scroll ARG lines down in a buffer, and maintain physical position of
+the point.
+
+The point does not change physical position on the screen, but does
+scroll by ARG lines down to negate the buffer scrolling ARG lines up.
+
+If LINES is not specified, 1 is assumed."
+
+  (interactive)
+  (let ((lines (if arg arg 1)))
+    (scroll-up lines)
+    (next-line lines)))
+
+(global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
+(global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
+
 (use-package spacemacs-theme
   :config (load-theme 'spacemacs-dark t))
 
