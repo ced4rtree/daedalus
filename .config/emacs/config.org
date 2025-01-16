@@ -770,10 +770,10 @@ The Emacs Multimedia System allows you to play music directly from emacs
     (emms-info-functions '(emms-info-native))
 
     :config
-  ;;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-  ;;; (setq emms-player-mpd-server-name "localhost")
-  ;;; (setq emms-player-mpd-server-port "6600")
-  ;;; (setq mpc-host "localhost:6600")
+    ;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+    ;; (setq emms-player-mpd-server-name "localhost")
+    ;; (setq emms-player-mpd-server-port "6600")
+    ;; (setq mpc-host "localhost:6600")
     (require 'emms-setup)
     (emms-all)
 
@@ -790,12 +790,11 @@ The Emacs Multimedia System allows you to play music directly from emacs
 #+end_src
 
 * Org Mode
-Org mode is the best thing since sliced bread. It allows you to write
-documents in emacs that export to PDFs, HTML, latex, ODT, and more
-with external packages. If you pay close attention, you may notice
-that you're reading an org document right now, since org mode also
-lets you write documented code and export it to a file with a built-in
-tool called babel
+Org mode is the best thing since sliced bread. It allows you to write documents
+in emacs that export to PDFs, HTML, latex, ODT, and more with external
+packages. If you pay close attention, you may notice that you're reading an org
+document right now, since org mode also lets you write documented code and
+export it to a file with a built-in tool called babel
 
 ** Org Tempo
 This lets use some handy shortcuts like =<s= followed by =TAB= to

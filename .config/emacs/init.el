@@ -364,10 +364,10 @@ will find the password for user@example.com"
   (emms-info-functions '(emms-info-native))
 
   :config
-;;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-;;; (setq emms-player-mpd-server-name "localhost")
-;;; (setq emms-player-mpd-server-port "6600")
-;;; (setq mpc-host "localhost:6600")
+  ;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+  ;; (setq emms-player-mpd-server-name "localhost")
+  ;; (setq emms-player-mpd-server-port "6600")
+  ;; (setq mpc-host "localhost:6600")
   (require 'emms-setup)
   (emms-all)
 
