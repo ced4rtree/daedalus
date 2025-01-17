@@ -61,6 +61,7 @@
   - [[#org-toc][Org TOC]]
   - [[#babel][Babel]]
   - [[#centering-text][Centering text]]
+  - [[#org-bullets][Org Bullets]]
 
 * Setup
 ** Early Init
@@ -938,3 +939,11 @@ does just that
       (visual-fill-column-mode visual-fill-column-center-text)))
 #+end_src
 
+** Org Bullets
+This package replaces the asterisks in org mode with nice looking
+UTF-8 bullets
+
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :hook (org-mode . org-bullets-mode))
+#+end_src

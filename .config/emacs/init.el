@@ -467,3 +467,6 @@ will find the password for user@example.com"
     (setq visual-fill-column-center-text
           (not visual-fill-column-center-text))
     (visual-fill-column-mode visual-fill-column-center-text)))
+
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode))
