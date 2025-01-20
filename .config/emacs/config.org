@@ -273,10 +273,7 @@ When I delete whitespace, there is never a situation where I want more
 whitespace. Just delete all of it!
 
 #+begin_src emacs-lisp
-  (use-package smart-hungry-delete
-    :bind (("<backspace>" . smart-hungry-delete-backward-char)
-           ("<delete>" . smart-hungry-delete-backward-char)
-           ("C-d" . smart-hungry-delete-forward-char)))
+  (global-hungry-delete-mode 1)
 #+end_src
 
 ** Scroll one line

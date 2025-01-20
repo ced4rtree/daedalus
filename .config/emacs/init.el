@@ -117,10 +117,7 @@ its arguments, even if NAME is already an existing tab."
          ("M-g w" . avy-goto-word-1)
          ("M-g e" . avy-goto-word-0)))
 
-(use-package smart-hungry-delete
-  :bind (("<backspace>" . smart-hungry-delete-backward-char)
-         ("<delete>" . smart-hungry-delete-backward-char)
-         ("C-d" . smart-hungry-delete-forward-char)))
+(global-hungry-delete-mode 1)
 
 (defun cedar/scroll-page-and-point-up (&optional arg)
   "Scroll ARG lines up in a buffer, and maintain physical position of
