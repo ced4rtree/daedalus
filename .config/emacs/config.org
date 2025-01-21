@@ -481,6 +481,7 @@ has a window pop up just under the point that looks quite a bit nicer
     (corfu-mode . corfu-echo-mode)
     :custom
     (corfu-cycle t)
+    (corfu-auto t)
     (corfu-echo-delay 0))
 #+end_src
 

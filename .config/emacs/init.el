@@ -230,6 +230,7 @@ If LINES is not specified, 1 is assumed."
   (corfu-mode . corfu-echo-mode)
   :custom
   (corfu-cycle t)
+  (corfu-auto t)
   (corfu-echo-delay 0))
 
 (define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
