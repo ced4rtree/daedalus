@@ -365,6 +365,7 @@ If LINES is not specified, 1 is assumed."
   :load-path "/usr/share/emacs/site-lisp/mu4e"
 
   :custom
+  (mail-user-agent 'mu4e-user-agent)
   (smtpmail-stream-type 'starttls) ;; use tls for encryption
   (mu4e-change-filenames-when-moving t) ;; update file names as you move them around
   (mu4e-update-interval (* 10 60)) ;; update email every 10 minutes
@@ -372,7 +373,17 @@ If LINES is not specified, 1 is assumed."
   (mu4e-get-mail-command "mbsync -a") ;; requires isync to be installed and configured for your emails
 
   :config
-  (load (concat user-emacs-directory "emails.el"))) ;; where all my private info is stored
+  (add-to-list 'mu4e-bookmarks
+               '(:query "maildir:/inbox"
+                 :name "Inbox"
+                 :key ?i
+                 :favorite t))
+  (load (concat user-emacs-directory "emails.el")) ;; where all my private info is stored
+
+(defun cedar/mu4e-in-tab ()
+  (interactive)
+  (cedar/open-name-in-tab "Mail" nil #'mu4e))
+:bind (("C-c o e" . cedar/mu4e-in-tab)))
 
 (defun efs/lookup-password (&rest keys)
   "Lookup a password from ~/.authinfo.gpg using KEYS to index the desired password.
