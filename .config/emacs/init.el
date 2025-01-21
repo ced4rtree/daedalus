@@ -419,6 +419,7 @@ will find the password for user@example.com"
          ("C-c m n" . emms-next)
          ("C-c m p" . emms-previous)
          ("C-c m m" . cedar/emms-smart-browse-in-tab)
+         ("C-c o m" . cedar/emms-smart-browse-in-tab)
          :map emms-playlist-mode-map
          ("Z" . emms-shuffle)))
 

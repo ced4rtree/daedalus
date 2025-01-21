@@ -838,6 +838,7 @@ The Emacs Multimedia System allows you to play music directly from emacs
            ("C-c m n" . emms-next)
            ("C-c m p" . emms-previous)
            ("C-c m m" . cedar/emms-smart-browse-in-tab)
+           ("C-c o m" . cedar/emms-smart-browse-in-tab)
            :map emms-playlist-mode-map
            ("Z" . emms-shuffle)))
 #+end_src
