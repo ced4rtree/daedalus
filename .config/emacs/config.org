@@ -14,7 +14,6 @@
   - [[#discord-integration][Discord Integration]]
   - [[#move-custom-settings-elsewhere][Move Custom Settings Elsewhere]]
   - [[#move-backup-files][Move Backup Files]]
-  - [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
   - [[#expand-region][Expand Region]]
   - [[#avy][Avy]]
   - [[#hungry-delete][Hungry Delete]]
@@ -62,6 +61,7 @@
   - [[#babel][Babel]]
   - [[#centering-text][Centering text]]
   - [[#org-bullets][Org Bullets]]
+- [[#reset-garbage-collector-settings][Reset Garbage Collector Settings]]
 
 * Setup
 ** Early Init
@@ -230,16 +230,6 @@ them in the cache directory
 #+begin_src emacs-lisp
   (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
   (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
-#+end_src
-
-** Reset Garbage Collector Settings
-In [[*Early Init][Early Init]], we set the garbage collector threshold insanely high to
-prevent garbage collection runs slowing down initialization. We want
-garbage collection while running though, so let's set that back to a
-reasonable figure
-
-#+begin_src emacs-lisp
-  (setq gc-cons-threshold (* 2 1024 1024))
 #+end_src
 
 ** Expand Region
@@ -962,3 +952,14 @@ UTF-8 bullets
   (use-package org-bullets
     :hook (org-mode . org-bullets-mode))
 #+end_src
+
+* Reset Garbage Collector Settings
+In [[*Early Init][Early Init]], we set the garbage collector threshold insanely high to
+prevent garbage collection runs slowing down initialization. We want
+garbage collection while running though, so let's set that back to a
+reasonable figure
+
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold (* 2 1024 1024))
+#+end_src
+

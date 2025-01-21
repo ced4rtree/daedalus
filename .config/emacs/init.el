@@ -103,8 +103,6 @@ its arguments, even if NAME is already an existing tab."
 (setq backup-directory-alist '((".*" . "~/.cache/emacs/auto-saves")))
 (setq auto-save-file-name-transforms '((".*" "~/.cache/emacs/auto-saves" t)))
 
-(setq gc-cons-threshold (* 2 1024 1024))
-
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
@@ -480,3 +478,5 @@ will find the password for user@example.com"
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
+
+(setq gc-cons-threshold (* 2 1024 1024))
