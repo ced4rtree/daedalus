@@ -382,7 +382,7 @@ If LINES is not specified, 1 is assumed."
 
 (defun cedar/mu4e-in-tab ()
   (interactive)
-  (cedar/open-name-in-tab "Mail" nil #'mu4e))
+  (cedar/open-name-in-tab "MU4E (Mail)" nil #'mu4e))
 :bind (("C-c o e" . cedar/mu4e-in-tab)))
 
 (defun efs/lookup-password (&rest keys)

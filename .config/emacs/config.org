@@ -789,7 +789,7 @@ I just like things in tabs, and that includes my email
 #+begin_src emacs-lisp
   (defun cedar/mu4e-in-tab ()
     (interactive)
-    (cedar/open-name-in-tab "Mail" nil #'mu4e))
+    (cedar/open-name-in-tab "MU4E (Mail)" nil #'mu4e))
   :bind (("C-c o e" . cedar/mu4e-in-tab)))
 #+end_src
 
