@@ -25,6 +25,10 @@
                "firefox"
                "blueman"
                "freetube"
+               "python"
+               "python-wrapper"
+               "imagemagick"
+               "mpv"
 
                ;; desktop stuff
                "waybar"
