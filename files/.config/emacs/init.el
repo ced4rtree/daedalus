@@ -321,6 +321,9 @@ If LINES is not specified, 1 is assumed."
 (use-package beacon
   :config (beacon-mode))
 
+(use-package rainbow-mode
+  :hook (prog-mode . rainbow-mode))
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 

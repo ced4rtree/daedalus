@@ -1,3 +1,5 @@
+# -*- mode: sh; -*-
+
 # Enable colors and change prompt:
 autoload -U colors && colors
 
@@ -29,6 +31,8 @@ alias lalh='ls -lha'
 alias lhal='ls -lha'
 alias lhla='ls -lha'
 alias grep='grep --color=auto'
+alias update-home='guix home reconfigure --cores=$(nproc) -L ~/.dotfiles/files/.config/guix/config/ ~/.dotfiles/files/.config/guix/config/config/home/home.scm'
+alias update-system='sudo guix system reconfigure --cores=$(nproc) -L ~/.dotfiles/files/.config/guix/config/ ~/.dotfiles/files/.config/guix/config/config/systems/system.scm'
 
 # # vim mode
 # bindkey -v
@@ -116,7 +120,7 @@ fi
 # Load zsh-syntax-highlighting; should be last.
 syntax_path=/usr/share/zsh/plugins/zsh-syntax-highlighting/
 if ! [ -d "${syntax_path}" ]; then
-    syntax_path="/nix/store/$(ls /nix/store/ | grep zsh-syntax-highlighting | awk '$0 !~ """.drv$""" { print $0 }' | tail -n 1)/share/zsh-syntax-highlighting"
+    syntax_path="$HOME/.guix-home/profile/share/zsh/plugins/zsh-syntax-highlighting/"
 fi
 if [ -d "${syntax_path}" ]; then
     source  "${syntax_path}/zsh-syntax-highlighting.zsh" 2>/dev/null

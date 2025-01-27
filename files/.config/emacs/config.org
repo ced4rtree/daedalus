@@ -43,6 +43,7 @@
   - [[#highlight-line][Highlight Line]]
   - [[#dired-icons][Dired Icons]]
   - [[#beacon][Beacon]]
+  - [[#rainbow-mode][Rainbow Mode]]
 - [[#code-features][Code Features]]
   - [[#code-folding][Code Folding]]
   - [[#lsp][LSP]]
@@ -653,6 +654,14 @@ really easy and really pretty when finding the point
 #+begin_src emacs-lisp
   (use-package beacon
     :config (beacon-mode))
+#+end_src
+
+** Rainbow Mode
+Displays hexidecimal color codes with their actual color
+
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :hook (prog-mode . rainbow-mode))
 #+end_src
 
 * Code Features
