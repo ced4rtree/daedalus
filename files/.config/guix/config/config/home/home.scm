@@ -35,6 +35,7 @@
                "bemenu"
                "mako"
                "batsignal"
+               "brightnessctl"
 
                ;; terminal
                "kitty"
