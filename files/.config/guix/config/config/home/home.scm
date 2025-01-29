@@ -44,6 +44,7 @@
                "font-jetbrains-mono-nerd-font"
                "font-terminus"
                "font-source-code-pro-nerd-font"
+               "font-hasklig"
 
                ;; zsh stuff
                "pokemon-colorscripts"

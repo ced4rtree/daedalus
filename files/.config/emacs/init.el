@@ -159,7 +159,7 @@ If LINES is not specified, 1 is assumed."
 
 (add-to-list 'default-frame-alist '(alpha-background . 100))
 
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
+(add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 
 (setq visible-bell t
       ring-bell-function
