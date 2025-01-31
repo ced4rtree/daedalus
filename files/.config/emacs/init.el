@@ -210,13 +210,6 @@ If LINES is not specified, 1 is assumed."
 
 (which-key-mode t)
 
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
-      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
-      mouse-wheel-follow-mouse 't ;; scroll window under mouse
-      scroll-step 1 ;; keyboard scroll one line at a time
-      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
-      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
-
 (setq-default tab-width 4
               c-basic-offset 4
               c-ts-mode-indent-offset 4
