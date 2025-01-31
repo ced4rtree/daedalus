@@ -179,41 +179,12 @@ If LINES is not specified, 1 is assumed."
 
 (defalias #'yes-or-no-p #'y-or-n-p)
 
-(use-package vertico
+(use-package icomplete
+  :ensure nil
   :ensure marginalia
-  :ensure vertico-prescient
-  :ensure prescient
-  :ensure vertico-posframe
-  :ensure orderless
-  :ensure t
-
-  :commands (vertico-mode
-             marginalia-mode
-             vertico-prescient-mode
-             prescient-persist-mode
-             vertico-posframe-mode
-             vertico-directory-enter
-             vertico-directory-delete-char
-             vertico-directory-delete-word
-             vertico-directory-tidy)
-  :defines vertico-map
-
-  :demand t
   :config
-  (vertico-mode)
-  (vertico-prescient-mode)
-  (prescient-persist-mode)
-  (marginalia-mode)
-  (vertico-posframe-mode)
-
-  (require 'vertico-directory)
-  (keymap-set vertico-map "RET" #'vertico-directory-enter)
-  (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
-  (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
-  :custom
-  (vertico-cycle t))
+  (fido-vertical-mode t)
+  (marginalia-mode t))
 
 (use-package orderless
   :ensure t

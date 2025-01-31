@@ -28,8 +28,7 @@
   - [[#auto-pair][Auto Pair]]
   - [[#line-numbers][Line Numbers]]
   - [[#yes-or-no-prompt][Yes or No Prompt]]
-  - [[#vertico][Vertico]]
-  - [[#orderless][Orderless]]
+  - [[#minibuffer-completion][Minibuffer Completion]]
   - [[#completion-window][Completion Window]]
   - [[#completion-scrolling][Completion Scrolling]]
   - [[#mouse-usage-in-terminal-emacs][Mouse Usage in Terminal Emacs]]
@@ -392,61 +391,22 @@ function so I only have to type one character for any yes/no questions
   (defalias #'yes-or-no-p #'y-or-n-p)
 #+end_src
 
-** Vertico
-Vertico is the thing that pops up to provide an interface for
-completion so you can see and scroll through all of your different
-options
-
-This also includes a few other packages that do some other stuff, such as
-- Marginalia, which adds some useful information in vertico, such as
-  keybindings and docstrings
-- Prescient, which sorts things in vertico before typing by how
-  frequently that selection is used
-- Vertico Posframe, which puts vertico in another window in the
-  middle of the frame
-- Vertico Directory, which automatically deletes the name of a
-  directory when hitting ~DEL~ in an interactive file selection in
-  vertico
+** Minibuffer Completion
+The default completion framework in emacs is pretty barebones. You don't get to
+interactively select items or see a small list of items or anything like
+that. Fido shows this list and lets you interactively do things (that's the
+"ido" part, interactively do)
 
 #+begin_src emacs-lisp
-  (use-package vertico
+  (use-package icomplete
+    :ensure nil
     :ensure marginalia
-    :ensure vertico-prescient
-    :ensure prescient
-    :ensure vertico-posframe
-    :ensure orderless
-    :ensure t
-
-    :commands (vertico-mode
-               marginalia-mode
-               vertico-prescient-mode
-               prescient-persist-mode
-               vertico-posframe-mode
-               vertico-directory-enter
-               vertico-directory-delete-char
-               vertico-directory-delete-word
-               vertico-directory-tidy)
-    :defines vertico-map
-
-    :demand t
     :config
-    (vertico-mode)
-    (vertico-prescient-mode)
-    (prescient-persist-mode)
-    (marginalia-mode)
-    (vertico-posframe-mode)
-
-    (require 'vertico-directory)
-    (keymap-set vertico-map "RET" #'vertico-directory-enter)
-    (keymap-set vertico-map "DEL" #'vertico-directory-delete-char)
-    (keymap-set vertico-map "M-DEL" #'vertico-directory-delete-word)
-    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
-    :custom
-    (vertico-cycle t))
+    (fido-vertical-mode t)
+    (marginalia-mode t))
 #+end_src
 
-** Orderless
+*** Orderless
 Orderless is a fuzzy finding algorithm that provides an intuitive
 selection for random things, and is significantly more intuitive than
 emacs' built in fuzzy finding system, flex
