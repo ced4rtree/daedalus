@@ -677,6 +677,33 @@ better
           (rust-mode . rust-ts-mode)))
 #+end_src
 
+*** Guix Install
+The guix build for any tree sitter library fails when I'm using GNU Guix, so
+here's a helper function to install it with a way that actually works
+
+#+begin_src emacs-lisp
+  (defun cedar/treesit-install-language-grammar ()
+    (interactive)
+    (let* ((lang (completing-read "Language: " '()))
+           (path (concat " /tmp/tree-sitter-" lang)))
+      (compile (concat "git clone https://github.com/tree-sitter/tree-sitter-" lang
+                       path " --depth=1"
+                       " && cd" path
+                       " && echo \""
+                       "     mkdir build"
+                       "     && cd build"
+                       "     && cmake ../"
+                       "     && cmake --build ."
+                       "     && if ! [ -d ~/.config/emacs/tree-sitter ]; then"
+                       "            mkdir ~/.config/emacs/tree-sitter;"
+                       "        fi"
+                       "     && cp libtree-sitter-" lang ".so"
+                       "        ~/.config/emacs/tree-sitter/\""
+                       " >> build.sh"
+                       " && guix shell gcc-toolchain make cmake bash -- bash build.sh"
+                       " && exit"))))
+#+end_src
+
 ** Magit
 This git porcelain for emacs provides an extremely useful and fast way
 to manage git repositories from within emacs that enables you to just

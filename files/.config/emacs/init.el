@@ -319,6 +319,27 @@ If LINES is not specified, 1 is assumed."
         (c++-mode . c++-ts-mode)
         (rust-mode . rust-ts-mode)))
 
+(defun cedar/treesit-install-language-grammar ()
+  (interactive)
+  (let* ((lang (completing-read "Language: " '()))
+         (path (concat " /tmp/tree-sitter-" lang)))
+    (compile (concat "git clone https://github.com/tree-sitter/tree-sitter-" lang
+                     path " --depth=1"
+                     " && cd" path
+                     " && echo \""
+                     "     mkdir build"
+                     "     && cd build"
+                     "     && cmake ../"
+                     "     && cmake --build ."
+                     "     && if ! [ -d ~/.config/emacs/tree-sitter ]; then"
+                     "            mkdir ~/.config/emacs/tree-sitter;"
+                     "        fi"
+                     "     && cp libtree-sitter-" lang ".so"
+                     "        ~/.config/emacs/tree-sitter/\""
+                     " >> build.sh"
+                     " && guix shell gcc-toolchain make cmake bash -- bash build.sh"
+                     " && exit"))))
+
 (use-package magit :defer t)
 
 (use-package haskell-mode)
