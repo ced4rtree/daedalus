@@ -31,6 +31,7 @@
                "python-wrapper"
                "imagemagick"
                "mpv"
+               "clonehero"
                "direnv"
                "pinentry"
 
