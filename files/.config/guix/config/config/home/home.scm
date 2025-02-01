@@ -32,6 +32,7 @@
                "imagemagick"
                "mpv"
                "direnv"
+               "pinentry"
 
                ;; desktop stuff
                "waybar"
@@ -68,4 +69,5 @@
             (home-gpg-agent-configuration
              (pinentry-program
               (file-append pinentry "/bin/pinentry"))
+             (extra-content "allow-loopback-pinentry")
              (ssh-support? #t))))))
