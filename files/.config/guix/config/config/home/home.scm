@@ -29,6 +29,7 @@
                "python-wrapper"
                "imagemagick"
                "mpv"
+               "direnv"
 
                ;; desktop stuff
                "waybar"
