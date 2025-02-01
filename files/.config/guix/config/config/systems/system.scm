@@ -2,6 +2,7 @@
   #:use-module (gnu)
   #:use-module (gnu services sddm)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services desktop)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages wm)
@@ -47,7 +48,10 @@
            (service openssh-service-type)
            (service cups-service-type)
            (service nvidia-service-type)
-           (service bluetooth-service-type)
+           (service bluetooth-service-type
+                    (bluetooth-configuration
+                     (auto-enable? #t)
+                     (just-works-repairing 'always)))
            (set-xorg-configuration
             (xorg-configuration
              (keyboard-layout keyboard-layout)
