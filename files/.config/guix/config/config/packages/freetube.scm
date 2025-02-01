@@ -12,7 +12,7 @@
 (define-public freetube
   (package
    (name "freetube")
-   (version "0.22.1")
+   (version "0.23.1")
    (source
     (origin
      (method url-fetch)
@@ -21,10 +21,10 @@
            version
            "-beta/freetube-"
            version
-           "-linux-portable-x64.zip"))
+           "-linux-x64-portable.zip"))
      (sha256
       (base32
-       "06pdiph9z7b6y4vh2kcr6q2brbmb0i23s2lhymqv746vzx9ii4fd"))))
+       "1jnb4d66yaaqi4kbw3jb7xz3cjgpabgdkb9zzvs41pnjpy8yhq9a"))))
    (build-system chromium-binary-build-system)
    (native-inputs `(("unzip" ,unzip)))
    (arguments (list
