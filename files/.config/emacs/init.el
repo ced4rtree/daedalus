@@ -148,6 +148,9 @@ If LINES is not specified, 1 is assumed."
 (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
 (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
 (use-package spacemacs-theme
   :config (load-theme 'spacemacs-dark t))
 

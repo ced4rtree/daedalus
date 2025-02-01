@@ -18,6 +18,7 @@
   - [[#avy][Avy]]
   - [[#hungry-delete][Hungry Delete]]
   - [[#scroll-one-line][Scroll one line]]
+  - [[#direnv][Direnv]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#themes][Themes]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -300,6 +301,15 @@ all the way to the bottom of the screen
 
   (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
   (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
+#+end_src
+
+** Direnv
+In environments like Nix and Guix, it's pretty useful to automatically enter
+your dev environment when you open a project, which is what direnv does.
+
+#+begin_src emacs-lisp
+  (use-package envrc
+    :hook (after-init . envrc-global-mode))
 #+end_src
 
 * UI/UX Improvements
