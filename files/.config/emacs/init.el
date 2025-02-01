@@ -351,7 +351,7 @@ If LINES is not specified, 1 is assumed."
 
 (use-package mu4e
   :ensure nil
-  :load-path "/usr/share/emacs/site-lisp/mu4e"
+  :load-path "~/.guix-home/profile/share/emacs/site-lisp/mu4e"
 
   :custom
   (mail-user-agent 'mu4e-user-agent)
