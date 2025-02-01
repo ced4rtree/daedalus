@@ -22,6 +22,8 @@
             (specifications->packages
              '("git"
                "emacs-next-pgtk"
+               "mu"
+               "isync"
                "firefox"
                "blueman"
                "freetube"
