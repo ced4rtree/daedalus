@@ -25,7 +25,7 @@ weather_icons = {
 # location_id = "c3e96d6cc4965fc54f88296b54449571c4107c73b9638c16aafc83575b4ddf2e"  # TODO
 # location_id = "8139363e05edb302e2d8be35101e400084eadcecdfce5507e77d832ac0fa57ae"
 
-priv_env_cmd = 'cat $PRIV_ENV_FILE | grep weather_location | cut -d "=" -f 2'
+priv_env_cmd = 'cat ~/.config/waybar/secret-location.txt | grep weather_location | cut -d "=" -f 2'
 location_id = subprocess.run(
     priv_env_cmd, shell=True, capture_output=True).stdout.decode('utf8').strip()
 
@@ -34,7 +34,7 @@ url = "https://weather.com/en-IN/weather/today/l/" + location_id + "?unit=f"
 html_data = PyQuery(url=url)
 
 # current temperature
-temp = html_data("span[data-testid='TemperatureValue']").eq(0).text()
+temp = html_data("span[data-testid='TemperatureValue']").eq(0).text().replace(" ", "")
 # print(temp)
 
 # current status phrase
@@ -57,8 +57,8 @@ icon = (
 # temperature feels like
 temp_feel = html_data(
     "div[data-testid='FeelsLikeSection'] > span > span[data-testid='TemperatureValue']"
-).text()
-temp_feel_text = f"Feels like {temp_feel}c"
+).text().replace(" ", "")
+temp_feel_text = f"Feels like {temp_feel}F"
 # print(temp_feel_text)
 
 # min-max temperature
@@ -66,17 +66,19 @@ temp_min = (
     html_data("div[data-testid='wxData'] > span[data-testid='TemperatureValue']")
     .eq(0)
     .text()
+    .replace(" ", "")
 )
 temp_max = (
     html_data("div[data-testid='wxData'] > span[data-testid='TemperatureValue']")
     .eq(1)
     .text()
+    .replace(" ", "")
 )
 temp_min_max = f"  {temp_min}\t\t  {temp_max}"
 # print(temp_min_max)
 
 # wind speed
-wind_speed = html_data("span[data-testid='Wind']").text().split("\n")[1]
+wind_speed = html_data("span[data-testid='Wind']").text().split("\n")[0].replace("Wind Direction ", "")
 wind_text = f"  {wind_speed}"
 # print(wind_text)
 

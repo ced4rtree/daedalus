@@ -157,7 +157,7 @@
   },
 
   "custom/weather": {
-    "exec": "python ~/.config/waybar/scripts/weather.py",
+    "exec": "guix shell python python-pyquery -- python3 ~/.config/waybar/scripts/weather.py",
     "restart-interval": 300,
     "return-type": "json",
     "on-click": "xdg-open https://weather.com/en-IN/weather/today/l/$location_id"
