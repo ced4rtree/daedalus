@@ -186,7 +186,6 @@ If LINES is not specified, 1 is assumed."
   :ensure marginalia
   :ensure vertico-prescient
   :ensure prescient
-  :ensure vertico-posframe
   :ensure orderless
   :ensure t
 
@@ -194,7 +193,6 @@ If LINES is not specified, 1 is assumed."
              marginalia-mode
              vertico-prescient-mode
              prescient-persist-mode
-             vertico-posframe-mode
              vertico-directory-enter
              vertico-directory-delete-char
              vertico-directory-delete-word
@@ -207,7 +205,6 @@ If LINES is not specified, 1 is assumed."
   (vertico-prescient-mode)
   (prescient-persist-mode)
   (marginalia-mode)
-  (vertico-posframe-mode)
 
   (require 'vertico-directory)
   (keymap-set vertico-map "RET" #'vertico-directory-enter)

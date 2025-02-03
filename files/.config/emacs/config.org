@@ -410,7 +410,6 @@ that. Vertico enables a more interactive completion system.
     :ensure marginalia
     :ensure vertico-prescient
     :ensure prescient
-    :ensure vertico-posframe
     :ensure orderless
     :ensure t
 
@@ -418,7 +417,6 @@ that. Vertico enables a more interactive completion system.
                marginalia-mode
                vertico-prescient-mode
                prescient-persist-mode
-               vertico-posframe-mode
                vertico-directory-enter
                vertico-directory-delete-char
                vertico-directory-delete-word
@@ -431,7 +429,6 @@ that. Vertico enables a more interactive completion system.
     (vertico-prescient-mode)
     (prescient-persist-mode)
     (marginalia-mode)
-    (vertico-posframe-mode)
 
     (require 'vertico-directory)
     (keymap-set vertico-map "RET" #'vertico-directory-enter)
