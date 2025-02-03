@@ -1,17 +1,12 @@
 (define-module (config systems system)
   #:use-module (gnu)
-  #:use-module (gnu services sddm)
-  #:use-module (gnu services dbus)
-  #:use-module (gnu services desktop)
-  #:use-module (gnu packages shells)
-  #:use-module (gnu packages linux)
-  #:use-module (gnu packages wm)
   #:use-module (nongnu system linux-initrd)
   #:use-module (nongnu services nvidia)
   #:use-module (nongnu packages nvidia)
   #:use-module (nongnu packages linux))
 
-(use-service-modules cups desktop networking ssh xorg)
+(use-package-modules networking shells linux wm)
+(use-service-modules cups desktop networking ssh xorg sddm dbus)
 
 (operating-system
  (locale "en_US.utf8")
@@ -32,7 +27,7 @@
                 (group "users")
                 (home-directory "/home/cedar")
                 (shell (file-append zsh "/bin/zsh"))
-                (supplementary-groups '("wheel" "netdev" "audio" "video" "netdev")))
+                (supplementary-groups '("wheel" "netdev" "audio" "video" "lp")))
                %base-user-accounts))
 
  ;; Packages installed system-wide.
@@ -52,6 +47,9 @@
                     (bluetooth-configuration
                      (auto-enable? #t)
                      (just-works-repairing 'always)))
+           (simple-service 'dbus-extras
+                           dbus-root-service-type
+                           (list blueman))
            (set-xorg-configuration
             (xorg-configuration
              (keyboard-layout keyboard-layout)
