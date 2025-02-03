@@ -354,6 +354,8 @@ If LINES is not specified, 1 is assumed."
   :load-path "~/.guix-home/profile/share/emacs/site-lisp/mu4e"
 
   :custom
+  (message-send-mail-function 'smtpmail-send-it)
+  (starttls-use-gnutls t)
   (mail-user-agent 'mu4e-user-agent)
   (smtpmail-stream-type 'starttls) ;; use tls for encryption
   (mu4e-change-filenames-when-moving t) ;; update file names as you move them around
@@ -362,6 +364,7 @@ If LINES is not specified, 1 is assumed."
   (mu4e-get-mail-command "mbsync -a") ;; requires isync to be installed and configured for your emails
 
   :config
+  (require 'smtpmail)
   (add-to-list 'mu4e-bookmarks
                '(:query "maildir:/inbox"
                  :name "Inbox"
