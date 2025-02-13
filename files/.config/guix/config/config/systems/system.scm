@@ -6,7 +6,7 @@
   #:use-module (nongnu packages linux))
 
 (use-package-modules networking shells linux wm)
-(use-service-modules cups desktop networking ssh xorg sddm dbus)
+(use-service-modules cups desktop networking ssh xorg sddm dbus sound)
 
 (operating-system
  (locale "en_US.utf8")
@@ -32,9 +32,9 @@
 
  ;; Packages installed system-wide.
  (packages (append (specifications->packages
-                    '("bluez" "bluez-alsa" "unzip"
+                    '("bluez" "bluez-alsa" "unzip" "libfreeaptx"
                       "hypridle" "xdg-desktop-portal-hyprland"
-                      "swaybg" "hyprpicker" "pinentry" "gnupg"))
+                      "swaybg" "hyprpicker" "hyprland-qtutils"))
                    (list (replace-mesa hyprland))
                    %base-packages))
 
@@ -46,7 +46,8 @@
            (service bluetooth-service-type
                     (bluetooth-configuration
                      (auto-enable? #t)
-                     (just-works-repairing 'always)))
+                     (just-works-repairing 'always)
+                     (multi-profile 'multiple)))
            (simple-service 'dbus-extras
                            dbus-root-service-type
                            (list blueman))
