@@ -18,57 +18,56 @@
   #:use-module (guix gexp))
 
 (home-environment
- (packages (append
-            (specifications->packages
-             '("git"
-               "emacs-next-pgtk"
-               "mu"
-               "isync"
-               "firefox"
-               "blueman"
-               "freetube"
-               "python"
-               "python-wrapper"
-               "imagemagick"
-               "mpv"
-               "clonehero"
-               "direnv"
-               "pinentry-qt"
+  (packages (append
+             (specifications->packages
+              '("git"
+                "emacs-next-pgtk"
+                "mu"
+                "isync"
+                "firefox"
+                "blueman"
+                "freetube"
+                "python"
+                "python-wrapper"
+                "imagemagick"
+                "mpv"
+                "clonehero"
+                "direnv"
+                "pinentry-qt"
 
-               ;; desktop stuff
-               "waybar"
-               "bemenu"
-               "mako"
-               "batsignal"
-               "brightnessctl"
+                ;; desktop stuff
+                "waybar"
+                "bemenu"
+                "mako"
+                "batsignal"
+                "brightnessctl"
 
-               ;; terminal
-               "kitty"
+                ;; terminal
+                "kitty"
 
-               ;; fonts
-               "font-iosevka-nerd-font"
-               "font-jetbrains-mono-nerd-font"
-               "font-terminus"
-               "font-source-code-pro-nerd-font"
-               "font-hasklig"
+                ;; fonts
+                "font-iosevka-nerd-font"
+                "font-jetbrains-mono-nerd-font"
+                "font-terminus"
+                "font-source-code-pro-nerd-font"
+                "font-hasklig"
 
-               ;; zsh stuff
-               "pokemon-colorscripts"
-               "starship"
-               "zsh-syntax-highlighting"))))
- (services
-  (list
-   (service home-zsh-service-type
-            (home-zsh-configuration
-             (zshrc (list (local-file "../../../../zsh/zshrc")))))
-   (service home-dotfiles-service-type
-            (home-dotfiles-configuration
-             (directories '("../../../../../"))))
-   (service home-dbus-service-type)
-   (service home-pipewire-service-type)
-   (service home-gpg-agent-service-type
-            (home-gpg-agent-configuration
-             (pinentry-program
-              (file-append pinentry-qt "/bin/pinentry-qt"))
-             (extra-content "allow-loopback-pinentry")
-             (ssh-support? #t))))))
+                ;; zsh stuff
+                "pokemon-colorscripts"
+                "starship"
+                "zsh-syntax-highlighting"))))
+  (services
+   (list
+    (service home-zsh-service-type
+             (home-zsh-configuration
+              (zshrc (list (local-file "../../../../zsh/zshrc")))))
+    (service home-dotfiles-service-type
+             (home-dotfiles-configuration
+              (directories '("../../../../../"))))
+    (service home-dbus-service-type)
+    (service home-pipewire-service-type)
+    (service home-gpg-agent-service-type
+             (home-gpg-agent-configuration (pinentry-program
+                                            (file-append
+                                             pinentry-qt
+                                             "/bin/pinentry-qt")))))))
