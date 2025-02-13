@@ -62,6 +62,7 @@
           (modify-services %desktop-services
 ;;                           (delete gdm-service-type)
                            (delete geoclue-service-type)
+                           (delete pulseaudio-service-type)
                            (guix-service-type config =>
                                               (guix-configuration
                                                (inherit config)
