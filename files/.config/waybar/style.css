@@ -152,32 +152,7 @@ button {
     background-color: @maroon;
 }
 
-#custom-weather.severe {
-    background-color: #eb937d;
-}
-
-#custom-weather.sunnyDay {
-    background-color: #c2ca76;
-}
-
-#custom-weather.clearNight {
-    background-color: #2b2b2a;
-    color: @text;
-}
-
-#custom-weather.cloudyFoggyDay, #custom-weather.cloudyFoggyNight {
-    background-color: #c2ddda;
-}
-
-#custom-weather.rainyDay, #custom-weather.rainyNight {
-    background-color: #5aaca5;
-}
-
-#custom-weather.showyIcyDay, #custom-weather.snowyIcyNight {
-    background-color: #d6e7e5;
-}
-
-#custom-weather.default {
+#custom-weather {
     background-color: #dbd9d8;
 }
 

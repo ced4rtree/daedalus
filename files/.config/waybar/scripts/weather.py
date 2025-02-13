@@ -14,7 +14,7 @@ weather_icons = {
     "rainyNight": "",
     "snowyIcyDay": "",
     "snowyIcyNight": "",
-    "severe": "",
+    "severe": "",
     "default": "",
 }
 
