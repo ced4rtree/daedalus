@@ -263,7 +263,9 @@ When I delete whitespace, there is never a situation where I want more
 whitespace. Just delete all of it!
 
 #+begin_src emacs-lisp
-  (global-hungry-delete-mode 1)
+  (use-package hungry-delete
+    :config
+    (global-hungry-delete-mode 1))
 #+end_src
 
 ** Scroll one line

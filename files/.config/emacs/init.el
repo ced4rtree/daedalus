@@ -115,7 +115,9 @@ its arguments, even if NAME is already an existing tab."
          ("M-g w" . avy-goto-word-1)
          ("M-g e" . avy-goto-word-0)))
 
-(global-hungry-delete-mode 1)
+(use-package hungry-delete
+  :config
+  (global-hungry-delete-mode 1))
 
 (defun cedar/scroll-page-and-point-up (&optional arg)
   "Scroll ARG lines up in a buffer, and maintain physical position of
