@@ -55,7 +55,7 @@ its arguments, even if NAME is already an existing tab."
     ;; when the only tab open is a project, blindly closing it leaves
     ;; you on *scratch* but doesn't rename the buffer, which messes
     ;; with some tab opening settings
-    (if (> (length (tab-bar-tabs)) 1)
+    (if (length> (tab-bar-tabs) 1)
         (tab-bar-close-tab)
       (when (string-equal (buffer-name) "*scratch*")
         (tab-bar-rename-tab "*scratch*"))))
@@ -106,16 +106,10 @@ its arguments, even if NAME is already an existing tab."
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-(use-package avy
-  :config (avy-setup-default)
-  :bind (("M-s" . avy-goto-char)
-         ("C-:" . avy-goto-char)
-         ("C-'" . avy-goto-char-2)
-         ("M-g f" . avy-goto-line)
-         ("M-g w" . avy-goto-word-1)
-         ("M-g e" . avy-goto-word-0)))
-
-(global-hungry-delete-mode 1)
+(use-package hungry-delete
+  :config
+  (global-hungry-delete-mode 1)
+  (global-set-key (kbd "C-<backspace>") #'backward-delete-char))
 
 (defun cedar/scroll-page-and-point-up (&optional arg)
   "Scroll ARG lines up in a buffer, and maintain physical position of
@@ -148,11 +142,17 @@ If LINES is not specified, 1 is assumed."
 (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
 (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 
-(use-package envrc
-  :hook (after-init . envrc-global-mode))
+(use-package direnv
+ :config
+ (direnv-mode))
 
-(use-package spacemacs-theme
-  :config (load-theme 'spacemacs-dark t))
+(setq modus-themes-italic-constructs t
+      modus-themes-bold-constructs t
+      modus-themes-mixed-fonts t
+      modus-themes-variable-pitch-ui nil
+      modus-themes-custom-auto-reload t
+      modus-themes-disable-other-themes t)
+(load-theme 'modus-vivendi t)
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 
@@ -160,7 +160,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 100))
+(add-to-list 'default-frame-alist '(alpha-background . 85))
 
 (add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 
@@ -230,10 +230,6 @@ If LINES is not specified, 1 is assumed."
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-echo-delay 0))
-
-(define-key completion-in-region-mode-map (kbd "M-n") #'minibuffer-next-completion)
-(define-key completion-in-region-mode-map (kbd "M-p") #'minibuffer-previous-completion)
-(define-key completion-in-region-mode-map (kbd "TAB") #'minibuffer-choose-completion)
 
 (xterm-mouse-mode 1)
 
@@ -316,6 +312,13 @@ If LINES is not specified, 1 is assumed."
 
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
+
+(defun cedar/remove-alligator-parens ()
+  "Remove `<' and `>' as parens in org mode."
+
+  (modify-syntax-entry ?< " ")
+  (modify-syntax-entry ?> " "))
+(add-hook 'org-mode-hook #'cedar/remove-alligator-parens)
 
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
