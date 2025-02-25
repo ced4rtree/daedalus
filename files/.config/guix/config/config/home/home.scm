@@ -34,6 +34,8 @@
                 "clonehero"
                 "direnv"
                 "pinentry-qt"
+                "ripgrep"
+                "grimshot"
 
                 ;; desktop stuff
                 "waybar"
