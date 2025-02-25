@@ -301,8 +301,6 @@ If LINES is not specified, 1 is assumed."
 (use-package rainbow-delimiters
   :hook ((prog-mode org-mode) . rainbow-delimiters-mode))
 
-(global-hl-line-mode t)
-
 (use-package nerd-icons-dired
   :hook
   (dired-mode . nerd-icons-dired-mode))

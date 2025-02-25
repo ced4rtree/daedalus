@@ -37,7 +37,6 @@
   - [[#indent-bars][Indent Bars]]
   - [[#ligatures][Ligatures]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
-  - [[#highlight-line][Highlight Line]]
   - [[#dired-icons][Dired Icons]]
   - [[#beacon][Beacon]]
   - [[#rainbow-mode][Rainbow Mode]]
@@ -587,15 +586,6 @@ they were color coded, don't you think?
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :hook ((prog-mode org-mode) . rainbow-delimiters-mode))
-#+end_src
-
-** Highlight Line
-Differentating the line that the point is on makes it pretty easy to
-find. This makes the background color of that line different from the
-normal background
-
-#+begin_src emacs-lisp
-  (global-hl-line-mode t)
 #+end_src
 
 ** Dired Icons
