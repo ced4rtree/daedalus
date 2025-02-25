@@ -32,7 +32,8 @@
 
  ;; Packages installed system-wide.
  (packages (append (specifications->packages
-                    '("bluez" "bluez-alsa" "unzip" "libfreeaptx"
+                    ;; '("bluez" "bluez-alsa" "unzip" "libfreeaptx"
+                    '("bluez" "bluez-alsa" "unzip"
                       "hypridle" "xdg-desktop-portal-hyprland"
                       "swaybg" "hyprpicker" "hyprland-qtutils"))
                    (list (replace-mesa hyprland))
@@ -46,8 +47,8 @@
            (service bluetooth-service-type
                     (bluetooth-configuration
                      (auto-enable? #t)
-                     (just-works-repairing 'always)
-                     (multi-profile 'multiple)))
+                     (just-works-repairing 'always)))
+                     ;; (multi-profile 'multiple)))
            (simple-service 'dbus-extras
                            dbus-root-service-type
                            (list blueman))
