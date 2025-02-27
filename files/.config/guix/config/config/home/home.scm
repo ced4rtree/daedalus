@@ -27,15 +27,15 @@
                 "firefox"
                 "blueman"
                 "freetube"
-                "python"
-                "python-wrapper"
                 "imagemagick"
                 "mpv"
                 "clonehero"
                 "direnv"
-                "pinentry-qt"
                 "ripgrep"
-                "grimshot"
+
+                ;; gpg
+                "gnupg"
+                "pinentry-qt"
 
                 ;; desktop stuff
                 "waybar"
@@ -43,6 +43,7 @@
                 "mako"
                 "batsignal"
                 "brightnessctl"
+                "grimshot"
 
                 ;; terminal
                 "kitty"
