@@ -272,7 +272,7 @@ If LINES is not specified, 1 is assumed."
     (interactive)
     (indent-bars-mode -1))
   :hook (prog-mode . indent-bars-mode)
-  :hook ((emacs-lisp-mode lisp-mode) . turn-off-indent-bars-mode))
+  :hook ((emacs-lisp-mode lisp-mode scheme-mode) . turn-off-indent-bars-mode))
 
 (use-package ligature
   :commands (ligature-set-ligatures global-ligature-mode)
