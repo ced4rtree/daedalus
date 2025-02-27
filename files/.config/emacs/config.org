@@ -41,6 +41,7 @@
   - [[#beacon][Beacon]]
   - [[#rainbow-mode][Rainbow Mode]]
   - [[#fix-paren-highlighting-in-org-mode][Fix paren highlighting in Org Mode]]
+  - [[#scrolling][Scrolling]]
 - [[#code-features][Code Features]]
   - [[#code-folding][Code Folding]]
   - [[#lsp][LSP]]
@@ -628,6 +629,16 @@ you're just trying to say less than or greater than.
   (add-hook 'org-mode-hook #'cedar/remove-alligator-parens)
 #+end_src
 
+** Scrolling
+#+begin_src emacs-lisp
+;;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
+      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+      mouse-wheel-follow-mouse 't ;; scroll window under mouse
+      scroll-step 1 ;; keyboard scroll one line at a time
+      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
+      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
+#+end_src
 * Code Features
 Emacs is pretty unopinionated about coding and how it should be
 done. I like my LSPs and my tree-sitters and whatnot, so I have to

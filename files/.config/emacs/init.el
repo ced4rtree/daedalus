@@ -318,6 +318,14 @@ If LINES is not specified, 1 is assumed."
   (modify-syntax-entry ?> " "))
 (add-hook 'org-mode-hook #'cedar/remove-alligator-parens)
 
+;;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
+      mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
+      mouse-wheel-follow-mouse 't ;; scroll window under mouse
+      scroll-step 1 ;; keyboard scroll one line at a time
+      scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
+      scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
