@@ -1,5 +1,8 @@
 # -*- mode: sh; -*-
 
+# Ordinarily, this file would be `.zshrc` instead of `zshrc`, but guix makes it
+# easier to just a regular file instead of that specific filename
+
 # Enable colors and change prompt:
 autoload -U colors && colors
 
