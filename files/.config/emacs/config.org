@@ -630,6 +630,8 @@ you're just trying to say less than or greater than.
 #+end_src
 
 ** Scrolling
+Emacs's scrolling is very jarring by default. I just want to scroll like normal
+
 #+begin_src emacs-lisp
 ;;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; 1 line at a time
