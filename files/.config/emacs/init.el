@@ -107,9 +107,8 @@ its arguments, even if NAME is already an existing tab."
   :bind ("C-=" . er/expand-region))
 
 (use-package hungry-delete
-  :config
-  (global-hungry-delete-mode 1)
-  (global-set-key (kbd "C-<backspace>") #'backward-delete-char))
+  :bind (("C-<backspace>" . hungry-delete-backward)
+         ("C-M-d" . hungry-delete-forward)))
 
 (defun cedar/scroll-page-and-point-up (&optional arg)
   "Scroll ARG lines up in a buffer, and maintain physical position of
@@ -141,10 +140,6 @@ If LINES is not specified, 1 is assumed."
 
 (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
 (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
-
-(use-package direnv
- :config
- (direnv-mode))
 
 (setq modus-themes-italic-constructs t
       modus-themes-bold-constructs t

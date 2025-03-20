@@ -17,7 +17,6 @@
   - [[#expand-region][Expand Region]]
   - [[#hungry-delete][Hungry Delete]]
   - [[#scroll-one-line][Scroll one line]]
-  - [[#direnv][Direnv]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#theme][Theme]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -246,9 +245,8 @@ It's pretty useful to just get rid of all the whitespace sometimes
 
 #+begin_src emacs-lisp
   (use-package hungry-delete
-    :config
-    (global-hungry-delete-mode 1)
-    (global-set-key (kbd "C-<backspace>") #'backward-delete-char))
+    :bind (("C-<backspace>" . hungry-delete-backward)
+           ("C-M-d" . hungry-delete-forward)))
 #+end_src
 
 ** Scroll one line
@@ -286,16 +284,6 @@ all the way to the bottom of the screen
 
   (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
   (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
-#+end_src
-
-** Direnv
-In environments like Nix and Guix, it's pretty useful to automatically enter
-your dev environment when you open a project, which is what direnv does.
-
-#+begin_src emacs-lisp
-(use-package direnv
- :config
- (direnv-mode))
 #+end_src
 
 * UI/UX Improvements
