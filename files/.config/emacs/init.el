@@ -378,6 +378,7 @@ If LINES is not specified, 1 is assumed."
 (use-package haskell-mode)
 (use-package stumpwm-mode)
 (use-package cmake-mode)
+(use-package markdown-mode)
 
 (use-package mu4e
   :ensure nil

@@ -740,6 +740,7 @@ box
   (use-package haskell-mode)
   (use-package stumpwm-mode)
   (use-package cmake-mode)
+  (use-package markdown-mode)
 #+end_src
 
 * The Emacs Ecosystem
