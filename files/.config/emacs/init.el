@@ -141,13 +141,8 @@ If LINES is not specified, 1 is assumed."
 (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
 (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 
-(setq modus-themes-italic-constructs t
-      modus-themes-bold-constructs t
-      modus-themes-mixed-fonts t
-      modus-themes-variable-pitch-ui nil
-      modus-themes-custom-auto-reload t
-      modus-themes-disable-other-themes t)
-(load-theme 'modus-vivendi t)
+(use-package spacemacs-theme
+  :config (load-theme 'spacemacs-dark t))
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 
@@ -155,7 +150,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 85))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 

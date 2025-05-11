@@ -294,13 +294,8 @@ blunt. Below are some settings to change that
 Changes all the colors and whatnot
 
 #+begin_src emacs-lisp
-  (setq modus-themes-italic-constructs t
-        modus-themes-bold-constructs t
-        modus-themes-mixed-fonts t
-        modus-themes-variable-pitch-ui nil
-        modus-themes-custom-auto-reload t
-        modus-themes-disable-other-themes t)
-  (load-theme 'modus-vivendi t)
+  (use-package spacemacs-theme
+    :config (load-theme 'spacemacs-dark t))
 #+end_src
 
 ** Continuous Vertical Border in Terminal Emacs
@@ -327,7 +322,7 @@ This enables a transparent background with completely opaque text so I
 can see my background while working (disabled for now)
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 85))
+  (add-to-list 'default-frame-alist '(alpha-background . 100))
 #+end_src
 
 ** Font
