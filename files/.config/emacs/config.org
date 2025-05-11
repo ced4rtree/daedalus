@@ -736,6 +736,7 @@ box
   (use-package stumpwm-mode)
   (use-package cmake-mode)
   (use-package markdown-mode)
+  (use-package rust-mode)
 #+end_src
 
 * The Emacs Ecosystem
