@@ -149,7 +149,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 65))
+(add-to-list 'default-frame-alist '(alpha-background . 35))
 
 (add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 
