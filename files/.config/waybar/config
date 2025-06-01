@@ -16,6 +16,11 @@
     }
   },
 
+  "wlr/workspaces": {
+    "format": "{name}",
+    "sort-by-number": true
+  },
+
   "wlr/mode": {
     "format": "<span style=\"italic\">{}</span>"
   },

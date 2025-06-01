@@ -15,6 +15,9 @@ if [ "$(cat /proc/$PPID/comm)" = "urxvt" ]; then
 	clear
 fi
 
+# enable conda
+[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
+
 # set the prompt
 PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 
