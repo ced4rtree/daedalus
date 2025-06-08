@@ -374,6 +374,7 @@ If LINES is not specified, 1 is assumed."
 (use-package cmake-mode)
 (use-package markdown-mode)
 (use-package rust-mode)
+(use-package nix-mode)
 
 (use-package mu4e
   :ensure nil

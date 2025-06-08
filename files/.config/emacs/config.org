@@ -736,6 +736,7 @@ box
   (use-package cmake-mode)
   (use-package markdown-mode)
   (use-package rust-mode)
+  (use-package nix-mode)
 #+end_src
 
 * The Emacs Ecosystem

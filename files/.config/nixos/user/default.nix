@@ -12,7 +12,6 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
-    ./emacs.nix
   ];
 
 #   { pkgs, ... }:
@@ -34,9 +33,10 @@
   # environment.
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" "UbuntuSans" "FiraMono" "FiraCode" ]; })
+    hasklig
+    emacs30-pgtk
     htop
-    librewolf
-    brave
+    floorp
     tree-sitter
     nodejs_22
     mu
