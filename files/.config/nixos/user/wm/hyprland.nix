@@ -10,6 +10,7 @@
     egl-wayland
     grim
     sway-contrib.grimshot
+    brightnessctl
   ];
 
   wayland.windowManager.hyprland = {
@@ -64,15 +65,17 @@
       };
 
       decoration = {
-        rounding = 5;
+        rounding = 3;
         active_opacity = 1;
         inactive_opacity = 1;
         blur = {
-          enabled = true;
+          enabled = false;
           size = 2;
           passes = 2;
         };
       };
+
+      animations.enabled = false;
 
       misc = {
 	      disable_hyprland_logo = true;
@@ -92,19 +95,6 @@
         force_split = 2;
       };
 
-      # windowRulev2 = [
-      #   "float,rofi"
-      #   "float,DesktopEditors"
-      #   "float,Sxiv"
-      #   "float,wdisplays"
-      #   "size 1000 800,wdisplays"
-
-      #   "noanim,class:^(xwaylandvideobridge)$"
-      #   "noinitialfocus,class:^(xwaylandvideobridge)$"
-      #   "maxsize 1 1,class:^(xwaylandvideobridge)$"
-      #   "noblur,class:^(xwaylandvideobridge)$"
-      # ];
-
       bind = [
         # APP BINDS
         "SUPER,return,exec,foot"
@@ -115,8 +105,7 @@
         "SUPER,space,togglefloating,"
         "SUPER,G,togglegroup,"
         "SUPER,C,changegroupactive,"
-        "SUPER,R,togglesplit,"
-        "SUPER,D,exec,mpv /opt/sounds/menu-01.mp3 & rofi -show drun -terminal foot"
+        "SUPER,R,exec,rofi -show drun -terminal foot"
         "SUPER,T,pseudo,"
         "SUPER,F,fullscreen,"
         "SUPER,Escape,exec,swaylock -f -e -l -L -s fill"
@@ -170,8 +159,8 @@
         "SUPERSHIFT,S,exec,grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
         # BRIGHTNESS CONTROL
-        ",XF86MonBrightnessUp,exec,real-brightness up"
-        ",XF86MonBrightnessDown,exec,real-brightness down"
+        ",XF86MonBrightnessUp,exec,brightnessctl set +5%"
+        ",XF86MonBrightnessDown,exec,brightnessctl set 5%-"
       ];
 
       bindm = [
@@ -185,8 +174,8 @@
         "SUPERSHIFT,K,resizeactive,0 -20"
         "SUPERSHIFT,J,resizeactive,0 20"
 
-        ",XF86AudioRaiseVolume,exec,snd up"
-        ",XF86AudioLowerVolume,exec,snd down"
+        ",XF86AudioRaiseVolume,exec,pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ",XF86AudioLowerVolume,exec,pactl set-sink-volume @DEFAULT_SINK@ -5%"
       ];
     };
   };
