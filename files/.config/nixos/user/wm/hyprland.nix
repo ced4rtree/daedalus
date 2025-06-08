@@ -58,10 +58,10 @@
         gaps_in = 8;
         gaps_out = 10;
         border_size = 2;
-	      "col.active_border" = "0xff8caaee";
-	      "col.inactive_border" = "0xdfca9ee6";
-	      resize_on_border = true;
-	      layout = "dwindle";
+        "col.active_border" = "0xff8caaee";
+        "col.inactive_border" = "0xdfca9ee6";
+        resize_on_border = true;
+        layout = "dwindle";
       };
 
       decoration = {
@@ -71,24 +71,60 @@
         blur = {
           enabled = false;
           size = 2;
-          passes = 2;
+          passes = 1;
         };
       };
 
-      animations.enabled = false;
+      # https://github.com/anotherhadi/nixy/blob/main/home/system/hyprland/animations.nix
+      animations = {
+        enabled = true;
+        bezier = [
+          "linear, 0, 0, 1, 1"
+          "md3_standard, 0.2, 0, 0, 1"
+          "md3_decel, 0.05, 0.7, 0.1, 1"
+          "md3_accel, 0.3, 0, 0.8, 0.15"
+          "overshot, 0.05, 0.9, 0.1, 1.1"
+          "crazyshot, 0.1, 1.5, 0.76, 0.92"
+          "hyprnostretch, 0.05, 0.9, 0.1, 1.0"
+          "menu_decel, 0.1, 1, 0, 1"
+          "menu_accel, 0.38, 0.04, 1, 0.07"
+          "easeInOutCirc, 0.85, 0, 0.15, 1"
+          "easeOutCirc, 0, 0.55, 0.45, 1"
+          "easeOutExpo, 0.16, 1, 0.3, 1"
+          "softAcDecel, 0.26, 0.26, 0.15, 1"
+          "md2, 0.4, 0, 0.2, 1"
+        ];
 
+        animation = let
+          animationDuration = "4.5";
+          borderDuration = "10";
+        in [
+          "windows, 1, ${animationDuration}, md3_decel, popin 60%"
+          "windowsIn, 1, ${animationDuration}, md3_decel, popin 60%"
+          "windowsOut, 1, ${animationDuration}, md3_accel, popin 60%"
+          "border, 1, ${borderDuration}, default"
+          "fade, 1, ${animationDuration}, md3_decel"
+          "layersIn, 1, ${animationDuration}, menu_decel, slide"
+          "layersOut, 1, ${animationDuration}, menu_accel"
+          "fadeLayersIn, 1, ${animationDuration}, menu_decel"
+          "fadeLayersOut, 1, ${animationDuration}, menu_accel"
+          "workspaces, 1, ${animationDuration}, menu_decel, slide"
+          "specialWorkspace, 1, ${animationDuration}, md3_decel, slidevert"
+        ];
+      };
+    
       misc = {
-	      disable_hyprland_logo = true;
-	      vrr = 1;
-	      mouse_move_enables_dpms = true;
-	      key_press_enables_dpms = true;
-	      enable_swallow = true;
-	      swallow_regex="[Ff][Oo][Oo][Tt]";
+        disable_hyprland_logo = true;
+        vrr = 1;
+        mouse_move_enables_dpms = true;
+        key_press_enables_dpms = true;
+        enable_swallow = true;
+        swallow_regex="[Ff][Oo][Oo][Tt]";
       };
 
       master = {
-	      always_center_master = true;
-	      new_on_top = true;
+        always_center_master = true;
+        new_on_top = true;
       };
 
       dwindle = {
