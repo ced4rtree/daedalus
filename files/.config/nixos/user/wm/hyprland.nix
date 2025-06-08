@@ -59,7 +59,7 @@
         gaps_out = 10;
         border_size = 2;
 	      "col.active_border" = "0xff8caaee";
-	      "col.inactive_border" = "0xff232634";
+	      "col.inactive_border" = "0xdfca9ee6";
 	      resize_on_border = true;
 	      layout = "dwindle";
       };
