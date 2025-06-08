@@ -378,7 +378,6 @@ If LINES is not specified, 1 is assumed."
 
 (use-package mu4e
   :ensure nil
-  :load-path "~/.guix-home/profile/share/emacs/site-lisp/mu4e"
 
   :custom
   (message-send-mail-function 'smtpmail-send-it)
