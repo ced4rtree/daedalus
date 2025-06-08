@@ -1,7 +1,7 @@
 { config, pkgs, ... }: {
   home.packages = let
     homestuck = pkgs.appimageTools.wrapType2 {
-      name = "unofficial-homestuck-collection";
+      pname = "unofficial-homestuck-collection";
       version = "2.5.1";
       src = pkgs.fetchurl {
         url = "https://github.com/GiovanH/unofficial-homestuck-collection/releases/download/v2.5.1/The-Unofficial-Homestuck-Collection-2.5.1.AppImage";
