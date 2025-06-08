@@ -32,27 +32,31 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "JetBrainsMono" "Iosevka" "UbuntuSans" "FiraMono" "FiraCode" ]; })
+    # fonts
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.iosevka
+    nerd-fonts.ubuntu-sans
     hasklig
+
+    # emacs
     emacs30-pgtk
+    emacsPackages.mu4e
+    mu
+
+    # misc
     htop
     floorp
     tree-sitter
     nodejs_22
-    mu
     gh
     openssh
     unzip
     mpv
-    light
     freetube
     qbittorrent
     clonehero
     vesktop
     appimage-run
-    tmux
-    fzf
-    fd
     libtool
     graphviz
     edk2
@@ -67,18 +71,6 @@
     texliveFull
     ispell
     steam
-
-    # music
-    mpd
-    ncmpcpp
-    mpc-cli
-
-    # dev tools
-    cmake
-    gnumake
-    jdk17
-    rustup
-
     wirelesstools
   ];
 
@@ -86,7 +78,7 @@
   programs.emacs = {
     extraPackages = epkgs: [
       pkgs.mu
-	  epkgs.mu4e
+      epkgs.mu4e
     ];
   };
 }
