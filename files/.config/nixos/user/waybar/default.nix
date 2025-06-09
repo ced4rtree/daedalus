@@ -2,8 +2,13 @@
   programs.waybar = {
     enable = true;
     style =
-      (builtins.readFile ./style.css)
-      + (builtins.readFile ./frappe.css);
+      (builtins.readFile ./frappe.css)
+      + (builtins.readFile ./style.css);
+
+    systemd = {
+      enable = true;
+      target = "graphical-session.target";
+    };
 
     settings = {
       mainBar = {
@@ -25,6 +30,14 @@
           "clock"
           "tray"
         ];
+
+        "idle_inhibitor" = {
+          format = "{icon}";
+          format-icons = {
+            "activated" = " ";
+            "deactivated" = " ";
+          };
+        };
 
         "tray" = {
           icon-size = 21;
@@ -98,7 +111,7 @@
         };
 
         "custom/weather" = {
-          exec = "nix-shell -p python3 --run ~/.config/waybar/scripts/weather.py";
+          exec = "nix-shell -p python3 python312Packages.pyquery --run echo '${builtins.readFile ./weather.py}' | python3";
           restart-interval = 300;
           return-type = "json";
           on-click = "xdg-open https://weather.com/en-IN/weather/today/l/$location_id";

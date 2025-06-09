@@ -121,7 +121,6 @@
       };
 
       master = {
-        always_center_master = true;
         new_on_top = true;
       };
 
