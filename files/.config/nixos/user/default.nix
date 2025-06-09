@@ -13,6 +13,7 @@
     ./direnv.nix
     ./homestuck.nix
     ./waybar
+    ./emacs
   ];
 
   # This value determines the Home Manager release that your configuration is
@@ -35,11 +36,6 @@
     nerd-fonts.iosevka
     nerd-fonts.ubuntu-sans
     hasklig
-
-    # emacs
-    emacs30-pgtk
-    emacsPackages.mu4e
-    mu
 
     # misc
     htop
@@ -71,12 +67,4 @@
     steam
     wirelesstools
   ];
-
-
-  programs.emacs = {
-    extraPackages = epkgs: [
-      pkgs.mu
-      epkgs.mu4e
-    ];
-  };
 }
