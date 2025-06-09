@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }: {
   programs.foot = {
     enable = true;
-    enableZshIntegration = true;
     settings = {
       main = {
         font = "JetBrainsMono Nerd Font:size=12";
