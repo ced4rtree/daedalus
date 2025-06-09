@@ -19,6 +19,7 @@
     ./neovim.nix
     ./files.nix
     ./foot.nix
+    ./batsignal.nix
   ];
 
   # This value determines the Home Manager release that your configuration is
@@ -71,5 +72,7 @@
     ispell
     steam
     wirelesstools
+    ovito
+    btop
   ];
 }
