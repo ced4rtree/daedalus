@@ -14,6 +14,7 @@
     ./homestuck.nix
     ./waybar
     ./emacs
+    ./mako
   ];
 
   # This value determines the Home Manager release that your configuration is
