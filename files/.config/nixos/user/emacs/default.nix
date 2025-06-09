@@ -9,14 +9,13 @@ in {
 
   programs.emacs = {
     enable = true;
-    defaultEditor = true;
     package = emacs;
-    extraConfig = (builtins.readFile ./init.el)
+    extraConfig = (builtins.readFile ./init.el);
 
     extraPackages = epkgs: [
       pkgs.mu
       epkgs.mu4e
-      emacsPackages.mu4e
+      pkgs.emacsPackages.mu4e
     ];
   };
 }
