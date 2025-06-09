@@ -12,7 +12,7 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
-    ./waybar.nix
+    ./waybar
   ];
 
   # This value determines the Home Manager release that your configuration is
