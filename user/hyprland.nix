@@ -1,7 +1,6 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
     wl-clipboard
-    foot
     wlr-randr
     swaybg
     egl-wayland
