@@ -1,7 +1,7 @@
 #+AUTHOR: [[HTTPS://github.com/bugger2][bugger2]]
 #+TITLE: My configuration files for a ton of stuff
 
-[[file:./images/screenshot.png][Screenshot of my desktop]]
+[[./images/screenshot.png]]
 
 * My NixOS Configuration
 
