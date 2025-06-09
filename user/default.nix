@@ -17,6 +17,7 @@
     ./emacs
     ./rofi
     ./neovim.nix
+    ./files.nix
   ];
 
   # This value determines the Home Manager release that your configuration is
