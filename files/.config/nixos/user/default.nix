@@ -7,7 +7,7 @@
   imports = [
     ./virt-manager.nix
     ./zsh.nix
-    ./wm/hyprland.nix
+    ./hyprland.nix
     ./bluetooth.nix
     ./theme.nix
     ./direnv.nix
