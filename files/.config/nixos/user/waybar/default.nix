@@ -1,4 +1,8 @@
 { config, pkgs, lib, ... }: {
+  imports = [
+    ./weather.nix
+  ];
+  
   programs.waybar = {
     enable = true;
     style =
@@ -111,7 +115,7 @@
         };
 
         "custom/weather" = {
-          exec = "nix-shell -p python3 python312Packages.pyquery --run echo '${builtins.readFile ./weather.py}' | python3";
+          exec = "weather.py";
           restart-interval = 300;
           return-type = "json";
           on-click = "xdg-open https://weather.com/en-IN/weather/today/l/$location_id";
