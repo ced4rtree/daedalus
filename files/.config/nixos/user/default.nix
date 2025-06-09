@@ -12,10 +12,8 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
+    ./waybar.nix
   ];
-
-#   { pkgs, ... }:
-
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
