@@ -15,6 +15,7 @@
     ./mako.nix
     ./waybar
     ./emacs
+    ./rofi
   ];
 
   # This value determines the Home Manager release that your configuration is
