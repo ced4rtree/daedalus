@@ -1,6 +1,5 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
-    rofi-wayland
     wl-clipboard
     foot
     wlr-randr

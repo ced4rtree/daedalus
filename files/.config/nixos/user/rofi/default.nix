@@ -5,5 +5,6 @@
     font = "Mono 12";
     modes = [ "drun" "emoji" ];
     theme = ./theme.rasi;
-  }
+    package = pkgs.rofi-wayland;
+  };
 }
