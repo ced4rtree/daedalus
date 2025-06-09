@@ -1,9 +1,6 @@
-#+AUTHOR: [[HTTPS://github.com/bugger2][bugger2]]
-#+TITLE: My configuration files for a ton of stuff
+* My NixOS Configuration
 
 [[./images/screenshot.png]]
-
-* My NixOS Configuration
 
 Right now, to install my dots, you can just run ~nix run github:ced4rtree/dotfiles~.
 
