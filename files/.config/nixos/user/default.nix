@@ -12,9 +12,9 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
+    ./mako.nix
     ./waybar
     ./emacs
-    ./mako
   ];
 
   # This value determines the Home Manager release that your configuration is
