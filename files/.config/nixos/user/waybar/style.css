@@ -1,0 +1,161 @@
+@import "frappe.css";
+
+* {
+    font-family: 'Iosevka Nerd Font';
+    font-size: 16px;
+    border-radius: 0px;
+	margin: 0px;
+    padding: 0px;
+    min-height: 0px;
+}
+
+window#waybar {
+    background-color: @base;
+    color: @surface0;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+button {
+    border: none;
+    border-radius: 0;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#workspaces,
+#mpd,
+#custom-weather {
+    padding: 0px 7px;
+}
+
+.modules-left {
+	color: @text;
+	background-color: @base;
+}
+
+#workspaces {
+    padding-left: 0px;
+}
+
+#workspaces button {
+    color: @subtext0;
+	padding: 0px 2px;
+    /* padding-bottom: 2px; */
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+#workspaces button.focused {
+    color: @blue;
+}
+
+#workspaces button.active {
+    color: @text;
+    padding-bottom: 0px;
+}
+
+#workspaces button.urgent {
+    background-color: @red;
+    color: @text;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#workspaces button:hover {
+    box-shadow: inherit;
+    /* text-shadow: inherit; */
+    background: inherit;
+}
+
+#clock {
+    background-color: @overlay2;
+}
+
+#battery {
+    background-color: @sapphire;
+}
+
+#battery.charging, #battery.plugged {
+    background-color: @green;
+}
+
+#battery.warning:not(.charging) {
+    background-color: @peach;
+}
+
+#battery.critical:not(.charging) {
+    background-color: @red;
+    /* background-color: transparent; */
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#cpu {
+    background-color: @blue;
+}
+
+#memory {
+    background-color: @lavender
+}
+
+#backlight {
+    background-color: @yellow;
+}
+
+#network {
+    background-color: @teal;
+}
+
+#network.disconnected {
+    background-color: @red;
+}
+
+#pulseaudio {
+    background-color: @mauve;
+}
+
+#temperature {
+    background-color: @peach;
+}
+
+#temperature.critical {
+    background-color: @red;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+#mpd {
+    background-color: @maroon;
+}
+
+#custom-weather {
+    background-color: #dbd9d8;
+}
+
+#idle_inhibitor {
+    background-color: @overlay2;
+}
