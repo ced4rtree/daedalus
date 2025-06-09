@@ -1,6 +1,5 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [
-    hyprland
     rofi-wayland
     wl-clipboard
     foot
@@ -19,7 +18,6 @@
     
     settings = {
       exec-once = [
-        "emacs --daemon"
         "dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
         "swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
         "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
