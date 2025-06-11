@@ -8,7 +8,8 @@
 }
 
 window#waybar {
-    background-color: @base;
+    /* background-color: @base; */
+    background-color: rgba(0, 0, 0, 0);
     color: @surface0;
 }
 
@@ -39,12 +40,19 @@ button {
 #workspaces,
 #mpd,
 #custom-weather {
-    padding: 0px 7px;
+    padding: 1px 7px;
+    margin-left: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
 }
 
 .modules-left {
 	color: @text;
 	background-color: @base;
+    border-radius: 0 0 10px 0;
+    padding: 0px;
+    margin: 0px;
+    padding-right: 10px;
 }
 
 #workspaces {
@@ -54,18 +62,21 @@ button {
 #workspaces button {
     color: @subtext0;
 	padding: 0px 2px;
-    /* padding-bottom: 2px; */
-    margin-bottom: 0px;
-    margin-top: 0px;
+    padding-bottom: 2px;
+    transition: 0.5s;
+    /* margin-bottom: 0px; */
+    /* margin-top: 0px; */
 }
 
 #workspaces button.focused {
-    color: @blue;
+    /* color: @blue; */
 }
 
 #workspaces button.active {
     color: @text;
-    padding-bottom: 0px;
+    /* margin-bottom: 2px; */
+    /* text-decoration: underline @blue solid; */
+    border-bottom: 2px solid @blue
 }
 
 #workspaces button.urgent {
@@ -76,8 +87,10 @@ button {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 #workspaces button:hover {
     box-shadow: inherit;
-    /* text-shadow: inherit; */
+    text-shadow: inherit;
     background: inherit;
+    border-bottom: 1px solid @mauve;
+    transition: 0.5s;
 }
 
 #clock {
