@@ -173,7 +173,10 @@
         "SUPER,K,movefocus,u"
         "SUPER,J,movefocus,d"
 
-        "SUPER,return,layoutmsg,swapwithmaster master"
+        "SUPERCONTROL,h,swapwindow,l"
+        "SUPERCONTROL,l,swapwindow,r"
+        "SUPERCONTROL,k,swapwindow,u"
+        "SUPERCONTROL,j,swapwindow,d"
 
         ",XF86AudioNext,exec,mpc next"
         ",XF86AudioPrev,exec,mpc prev"
