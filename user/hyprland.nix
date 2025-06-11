@@ -90,8 +90,8 @@
         ];
 
         animation = let
-          animationDuration = "4.5";
-          borderDuration = "10";
+          animationDuration = "2.5";
+          borderDuration = "6";
         in [
           "windows, 1, ${animationDuration}, md3_decel, popin 60%"
           "windowsIn, 1, ${animationDuration}, md3_decel, popin 60%"
