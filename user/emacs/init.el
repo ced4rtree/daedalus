@@ -141,7 +141,14 @@ If LINES is not specified, 1 is assumed."
 (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
 (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 
-(load-theme 'modus-vivendi t)
+(use-package spacemacs-theme
+  :custom
+  (spacemacs-theme-custom-colors '((bg1 . "#000000")
+                                   (comment-bg . "#000000")
+                                   (cblk-bg . "#000000")
+                                   (bg2 . "#000000")))
+  :config
+  (load-theme 'spacemacs-dark t))
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 

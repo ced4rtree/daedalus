@@ -286,7 +286,14 @@ blunt. Below are some settings to change that
 Changes all the colors and whatnot
 
 #+begin_src emacs-lisp
-  (load-theme 'modus-vivendi t)
+  (use-package spacemacs-theme
+    :custom
+    (spacemacs-theme-custom-colors '((bg1 . "#000000")
+                                     (comment-bg . "#000000")
+                                     (cblk-bg . "#000000")
+                                     (bg2 . "#000000")))
+    :config
+    (load-theme 'spacemacs-dark t))
 #+end_src
 
 ** Continuous Vertical Border in Terminal Emacs
