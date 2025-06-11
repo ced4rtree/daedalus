@@ -38,15 +38,8 @@ in {
       compinit
       _comp_options+=(globdots)
 
-      lfcd () {
-        tmp="$(mktemp)"
-        lf -last-dir-path="$tmp" "$@"
-        if [ -f "$tmp" ]; then
-          dir="$(cat "$tmp")"
-          rm -f "$tmp"
-          [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-        fi
-      }
+      # enable conda
+      [ -f ~/.conda/etc/profile.d/conda.sh ] && command -v conda>/dev/null && source ~/.conda/etc/profile.d/conda.sh
 
       pokemon-colorscripts -r | awk 'NR>1 { print $0 }'
     '';
