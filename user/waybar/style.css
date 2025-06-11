@@ -80,7 +80,7 @@ button {
 }
 
 #workspaces button.urgent {
-    background-color: @red;
+    border-bottom: 1px solid @red;
     color: @text;
 }
 
