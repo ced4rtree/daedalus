@@ -61,21 +61,14 @@ button {
 
 #workspaces button {
     color: @subtext0;
-	padding: 0px 2px;
+	padding: 0px;
+    padding-right: 4px;
     padding-bottom: 2px;
-    transition: 0.5s;
-    /* margin-bottom: 0px; */
-    /* margin-top: 0px; */
-}
-
-#workspaces button.focused {
-    /* color: @blue; */
+    transition: 0s;
 }
 
 #workspaces button.active {
     color: @text;
-    /* margin-bottom: 2px; */
-    /* text-decoration: underline @blue solid; */
     border-bottom: 2px solid @blue
 }
 
@@ -89,8 +82,12 @@ button {
     box-shadow: inherit;
     text-shadow: inherit;
     background: inherit;
+}
+
+#workspaces button:not(.active):hover {
     border-bottom: 1px solid @mauve;
-    transition: 0.5s;
+    transition: 0s;
+    padding-bottom: 3px;
 }
 
 #clock {
