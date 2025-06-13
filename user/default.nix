@@ -20,6 +20,7 @@
     ./files.nix
     ./foot.nix
     ./batsignal.nix
+    ./quickshell
   ];
 
   # This value determines the Home Manager release that your configuration is
@@ -74,5 +75,6 @@
     wirelesstools
     ovito
     btop
+    protonvpn-gui
   ];
 }
