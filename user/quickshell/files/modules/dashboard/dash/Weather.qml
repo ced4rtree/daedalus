@@ -23,7 +23,7 @@ Item {
         anchors.left: parent.left
 
         animate: true
-        text: Weather.icon || "cloud_alert"
+        text: Weather.icon || "report"
         color: Colours.palette.m3secondary
         font.pointSize: Appearance.font.size.extraLarge * 2
         font.variableAxes: ({
@@ -44,7 +44,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             animate: true
-            text: `${Weather.temperature}°C`
+            text: `${Weather.temperature}°F`
             color: Colours.palette.m3primary
             font.pointSize: Appearance.font.size.extraLarge
             font.weight: 500
