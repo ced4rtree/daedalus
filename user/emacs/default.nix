@@ -4,6 +4,7 @@ in {
   home.packages = with pkgs; [
     emacsPackages.mu4e
     mu
+    python312Packages.mutagen
   ];
   
   services.emacs = {
