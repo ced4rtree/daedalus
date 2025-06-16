@@ -150,16 +150,10 @@ Singleton {
     property string osName
 
     function getDesktopEntry(name: string): DesktopEntry {
-        console.log(`NAME UPPER: ${name}`)
-
         name = name.toLowerCase().replace(/ /g, "-");
 
-        console.log(`NAME LOWER: ${name}`)
-
-        if (desktopEntrySubs.hasOwnProperty(name)) {
+        if (desktopEntrySubs.hasOwnProperty(name))
             name = desktopEntrySubs[name];
-            console.log("SANDWICH")
-        }
 
         return DesktopEntries.applications.values.find(a => a.id.toLowerCase() === name) ?? null;
     }
