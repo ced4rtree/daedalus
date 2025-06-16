@@ -2,6 +2,7 @@ pragma Singleton
 
 import "root:/widgets"
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Mpris
 
@@ -12,7 +13,7 @@ Singleton {
     readonly property MprisPlayer active: manualActive ?? list.find(p => p.identity === "Spotify") ?? list[0] ?? null
     property MprisPlayer manualActive
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "mediaToggle"
         description: "Toggle media playback"
         onPressed: {
@@ -22,7 +23,7 @@ Singleton {
         }
     }
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "mediaPrev"
         description: "Previous track"
         onPressed: {
@@ -32,7 +33,7 @@ Singleton {
         }
     }
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "mediaNext"
         description: "Next track"
         onPressed: {
@@ -42,7 +43,7 @@ Singleton {
         }
     }
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "mediaStop"
         description: "Stop media playback"
         onPressed: root.active?.stop()

@@ -133,7 +133,7 @@
         "SUPER,space,togglefloating,"
         "SUPER,G,togglegroup,"
         "SUPER,C,changegroupactive,"
-        "SUPER,R,exec,uwsm app -- rofi -show drun -terminal foot"
+        "SUPER,R,global,quickshell:launcher"
         "SUPER,T,pseudo,"
         "SUPER,F,fullscreen,"
         "SUPER,Escape,exec,swaylock -f -e -l -L -s fill"
@@ -189,8 +189,8 @@
         "SUPERSHIFT,S,exec,uwsm app -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
         # BRIGHTNESS CONTROL
-        ",XF86MonBrightnessUp,exec,uwsm app -- brightnessctl set +5%"
-        ",XF86MonBrightnessDown,exec,uwsm app -- brightnessctl set 5%-"
+        ",XF86MonBrightnessUp,global,quickshell:brightnessUp"
+        ",XF86MonBrightnessDown,globalg,quickshell:brightnessDown"
       ];
 
       bindm = [

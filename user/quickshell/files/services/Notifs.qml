@@ -4,6 +4,7 @@ pragma ComponentBehavior: Bound
 import "root:/widgets"
 import "root:/config"
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Notifications
 import QtQuick
@@ -34,7 +35,7 @@ Singleton {
         }
     }
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "clearNotifs"
         description: "Clear all notifications"
         onPressed: {

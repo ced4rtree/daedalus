@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 
 import "root:/widgets"
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import QtQuick
 
@@ -61,12 +62,12 @@ Singleton {
         id: setProc
     }
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "brightnessUp"
         onPressed: root.increaseBrightness()
     }
 
-    CustomShortcut {
+    GlobalShortcut {
         name: "brightnessDown"
         onPressed: root.decreaseBrightness()
     }
