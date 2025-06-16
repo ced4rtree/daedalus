@@ -13,7 +13,7 @@
     ./direnv.nix
     ./homestuck.nix
     ./mako.nix
-    ./waybar
+    # ./waybar
     ./emacs
     # ./rofi replaced by quickshell
     ./neovim.nix

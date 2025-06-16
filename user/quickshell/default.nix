@@ -5,5 +5,5 @@
     pkgs.material-symbols
   ];
 
-  home.file.".config/quickshell" = ./files;
+  home.file.".config/quickshell".source = ./files;
 }
