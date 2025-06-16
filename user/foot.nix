@@ -14,7 +14,7 @@
       scrollback.multiplier = 7.0;
 
       colors = {
-        alpha = 0.45;
+        alpha = 0.65;
         foreground = "c6d0f5"; # Text
         # background = "303446"; # Base
         background = "000000";
