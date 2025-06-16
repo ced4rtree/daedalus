@@ -40,6 +40,7 @@
   - [[#rainbow-mode][Rainbow Mode]]
   - [[#fix-paren-highlighting-in-org-mode][Fix paren highlighting in Org Mode]]
   - [[#scrolling][Scrolling]]
+  - [[#shorten-frame-title][Shorten Frame Title]]
 - [[#code-features][Code Features]]
   - [[#code-folding][Code Folding]]
   - [[#lsp][LSP]]
@@ -320,7 +321,7 @@ This enables a transparent background with completely opaque text so I
 can see my background while working (disabled for now)
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 45))
+  (add-to-list 'default-frame-alist '(alpha-background . 65))
 #+end_src
 
 ** Font
@@ -622,6 +623,14 @@ Emacs's scrolling is very jarring by default. I just want to scroll like normal
       scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
       scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
 #+end_src
+** Shorten Frame Title
+The frame title by default contains a bunch of extraneous info I don't care
+about. I just want "<buffer-name> - Emacs"
+
+#+begin_src emacs-lisp
+  (setq-default frame-title-format "%b - Emacs")
+#+end_src
+
 * Code Features
 Emacs is pretty unopinionated about coding and how it should be
 done. I like my LSPs and my tree-sitters and whatnot, so I have to
@@ -736,6 +745,7 @@ box
   (use-package markdown-mode)
   (use-package rust-mode)
   (use-package nix-mode)
+  (use-package qml-mode)
 #+end_src
 
 * The Emacs Ecosystem

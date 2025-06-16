@@ -156,7 +156,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 45))
+(add-to-list 'default-frame-alist '(alpha-background . 65))
 
 (add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 
@@ -322,6 +322,8 @@ If LINES is not specified, 1 is assumed."
       scroll-conservatively 101 ;; scroll one line at a time when moving the cursor down the page
       scroll-margin 8) ;; start scrolling 8 lines from the top/bottom
 
+(setq-default frame-title-format "%b - Emacs")
+
 (with-eval-after-load 'hideshow
   (add-hook 'prog-mode-hook #'hs-minor-mode))
 
@@ -382,6 +384,7 @@ If LINES is not specified, 1 is assumed."
 (use-package markdown-mode)
 (use-package rust-mode)
 (use-package nix-mode)
+(use-package qml-mode)
 
 (use-package mu4e
   :ensure nil
