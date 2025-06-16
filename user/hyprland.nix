@@ -190,7 +190,7 @@
 
         # BRIGHTNESS CONTROL
         ",XF86MonBrightnessUp,global,quickshell:brightnessUp"
-        ",XF86MonBrightnessDown,globalg,quickshell:brightnessDown"
+        ",XF86MonBrightnessDown,global,quickshell:brightnessDown"
       ];
 
       bindm = [
