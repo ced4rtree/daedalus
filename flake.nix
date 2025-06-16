@@ -1,5 +1,5 @@
 {
-  description = "Bugger2 NixOS Configuration";
+  description = "Ced4rtree NixOS Configuration";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
@@ -34,6 +34,7 @@
             home-manager.nixosModules.home-manager {
               home-manager = {
                 sharedModules = [ nixvim.homeManagerModules.nixvim ];
+                extraSpecialArgs = { inherit inputs; };
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.cedar = import ./user;

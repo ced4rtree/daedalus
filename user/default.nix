@@ -15,7 +15,7 @@
     ./mako.nix
     ./waybar
     ./emacs
-    ./rofi
+    # ./rofi replaced by quickshell
     ./neovim.nix
     ./files.nix
     ./foot.nix

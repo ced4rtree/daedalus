@@ -2,7 +2,6 @@
   home.packages = with pkgs; [
     wl-clipboard
     wlr-randr
-    swaybg
     egl-wayland
     grim
     sway-contrib.grimshot
@@ -16,9 +15,9 @@
     
     settings = {
       exec-once = [
-        "dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
-        "swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
-        "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "uwsm app -- dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
+        "uwsm app -- dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "uwsm app -- quickshell"
       ];
 
       env = [
@@ -126,21 +125,20 @@
 
       bind = [
         # APP BINDS
-        "SUPER,return,exec,foot"
-        "SUPER,E,exec,emacsclient -c -a 'emacs'"
-        "SUPERSHIFT,escape,exec,pkill Hyprland"
+        "SUPER,return,exec,uwsm app -- foot"
+        "SUPER,E,exec,uwsm app -- emacsclient -c -a 'emacs'"
+        "SUPERSHIFT,escape,exec,uwsm app -- pkill Hyprland"
 
         # GENERAL WINDOWS OPERATIONS
         "SUPER,space,togglefloating,"
         "SUPER,G,togglegroup,"
         "SUPER,C,changegroupactive,"
-        "SUPER,R,exec,rofi -show drun -terminal foot"
+        "SUPER,R,exec,uwsm app -- rofi -show drun -terminal foot"
         "SUPER,T,pseudo,"
         "SUPER,F,fullscreen,"
         "SUPER,Escape,exec,swaylock -f -e -l -L -s fill"
-        "CTRLSUPER,Escape,exec,swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
+        "CTRLSUPER,Escape,exec,uwsm app -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
         "SUPERSHIFT,Q,killactive,"
-        "SUPERSHIFT,T,exec,~/.config/hypr/scripts/switchLayout"
 
         # FOCUS WORKSPACES
         "SUPER,1,workspace,1"
@@ -178,21 +176,21 @@
         "SUPERCONTROL,k,swapwindow,u"
         "SUPERCONTROL,j,swapwindow,d"
 
-        ",XF86AudioNext,exec,mpc next"
-        ",XF86AudioPrev,exec,mpc prev"
-        "SUPER,down,exec,mpc toggle"
-        "SUPER,up,exec,mpc toggle"
-        ",XF86AudioPlay,exec,mpc toggle"
-        "SUPER,right,exec,mpc next"
-        "SUPER,left,exec,mpc prev"
+        ",XF86AudioNext,exec,uwsm app -- mpc next"
+        ",XF86AudioPrev,exec,uwsm app -- mpc prev"
+        "SUPER,down,exec,uwsm app -- mpc toggle"
+        "SUPER,up,exec,uwsm app -- mpc toggle"
+        ",XF86AudioPlay,exec,uwsm app -- mpc toggle"
+        "SUPER,right,exec,uwsm app -- mpc next"
+        "SUPER,left,exec,uwsm app -- mpc prev"
 
         # SCREENSHOTS
-        "SUPER,S,exec,grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
-        "SUPERSHIFT,S,exec,grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+        "SUPER,S,exec,uwsm app -- grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+        "SUPERSHIFT,S,exec,uwsm app -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
         # BRIGHTNESS CONTROL
-        ",XF86MonBrightnessUp,exec,brightnessctl set +5%"
-        ",XF86MonBrightnessDown,exec,brightnessctl set 5%-"
+        ",XF86MonBrightnessUp,exec,uwsm app -- brightnessctl set +5%"
+        ",XF86MonBrightnessDown,exec,uwsm app -- brightnessctl set 5%-"
       ];
 
       bindm = [
@@ -206,8 +204,8 @@
         "SUPERSHIFT,K,resizeactive,0 -20"
         "SUPERSHIFT,J,resizeactive,0 20"
 
-        ",XF86AudioRaiseVolume,exec,pactl set-sink-volume @DEFAULT_SINK@ +5%"
-        ",XF86AudioLowerVolume,exec,pactl set-sink-volume @DEFAULT_SINK@ -5%"
+        ",XF86AudioRaiseVolume,exec,uwsm app -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ",XF86AudioLowerVolume,exec,uwsm app -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
       ];
     };
   };
