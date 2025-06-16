@@ -10,6 +10,7 @@
       ./graphics.nix
       ./virtualbox.nix
       ./printing.nix
+      ./upower.nix
       # ./xorg.nix
       # ./exwm.nix
       # ./sddm.nix
