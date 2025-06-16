@@ -11,11 +11,10 @@
       ./virtualbox.nix
       ./printing.nix
       ./upower.nix
-      ./windowManagers/hyprland-uwsm.nix
-      ./displayManagers/ly.nix
+      ./hyprland-uwsm.nix
       # ./xorg.nix
-      # ./windowManagers/exwm.nix
-      # ./displayManagers/sddm.nix
+      # ./exwm.nix
+      # ./sddm.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
