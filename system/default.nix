@@ -11,6 +11,7 @@
       ./virtualbox.nix
       ./printing.nix
       ./upower.nix
+      ./hyprland-uwsm.nix
       # ./xorg.nix
       # ./exwm.nix
       # ./sddm.nix
