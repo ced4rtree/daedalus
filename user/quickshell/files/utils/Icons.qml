@@ -102,7 +102,9 @@ Singleton {
             "395": "snowing"
         })
 
-    readonly property var desktopEntrySubs: ({})
+    readonly property var desktopEntrySubs: ({
+        "emms-media-player": "emacs"
+    })
 
     readonly property var categoryIcons: ({
             WebBrowser: "web",
@@ -148,10 +150,16 @@ Singleton {
     property string osName
 
     function getDesktopEntry(name: string): DesktopEntry {
+        console.log(`NAME UPPER: ${name}`)
+
         name = name.toLowerCase().replace(/ /g, "-");
 
-        if (desktopEntrySubs.hasOwnProperty(name))
+        console.log(`NAME LOWER: ${name}`)
+
+        if (desktopEntrySubs.hasOwnProperty(name)) {
             name = desktopEntrySubs[name];
+            console.log("SANDWICH")
+        }
 
         return DesktopEntries.applications.values.find(a => a.id.toLowerCase() === name) ?? null;
     }

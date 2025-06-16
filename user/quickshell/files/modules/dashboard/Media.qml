@@ -237,8 +237,8 @@ Item {
         Slider {
             id: slider
 
-            implicitWidth: controls.implicitWidth * 1.5
-            implicitHeight: Appearance.padding.normal * 3
+            implicitWidth: controls.implicitWidth * 2
+            implicitHeight: Appearance.padding.normal * 2
 
             value: root.playerProgress
             onMoved: {
@@ -327,6 +327,8 @@ Item {
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.right: parent.right
+            anchors.left: parent.left
 
             spacing: Appearance.spacing.small
 
@@ -351,7 +353,7 @@ Item {
 
                 anchors.verticalCenter: parent.verticalCenter
 
-                implicitWidth: slider.implicitWidth / 2
+                implicitWidth: slider.implicitWidth / 1.35
                 implicitHeight: currentPlayer.implicitHeight + Appearance.padding.small * 2
 
                 cursorShape: Qt.PointingHandCursor
@@ -420,7 +422,7 @@ Item {
                                     IconImage {
                                         id: playerIcon
 
-                                        source: Icons.getAppIcon(player.modelData.identity, "image-missing")
+                                        source: Icons.getAppIcon(player.model.identity, "image-missing")
                                         implicitSize: Math.round(identity.implicitHeight * 0.9)
                                     }
 
@@ -434,6 +436,7 @@ Item {
                                             id: identityMetrics
 
                                             text: player.modelData.identity
+
                                             font.family: identity.font.family
                                             font.pointSize: identity.font.pointSize
                                             elide: Text.ElideRight
