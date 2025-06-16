@@ -42,7 +42,7 @@ Singleton {
                 const json = JSON.parse(text).current_condition[0];
                 root.icon = Icons.getWeatherIcon(json.weatherCode);
                 root.description = json.weatherDesc[0].value;
-                root.temperature = parseFloat(json.temp_C);
+                root.temperature = parseFloat(json.temp_F);
             }
         }
     }
