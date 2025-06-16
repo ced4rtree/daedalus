@@ -430,6 +430,7 @@ will find the password for user@example.com"
   (emms-seek-seconds 5)
   (emms-player-list '(emms-player-mpv))
   (emms-info-functions '(emms-info-native))
+  (emms-mpris-enable)
 
   :config
   ;; (setq emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
