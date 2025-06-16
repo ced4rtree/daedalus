@@ -11,8 +11,12 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
+    systemd.enable = false;
 
-    extraConfig = "monitor = eDP-1,1920x1080@144,0x0,1";
+    extraConfig = ''
+      monitor = eDP-1,1920x1080@144,0x0,1
+      monitor = HDMI-A-1,3840x2160@30,1920x0,1,mirror,eDP-1
+    '';
     
     settings = {
       exec-once = [
