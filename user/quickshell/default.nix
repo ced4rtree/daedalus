@@ -5,6 +5,7 @@
     pkgs.material-symbols
     pkgs.cava
     pkgs.lm_sensors
+    pkgs.python312Packages.gpustat
   ];
 
   home.file.".config/quickshell".source = ./files;

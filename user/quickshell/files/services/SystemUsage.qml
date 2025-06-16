@@ -154,7 +154,7 @@ Singleton {
         id: gpuUsage
 
         running: true
-        command: ["sh", "-c", "cat /sys/class/drm/card*/device/gpu_busy_percent"]
+        command: ["sh", "-c", "gpustat | tail -n 1 | cut -d '|' -f 2 | tr -d ' ' | cut -d ',' -f 2"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const percs = text.trim().split("\n");
