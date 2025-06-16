@@ -4,6 +4,7 @@
     pkgs.kdePackages.qtdeclarative
     pkgs.material-symbols
     pkgs.cava
+    pkgs.lm_sensors
   ];
 
   home.file.".config/quickshell".source = ./files;
