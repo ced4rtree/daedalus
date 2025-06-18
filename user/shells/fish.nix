@@ -23,13 +23,15 @@ in {
         source ~/.conda/etc/profile.d/conda.sh
       end
 
-      # pokemon
-      krabby random | awk 'NR>1 { print $0 }'
-
       set -U fish_user_paths $HOME/.local/bin/ $fish_user_paths
       set -U fish_greeting
 
       fish_config theme choose "Catppuccin Mocha"
+
+      # pokemon
+      if status is-interactive
+        krabby random | awk 'NR>1 { print $0 }'
+      end
     '';
   };
 }
