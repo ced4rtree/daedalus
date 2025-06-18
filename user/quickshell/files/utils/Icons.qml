@@ -103,7 +103,8 @@ Singleton {
         })
 
     readonly property var desktopEntrySubs: ({
-        "emms-media-player": "emacs"
+        "emms-media-player": "emacs",
+        "mpd-on-localhost:6600": "emacs"
     })
 
     readonly property var categoryIcons: ({
