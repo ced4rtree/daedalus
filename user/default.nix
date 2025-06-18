@@ -13,7 +13,7 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
-    ./mako.nix
+    # ./mako.nix replaced by quickshell
     # ./waybar
     ./emacs
     # ./rofi replaced by quickshell
