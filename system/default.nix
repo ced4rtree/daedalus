@@ -6,7 +6,8 @@
       ./pipewire.nix
       ./bluetooth.nix
       ./brightness.nix
-      ./zsh.nix
+      # ./zsh.nix
+      ./fish.nix
       ./graphics.nix
       # ./virtualbox.nix
       ./printing.nix
