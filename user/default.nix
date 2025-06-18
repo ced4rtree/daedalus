@@ -5,6 +5,7 @@
   home.homeDirectory = "/home/cedar";
 
   imports = [
+    ./xdg.nix
     ./virt-manager.nix
     ./zsh.nix
     ./hyprland.nix
@@ -21,6 +22,7 @@
     ./foot.nix
     ./batsignal.nix
     ./quickshell
+    ./mpd.nix
   ];
 
   # This value determines the Home Manager release that your configuration is
