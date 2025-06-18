@@ -8,7 +8,7 @@
       ./brightness.nix
       ./zsh.nix
       ./graphics.nix
-      ./virtualbox.nix
+      # ./virtualbox.nix
       ./printing.nix
       ./upower.nix
       ./windowManagers/hyprland-uwsm.nix
