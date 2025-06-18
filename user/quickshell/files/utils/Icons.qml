@@ -104,7 +104,8 @@ Singleton {
 
     readonly property var desktopEntrySubs: ({
         "emms-media-player": "emacs",
-        "mpd-on-localhost:6600": "emacs"
+        "mpd-on-localhost:6600": "emacs",
+        "music-player-daemon": "emacs"
     })
 
     readonly property var categoryIcons: ({
