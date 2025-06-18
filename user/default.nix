@@ -7,8 +7,9 @@
   imports = [
     ./xdg.nix
     ./virt-manager.nix
-    # ./zsh.nix
-    ./fish.nix
+    # ./shells/zsh.nix
+    ./shells/fish.nix
+    ./starship.nix
     ./hyprland.nix
     ./bluetooth.nix
     ./theme.nix
