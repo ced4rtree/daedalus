@@ -6,6 +6,7 @@
     grim
     sway-contrib.grimshot
     brightnessctl
+    app2unit
   ];
 
   wayland.windowManager.hyprland = {
@@ -125,9 +126,9 @@
 
       bind = [
         # APP BINDS
-        "ALT,return,exec,uwsm app -- foot"
-        "ALT,E,exec,uwsm app -- emacsclient -c -a 'emacs'"
-        "ALTSHIFT,escape,exec,uwsm app -- pkill Hyprland"
+        "ALT,return,exec,app2unit -- footclient"
+        "ALT,E,exec,app2unit -- emacsclient -c -a 'emacs'"
+        "ALTSHIFT,escape,exec,app2unit -- pkill Hyprland"
 
         # GENERAL WINDOWS OPERATIONS
         "ALT,space,togglefloating,"
@@ -137,7 +138,7 @@
         "ALT,T,pseudo,"
         "ALT,M,fullscreen,"
         "ALT,Escape,exec,swaylock -f -e -l -L -s fill"
-        "CTRLALT,Escape,exec,uwsm app -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
+        "CTRLALT,Escape,exec,app2unit -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
         "ALTSHIFT,Q,killactive,"
 
         # FOCUS WORKSPACES
@@ -176,17 +177,17 @@
         "ALTCONTROL,k,swapwindow,u"
         "ALTCONTROL,j,swapwindow,d"
 
-        ",XF86AudioNext,exec,uwsm app -- mpc next"
-        ",XF86AudioPrev,exec,uwsm app -- mpc prev"
-        "ALT,down,exec,uwsm app -- mpc toggle"
-        "ALT,up,exec,uwsm app -- mpc toggle"
-        ",XF86AudioPlay,exec,uwsm app -- mpc toggle"
-        "ALT,right,exec,uwsm app -- mpc next"
-        "ALT,left,exec,uwsm app -- mpc prev"
+        ",XF86AudioNext,exec,app2unit -- mpc next"
+        ",XF86AudioPrev,exec,app2unit -- mpc prev"
+        "ALT,down,exec,app2unit -- mpc toggle"
+        "ALT,up,exec,app2unit -- mpc toggle"
+        ",XF86AudioPlay,exec,app2unit -- mpc toggle"
+        "ALT,right,exec,app2unit -- mpc next"
+        "ALT,left,exec,app2unit -- mpc prev"
 
         # SCREENSHOTS
-        "ALT,S,exec,uwsm app -- grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
-        "ALTSHIFT,S,exec,uwsm app -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+        "ALT,S,exec,app2unit -- grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+        "ALTSHIFT,S,exec,app2unit -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
         # BRIGHTNESS CONTROL
         ",XF86MonBrightnessUp,global,quickshell:brightnessUp"
@@ -204,8 +205,8 @@
         "ALTSHIFT,K,resizeactive,0 -20"
         "ALTSHIFT,J,resizeactive,0 20"
 
-        ",XF86AudioRaiseVolume,exec,uwsm app -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
-        ",XF86AudioLowerVolume,exec,uwsm app -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
+        ",XF86AudioRaiseVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ",XF86AudioLowerVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
       ];
     };
   };
