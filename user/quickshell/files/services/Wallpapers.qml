@@ -92,12 +92,7 @@ Singleton {
 
         property string path
 
-        /* running: true */
-
         command: ["bash", "-c", `echo ${this.path} > ${Paths.state.toString().replace("file://", "")}/wallpaper/path.txt`]
-        stderr: StdioCollector {
-            onStreamFinished: console.log(`WALLPAPER ERROR: ${this.text}`)
-        }
     }
 
     Process {
