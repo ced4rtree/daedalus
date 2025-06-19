@@ -15,8 +15,6 @@ Item {
 
     function checkPopout(y: real): void {
         const spacing = Appearance.spacing.small;
-        const aw = activeWindow.child;
-        const awy = activeWindow.y + aw.y;
 
         const ty = tray.y;
         const th = tray.implicitHeight;
@@ -31,11 +29,7 @@ Item {
         const b = statusIconsInner.battery;
         const by = statusIcons.y + statusIconsInner.y + b.y - spacing / 2;
 
-        if (y >= awy && y <= awy + aw.implicitHeight) {
-            popouts.currentName = "activewindow";
-            popouts.currentCenter = Qt.binding(() => activeWindow.y + aw.y + aw.implicitHeight / 2);
-            popouts.hasCurrent = true;
-        } else if (y > ty && y < ty + th) {
+        if (y > ty && y < ty + th) {
             const index = Math.floor(((y - ty) / th) * trayItems.count);
             const item = trayItems.itemAt(index);
 

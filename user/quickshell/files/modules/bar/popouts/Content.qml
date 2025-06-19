@@ -29,11 +29,6 @@ Item {
         clip: true
 
         Popout {
-            name: "activewindow"
-            source: "ActiveWindow.qml"
-        }
-
-        Popout {
             name: "network"
             source: "Network.qml"
         }
