@@ -13,7 +13,7 @@ Column {
     }
 
     StyledText {
-        text: qsTr("Strength: %1/100").arg(Network.active?.strength ?? 0)
+        text: qsTr("Strength: %1%").arg(Network.active?.strength ?? 0)
     }
 
     StyledText {
