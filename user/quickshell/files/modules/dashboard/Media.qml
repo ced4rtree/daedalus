@@ -547,7 +547,7 @@ Item {
             height: visualiser.height * 0.75
 
             playing: root.shouldUpdate && (Players.active?.isPlaying ?? false)
-            speed: BeatDetector.bpm / 300
+            speed: Config.dashboard.bongoCatSpeed
             source: "root:/assets/bongocat.gif"
             asynchronous: true
             fillMode: AnimatedImage.PreserveAspectFit
