@@ -205,8 +205,8 @@
         "ALTSHIFT,K,resizeactive,0 -20"
         "ALTSHIFT,J,resizeactive,0 20"
 
-        ",XF86AudioRaiseVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
-        ",XF86AudioLowerVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
+        ",XF86AudioRaiseVolume,global,quickshell:volumeUp"
+        ",XF86AudioLowerVolume,global,quickshell:volumeDown"
       ];
     };
   };
