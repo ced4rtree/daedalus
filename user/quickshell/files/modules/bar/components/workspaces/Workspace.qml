@@ -21,9 +21,28 @@ Item {
     readonly property int ws: groupOffset + index + 1
     readonly property bool isOccupied: occupied[ws] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
+    readonly property int currentWsIdx: Hyprland.activeWsId - 1 - groupOffset
 
     Layout.preferredWidth: childrenRect.width
     Layout.preferredHeight: size
+
+    StyledRect {
+        id: background
+
+        clip: true
+        x: 1
+        y: 0
+        implicitWidth: Config.bar.sizes.innerHeight - 2
+        implicitHeight: (indicator.visible ? indicator.implicitHeight : 0)
+            + windows.implicitHeight
+            + (hasWindows ? Appearance.padding.small : 0)
+        radius: Config.bar.workspaces.rounded ? Appearance.rounding.full : 0
+        color: currentWsIdx == index ? "transparent" : isOccupied
+            ? Colours.palette.m3surfaceBright
+            : Colours.palette.m3background
+
+        Behavior on color {}
+    }
 
     StyledText {
         id: indicator

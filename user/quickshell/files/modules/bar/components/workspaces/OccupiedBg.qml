@@ -40,7 +40,7 @@ Item {
 
     Repeater {
         model: ScriptModel {
-            values: root.pills.filter(p => p)
+            values: root.pills
         }
 
         StyledRect {
