@@ -3,6 +3,7 @@ import "root:/services"
 import "root:/utils"
 import "root:/config"
 import Quickshell
+import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
 
@@ -69,11 +70,9 @@ Item {
                     values: Hyprland.clients.filter(c => c.workspace?.id === root.ws)
                 }
 
-                MaterialIcon {
-                    required property Hyprland.Client modelData
-
-                    text: Icons.getAppCategoryIcon(modelData.wmClass, "terminal")
-                    color: Colours.palette.m3onSurfaceVariant
+                delegate: IconImage {
+                    implicitSize: 24
+                    source: Icons.getAppIcon(modelData.wmClass ?? "", "image-missing")
                 }
             }
         }

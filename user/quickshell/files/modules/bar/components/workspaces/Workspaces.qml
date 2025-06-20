@@ -19,23 +19,6 @@ Item {
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
 
-    ColumnLayout {
-        id: layout
-
-        spacing: 0
-        layer.enabled: true
-        layer.smooth: true
-
-        Repeater {
-            model: Config.bar.workspaces.shown
-
-            Workspace {
-                occupied: root.occupied
-                groupOffset: root.groupOffset
-            }
-        }
-    }
-
     Loader {
         active: Config.bar.workspaces.occupiedBg
         asynchronous: true
@@ -60,6 +43,23 @@ Item {
             maskWidth: root.width
             maskHeight: root.height
             groupOffset: root.groupOffset
+        }
+    }
+
+    ColumnLayout {
+        id: layout
+
+        spacing: 0
+        layer.enabled: true
+        layer.smooth: true
+
+        Repeater {
+            model: Config.bar.workspaces.shown
+
+            Workspace {
+                occupied: root.occupied
+                groupOffset: root.groupOffset
+            }
         }
     }
 
