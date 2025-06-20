@@ -22,6 +22,7 @@ Item {
     readonly property bool isOccupied: occupied[ws] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
     readonly property int currentWsIdx: Hyprland.activeWsId - 1 - groupOffset
+    readonly property bool isSelected: currentWsIdx == index
 
     Layout.preferredWidth: childrenRect.width
     Layout.preferredHeight: size
@@ -31,17 +32,15 @@ Item {
 
         clip: true
         x: 1
-        y: 0
+        y: hasWindows ? Appearance.padding.small/2 : 1
         implicitWidth: Config.bar.sizes.innerHeight - 2
         implicitHeight: (indicator.visible ? indicator.implicitHeight : 0)
             + windows.implicitHeight
-            + (hasWindows ? Appearance.padding.small : 0)
+            + (hasWindows ? Appearance.padding.small : Appearance.padding.normal)
         radius: Config.bar.workspaces.rounded ? Appearance.rounding.full : 0
-        color: currentWsIdx == index ? "transparent" : isOccupied
+        color: isSelected ? "transparent" : isOccupied
             ? Colours.palette.m3surfaceBright
             : Colours.palette.m3background
-
-        Behavior on color {}
     }
 
     StyledText {

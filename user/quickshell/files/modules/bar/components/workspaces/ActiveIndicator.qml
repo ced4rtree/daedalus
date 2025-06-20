@@ -29,7 +29,7 @@ StyledRect {
     property int lastWs
 
     function getWsY(idx: int): real {
-        let y = 0;
+        let y = 2;
         for (let i = 0; i < idx; i++)
             y += workspaces[i]?.size ?? 0;
         return y;
@@ -44,7 +44,7 @@ StyledRect {
     x: 1
     y: offset + 1
     implicitWidth: Config.bar.sizes.innerHeight - 2
-    implicitHeight: size - 2
+    implicitHeight: size - 7
     radius: Config.bar.workspaces.rounded ? Appearance.rounding.full : 0
     color: Colours.palette.m3primary
 
