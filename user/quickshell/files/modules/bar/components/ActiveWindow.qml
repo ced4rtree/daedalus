@@ -4,6 +4,7 @@ import "root:/widgets"
 import "root:/services"
 import "root:/utils"
 import "root:/config"
+import Quickshell.Widgets
 import QtQuick
 
 Item {
@@ -56,13 +57,10 @@ Item {
         implicitWidth: Math.max(icon.implicitWidth, current.implicitHeight)
         implicitHeight: icon.implicitHeight + current.implicitWidth + current.anchors.topMargin
 
-        MaterialIcon {
+        IconImage {
+            implicitSize: 24
             id: icon
-
-            animate: true
-            text: Icons.getAppCategoryIcon(Hyprland.activeClient?.wmClass, "desktop_windows")
-            color: root.colour
-
+            source: Icons.getAppIcon(Hyprland.activeClient?.wmClass, "desktop_windows")
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
