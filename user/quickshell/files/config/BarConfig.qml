@@ -9,7 +9,7 @@ JsonObject {
     }
 
     property JsonObject workspaces: JsonObject {
-        property int shown: 10
+        property int shown: 5
         property bool rounded: true
         property bool activeIndicator: true
         property bool occupiedBg: false
