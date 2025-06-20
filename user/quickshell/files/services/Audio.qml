@@ -17,12 +17,12 @@ Singleton {
 
     GlobalShortcut {
         name: "volumeUp"
-        onReleased: increaseVolume()
+        onPressed: increaseVolume()
     }
 
     GlobalShortcut {
         name: "volumeDown"
-        onReleased: decreaseVolume()
+        onPressed: decreaseVolume()
     }
 
     ElapsedTimer {
