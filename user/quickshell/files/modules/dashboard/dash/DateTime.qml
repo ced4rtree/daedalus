@@ -19,7 +19,7 @@ Item {
         anchors.topMargin: (root.height - (hours.implicitHeight + sep.implicitHeight + sep.anchors.topMargin + mins.implicitHeight + mins.anchors.topMargin + date.implicitHeight + date.anchors.topMargin)) / 2
 
         horizontalAlignment: Text.AlignHCenter
-        text: Time.format("HH")
+        text: Time.format("hhAP").replace(/[AP]M/i, "")
         color: Colours.palette.m3secondary
         font.pointSize: Appearance.font.size.extraLarge
         font.weight: 500
