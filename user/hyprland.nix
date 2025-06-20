@@ -192,21 +192,24 @@
         # BRIGHTNESS CONTROL
         ",XF86MonBrightnessUp,global,quickshell:brightnessUp"
         ",XF86MonBrightnessDown,global,quickshell:brightnessDown"
+
+        # AUDIO CONTROL
+        ",XF86AudioRaiseVolume,global,quickshell:volumeUp"
+        ",XF86AudioLowerVolume,global,quickshell:volumeDown"
       ];
 
       bindm = [
+        # MOUSE WINDOW CONTROL
         "ALT,mouse:272,movewindow"
         "ALT,mouse:273,resizewindow"
       ];
 
       binde = [
+        # WINDOW SIZE CONTROL
         "ALTSHIFT,H,resizeactive,-20 0"
         "ALTSHIFT,L,resizeactive,20 0"
         "ALTSHIFT,K,resizeactive,0 -20"
         "ALTSHIFT,J,resizeactive,0 20"
-
-        ",XF86AudioRaiseVolume,global,quickshell:volumeUp"
-        ",XF86AudioLowerVolume,global,quickshell:volumeDown"
       ];
     };
   };
