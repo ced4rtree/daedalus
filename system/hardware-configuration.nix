@@ -24,6 +24,12 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
+  fileSystems."/mnt" =
+    { device = "/dev/sda1";
+      fsType = "ext4";
+      options = [ "auto" "defaults" "uid=1000" "gid=1000" "umask=022" ];
+    };
+
   swapDevices =
     [ { device = "/dev/disk/by-label/swap"; }
     ];
