@@ -141,6 +141,10 @@ If LINES is not specified, 1 is assumed."
 (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
 (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 
+(use-package direnv
+  :config
+  (direnv-mode t))
+
 (use-package spacemacs-theme
   :custom
   (spacemacs-theme-custom-colors '((bg1 . "#000000")
@@ -286,13 +290,9 @@ If LINES is not specified, 1 is assumed."
                                "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
                                ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                                "<:<" ";;;"))
-  (defun cedar/enable-pretty-ligatures ()
-    "Enables both ligature-mode and prettify-symbols-mode."
-    (ligature-mode t)
-    (prettify-symbols-mode t))
   :hook
-  (prog-mode . cedar/enable-pretty-ligatures)
-  (org-mode . cedar/enable-pretty-ligatures))
+  (prog-mode . (lambda () (ligature-mode t)))
+  (org-mode . (lambda () (ligature-mode t))))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode org-mode) . rainbow-delimiters-mode))

@@ -16,6 +16,7 @@
   - [[#expand-region][Expand Region]]
   - [[#hungry-delete][Hungry Delete]]
   - [[#scroll-one-line][Scroll one line]]
+  - [[#direnv][Direnv]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#theme][Theme]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -277,6 +278,13 @@ all the way to the bottom of the screen
 
   (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
   (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
+#+end_src
+
+** Direnv
+#+begin_src emacs-lisp
+  (use-package direnv
+    :config
+    (direnv-mode t))
 #+end_src
 
 * UI/UX Improvements
@@ -552,13 +560,9 @@ glyph
                                  "|||>" "<|||" "<|>" "..." ".." ".=" "..<" ".?" "::" ":::" ":=" "::="
                                  ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
                                  "<:<" ";;;"))
-    (defun cedar/enable-pretty-ligatures ()
-      "Enables both ligature-mode and prettify-symbols-mode."
-      (ligature-mode t)
-      (prettify-symbols-mode t))
     :hook
-    (prog-mode . cedar/enable-pretty-ligatures)
-    (org-mode . cedar/enable-pretty-ligatures))
+    (prog-mode . (lambda () (ligature-mode t)))
+    (org-mode . (lambda () (ligature-mode t))))
 #+end_src
 
 ** Rainbow Delimiters
