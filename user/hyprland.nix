@@ -7,6 +7,7 @@
     sway-contrib.grimshot
     brightnessctl
     app2unit
+    swaybg
   ];
 
   wayland.windowManager.hyprland = {
@@ -16,9 +17,10 @@
     
     settings = {
       exec-once = [
-        "uwsm app -- dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
-        "uwsm app -- dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "uwsm app -- quickshell"
+        "app2unit -- dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
+        "app2unit -- dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "app2unit -- swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
+        "app2unit -- quickshell"
       ];
 
       env = [
