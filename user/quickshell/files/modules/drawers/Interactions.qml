@@ -90,7 +90,6 @@ MouseArea {
             } else {
                 // Keep on hover
                 popouts.hasCurrent = withinPanelWidth(popout, x, y);
-                console.log(`popouts.hasCurrent: ${popouts.hasCurrent}`);
             }
         } else {
             popouts.hasCurrent = false;
