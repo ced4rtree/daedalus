@@ -13,6 +13,7 @@ Singleton {
     readonly property Anim anim: Anim {}
 
     component Rounding: QtObject {
+        readonly property int smallest: 7
         readonly property int small: 12
         readonly property int normal: 17
         readonly property int large: 25
@@ -28,7 +29,8 @@ Singleton {
     }
 
     component Padding: QtObject {
-        readonly property int small: 5
+        readonly property int smallest: 1
+        readonly property int small: 3
         readonly property int smaller: 7
         readonly property int normal: 10
         readonly property int larger: 12

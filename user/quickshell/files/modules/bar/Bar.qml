@@ -13,75 +13,76 @@ Item {
     required property ShellScreen screen
     required property BarPopouts.Wrapper popouts
 
-    function checkPopout(y: real): void {
+    function checkPopout(x: real): void {
         const spacing = Appearance.spacing.small;
 
-        const ty = tray.y;
-        const th = tray.implicitHeight;
+        const tx = tray.x;
+        const tw = tray.implicitWidth;
         const trayItems = tray.items;
 
         const n = statusIconsInner.network;
-        const ny = statusIcons.y + statusIconsInner.y + n.y - spacing / 2;
+        const nx = statusIcons.x + statusIconsInner.x + n.x - spacing / 2;
 
-        const bls = statusIcons.y + statusIconsInner.y + statusIconsInner.bs - spacing / 2;
-        const ble = statusIcons.y + statusIconsInner.y + statusIconsInner.be + spacing / 2;
+        const bls = statusIcons.x + statusIconsInner.x + statusIconsInner.bs - spacing / 2;
+        const ble = statusIcons.x + statusIconsInner.x + statusIconsInner.be + spacing / 2;
 
         const b = statusIconsInner.battery;
-        const by = statusIcons.y + statusIconsInner.y + b.y - spacing / 2;
+        const bx = statusIcons.x + statusIconsInner.x + b.x - spacing / 2;
 
-        if (y > ty && y < ty + th) {
-            const index = Math.floor(((y - ty) / th) * trayItems.count);
+        if (x > tx && x < tx + tw) {
+            const index = Math.floor(((x - tx) / tw) * trayItems.count);
             const item = trayItems.itemAt(index);
 
             popouts.currentName = `traymenu${index}`;
-            popouts.currentCenter = Qt.binding(() => tray.y + item.y + item.implicitHeight / 2);
+            popouts.currentCenter = Qt.binding(() => tray.x + item.x + item.implicitWidth / 2);
             popouts.hasCurrent = true;
-        } else if (y >= ny && y <= ny + n.implicitHeight + spacing) {
+        } else if (x >= nx && x <= nx + n.implicitWidth + spacing) {
             popouts.currentName = "network";
-            popouts.currentCenter = Qt.binding(() => statusIcons.y + statusIconsInner.y + n.y + n.implicitHeight / 2);
+            popouts.currentCenter = Qt.binding(() => statusIcons.x + statusIconsInner.x + n.x + n.implicitWidth / 2);
             popouts.hasCurrent = true;
-        } else if (y >= bls && y <= ble) {
+        } else if (x >= bls && x <= ble) {
             popouts.currentName = "bluetooth";
-            popouts.currentCenter = Qt.binding(() => statusIcons.y + statusIconsInner.y + statusIconsInner.bs + (statusIconsInner.be - statusIconsInner.bs) / 2);
+            popouts.currentCenter = Qt.binding(() => statusIcons.x + statusIconsInner.x + statusIconsInner.bs + (statusIconsInner.be - statusIconsInner.bs) / 2);
             popouts.hasCurrent = true;
-        } else if (y >= by && y <= by + b.implicitHeight + spacing) {
+        } else if (x >= bx && x <= bx + b.implicitWidth + spacing) {
             popouts.currentName = "battery";
-            popouts.currentCenter = Qt.binding(() => statusIcons.y + statusIconsInner.y + b.y + b.implicitHeight / 2);
+            popouts.currentCenter = Qt.binding(() => statusIcons.x + statusIconsInner.x + b.x + b.implicitWidth / 2);
             popouts.hasCurrent = true;
         } else {
             popouts.hasCurrent = false;
         }
     }
 
-    anchors.top: parent.top
     anchors.bottom: parent.bottom
+    anchors.right: parent.right
     anchors.left: parent.left
 
-    implicitWidth: child.implicitWidth + Config.border.thickness * 2
+    implicitHeight: child.implicitHeight + Config.border.thickness * 2
 
     Item {
         id: child
 
-        anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
 
-        implicitWidth: Math.max(osIcon.implicitWidth, workspaces.implicitWidth, activeWindow.implicitWidth, tray.implicitWidth, clock.implicitWidth, statusIcons.implicitWidth, power.implicitWidth)
+        implicitHeight: Math.max(osIcon.implicitHeight, workspaces.implicitHeight, activeWindow.implicitHeight, tray.implicitHeight, clock.implicitHeight, statusIcons.implicitHeight, power.implicitHeight)
 
         OsIcon {
             id: osIcon
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: Appearance.padding.large
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: Appearance.padding.normal
         }
 
         StyledRect {
             id: workspaces
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: osIcon.bottom
-            anchors.topMargin: Appearance.spacing.normal
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: osIcon.right
+            anchors.leftMargin: Appearance.spacing.normal
 
             radius: Appearance.rounding.full
             color: Colours.palette.m3surfaceContainer
@@ -113,9 +114,9 @@ Item {
         ActiveWindow {
             id: activeWindow
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: workspaces.bottom
-            anchors.bottom: tray.top
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: workspaces.right
+            anchors.right: tray.left
             anchors.margins: Appearance.spacing.large
 
             monitor: Brightness.getMonitorForScreen(root.screen)
@@ -124,31 +125,31 @@ Item {
         Tray {
             id: tray
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: clock.top
-            anchors.bottomMargin: Appearance.spacing.larger
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: clock.left
+            anchors.rightMargin: Appearance.spacing.larger
         }
 
         Clock {
             id: clock
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: statusIcons.top
-            anchors.bottomMargin: Appearance.spacing.normal
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: statusIcons.left
+            anchors.rightMargin: Appearance.spacing.normal
         }
 
         StyledRect {
             id: statusIcons
 
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: power.top
-            anchors.bottomMargin: Appearance.spacing.normal
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.right: power.left
+            anchors.rightMargin: Appearance.spacing.normal
 
             radius: Appearance.rounding.full
             color: Colours.palette.m3surfaceContainer
 
-            implicitHeight: statusIconsInner.implicitHeight + Appearance.padding.normal * 2
+            implicitWidth: statusIconsInner.implicitWidth + Appearance.padding.normal * 2
 
             StatusIcons {
                 id: statusIconsInner
@@ -160,9 +161,9 @@ Item {
         Power {
             id: power
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: Appearance.padding.large
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: Appearance.padding.large
         }
     }
 }

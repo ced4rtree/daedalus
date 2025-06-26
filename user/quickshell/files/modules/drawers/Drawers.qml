@@ -32,10 +32,12 @@ Variants {
             WlrLayershell.keyboardFocus: visibilities.launcher || visibilities.session ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
             mask: Region {
-                x: bar.implicitWidth
+                x: Config.border.thickness
+                /* y: win.height - bar.implicitHeight - Config.border.thickness */
                 y: Config.border.thickness
-                width: win.width - bar.implicitWidth - Config.border.thickness
-                height: win.height - Config.border.thickness * 2
+                width: win.width - Config.border.thickness
+                /* height: win.height - bar.implicitHeight - Config.border.thickness * 2 */
+                height: win.height + Config.border.thickness - bar.implicitHeight
                 intersection: Intersection.Xor
 
                 regions: regions.instances
@@ -54,8 +56,8 @@ Variants {
                 Region {
                     required property Item modelData
 
-                    x: modelData.x + bar.implicitWidth
-                    y: modelData.y + Config.border.thickness
+                    y: modelData.y + bar.implicitHeight
+                    x: modelData.x + Config.border.thickness
                     width: modelData.width
                     height: modelData.height
                     intersection: Intersection.Subtract
@@ -115,7 +117,6 @@ Variants {
                 property bool osd
                 property bool session
                 property bool launcher
-                property bool dashboard
 
                 Component.onCompleted: Visibilities.screens[scope.modelData] = this
             }

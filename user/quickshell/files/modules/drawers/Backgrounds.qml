@@ -4,7 +4,6 @@ import "root:/modules/osd" as Osd
 import "root:/modules/notifications" as Notifications
 import "root:/modules/session" as Session
 import "root:/modules/launcher" as Launcher
-import "root:/modules/dashboard" as Dashboard
 import "root:/modules/bar/popouts" as BarPopouts
 import QtQuick
 import QtQuick.Shapes
@@ -17,7 +16,7 @@ Shape {
 
     anchors.fill: parent
     anchors.margins: Config.border.thickness
-    anchors.leftMargin: bar.implicitWidth
+    anchors.bottomMargin: bar.implicitHeight
     preferredRendererType: Shape.CurveRenderer
     opacity: Colours.transparency.enabled ? Colours.transparency.base : 1
 
@@ -49,18 +48,11 @@ Shape {
         startY: root.height
     }
 
-    Dashboard.Background {
-        wrapper: panels.dashboard
-
-        startX: (root.width - wrapper.width) / 2 - rounding
-        startY: 0
-    }
-
     BarPopouts.Background {
         wrapper: panels.popouts
-        invertBottomRounding: wrapper.y + wrapper.height + 1 >= root.height
+        invertRightRounding: wrapper.x + wrapper.width + Config.border.thickness >= root.width
 
-        startX: 0
-        startY: wrapper.y - rounding
+        startY: wrapper.y// + rounding//+ wrapper.height
+        startX: wrapper.x + rounding// + Appearance.padding.smaller
     }
 }

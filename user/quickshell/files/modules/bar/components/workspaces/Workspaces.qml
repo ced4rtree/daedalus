@@ -46,7 +46,7 @@ Item {
         }
     }
 
-    ColumnLayout {
+    RowLayout {
         id: layout
 
         spacing: 0

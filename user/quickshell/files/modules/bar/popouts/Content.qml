@@ -17,8 +17,8 @@ Item {
 
     anchors.centerIn: parent
 
-    implicitWidth: hasCurrent ? (content.children.find(c => c.shouldBeActive)?.implicitWidth ?? 0) + Appearance.padding.large * 2 : 0
-    implicitHeight: (content.children.find(c => c.shouldBeActive)?.implicitHeight ?? 0) + Appearance.padding.large * 2
+    implicitHeight: hasCurrent ? (content.children.find(c => c.shouldBeActive)?.implicitHeight ?? 0) + Appearance.padding.large * 2 : 0
+    implicitWidth: (content.children.find(c => c.shouldBeActive)?.implicitWidth ?? 0) + Appearance.padding.large * 2
 
     Item {
         id: content
@@ -80,14 +80,14 @@ Item {
         }
     }
 
-    Behavior on implicitWidth {
+    Behavior on implicitHeight {
         Anim {
             easing.bezierCurve: Appearance.anim.curves.emphasized
         }
     }
 
-    Behavior on implicitHeight {
-        enabled: root.implicitWidth > 0
+    Behavior on implicitWidth {
+        enabled: root.implicitHeight > 0
 
         Anim {
             easing.bezierCurve: Appearance.anim.curves.emphasized
@@ -95,7 +95,7 @@ Item {
     }
 
     Behavior on currentCenter {
-        enabled: root.implicitWidth > 0
+        enabled: root.implicitHeight > 0
 
         NumberAnimation {
             duration: Appearance.anim.durations.normal
@@ -110,8 +110,8 @@ Item {
         required property string name
         property bool shouldBeActive: root.currentName === name
 
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
 
         opacity: 0
         scale: 0.8

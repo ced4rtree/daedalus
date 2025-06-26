@@ -1,5 +1,6 @@
 import "root:/services"
 import "root:/config"
+import "root:/modules/bar"
 import "root:/modules/bar/popouts" as BarPopouts
 import "root:/modules/osd" as Osd
 import Quickshell
@@ -12,11 +13,10 @@ MouseArea {
     required property BarPopouts.Wrapper popouts
     required property PersistentProperties visibilities
     required property Panels panels
-    required property Item bar
+    required property Bar bar
 
     property bool osdHovered
     property point dragStart
-    property bool dashboardShortcutActive
     property bool osdShortcutActive
 
     function withinPanelHeight(panel: Item, x: real, y: real): bool {
@@ -24,13 +24,20 @@ MouseArea {
         return y >= panelY - Config.border.rounding && y <= panelY + panel.height + Config.border.rounding;
     }
 
-    function inRightPanel(panel: Item, x: real, y: real): bool {
-        return x > bar.implicitWidth + panel.x && withinPanelHeight(panel, x, y);
+    function withinPanelWidth(panel: Item, x: real, y: real): bool {
+        const panelX = Config.border.thickness + panel.x;
+        return x >= panelX - Config.border.rounding && x <= panelX + panel.width + Config.border.rounding;
     }
 
-    function inTopPanel(panel: Item, x: real, y: real): bool {
-        const panelX = bar.implicitWidth + panel.x;
-        return y < Config.border.thickness + panel.y + panel.height && x >= panelX - Config.border.rounding && x <= panelX + panel.width + Config.border.rounding;
+    function inRightPanel(panel: Item, x: real, y: real): bool {
+        return x > panel.x && withinPanelHeight(panel, x, y);
+    }
+
+    function inBottomPanel(panel: Item, x: real, y: real): bool {
+        const topY = panel.y + Config.border.thickness;
+        const bottomY = topY + bar.height + panel.height;
+        
+        return y > topY && y < bottomY
     }
 
     anchors.fill: parent
@@ -43,9 +50,6 @@ MouseArea {
             if (!osdShortcutActive) {
                 visibilities.osd = false;
                 osdHovered = false;
-            }
-            if (!dashboardShortcutActive) {
-                visibilities.dashboard = false;
             }
             popouts.hasCurrent = false;
         }
@@ -77,28 +81,20 @@ MouseArea {
                 visibilities.session = false;
         }
 
-        // Show dashboard on hover
-        const showDashboard = inTopPanel(panels.dashboard, x, y);
-
-        // Always update visibility based on hover if not in shortcut mode
-        if (!dashboardShortcutActive) {
-            visibilities.dashboard = showDashboard;
-        } else if (showDashboard) {
-            // If hovering over dashboard area while in shortcut mode, transition to hover control
-            dashboardShortcutActive = false;
-        }
-
         // Show popouts on hover
         const popout = panels.popouts;
-        if (x < bar.implicitWidth + popout.width) {
-            if (x < bar.implicitWidth)
+        if (y > bar.y + Config.border.thickness - popout.height) {
+            if (y > bar.y + Config.border.thickness) {
                 // Handle like part of bar
-                bar.checkPopout(y);
-            else
+                bar.checkPopout(x);
+            } else {
                 // Keep on hover
-                popouts.hasCurrent = withinPanelHeight(popout, x, y);
-        } else
+                popouts.hasCurrent = withinPanelWidth(popout, x, y);
+                console.log(`popouts.hasCurrent: ${popouts.hasCurrent}`);
+            }
+        } else {
             popouts.hasCurrent = false;
+        }
     }
 
     // Monitor individual visibility changes
@@ -106,35 +102,17 @@ MouseArea {
         target: root.visibilities
 
         function onLauncherChanged() {
-            // If launcher is hidden, clear shortcut flags for dashboard and OSD
+            // If launcher is hidden, clear shortcut flags for OSD
             if (!root.visibilities.launcher) {
-                root.dashboardShortcutActive = false;
                 root.osdShortcutActive = false;
 
-                // Also hide dashboard and OSD if they're not being hovered
-                const inDashboardArea = root.inTopPanel(root.panels.dashboard, root.mouseX, root.mouseY);
+                // Also hide OSD if they're not being hovered
                 const inOsdArea = root.inRightPanel(root.panels.osd, root.mouseX, root.mouseY);
 
-                if (!inDashboardArea) {
-                    root.visibilities.dashboard = false;
-                }
                 if (!inOsdArea) {
                     root.visibilities.osd = false;
                     root.osdHovered = false;
                 }
-            }
-        }
-
-        function onDashboardChanged() {
-            if (root.visibilities.dashboard) {
-                // Dashboard became visible, immediately check if this should be shortcut mode
-                const inDashboardArea = root.inTopPanel(root.panels.dashboard, root.mouseX, root.mouseY);
-                if (!inDashboardArea) {
-                    root.dashboardShortcutActive = true;
-                }
-            } else {
-                // Dashboard hidden, clear shortcut flag
-                root.dashboardShortcutActive = false;
             }
         }
 

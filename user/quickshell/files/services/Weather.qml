@@ -15,10 +15,7 @@ Singleton {
     property real temperature
 
     function reload(): void {
-        if (Config.dashboard.weatherLocation)
-            loc = Config.dashboard.weatherLocation;
-        else
-            ipProc.running = true;
+        ipProc.running = true;
     }
 
     onLocChanged: wttrProc.running = true

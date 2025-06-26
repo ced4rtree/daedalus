@@ -15,14 +15,13 @@ Item {
     required property int padding
     required property int rounding
 
-    property bool showWallpapers: search.text.startsWith(`${Config.launcher.actionPrefix}wallpaper `)
-    property var currentList: (showWallpapers ? wallpaperList : appList).item
+    property var currentList: appList.item
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
 
     clip: true
-    state: showWallpapers ? "wallpapers" : "apps"
+    state: false ? "wallpapers" : "apps"
 
     states: [
         State {
@@ -43,9 +42,9 @@ Item {
             name: "wallpapers"
 
             PropertyChanges {
-                root.implicitWidth: Math.max(Config.launcher.sizes.itemWidth, wallpaperList.width)
+                /* root.implicitWidth: Math.max(Config.launcher.sizes.itemWidth, wallpaperList.width) */
                 root.implicitHeight: Config.launcher.sizes.wallpaperHeight
-                wallpaperList.active: true
+                /* wallpaperList.active: true */
             }
         }
     ]
@@ -61,10 +60,10 @@ Item {
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.anim.curves.standard
             }
-            PropertyAction {
-                targets: [appList, wallpaperList]
-                properties: "active"
-            }
+            /* PropertyAction { */
+            /*     targets: [appList] */
+            /*     properties: "active" */
+            /* } */
             ParallelAnimation {
                 NumberAnimation {
                     target: root
@@ -89,7 +88,7 @@ Item {
     Loader {
         id: appList
 
-        active: false
+        active: true
         asynchronous: true
 
         anchors.left: parent.left
@@ -102,21 +101,21 @@ Item {
         }
     }
 
-    Loader {
-        id: wallpaperList
+    /* Loader { */
+    /*     id: wallpaperList */
 
-        active: false
-        asynchronous: true
+    /*     active: false */
+    /*     asynchronous: true */
 
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
+    /*     anchors.top: parent.top */
+    /*     anchors.bottom: parent.bottom */
+    /*     anchors.horizontalCenter: parent.horizontalCenter */
 
-        sourceComponent: WallpaperList {
-            search: root.search
-            visibilities: root.visibilities
-        }
-    }
+    /*     sourceComponent: WallpaperList { */
+    /*         search: root.search */
+    /*         visibilities: root.visibilities */
+    /*     } */
+    /* } */
 
     Item {
         id: empty

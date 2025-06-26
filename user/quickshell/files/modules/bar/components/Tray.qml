@@ -1,6 +1,7 @@
 import "root:/config"
 import Quickshell.Services.SystemTray
 import QtQuick
+import QtQuick.Layouts
 
 Item {
     id: root
@@ -13,7 +14,7 @@ Item {
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
 
-    Column {
+    Row {
         id: layout
 
         spacing: Appearance.spacing.small

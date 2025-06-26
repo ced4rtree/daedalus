@@ -14,25 +14,28 @@ StyledRect {
     required property int groupOffset
 
     readonly property int currentWsIdx: Hyprland.activeWsId - 1 - groupOffset
-    property real leading: getWsY(currentWsIdx)
-    property real trailing: getWsY(currentWsIdx)
+    property real leading: getWsX(currentWsIdx)
+    property real trailing: getWsX(currentWsIdx)
     property real currentSize: workspaces[currentWsIdx]?.size ?? 0
     property real offset: Math.min(leading, trailing)
     property real size: {
         const s = Math.abs(leading - trailing) + currentSize;
         if (Config.bar.workspaces.activeTrail && lastWs > currentWsIdx)
-            return Math.min(getWsY(lastWs) + (workspaces[lastWs]?.size ?? 0) - offset, s);
+            return Math.min(getWsX(lastWs) + (workspaces[lastWs]?.size ?? 0) - offset, s);
         return s;
     }
 
     property int cWs
     property int lastWs
 
-    function getWsY(idx: int): real {
-        let y = 2;
+    function getWsX(idx: int): real {
+        let x = 0;
         for (let i = 0; i < idx; i++)
-            y += workspaces[i]?.size ?? 0;
-        return y;
+            x += workspaces[i]?.size ?? 0;
+        // weird bug with active indicator getting progressively more
+        // and more off every two workspaces
+        x += Math.floor(idx/2)
+        return x;
     }
 
     onCurrentWsIdxChanged: {
@@ -41,10 +44,10 @@ StyledRect {
     }
 
     clip: true
-    x: 1
-    y: offset + 1
-    implicitWidth: Config.bar.sizes.innerHeight - 2
-    implicitHeight: size - 7
+    y: 1
+    x: offset + 1
+    implicitHeight: Config.bar.sizes.innerHeight - 2
+    implicitWidth: size - 2
     radius: Config.bar.workspaces.rounded ? Appearance.rounding.full : 0
     color: Colours.palette.m3primary
 
@@ -63,12 +66,12 @@ StyledRect {
         maskSpreadAtMin: 1
         maskThresholdMin: 0.5
 
-        x: 0
-        y: -parent.offset
+        y: 0
+        x: -parent.offset
         implicitWidth: root.maskWidth
         implicitHeight: root.maskHeight
 
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     Behavior on leading {

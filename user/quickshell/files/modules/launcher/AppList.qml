@@ -10,19 +10,14 @@ import QtQuick.Controls
 ListView {
     id: root
 
+    delegate: appItem
+
     required property int padding
     required property TextField search
     required property PersistentProperties visibilities
 
-    property bool isAction: search.text.startsWith(Config.launcher.actionPrefix)
-
     function getModelValues() {
-        let text = search.text;
-        if (isAction)
-            return Actions.fuzzyQuery(text);
-        if (text.startsWith(Config.launcher.actionPrefix))
-            text = search.text.slice(Config.launcher.actionPrefix.length);
-        return Apps.fuzzyQuery(text);
+        return Apps.fuzzyQuery(search.text);
     }
 
     model: ScriptModel {
@@ -42,8 +37,6 @@ ListView {
         color: Colours.palette.m3onSurface
         opacity: 0.08
     }
-
-    delegate: isAction ? actionItem : appItem
 
     ScrollBar.vertical: StyledScrollBar {}
 
@@ -99,56 +92,6 @@ ListView {
 
         AppItem {
             visibilities: root.visibilities
-        }
-    }
-
-    Component {
-        id: actionItem
-
-        ActionItem {
-            list: root
-        }
-    }
-
-    Behavior on isAction {
-        SequentialAnimation {
-            ParallelAnimation {
-                Anim {
-                    target: root
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: Appearance.anim.durations.small
-                    easing.bezierCurve: Appearance.anim.curves.standardAccel
-                }
-                Anim {
-                    target: root
-                    property: "scale"
-                    from: 1
-                    to: 0.9
-                    duration: Appearance.anim.durations.small
-                    easing.bezierCurve: Appearance.anim.curves.standardAccel
-                }
-            }
-            PropertyAction {}
-            ParallelAnimation {
-                Anim {
-                    target: root
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                    duration: Appearance.anim.durations.small
-                    easing.bezierCurve: Appearance.anim.curves.standardDecel
-                }
-                Anim {
-                    target: root
-                    property: "scale"
-                    from: 0.9
-                    to: 1
-                    duration: Appearance.anim.durations.small
-                    easing.bezierCurve: Appearance.anim.curves.standardDecel
-                }
-            }
         }
     }
 
