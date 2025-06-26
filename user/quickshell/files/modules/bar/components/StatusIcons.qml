@@ -42,7 +42,7 @@ Item {
         color: root.colour
     }
 
-    Column {
+    Row {
         id: devices
 
         anchors.verticalCenter: bluetooth.verticalCenter
