@@ -145,14 +145,9 @@ If LINES is not specified, 1 is assumed."
   :config
   (direnv-mode t))
 
-(use-package spacemacs-theme
-  :custom
-  (spacemacs-theme-custom-colors '((bg1 . "#000000")
-                                   (comment-bg . "#000000")
-                                   (cblk-bg . "#000000")
-                                   (bg2 . "#000000")))
+(use-package doom-themes
   :config
-  (load-theme 'spacemacs-dark t))
+  (load-theme 'doom-monokai-classic t))
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 
@@ -160,7 +155,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 65))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 
