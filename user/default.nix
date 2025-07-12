@@ -51,6 +51,7 @@
     # misc
     htop
     floorp
+    qutebrowser
     tree-sitter
     nodejs_22
     gh
