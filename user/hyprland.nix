@@ -53,8 +53,8 @@
       };
 
       general = {
-        gaps_in = 8;
-        gaps_out = 10;
+        gaps_in = 5;
+        gaps_out = 8;
         border_size = 2;
         "col.active_border" = "0xff8caaee";
         "col.inactive_border" = "0xdfca9ee6";
@@ -63,19 +63,19 @@
       };
 
       decoration = {
-        rounding = 3;
+        rounding = 0;
         active_opacity = 1;
         inactive_opacity = 1;
         blur = {
-          enabled = false;
+          enabled = true;
           size = 2;
-          passes = 1;
+          passes = 2;
         };
       };
 
       # https://github.com/anotherhadi/nixy/blob/main/home/system/hyprland/animations.nix
       animations = {
-        enabled = true;
+        enabled = false;
         bezier = [
           "linear, 0, 0, 1, 1"
           "md3_standard, 0.2, 0, 0, 1"
