@@ -146,8 +146,13 @@ If LINES is not specified, 1 is assumed."
   (direnv-mode t))
 
 (use-package doom-themes
+  :custom
+  (doom-monokai-classic-brighter-comments t)
   :config
-  (load-theme 'doom-monokai-classic t))
+  (load-theme 'doom-monokai-classic t)
+  (custom-set-faces
+   '(default ((t (:background "#000000")))))
+  (doom-themes-org-config))
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 
@@ -155,7 +160,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 100))
+(add-to-list 'default-frame-alist '(alpha-background . 65))
 
 (add-to-list 'default-frame-alist '(font . "Hasklig-13"))
 

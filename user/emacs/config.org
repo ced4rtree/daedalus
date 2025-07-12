@@ -296,8 +296,13 @@ Changes all the colors and whatnot
 
 #+begin_src emacs-lisp
   (use-package doom-themes
+    :custom
+    (doom-monokai-classic-brighter-comments t)
     :config
-    (load-theme 'doom-monokai-classic t))
+    (load-theme 'doom-monokai-classic t)
+    (custom-set-faces
+     '(default ((t (:background "#000000")))))
+    (doom-themes-org-config))
 #+end_src
 
 ** Continuous Vertical Border in Terminal Emacs
@@ -324,7 +329,7 @@ This enables a transparent background with completely opaque text so I
 can see my background while working (disabled for now)
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 100))
+  (add-to-list 'default-frame-alist '(alpha-background . 65))
 #+end_src
 
 ** Font
