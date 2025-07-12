@@ -15,15 +15,15 @@
     ./theme.nix
     ./direnv.nix
     ./homestuck.nix
-    # ./mako.nix replaced by quickshell
-    # ./waybar
+    ./mako.nix
+    ./waybar
     ./emacs
-    # ./rofi replaced by quickshell
+    ./rofi
     ./neovim.nix
     ./files.nix
     ./foot.nix
     ./batsignal.nix
-    ./quickshell
+    # ./quickshell
     ./mpd.nix
   ];
 

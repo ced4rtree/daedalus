@@ -23,7 +23,6 @@
         "app2unit -- dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
         "app2unit -- dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "app2unit -- swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
-        "app2unit -- quickshell"
       ];
 
       env = [
@@ -139,8 +138,7 @@
         "ALT,space,togglefloating,"
         "ALT,G,togglegroup,"
         "ALT,C,changegroupactive,"
-        "ALT,R,global,quickshell:launcher"
-        "ALT,T,pseudo,"
+        "ALT,R,exec,rofi -show drun"
         "ALT,M,fullscreen,"
         "ALT,Escape,exec,swaylock -f -e -l -L -s fill"
         "CTRLALT,Escape,exec,app2unit -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
@@ -195,12 +193,12 @@
         "ALTSHIFT,S,exec,app2unit -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
         # BRIGHTNESS CONTROL
-        ",XF86MonBrightnessUp,global,quickshell:brightnessUp"
-        ",XF86MonBrightnessDown,global,quickshell:brightnessDown"
+        ",XF86MonBrightnessUp,exec,brightnessctl set +10%"
+        ",XF86MonBrightnessDown,exec,brightnessctl set 10%-"
 
         # AUDIO CONTROL
-        ",XF86AudioRaiseVolume,global,quickshell:volumeUp"
-        ",XF86AudioLowerVolume,global,quickshell:volumeDown"
+        ",XF86AudioRaiseVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ",XF86AudioLowerVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
       ];
 
       bindm = [

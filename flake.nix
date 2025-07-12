@@ -13,15 +13,10 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    quickshell = {
-      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
 
-  outputs = { self, nixpkgs, home-manager, nixvim, quickshell, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nixvim, ... }@inputs:
     let
       lib = nixpkgs.lib;
       pkgs = nixpkgs.legacyPackages."x86_64-linux";
