@@ -15,7 +15,7 @@
 
     extraConfig = ''
       monitor = eDP-1,1920x1080@144,0x0,1
-      monitor = HDMI-A-1,1920x1080@60,0x-1080,1
+      monitor = HDMI-A-1,preferred,1920x0,1
     '';
     
     settings = {
