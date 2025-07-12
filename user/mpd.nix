@@ -1,4 +1,6 @@
 { config, lib, pkgs, inputs, ... }: {
+  home.packages = [ pkgs.mpc ];
+
   services.mpd = {
     enable = true;
     extraConfig = ''
