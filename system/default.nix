@@ -55,6 +55,20 @@
     variant = "";
   };
 
+  fileSystems."/run/media/work" = {
+    device = "/dev/disk/by-uuid/9ef05eb9-f96e-401f-ac51-ba48d5408e03";
+    fsType = "ext4";
+    options = [
+      "user"
+      "nofail"
+      "exec"
+      # "uid=1000"
+      # "gid=1000"
+      # "dmask=007"
+      # "fmask=117"
+    ];
+  };
+
   # Sway fixing
   # TODO put this in a flake
   security.polkit.enable = true;
