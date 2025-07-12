@@ -301,7 +301,8 @@ Changes all the colors and whatnot
     :config
     (load-theme 'doom-monokai-classic t)
     (custom-set-faces
-     '(default ((t (:background "#000000")))))
+     '(default ((t (:background "#000000"))))
+     '(tab-bar ((t (:foreground "#FFFFFF")))))
     (doom-themes-org-config))
 #+end_src
 
