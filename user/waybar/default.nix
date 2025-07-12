@@ -115,13 +115,24 @@
           on-click = "pavucontrol";
         };
 
-        "custom/weather" = {
-          exec = "weather.py";
         "mpd" = {
           format = "{artist} - {title}  ";
           format-paused = "{artist} - {title} ";
         };
 
+        "custom/weather" = let
+          weather-script = pkgs.stdenv.mkDerivation {
+            name = "weather-script";
+            propagatedBuildInputs = [
+              (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
+                pyquery
+              ]))
+            ];
+            dontUnpack = true;
+            installPhase = "install -Dm755 ${./weather.py} $out/bin/weather.py";
+          };
+        in {
+          exec = "${weather-script}/bin/weather.py";
           restart-interval = 300;
           return-type = "json";
           on-click = "xdg-open https://weather.com/en-IN/weather/today/l/$location_id";
