@@ -23,6 +23,7 @@
         modules-left = ["hyprland/workspaces" "hyprland/window"];
         modules-right = [
           "idle_inhibitor"
+          "mpd"
           "custom/weather"
           "pulseaudio"
           "network"
@@ -116,6 +117,11 @@
 
         "custom/weather" = {
           exec = "weather.py";
+        "mpd" = {
+          format = "{artist} - {title}  ";
+          format-paused = "{artist} - {title} ";
+        };
+
           restart-interval = 300;
           return-type = "json";
           on-click = "xdg-open https://weather.com/en-IN/weather/today/l/$location_id";
