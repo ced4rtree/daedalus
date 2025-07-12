@@ -42,14 +42,18 @@ button {
 #custom-weather {
     padding: 1px 7px;
     margin-left: 5px;
-    margin-top: 5px;
+    margin-bottom: 8px;
     border-radius: 5px;
+}
+
+.modules-right {
+    margin-right: 8px;
 }
 
 .modules-left {
 	color: @text;
 	background-color: @base;
-    border-radius: 0 0 10px 0;
+    border-radius: 0 10px 0 0;
     padding: 0px;
     margin: 0px;
     padding-right: 10px;
