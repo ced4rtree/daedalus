@@ -8,8 +8,8 @@
 }
 
 window#waybar {
-    /* background-color: @base; */
-    background-color: rgba(0, 0, 0, 0);
+    background-color: @base;
+    /* background-color: rgba(0, 0, 0, 0); */
     color: @surface0;
 }
 
@@ -41,13 +41,6 @@ button {
 #mpd,
 #custom-weather {
     padding: 1px 7px;
-    margin-left: 5px;
-    margin-bottom: 8px;
-    border-radius: 5px;
-}
-
-.modules-right {
-    margin-right: 8px;
 }
 
 .modules-left {
