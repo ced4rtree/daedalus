@@ -39,6 +39,7 @@ button {
 #scratchpad,
 #workspaces,
 #mpd,
+#cava,
 #power-profiles-daemon,
 #custom-weather {
     padding: 1px 7px;
@@ -147,6 +148,14 @@ button {
     background-color: @mauve;
 }
 
+#mpd {
+    background-color: @mauve;
+}
+
+#cava {
+    background-color: @mauve;
+}
+
 #temperature {
     background-color: @peach;
 }
@@ -161,10 +170,6 @@ button {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-}
-
-#mpd {
-    background-color: @maroon;
 }
 
 #custom-weather {
