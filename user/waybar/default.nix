@@ -102,10 +102,11 @@
         "network" = {
           format-wifi = "{signalStrength}%  ";
           format-ethernet = "{ipaddr}/{cidr}";
-          tooltip-format = "{essid}";
+          tooltip-format = "{ifname}: {essid} ({ipaddr}/{cidr})";
           format-linked = "{ifname} (No IP)";
           format-disconnected = "Disconnected ⚠";
-          format-alt = "{ifname}: {ipaddr}/{cidr}";
+          # format-alt = "{ifname}: {ipaddr}/{cidr}";
+          on-click = "foot -e nmtui";
         };
 
         "pulseaudio" = {
