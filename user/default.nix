@@ -18,7 +18,8 @@
     ./mako.nix
     ./waybar
     ./emacs
-    ./rofi
+    # ./rofi
+    ./fuzzel.nix
     ./neovim.nix
     ./files.nix
     ./foot.nix

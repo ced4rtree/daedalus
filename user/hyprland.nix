@@ -138,7 +138,7 @@
         "ALT,space,togglefloating,"
         "ALT,G,togglegroup,"
         "ALT,C,changegroupactive,"
-        "ALT,R,exec,rofi -show drun"
+        "ALT,R,exec,fuzzel"
         "ALT,M,fullscreen,"
         "ALT,Escape,exec,swaylock -f -e -l -L -s fill"
         "CTRLALT,Escape,exec,app2unit -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
