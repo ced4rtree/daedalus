@@ -28,6 +28,7 @@
           "temperature"
           "backlight"
           "battery"
+          "power-profiles-daemon"
           "clock"
           "tray"
         ];
@@ -81,6 +82,14 @@
           format-plugged = "{capacity}% ";
           format-alt = "{time} {icon}";
           format-icons = ["" "" "" "" ""];
+        };
+
+        "power-profiles-daemon" = {
+          format-icons = {
+            power-saver = "󰌪 ";
+            balanced = " ";
+            performance = "󰓅 ";
+          };
         };
 
         "network" = {

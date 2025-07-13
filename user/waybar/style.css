@@ -39,6 +39,7 @@ button {
 #scratchpad,
 #workspaces,
 #mpd,
+#power-profiles-daemon,
 #custom-weather {
     padding: 1px 7px;
 }
@@ -106,11 +107,20 @@ button {
 #battery.critical:not(.charging) {
     background-color: @red;
     /* background-color: transparent; */
-    animation-name: blink;
+    animation-name: low-battery-blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+}
+
+@keyframes low-battery-blink {
+    from {background-color: @red;}
+    to {background-color: #FFFFFF;}
+}
+
+#power-profiles-daemon {
+    background-color:  @green;
 }
 
 #cpu {
