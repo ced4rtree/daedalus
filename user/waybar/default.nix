@@ -1,8 +1,4 @@
 { config, pkgs, lib, ... }: {
-  imports = [
-    ./weather.nix
-  ];
-  
   programs.waybar = {
     enable = true;
     style =
