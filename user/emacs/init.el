@@ -442,6 +442,7 @@ will find the password for user@example.com"
 
   (emms-all)
   (emms-player-mpd-connect)
+  (emms-mode-line-disable)
 
   (defun cedar/emms-smart-browse-in-tab ()
     (interactive)

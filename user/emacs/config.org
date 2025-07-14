@@ -836,6 +836,7 @@ The Emacs Multimedia System allows you to play music directly from emacs
 
     (emms-all)
     (emms-player-mpd-connect)
+    (emms-mode-line-disable)
 
     (defun cedar/emms-smart-browse-in-tab ()
       (interactive)
