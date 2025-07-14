@@ -429,20 +429,21 @@ will find the password for user@example.com"
   :defines emms-playlist-mode-map
   :custom
   (emms-seek-seconds 5)
-  (emms-player-list '(emms-player-mpd))
-  (emms-info-functions '(emms-info-mpd))
-  (emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
-  (emms-player-mpd-server-name "localhost")
-  (emms-player-mpd-server-port "6600")
-  (mpc-host "localhost:6600")
+  ;; (emms-player-mpd-music-directory (concat (getenv "HOME") "/Music"))
+  ;; (emms-player-mpd-server-name "localhost")
+  ;; (emms-player-mpd-server-port "6600")
+  ;; (mpc-host "localhost:6600")
+  (emms-player-list '(emms-player-mpv))
+  (emms-info-functions '(emms-info-native))
 
   :config
   (require 'emms-setup)
-  (require 'emms-player-mpd)
+  ;; (require 'emms-player-mpd)
 
   (emms-all)
-  (emms-player-mpd-connect)
+  ;; (emms-player-mpd-connect)
   (emms-mode-line-disable)
+  (emms-mpris-enable)
 
   (defun cedar/emms-smart-browse-in-tab ()
     (interactive)
