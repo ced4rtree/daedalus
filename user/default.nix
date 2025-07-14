@@ -25,7 +25,7 @@
     ./foot.nix
     ./batsignal.nix
     # ./quickshell
-    ./mpd.nix
+    # ./mpd.nix
   ];
 
   # This value determines the Home Manager release that your configuration is

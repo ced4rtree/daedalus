@@ -4,6 +4,8 @@
     fftw
     iniparser
   ];
+
+  services.playerctld.enable = true;
   
   programs.waybar = {
     enable = true;
@@ -25,7 +27,7 @@
         modules-left = ["hyprland/workspaces" "hyprland/window"];
         modules-right = [
           "idle_inhibitor"
-          "mpd"
+          "mpris"
           "cava"
           "pulseaudio"
           "custom/weather"
@@ -131,6 +133,19 @@
         "mpd" = {
           format = "{artist} - {title}  ";
           format-paused = "{artist} - {title} ";
+        };
+
+        "mpris" = {
+          format = "{dynamic} {player_icon}";
+          format-paused = "{dynamic} {status_icon}";
+          dynamic-order = ["artist" "title" "position" "length"];
+          player-icons = {
+            default = "▶";
+            emms = "🎵";
+          };
+          status-icons = {
+            paused = "⏸";
+          };
         };
 
         "cava" = {

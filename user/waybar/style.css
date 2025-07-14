@@ -39,6 +39,7 @@ button {
 #scratchpad,
 #workspaces,
 #mpd,
+#mpris,
 #cava,
 #power-profiles-daemon,
 #custom-weather {
@@ -144,15 +145,7 @@ button {
     background-color: @red;
 }
 
-#pulseaudio {
-    background-color: @mauve;
-}
-
-#mpd {
-    background-color: @mauve;
-}
-
-#cava {
+#pulseaudio, #mpd, #cava, #mpris {
     background-color: @mauve;
 }
 
