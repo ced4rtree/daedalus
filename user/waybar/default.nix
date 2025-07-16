@@ -95,9 +95,9 @@
 
         "power-profiles-daemon" = {
           format-icons = {
-            power-saver = "󰌪 ";
-            balanced = " ";
-            performance = "󰓅 ";
+            power-saver = "󰌪";
+            balanced = "";
+            performance = "󰓅";
           };
         };
 
@@ -138,10 +138,10 @@
         "mpris" = {
           format = "{dynamic} {player_icon}";
           format-paused = "{dynamic} {status_icon}";
-          dynamic-order = ["artist" "title" "position" "length"];
+          dynamic-order = ["artist" "title"];
           player-icons = {
             default = "▶";
-            emms = "🎵";
+            emms = " ";
           };
           status-icons = {
             paused = "⏸";
