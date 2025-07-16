@@ -106,9 +106,9 @@ its arguments, even if NAME is already an existing tab."
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
-(use-package hungry-delete
-  :bind (("C-<backspace>" . hungry-delete-backward)
-         ("C-M-d" . hungry-delete-forward)))
+;; (use-package hungry-delete
+;;   :bind (("C-<backspace>" . hungry-delete-backward)
+;;          ("C-M-d" . hungry-delete-forward)))
 
 (defun cedar/scroll-page-and-point-up (&optional arg)
   "Scroll ARG lines up in a buffer, and maintain physical position of
@@ -138,8 +138,8 @@ If LINES is not specified, 1 is assumed."
     (scroll-up lines)
     (next-line lines)))
 
-(global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
-(global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
+;; (global-set-key (kbd "M-n") #'cedar/scroll-page-and-point-down)
+;; (global-set-key (kbd "M-p") #'cedar/scroll-page-and-point-up)
 
 (use-package direnv
   :config
@@ -514,5 +514,65 @@ will find the password for user@example.com"
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode))
+
+(use-package evil-leader
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>")
+
+  ;; files
+  (evil-leader/set-key
+   "." 'find-file
+   "f s" 'save-buffer
+   "f f" 'find-file
+
+   ;; windows
+   "w k" 'kill-buffer-and-window
+   "w c" 'delete-window
+   "w w" 'other-window
+   "w 1" 'delete-other-windows
+   "w 0" 'delete-window
+
+   ;; dired
+   "d d" 'dired
+   "d j" 'dired-jump
+
+   ;; tabs
+   "t o" 'tab-next
+   "t O" 'tab-previous
+   "t n" 'tab-new
+   "t k" 'tab-close
+
+   ;; projects
+   "p p" 'cedar/project-switch-project-tab
+   "p k" 'cedar/project-kill-buffers-and-tab
+   "p f" 'project-find-file
+   "p g" 'project-find-regexp
+   "p r" 'project-replace
+   "p c" 'project-compile
+   "p e" 'project-eshell
+
+   ;; music
+   "m t" 'emms-pause
+   "m n" 'emms-next
+   "m p" 'emms-previous
+
+   ;; open programs
+   "o a" 'cedar/open-agenda-in-tab
+   "o e" 'cedar/mu4e-in-tab
+   "o m" 'cedar/emms-smart-browse-in-tab))
+
+(use-package evil
+  :custom
+  (evil-want-fine-undo t)
+  (evil-undo-system 'undo-redo)
+  :config
+  (defvar my-leader-map
+    (make-sparse-keymap)
+    "Keymap for 'leader key' shortcuts.")
+
+  
+  (evil-mode 1)
+  (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit))
 
 (setq gc-cons-threshold (* 2 1024 1024))
