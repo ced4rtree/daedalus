@@ -516,6 +516,8 @@ will find the password for user@example.com"
   :hook (org-mode . org-bullets-mode))
 
 (use-package evil-leader
+  :init
+  (setq evil-want-keybinding nil)
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
@@ -560,19 +562,32 @@ will find the password for user@example.com"
    ;; open programs
    "o a" 'cedar/open-agenda-in-tab
    "o e" 'cedar/mu4e-in-tab
-   "o m" 'cedar/emms-smart-browse-in-tab))
+   "o m" 'cedar/emms-smart-browse-in-tab
+
+   ;; help
+   "h f" 'describe-function
+   "h v" 'describe-variable
+   "h k" 'describe-key
+
+   ;; git
+   "g g" 'magit))
 
 (use-package evil
+  :init
+  (setq evil-want-keybinding nil)
   :custom
   (evil-want-fine-undo t)
   (evil-undo-system 'undo-redo)
   :config
-  (defvar my-leader-map
-    (make-sparse-keymap)
-    "Keymap for 'leader key' shortcuts.")
-
-  
   (evil-mode 1)
-  (define-key evil-normal-state-map (kbd "ESC") 'keyboard-quit))
+  (define-key evil-normal-state-map (kbd "<escape>") 'keyboard-quit)
+  (define-key evil-normal-state-map (kbd "M-x") 'execute-extended-command))
+
+(keymap-global-set "M-x" 'execute-extended-command)
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (setq gc-cons-threshold (* 2 1024 1024))
