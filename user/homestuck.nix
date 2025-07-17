@@ -1,11 +1,12 @@
 { config, pkgs, ... }: {
   home.packages = let
+    version = "2.7.0";
     homestuck = pkgs.appimageTools.wrapType2 {
       pname = "unofficial-homestuck-collection";
-      version = "2.5.1";
+      version = version;
       src = pkgs.fetchurl {
-        url = "https://github.com/GiovanH/unofficial-homestuck-collection/releases/download/v2.5.1/The-Unofficial-Homestuck-Collection-2.5.1.AppImage";
-        hash = "sha256-K93bd+Zbt/HKzNz78EjJpLQy+H0UOuQ7tvWPN6LLJd4=";
+        url = "https://github.com/GiovanH/unofficial-homestuck-collection/releases/download/v${version}/The-Unofficial-Homestuck-Collection-${version}.AppImage";
+        hash = "sha256-IfDEgKlRwAlpctiwL+lOTgBdSdUGFxCdArlu+dDiEcY=";
       };
     };
   in with pkgs; [ homestuck ];
