@@ -10,7 +10,8 @@
     ./shells/zsh.nix
     # ./shells/fish.nix
     ./starship.nix
-    ./hyprland.nix
+    # ./hyprland.nix
+    ./niri
     ./bluetooth.nix
     ./theme.nix
     ./direnv.nix

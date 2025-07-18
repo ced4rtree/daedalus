@@ -13,6 +13,7 @@
       ./printing.nix
       ./upower.nix
       ./windowManagers/hyprland-uwsm.nix
+      ./windowManagers/niri.nix
       # ./displayManagers/ly.nix
       # ./xorg.nix
       # ./windowManagers/exwm.nix
