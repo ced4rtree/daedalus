@@ -581,7 +581,9 @@ will find the password for user@example.com"
 
    ;; buffers
    "b b" 'switch-to-buffer
-   "b i" 'ibuffer))
+   "b i" 'ibuffer
+   "b p" 'previous-buffer
+   "b n" 'next-buffer))
 
 (use-package evil
   :init
