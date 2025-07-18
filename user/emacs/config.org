@@ -17,6 +17,7 @@
   - [[#hungry-delete][Hungry Delete]]
   - [[#scroll-one-line][Scroll one line]]
   - [[#direnv][Direnv]]
+  - [[#fill-column][Fill-Column]]
 - [[#uiux-improvements][UI/UX Improvements]]
   - [[#theme][Theme]]
   - [[#continuous-vertical-border-in-terminal-emacs][Continuous Vertical Border in Terminal Emacs]]
@@ -286,6 +287,15 @@ all the way to the bottom of the screen
   (use-package direnv
     :config
     (direnv-mode t))
+#+end_src
+
+** Fill-Column
+Fill column is a variable determining how wide the text on screen should be. For
+example, =M-q= will reorganize a paragraph such that all of the text on screen
+will fit in ~fill-column~ characters.
+
+#+begin_src emacs-lisp
+  (setq-default fill-column 80)
 #+end_src
 
 * UI/UX Improvements

@@ -145,6 +145,8 @@ If LINES is not specified, 1 is assumed."
   :config
   (direnv-mode t))
 
+(setq-default fill-column 80)
+
 (use-package doom-themes
   :custom
   (doom-monokai-classic-brighter-comments t)
