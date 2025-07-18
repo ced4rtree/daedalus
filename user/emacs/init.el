@@ -534,8 +534,12 @@ will find the password for user@example.com"
    "w k" 'kill-buffer-and-window
    "w c" 'delete-window
    "w w" 'other-window
-   "w 1" 'delete-other-windows
    "w 0" 'delete-window
+   "w 1" 'delete-other-windows
+   "w 2" 'split-window-below
+   "w 3" 'split-window-right
+   "w v" 'split-window-right
+   "w n" 'split-window-below
 
    ;; dired
    "d d" 'dired
