@@ -386,6 +386,7 @@ If LINES is not specified, 1 is assumed."
 (use-package cmake-mode)
 (use-package markdown-mode)
 (use-package rust-mode)
+(use-package kdl-mode)
 (use-package nix-mode)
 (use-package qml-mode)
 

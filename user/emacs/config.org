@@ -760,6 +760,7 @@ box
   (use-package cmake-mode)
   (use-package markdown-mode)
   (use-package rust-mode)
+  (use-package kdl-mode)
   (use-package nix-mode)
   (use-package qml-mode)
 #+end_src
