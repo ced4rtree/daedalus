@@ -577,7 +577,11 @@ will find the password for user@example.com"
    "h k" 'describe-key
 
    ;; git
-   "g g" 'magit))
+   "g g" 'magit
+
+   ;; buffers
+   "b b" 'switch-to-buffer
+   "b i" 'ibuffer))
 
 (use-package evil
   :init

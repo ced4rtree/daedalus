@@ -1047,7 +1047,11 @@ The Extensible VI Layer for emacs allows vim keybindings within emacs
      "h k" 'describe-key
 
      ;; git
-     "g g" 'magit))
+     "g g" 'magit
+
+     ;; buffers
+     "b b" 'switch-to-buffer
+     "b i" 'ibuffer))
 
   (use-package evil
     :init
