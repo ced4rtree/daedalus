@@ -77,6 +77,10 @@ layout {
         //top 0
         //bottom 0
     }
+
+    tab-indicator {
+        gap 1
+    }
 }
 
 spawn-at-startup "swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
