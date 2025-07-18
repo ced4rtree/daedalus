@@ -25,6 +25,7 @@
     ./files.nix
     ./foot.nix
     ./batsignal.nix
+    ./qutebrowser.nix
     # ./quickshell
     # ./mpd.nix
   ];
@@ -53,7 +54,6 @@
     # misc
     htop
     floorp
-    qutebrowser
     tree-sitter
     nodejs_22
     gh
