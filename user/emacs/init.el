@@ -544,6 +544,7 @@ will find the password for user@example.com"
    "t O" 'tab-previous
    "t n" 'tab-new
    "t k" 'tab-close
+   "t RET" 'tab-switch
 
    ;; projects
    "p p" 'cedar/project-switch-project-tab

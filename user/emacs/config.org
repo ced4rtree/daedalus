@@ -1006,6 +1006,7 @@ The Extensible VI Layer for emacs allows vim keybindings within emacs
      "t O" 'tab-previous
      "t n" 'tab-new
      "t k" 'tab-close
+     "t RET" 'tab-switch
 
      ;; projects
      "p p" 'cedar/project-switch-project-tab
