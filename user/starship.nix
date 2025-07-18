@@ -138,8 +138,12 @@
 
       character = {
         format = "$symbol";
-        success_symbol = " 󱞩 (fg:#00ff00)";
-        error_symbol = " 󱞩 (fg:#ff0000)";
+        success_symbol = " 󱞩 ";
+        error_symbol = " 󱞩 ";
+        vimcmd_symbol = " 󱞩 ";
+        vimcmd_replace_one_symbol = " 󱞩 ";
+        vimcmd_replace_symbol = " 󱞩 ";
+        vimcmd_visual_symbol = " 󱞩 ";
       };
     };
   };
