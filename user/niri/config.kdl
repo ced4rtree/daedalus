@@ -83,7 +83,7 @@ layout {
     }
 }
 
-spawn-at-startup "swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
+spawn-at-startup "swww" "img" "~/.local/share/wallpapers/wallpaper.jpg"
 
 prefer-no-csd
 
