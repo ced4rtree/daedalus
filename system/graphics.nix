@@ -19,13 +19,12 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    open = false;
+    open = true;
     powerManagement = {
       enable = false;
       finegrained = false;
     };
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
 
     prime = {
       intelBusId = "PCI:0:2:0";
