@@ -1,79 +1,13 @@
 { config, pkgs, self, ... }: {
   imports = [
-      ./hardware-configuration.nix
-      ./plymouth
-      ./grub.nix
-      ./virt-manager.nix
-      ./pipewire.nix
-      ./bluetooth.nix
-      ./brightness.nix
-      ./shells/zsh.nix
-      # ./shells/fish.nix
-      ./graphics.nix
-      # ./virtualbox.nix
-      ./printing.nix
-      ./upower.nix
-      ./windowManagers/hyprland-uwsm.nix
-      ./windowManagers/niri.nix
-      # ./displayManagers/ly.nix
-      # ./xorg.nix
-      # ./windowManagers/exwm.nix
-      ./displayManagers/sddm.nix
+    ./core
+    ./userspace
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "muh-laptop"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
+  networking.hostName = "muh-laptop";
   networking.networkmanager.enable = true;
-
-  time.timeZone = "America/Boise";
-
-  programs.dconf.enable = true;
-
-  environment.variables = {
-    PATH = "$PATH:$HOME/.local/bin/";
-  };
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  fileSystems."/run/media/work" = {
-    device = "/dev/disk/by-uuid/9ef05eb9-f96e-401f-ac51-ba48d5408e03";
-    fsType = "ext4";
-    options = [
-      "user"
-      "nofail"
-      "exec"
-      # "uid=1000"
-      # "gid=1000"
-      # "dmask=007"
-      # "fmask=117"
-    ];
-  };
-
-  # Sway fixing
-  # TODO put this in a flake
-  security.polkit.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.cedar = {
@@ -97,11 +31,8 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    vim
     neovim
     git
-    stow
-    gcc
     gnugrep
     ripgrep
     wget
