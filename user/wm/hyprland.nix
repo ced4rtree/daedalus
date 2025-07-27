@@ -20,8 +20,7 @@
     
     settings = {
       exec-once = [
-        "app2unit -- dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus"
-        "app2unit -- dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "app2unit -- dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "app2unit -- swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
       ];
 
