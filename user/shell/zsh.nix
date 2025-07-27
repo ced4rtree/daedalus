@@ -6,6 +6,10 @@ in {
     krabby
   ];
 
+  imports = [
+    ./starship.nix
+  ];
+
   programs.zsh = {
     enable = true;
     enableCompletion = false;

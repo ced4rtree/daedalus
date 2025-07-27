@@ -1,33 +1,17 @@
 { config, pkgs, ... }: {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home.username = "cedar";
   home.homeDirectory = "/home/cedar";
 
   imports = [
-    ./xdg.nix
-    ./virt-manager.nix
-    ./shells/zsh.nix
-    # ./shells/fish.nix
-    ./starship.nix
-    ./hyprland.nix
-    # ./niri
-    ./bluetooth.nix
+    ./bar
+    ./editor
+    ./files
+    ./launcher
+    ./programs
+    ./shell
+    ./terminal
     ./theme.nix
-    ./direnv.nix
-    ./homestuck.nix
-    ./mako.nix
-    ./waybar
-    ./emacs
-    # ./rofi
-    ./fuzzel.nix
-    ./neovim.nix
-    ./files.nix
-    ./foot.nix
-    ./batsignal.nix
-    ./qutebrowser.nix
-    # ./quickshell
-    # ./mpd.nix
+    ./wm
   ];
 
   # This value determines the Home Manager release that your configuration is
@@ -65,6 +49,7 @@
     clonehero
     vesktop
     appimage-run
+    steam-run
     libtool
     graphviz
     edk2
