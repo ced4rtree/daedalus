@@ -24,7 +24,7 @@
         position = "bottom";
         height = 10;
 
-        modules-left = ["niri/workspaces" "niri/window"];
+        modules-left = ["hyprland/workspaces" "hyprland/window"];
         modules-right = [
           "idle_inhibitor"
           "mpris"
