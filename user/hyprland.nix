@@ -131,67 +131,67 @@
 
       bind = [
         # APP BINDS
-        "ALT,return,exec,app2unit -- footclient"
-        "ALT,E,exec,app2unit -- emacsclient -c -a 'emacs'"
-        "ALTSHIFT,escape,exec,app2unit -- pkill Hyprland"
+        "SUPER,return,exec,app2unit -- footclient"
+        "SUPER,E,exec,app2unit -- emacsclient -c -a 'emacs'"
+        "SUPERSHIFT,escape,exec,app2unit -- pkill Hyprland"
 
         # GENERAL WINDOWS OPERATIONS
-        "ALT,space,togglefloating,"
-        "ALT,G,togglegroup,"
-        "ALT,C,changegroupactive,"
-        "ALT,R,exec,fuzzel"
-        "ALT,M,fullscreen,"
-        "ALT,Escape,exec,swaylock -f -e -l -L -s fill"
-        "CTRLALT,Escape,exec,app2unit -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
-        "ALTSHIFT,Q,killactive,"
+        "SUPER,space,togglefloating,"
+        "SUPER,G,togglegroup,"
+        "SUPER,C,changegroupactive,"
+        "SUPER,R,exec,fuzzel"
+        "SUPER,M,fullscreen,"
+        "SUPER,Escape,exec,swaylock -f -e -l -L -s fill"
+        "CTRLSUPER,Escape,exec,app2unit -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
+        "SUPERSHIFT,Q,killactive,"
 
         # FOCUS WORKSPACES
-        "ALT,1,workspace,1"
-        "ALT,2,workspace,2"
-        "ALT,3,workspace,3"
-        "ALT,4,workspace,4"
-        "ALT,5,workspace,5"
-        "ALT,6,workspace,6"
-        "ALT,7,workspace,7"
-        "ALT,8,workspace,8"
-        "ALT,9,workspace,9"
-        "ALT,0,workspace,10"
+        "SUPER,1,workspace,1"
+        "SUPER,2,workspace,2"
+        "SUPER,3,workspace,3"
+        "SUPER,4,workspace,4"
+        "SUPER,5,workspace,5"
+        "SUPER,6,workspace,6"
+        "SUPER,7,workspace,7"
+        "SUPER,8,workspace,8"
+        "SUPER,9,workspace,9"
+        "SUPER,0,workspace,10"
 
         # MOVING WINDOWS TO WS
-        "ALTSHIFT,1,movetoworkspace,1"
-        "ALTSHIFT,2,movetoworkspace,2"
-        "ALTSHIFT,3,movetoworkspace,3"
-        "ALTSHIFT,4,movetoworkspace,4"
-        "ALTSHIFT,5,movetoworkspace,5"
-        "ALTSHIFT,6,movetoworkspace,6"
-        "ALTSHIFT,7,movetoworkspace,7"
-        "ALTSHIFT,8,movetoworkspace,8"
-        "ALTSHIFT,9,movetoworkspace,9"
-        "ALTSHIFT,0,movetoworkspace,10"
-        "ALTSHIFT,right,movetoworkspace,m+1"
-        "ALTSHIFT,left,movetoworkspace,m-1"
+        "SUPERSHIFT,1,movetoworkspace,1"
+        "SUPERSHIFT,2,movetoworkspace,2"
+        "SUPERSHIFT,3,movetoworkspace,3"
+        "SUPERSHIFT,4,movetoworkspace,4"
+        "SUPERSHIFT,5,movetoworkspace,5"
+        "SUPERSHIFT,6,movetoworkspace,6"
+        "SUPERSHIFT,7,movetoworkspace,7"
+        "SUPERSHIFT,8,movetoworkspace,8"
+        "SUPERSHIFT,9,movetoworkspace,9"
+        "SUPERSHIFT,0,movetoworkspace,10"
+        "SUPERSHIFT,right,movetoworkspace,m+1"
+        "SUPERSHIFT,left,movetoworkspace,m-1"
 
-        "ALT,H,movefocus,l"
-        "ALT,L,movefocus,r"
-        "ALT,K,movefocus,u"
-        "ALT,J,movefocus,d"
+        "SUPER,H,movefocus,l"
+        "SUPER,L,movefocus,r"
+        "SUPER,K,movefocus,u"
+        "SUPER,J,movefocus,d"
 
-        "ALTCONTROL,h,swapwindow,l"
-        "ALTCONTROL,l,swapwindow,r"
-        "ALTCONTROL,k,swapwindow,u"
-        "ALTCONTROL,j,swapwindow,d"
+        "SUPERCONTROL,h,swapwindow,l"
+        "SUPERCONTROL,l,swapwindow,r"
+        "SUPERCONTROL,k,swapwindow,u"
+        "SUPERCONTROL,j,swapwindow,d"
 
         ",XF86AudioNext,exec,app2unit -- mpc next"
         ",XF86AudioPrev,exec,app2unit -- mpc prev"
-        "ALT,down,exec,app2unit -- mpc toggle"
-        "ALT,up,exec,app2unit -- mpc toggle"
+        "SUPER,down,exec,app2unit -- mpc toggle"
+        "SUPER,up,exec,app2unit -- mpc toggle"
         ",XF86AudioPlay,exec,app2unit -- mpc toggle"
-        "ALT,right,exec,app2unit -- mpc next"
-        "ALT,left,exec,app2unit -- mpc prev"
+        "SUPER,right,exec,app2unit -- mpc next"
+        "SUPER,left,exec,app2unit -- mpc prev"
 
         # SCREENSHOTS
-        "ALT,S,exec,app2unit -- grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
-        "ALTSHIFT,S,exec,app2unit -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+        "SUPER,S,exec,app2unit -- grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+        "SUPERSHIFT,S,exec,app2unit -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
         # BRIGHTNESS CONTROL
         ",XF86MonBrightnessUp,exec,brightnessctl set +10%"
@@ -204,16 +204,16 @@
 
       bindm = [
         # MOUSE WINDOW CONTROL
-        "ALT,mouse:272,movewindow"
-        "ALT,mouse:273,resizewindow"
+        "SUPER,mouse:272,movewindow"
+        "SUPER,mouse:273,resizewindow"
       ];
 
       binde = [
         # WINDOW SIZE CONTROL
-        "ALTSHIFT,H,resizeactive,-20 0"
-        "ALTSHIFT,L,resizeactive,20 0"
-        "ALTSHIFT,K,resizeactive,0 -20"
-        "ALTSHIFT,J,resizeactive,0 20"
+        "SUPERSHIFT,H,resizeactive,-20 0"
+        "SUPERSHIFT,L,resizeactive,20 0"
+        "SUPERSHIFT,K,resizeactive,0 -20"
+        "SUPERSHIFT,J,resizeactive,0 20"
       ];
     };
   };
