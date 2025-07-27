@@ -2,14 +2,28 @@
 
 [[./images/screenshot.png]]
 
-Right now, to install my dots, you can just run ~nix run github:ced4rtree/dotfiles~.
+To test my dots on a NixOS system, you can just run ~nix run github:ced4rtree/dotfiles~.
 
 ** Structure
- - ~flake.nix~: The root declaration of my config. Pretty boring tbh
- - ~flake.lock~: Lock file keeping track of what versions I have installed for my package inputs
- - ~user/~: This directory contains all of my Home Manager settings, and declares the configurations for all of the apps I interact with frequently (emacs, hyprland, etc.)
- - ~system/~: This directory defines how the global nix configuration should be setup, e.g. grub settings, networking, etc.
- - ~files/~: A directory containing specific files I want to be installed, like my wallpaper.
+#+BEGIN_EXAMPLE
+dotfiles
+├── flake.nix # Root file declaring my configuration
+├── flake.lock # lock file keeping track of the versions used for my inputs
+├── system # directory for global system configuration settings
+│   ├── default.nix # imports the other two dirs and declares some other miscellaneous settings
+│   ├── core # things that are required for or happen during the bootup sequence
+│   └── userspace # things that the user directly interfaces with
+└── user # directory for my Home Manager config
+    ├── default.nix # imports the other directories here & declares desired packages
+    ├── bar      # configuration for whatever bar I feel like using
+    ├── editor   # configuration for any editors I want to use
+    ├── files    # direct file installations (e.g. wallpaper)
+    ├── launcher # configuration for whatever launcher I feel like using
+    ├── programs # configuration for miscellaneous programs, e.g. qutebrowser, etc.
+    ├── shell    # configuration for whatever shell I feel like using
+    ├── terminal # configuration for whatever terminal I feel like using
+    └── wm       # configuration for whatever window manager I feel like using
+#+END_EXAMPLE
    
 ** Normal Dotfiles Where?
 For anybody who doesn't know how to (or want to) read or use nix, a copy of my
