@@ -539,6 +539,7 @@ will find the password for user@example.com"
    "w 1" 'delete-other-windows
    "w 2" 'split-window-below
    "w 3" 'split-window-right
+   "w 4 0" 'kill-buffer-and-window
    "w v" 'split-window-right
    "w n" 'split-window-below
 
@@ -585,7 +586,7 @@ will find the password for user@example.com"
    "b i" 'ibuffer
    "b p" 'previous-buffer
    "b n" 'next-buffer
-   "b k" 'kill-this-buffer
+   "b k" 'kill-buffer
    "b r" 'revert-buffer))
 
 (use-package evil
