@@ -1,6 +1,7 @@
 { config, pkgs, self, ... }: {
   imports = [
       ./hardware-configuration.nix
+      ./plymouth
       ./grub.nix
       ./virt-manager.nix
       ./pipewire.nix

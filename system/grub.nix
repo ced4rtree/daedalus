@@ -1,5 +1,4 @@
 { config, pkgs, ... }: {
-  boot.kernelParams = [ "quiet" "splash" ];
   boot.loader = {
     systemd-boot.enable = false;
     efi.canTouchEfiVariables = true;
