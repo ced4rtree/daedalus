@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, lib, pkgs, ... }: {
   home.packages = with pkgs; [
     wl-clipboard
     wlr-randr
@@ -56,8 +56,9 @@
         gaps_in = 5;
         gaps_out = 8;
         border_size = 2;
-        "col.active_border" = "rgba(8caaeeff) rgba(ca9eedff) 45deg";
-        "col.inactive_border" = "rgba(232634ff)";
+        "col.active_border" = let
+          colors = config.lib.stylix.colors;
+        in lib.mkForce "rgba(${colors.blue}ff) rgba(${colors.magenta}ff) 45deg";
         resize_on_border = true;
         layout = "dwindle";
       };

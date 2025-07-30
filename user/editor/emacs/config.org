@@ -306,15 +306,17 @@ blunt. Below are some settings to change that
 Changes all the colors and whatnot
 
 #+begin_src emacs-lisp
-  (use-package doom-themes
-    :custom
-    (doom-monokai-classic-brighter-comments t)
-    :config
-    (load-theme 'doom-monokai-classic t)
-    (custom-set-faces
-     '(default ((t (:background "#000000"))))
-     '(tab-bar ((t (:foreground "#FFFFFF")))))
-    (doom-themes-org-config))
+  ;; only choose the theme when not using nix (thanks stylix!)
+  (when (not (file-directory-p "/nix/store"))
+    (use-package doom-themes
+      :custom
+      (doom-monokai-classic-brighter-comments t)
+      :config
+      (load-theme 'doom-monokai-classic t)
+      (custom-set-faces
+       '(default ((t (:background "#000000"))))
+       '(tab-bar ((t (:foreground "#FFFFFF")))))
+      (doom-themes-org-config)))
 #+end_src
 
 ** Continuous Vertical Border in Terminal Emacs
@@ -341,7 +343,7 @@ This enables a transparent background with completely opaque text so I
 can see my background while working
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(alpha-background . 65))
+  (add-to-list 'default-frame-alist '(alpha-background . 100))
 #+end_src
 
 ** Font

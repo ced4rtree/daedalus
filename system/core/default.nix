@@ -3,6 +3,6 @@
     ./graphics.nix
     ./grub.nix
     ./hardware-configuration.nix
-    ./plymouth
+    ./plymouth.nix
   ];
 }

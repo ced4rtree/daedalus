@@ -9,9 +9,33 @@
   
   programs.waybar = {
     enable = true;
-    style =
-      (builtins.readFile ./frappe.css)
-      + (builtins.readFile ./style.css);
+    style = let
+      colors = config.lib.stylix.colors.withHashtag;
+    in ''
+      /* base08-base0F & base12-base17 */
+      @define-color red ${colors.red};
+      @define-color orange ${colors.orange};
+      @define-color yellow ${colors.yellow};
+      @define-color green ${colors.green};
+      @define-color cyan ${colors.cyan};
+      @define-color blue ${colors.blue};
+      @define-color magenta ${colors.magenta};
+      @define-color brown ${colors.brown};
+      @define-color bright-red ${colors.red};
+      @define-color bright-yellow ${colors.bright-yellow};
+      @define-color bright-green ${colors.bright-green};
+      @define-color bright-cyan ${colors.bright-cyan};
+      @define-color bright-blue ${colors.bright-blue};
+      @define-color bright-magenta ${colors.bright-magenta};
+
+      /* base00-base07 */
+      @define-color base ${colors.base00};
+      @define-color mantle ${colors.base01};
+      @define-color surface0 ${colors.base02};
+      @define-color surface1 ${colors.base03};
+      @define-color surface2 ${colors.base04};
+      @define-color text ${colors.base05};
+    '' + builtins.readFile ./style.css;
 
     systemd = {
       enable = true;

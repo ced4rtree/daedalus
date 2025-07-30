@@ -6,6 +6,7 @@
     ./pipewire.nix
     ./printing.nix
     ./shells
+    ./stylix.nix
     ./upower.nix
     ./virt-manager.nix
     # ./virtualbox.nix

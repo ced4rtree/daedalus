@@ -147,15 +147,17 @@ If LINES is not specified, 1 is assumed."
 
 (setq-default fill-column 80)
 
-(use-package doom-themes
-  :custom
-  (doom-monokai-classic-brighter-comments t)
-  :config
-  (load-theme 'doom-monokai-classic t)
-  (custom-set-faces
-   '(default ((t (:background "#000000"))))
-   '(tab-bar ((t (:foreground "#FFFFFF")))))
-  (doom-themes-org-config))
+;; only choose the theme when not using nix (thanks stylix!)
+(when (not (file-directory-p "/nix/store"))
+  (use-package doom-themes
+    :custom
+    (doom-monokai-classic-brighter-comments t)
+    :config
+    (load-theme 'doom-monokai-classic t)
+    (custom-set-faces
+     '(default ((t (:background "#000000"))))
+     '(tab-bar ((t (:foreground "#FFFFFF")))))
+    (doom-themes-org-config)))
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
 
@@ -163,7 +165,7 @@ If LINES is not specified, 1 is assumed."
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-(add-to-list 'default-frame-alist '(alpha-background . 65))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
 

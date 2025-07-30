@@ -7,15 +7,6 @@
   programs.nixvim = {
     enable = true;
 
-    colorschemes.catppuccin = {
-      enable = true;
-      settings = {
-        flavour = "frappe";
-        term_colors = true;
-        transparent_background = true;
-      };
-    };
-
     opts = {
       shiftwidth = 4;
       softtabstop = 4;

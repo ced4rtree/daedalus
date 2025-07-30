@@ -60,7 +60,7 @@ button {
 }
 
 #workspaces button {
-    color: @subtext0;
+    color: @surface2;
 	padding: 0px;
     padding: 0px 2px;
     padding-bottom: 2px;
@@ -85,17 +85,18 @@ button {
 }
 
 #workspaces button:not(.active):hover {
-    border-bottom: 1px solid @mauve;
+    border-bottom: 1px solid @magenta;
     transition: 0s;
     padding-bottom: 3px;
 }
 
-#clock {
-    background-color: @overlay2;
+#clock, #idle_inhibitor {
+    background-color: @base;
+    color: @text;
 }
 
 #battery {
-    background-color: @sapphire;
+    background-color: @bright-blue;
 }
 
 #battery.charging, #battery.plugged {
@@ -103,7 +104,7 @@ button {
 }
 
 #battery.warning:not(.charging) {
-    background-color: @peach;
+    background-color: @orange;
 }
 
 #battery.critical:not(.charging) {
@@ -131,7 +132,7 @@ button {
 }
 
 #memory {
-    background-color: @lavender
+    background-color: @bright-yellow;
 }
 
 #backlight {
@@ -139,7 +140,7 @@ button {
 }
 
 #network {
-    background-color: @teal;
+    background-color: @cyan;
 }
 
 #network.disconnected {
@@ -147,11 +148,11 @@ button {
 }
 
 #pulseaudio, #mpd, #cava, #mpris {
-    background-color: @mauve;
+    background-color: @magenta;
 }
 
 #temperature {
-    background-color: @peach;
+    background-color: @orange;
 }
 
 #temperature.critical {
@@ -167,9 +168,5 @@ button {
 }
 
 #custom-weather {
-    background-color: #dbd9d8;
-}
-
-#idle_inhibitor {
-    background-color: @overlay2;
+    background-color: @brown;
 }

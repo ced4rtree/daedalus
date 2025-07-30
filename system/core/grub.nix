@@ -8,20 +8,6 @@
       efiSupport = true;
       devices = [ "nodev" ];
 
-      theme = pkgs.stdenv.mkDerivation {
-        name = "CyberRe";
-        pname = "CyberRe";
-        src = pkgs.fetchFromGitHub {
-          owner = "qdwp";
-          repo = "CyberRe";
-          rev = "master";
-          hash = "sha256-FH/KmmANlxfztroBD1rVdA/XxCGxJPT4CeWWmNs+CIg=";
-        };
-        installPhase = ''
-          cp -r ./CyberRe $out/
-        '';
-      };
-
       extraEntries = ''
         menuentry "Arch Linux" {
           insmod part_gpt
