@@ -61,9 +61,7 @@ button {
 
 #workspaces button {
     color: @surface2;
-	padding: 0px;
-    padding: 0px 2px;
-    padding-bottom: 2px;
+    padding-top: 2px;
     transition: 0s;
 }
 
@@ -87,7 +85,7 @@ button {
 #workspaces button:not(.active):hover {
     border-bottom: 1px solid @magenta;
     transition: 0s;
-    padding-bottom: 3px;
+    padding-bottom: 2px;
 }
 
 #clock, #idle_inhibitor {

@@ -1,4 +1,6 @@
 { config, pkgs, lib, ... }: {
+  stylix.targets.waybar.addCss = false;
+
   home.packages = with pkgs; [
     cava
     fftw
@@ -170,6 +172,7 @@
           status-icons = {
             paused = "⏸";
           };
+          dynamic-len = 50;
         };
 
         "cava" = {
