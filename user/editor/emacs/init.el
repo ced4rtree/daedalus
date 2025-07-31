@@ -306,9 +306,6 @@ If LINES is not specified, 1 is assumed."
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
-(use-package beacon
-  :config (beacon-mode))
-
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
 

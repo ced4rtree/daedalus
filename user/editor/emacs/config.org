@@ -38,7 +38,6 @@
   - [[#ligatures][Ligatures]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#dired-icons][Dired Icons]]
-  - [[#beacon][Beacon]]
   - [[#rainbow-mode][Rainbow Mode]]
   - [[#fix-paren-highlighting-in-org-mode][Fix paren highlighting in Org Mode]]
   - [[#scrolling][Scrolling]]
@@ -597,15 +596,6 @@ next to a file in dired
   (use-package nerd-icons-dired
     :hook
     (dired-mode . nerd-icons-dired-mode))
-#+end_src
-
-** Beacon
-Adding a nice flash for where your cursor is upon movements makes it
-really easy and really pretty when finding the point
-
-#+begin_src emacs-lisp
-  (use-package beacon
-    :config (beacon-mode))
 #+end_src
 
 ** Rainbow Mode
