@@ -1,7 +1,4 @@
-{ config, pkgs, lib, ... }: let
-  user = "cedar";
-  homeManagerSessionVars = "/etc/profiles/per-user/${user}/etc/profile.d/hm-session-vars.sh";
-in {
+{ config, pkgs, lib, ... }: {
   home.packages = with pkgs; [
     krabby
   ];
@@ -17,7 +14,7 @@ in {
     syntaxHighlighting.enable = true;
     autocd = true;
 
-    dotDir = ".config/zsh";
+    dotDir = config.xdg.configHome + "/zsh";
 
     shellAliases = {
       l = "ls --color=auto";
@@ -76,9 +73,5 @@ in {
 
       krabby random | awk 'NR>1 { print $0 }'
     '';
-
-    sessionVariables = {
-      PATH = "$PATH:$HOME/.local/bin/";
-    };
   };
 }
