@@ -30,6 +30,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  nix.settings.warn-dirty = false;
+
   environment.systemPackages = with pkgs; [
     neovim
     git
