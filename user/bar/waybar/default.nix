@@ -52,7 +52,6 @@
 
         modules-left = ["hyprland/workspaces" "hyprland/window"];
         modules-right = [
-          "idle_inhibitor"
           "mpris"
           "cava"
           "pulseaudio"
@@ -63,8 +62,9 @@
           "temperature"
           "backlight"
           "battery"
-          "power-profiles-daemon"
           "clock"
+          "idle_inhibitor"
+          "power-profiles-daemon"
           "tray"
         ];
 
@@ -107,23 +107,25 @@
           format-icons = ["" "" "" "" "" "" "" "" ""];
         };
 
-        "battery" = {
+        "battery" = let
+          format = "{capacity}% {icon} ";
+        in {
           states = {
             warning = 30;
             critical = 15;
           };
-          format = "{capacity}% {icon} ";
+          format = format;
           format-charging = "{capacity}% 󱐋";
           format-plugged = "{capacity}% ";
-          format-alt = "{time} {icon}";
+          format-alt = format;
           format-icons = ["" "" "" "" ""];
         };
 
         "power-profiles-daemon" = {
           format-icons = {
-            power-saver = "󰌪";
-            balanced = "";
-            performance = "󰓅";
+            power-saver = "󰌪 ";
+            balanced = " ";
+            performance = "󰓅 ";
           };
         };
 
