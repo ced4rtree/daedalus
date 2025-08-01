@@ -21,28 +21,35 @@
   };
 
 
-  outputs = { self, nixpkgs, home-manager, nixvim, stylix, ... }@inputs:
-    let
-      lib = nixpkgs.lib;
-      pkgs = nixpkgs.legacyPackages."x86_64-linux";
-    in {
-      nixosConfigurations = {
-        laptop = lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            stylix.nixosModules.stylix
-            ./system
-            home-manager.nixosModules.home-manager {
-              home-manager = {
-                sharedModules = [ nixvim.homeManagerModules.nixvim ];
-                extraSpecialArgs = { inherit inputs; };
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.cedar = import ./user;
-              };
-            }
-          ];
-        };
+  outputs = { self, nixpkgs, home-manager, nixvim, stylix, ... }@inputs: let
+    lib = nixpkgs.lib;
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.system;
+  in {
+    nixosConfigurations = {
+      laptop = lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          stylix.nixosModules.stylix
+          ./common/stylix.nix
+          ./system
+        ];
       };
     };
+
+    homeConfigurations = {
+      "cedar" = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {
+          system = system;
+          config.allowUnfree = true;
+        };
+        modules = [
+          nixvim.homeManagerModules.nixvim
+          stylix.homeModules.stylix
+          ./common/stylix.nix
+          ./user
+        ];
+      };
+    };
+  };
 }
