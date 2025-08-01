@@ -10,6 +10,7 @@
     ./mpris.nix
     ./gpg.nix
     ./vesktop.nix
+    ./hyprpaper.nix
     # ./mpd.nix
   ];
 }

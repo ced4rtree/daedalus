@@ -7,7 +7,6 @@
     sway-contrib.grimshot
     brightnessctl
     app2unit
-    swaybg
   ];
 
   wayland.windowManager.hyprland = {
@@ -21,7 +20,6 @@
     settings = {
       exec-once = [
         "app2unit -- dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "app2unit -- swaybg -i ~/.local/share/wallpapers/wallpaper.jpg"
       ];
 
       env = [
@@ -38,7 +36,7 @@
         kb_options = "caps:escape";
         kb_rules = "evdev";
         numlock_by_default = true;
-        follow_mouse = 1;
+        follow_mouse = 2;
         repeat_delay = 250;
         repeat_rate = 65;
         force_no_accel = false;
