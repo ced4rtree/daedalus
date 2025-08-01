@@ -10,6 +10,8 @@
     ./mpris.nix
     ./gpg.nix
     ./vesktop.nix
+    ./hypridle.nix
+    ./hyprlock.nix
     ./hyprpaper.nix
     # ./mpd.nix
   ];
