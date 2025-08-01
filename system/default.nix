@@ -36,6 +36,8 @@
     gnugrep
     ripgrep
     wget
+    nh
+    doas-sudo-shim
   ];
 
   # This value determines the NixOS release from which the default
