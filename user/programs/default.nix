@@ -9,6 +9,7 @@
     ./qutebrowser.nix
     ./mpris.nix
     ./gpg.nix
+    ./vesktop.nix
     # ./mpd.nix
   ];
 }

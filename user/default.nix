@@ -47,7 +47,6 @@
     freetube
     qbittorrent
     clonehero
-    vesktop
     appimage-run
     steam-run
     libtool
