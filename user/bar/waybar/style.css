@@ -129,7 +129,7 @@ button {
 }
 
 #memory {
-    background-color: @bright-yellow;
+    background-color: @bright-magenta;
 }
 
 #backlight {
@@ -165,5 +165,5 @@ button {
 }
 
 #custom-weather {
-    background-color: @brown;
+    background-color: @bright-green;
 }

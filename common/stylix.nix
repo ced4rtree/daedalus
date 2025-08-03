@@ -7,10 +7,10 @@ isHomeManager: { config, lib, pkgs, ... }: let
   };
 in {
   stylix = {
-    image = ./wallpaper.jpg;
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
+    image = ./gruvbox-dark-rainbow.png;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark.yaml";
     polarity = "dark";
 
     inherit (if isHomeManager then icons else {});
