@@ -10,7 +10,7 @@
 window#waybar {
     background-color: @base;
     /* background-color: rgba(0, 0, 0, 0); */
-    color: @surface0;
+    color: @base;
 }
 
 window#waybar.hidden {
@@ -98,20 +98,11 @@ button {
 }
 
 #battery {
-    background-color: @bright-blue;
-}
-
-#battery.charging, #battery.plugged {
     background-color: @green;
-}
-
-#battery.warning:not(.charging) {
-    background-color: @orange;
 }
 
 #battery.critical:not(.charging) {
     background-color: @red;
-    /* background-color: transparent; */
     animation-name: low-battery-blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -129,7 +120,7 @@ button {
 }
 
 #memory {
-    background-color: @bright-magenta;
+    background-color: @magenta;
 }
 
 #backlight {
@@ -137,11 +128,11 @@ button {
 }
 
 #network {
-    background-color: @cyan;
+    background-color: @orange;
 }
 
 #network.disconnected {
-    background-color: @red;
+    background-color: @orange;
 }
 
 #pulseaudio, #mpd, #cava, #mpris {
@@ -149,10 +140,6 @@ button {
 }
 
 #temperature {
-    background-color: @orange;
-}
-
-#temperature.critical {
     background-color: @red;
 }
 
@@ -165,5 +152,5 @@ button {
 }
 
 #custom-weather {
-    background-color: @bright-green;
+    background-color: @red;
 }
