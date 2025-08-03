@@ -10,7 +10,6 @@
     ./programs
     ./shell
     ./terminal
-    ./theme.nix
     ./wm
   ];
 

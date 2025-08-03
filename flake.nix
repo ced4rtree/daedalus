@@ -31,7 +31,7 @@
         system = "x86_64-linux";
         modules = [
           stylix.nixosModules.stylix
-          ./common/stylix.nix
+          (import ./common/stylix.nix false)
           ./system
         ];
       };
@@ -46,7 +46,7 @@
         modules = [
           nixvim.homeManagerModules.nixvim
           stylix.homeModules.stylix
-          ./common/stylix.nix
+          (import ./common/stylix.nix true)
           ./user
         ];
       };
