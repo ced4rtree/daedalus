@@ -9,7 +9,8 @@ in {
   stylix = {
     enable = true;
 
-    image = ./gruvbox-dark-rainbow.png;
+    # using swww with an animated wallpaper for now
+    # image = ./gruvbox-dark-rainbow.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark.yaml";
     polarity = "dark";
 

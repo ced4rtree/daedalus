@@ -12,7 +12,8 @@
     ./vesktop.nix
     ./hypridle.nix
     ./hyprlock.nix
-    ./hyprpaper.nix
+    ./swww
+    # ./hyprpaper.nix
     # ./mpd.nix
   ];
 }
