@@ -25,6 +25,10 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  home.sessionVariables = {
+    NH_FLAKE = "~/.dotfiles";
+  };
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
