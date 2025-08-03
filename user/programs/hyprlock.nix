@@ -16,7 +16,7 @@
 
       input-field = {
         size = "300, 40";
-        position = "0, -160";
+        position = "0, 0";
         monitor = "";
         dots_center = true;
         fade_on_empty = false;
