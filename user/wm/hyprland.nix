@@ -194,10 +194,6 @@
         # BRIGHTNESS CONTROL
         ",XF86MonBrightnessUp,exec,brightnessctl set +10%"
         ",XF86MonBrightnessDown,exec,brightnessctl set 10%-"
-
-        # AUDIO CONTROL
-        ",XF86AudioRaiseVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
-        ",XF86AudioLowerVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
       ];
 
       bindm = [
@@ -212,6 +208,10 @@
         "SUPERSHIFT,L,resizeactive,20 0"
         "SUPERSHIFT,K,resizeactive,0 -20"
         "SUPERSHIFT,J,resizeactive,0 20"
+
+        # AUDIO CONTROL
+        ",XF86AudioRaiseVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ",XF86AudioLowerVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
       ];
     };
   };
