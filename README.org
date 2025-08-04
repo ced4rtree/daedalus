@@ -9,6 +9,8 @@ To test my dots on a NixOS system, you can just run ~nix run github:ced4rtree/do
 dotfiles
 ├── flake.nix # Root file declaring my configuration
 ├── flake.lock # lock file keeping track of the versions used for my inputs
+├── common # directory containing modules used globally throughout the config
+│   ├── stylix.nix # configuration for stylix (automatic theme manager for nix)
 ├── system # directory for global system configuration settings
 │   ├── default.nix # imports the other two dirs and declares some other miscellaneous settings
 │   ├── core # things that are required for or happen during the bootup sequence
@@ -32,5 +34,6 @@ who wants to learn from them still can.
 
 Keep in mind, there are still some programs I use whose source files are in
 their standard format, and the nix configuration just uses those. The biggest
-example is emacs, which has both its [[file:user/emacs/config.org][literate configuration file]] and [[file:user/emacs/init.el][resulting
-emacs lisp configuration file]] available in plain text.
+example is emacs, which has both its [[file:user/editor/emacs/config.org][literate configuration file]] and
+[[file:user/editor/init.el][resulting emacs lisp configuration file]] available
+in plain text.
