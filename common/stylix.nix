@@ -31,14 +31,16 @@ in {
       serif = config.stylix.fonts.monospace;
       sansSerif = config.stylix.fonts.monospace;
       monospace = {
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font";
+        package = pkgs.nerd-fonts.terminess-ttf;
+        name = "Terminess Nerd Font";
       };
 
       emoji = {
         package = pkgs.noto-fonts-emoji;
         name = "Noto Color Emoji";
       };
+
+      sizes.terminal = 15;
     };
   };
 }

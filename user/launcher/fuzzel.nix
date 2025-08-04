@@ -3,7 +3,6 @@
     enable = true;
     settings = {
       main = {
-        font = "JetBrainsMono Nerd Font:size=10";
         fields = "filename,name,generic,keywords,comment,categories";
         terminal = "footclient -e";
         anchor = "center";
