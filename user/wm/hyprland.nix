@@ -56,7 +56,8 @@
         border_size = 2;
         "col.active_border" = let
           colors = config.lib.stylix.colors;
-        in lib.mkForce "rgba(${colors.blue}ff) rgba(${colors.magenta}ff) 45deg";
+        # weird angle is equal to atan(1080/1920) to match the angle to the screen diagonal
+        in lib.mkForce "rgba(${colors.blue}ff) rgba(${colors.magenta}ff) 29.357753542791272deg";
         resize_on_border = true;
         layout = "dwindle";
       };
