@@ -52,16 +52,14 @@
 
         modules-left = ["hyprland/workspaces" "hyprland/window"];
         modules-right = [
-          "mpris"
-          "cava"
-          "pulseaudio"
           "temperature"
           "network"
           "backlight"
           "battery"
-          "cpu"
-          "memory"
           "custom/weather"
+          "mpris"
+          "cava"
+          "pulseaudio"
           "clock"
           "idle_inhibitor"
           "power-profiles-daemon"
