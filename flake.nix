@@ -24,11 +24,20 @@
   outputs = { self, nixpkgs, home-manager, nixvim, stylix, ... }@inputs: let
     lib = nixpkgs.lib;
     system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.system;
+    pkgs = import nixpkgs {
+      inherit system;
+      overlays = [
+        (import (builtins.fetchTarball {
+          url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
+          sha256 = "sha256:02sf8pk9dd5jfxz9ad560i5r3x2bhn40kkwvkq2rmrii30k07w3p";
+        }))
+      ];
+      config.allowUnfree = true;
+    };
   in {
     nixosConfigurations = {
       laptop = lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         modules = [
           stylix.nixosModules.stylix
           (import ./common/stylix.nix false)
@@ -39,10 +48,7 @@
 
     homeConfigurations = {
       "cedar" = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          system = system;
-          config.allowUnfree = true;
-        };
+        inherit pkgs;
         modules = [
           nixvim.homeManagerModules.nixvim
           stylix.homeModules.stylix

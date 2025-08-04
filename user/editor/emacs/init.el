@@ -159,15 +159,14 @@ If LINES is not specified, 1 is assumed."
      '(tab-bar ((t (:foreground "#FFFFFF")))))
     (doom-themes-org-config)))
 
-(set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
-
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(alpha-background . 100))
 
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
+(when (not (file-exists-p "/nix/store/"))
+  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13")))
 
 (setq visible-bell t
       ring-bell-function

@@ -318,15 +318,6 @@ Changes all the colors and whatnot
       (doom-themes-org-config)))
 #+end_src
 
-** Continuous Vertical Border in Terminal Emacs
-The default border symbol in terminal emacs is the ~|~ symbol, which
-doesn't make a continuous line. ~│~ makes one continuous line with no
-gaps, and thus makes me happy as well.
-
-#+begin_src emacs-lisp
-  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
-#+end_src
-
 ** Removal of Ugly GUI Features
 I don't use any of the clickable GUI features, and they're quite
 grotesque, so I'll just go ahead and remove them.
@@ -349,7 +340,8 @@ can see my background while working
 Sets the font in the GUI to the one specified
 
 #+begin_src emacs-lisp
-  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13"))
+  (when (not (file-exists-p "/nix/store/"))
+    (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-13")))
 #+end_src
 
 ** Modeline Bell Flash
