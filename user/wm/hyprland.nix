@@ -51,8 +51,8 @@
       };
 
       general = {
-        gaps_in = 0;
-        gaps_out = 0;
+        gaps_in = 5;
+        gaps_out = 8;
         border_size = 2;
         "col.active_border" = let
           colors = config.lib.stylix.colors;
