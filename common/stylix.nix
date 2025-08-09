@@ -9,9 +9,7 @@ in {
   stylix = {
     enable = true;
 
-    # using swww with an animated wallpaper for now
-    # image = ./gruvbox-dark-rainbow.png;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/synth-midnight-dark.yaml";
     polarity = "dark";
 
     inherit (if isHomeManager then icons else {});
@@ -32,7 +30,7 @@ in {
       sansSerif = config.stylix.fonts.monospace;
       monospace = {
         package = pkgs.nerd-fonts.terminess-ttf;
-        name = "Terminess Nerd Font";
+        name = "Iosevka Nerd Font";
       };
 
       emoji = {
