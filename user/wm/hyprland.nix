@@ -68,8 +68,8 @@
         inactive_opacity = 1;
         blur = {
           enabled = true;
-          size = 2;
-          passes = 2;
+          size = 6;
+          passes = 1;
         };
       };
 
