@@ -1,3 +1,3 @@
 { config, lib, pkgs, ... }: {
-  home.file.".face".source = ./.face;
+  home.file.".face.icon".source = ./.face.icon;
 }
