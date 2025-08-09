@@ -1,14 +1,18 @@
 { config, pkgs, ... }: let
-  sddm-gruvbox = pkgs.callPackage ./gruvbox-theme.nix {};
+  sddm-theme = pkgs.callPackage (import ./corners-theme.nix ./background.jpg) {};
 in {
+  imports = [
+    ./sddm-avatar.nix
+  ];
+
   environment.systemPackages = [
-    sddm-gruvbox
+    sddm-theme
   ];
 
   services.displayManager.sddm = {
     enable = true;
-    package = pkgs.kdePackages.sddm;
-    theme = "sddm-gruvbox";
+    package = pkgs.libsForQt5.sddm;
+    theme = "corners";
     wayland.enable = true;
   };
 }
