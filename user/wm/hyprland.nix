@@ -130,7 +130,7 @@
 
       bind = [
         # APP BINDS
-        "SUPER,return,exec,app2unit -- footclient"
+        "SUPER,return,exec,app2unit -- foot"
         "SUPER,E,exec,app2unit -- emacsclient -c -a 'emacs'"
         "SUPERSHIFT,escape,exec,app2unit -- pkill Hyprland"
 
