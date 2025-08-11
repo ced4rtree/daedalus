@@ -3,6 +3,7 @@
 
   config = lib.mkIf config.daedalus.audio.pipewire.enable {
     environment.systemPackages = with pkgs; [
+      pulseaudio
       pavucontrol
       alsa-utils
     ];
