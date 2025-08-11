@@ -1,45 +1,4 @@
-* My NixOS Configuration
+* The Daedalus Archive
 
-Daedalus was a wise, skilled craftsman in Greek mythology, much like how I like
-to think of my dotfiles (though admittedly, they're likely not quite as sharp).
-
-[[./images/screenshot.png]]
-
-To test my dots on a NixOS system, you can just run ~nix run github:ced4rtree/dotfiles~.
-
-** Structure
-#+BEGIN_EXAMPLE
-dotfiles
-├── flake.nix # Root file declaring my configuration
-├── flake.lock # lock file keeping track of the versions used for my inputs
-├── common # directory containing modules used globally throughout the config
-│   ├── stylix.nix # configuration for stylix (automatic theme manager for nix)
-├── system # directory for global system configuration settings
-│   ├── default.nix # imports the other two dirs and declares some other miscellaneous settings
-│   ├── core # things that are required for or happen during the bootup sequence
-│   └── userspace # things that the user directly interfaces with
-└── user # directory for my Home Manager config
-    ├── bar           # config for whatever bar I feel like using
-    ├── editor        # config for any editors I want to use
-    ├── files         # direct file installations (e.g. my profile picture)
-    ├── idle          # config for idle daemons
-    ├── launcher      # config for whatever launcher I feel like using
-    ├── lock          # config for lock screen applications
-    ├── notifications # config for notification daemons
-    ├── programs      # config for miscellaneous programs, e.g. qutebrowser, etc.
-    ├── shell         # config for whatever shell I feel like using
-    ├── terminal      # config for whatever terminal I feel like using
-    ├── wallpaper     # config for whatever terminal I feel like using
-    └── wm            # config for whatever window manager I feel like using
-#+END_EXAMPLE
-   
-** Normal Dotfiles Where?
-For anybody who doesn't know how to (or want to) read or use nix, a copy of my
-old dotfiles in standard form are kept under the ~.archive~ folder, so anybody
-who wants to learn from them still can.
-
-Keep in mind, there are still some programs I use whose source files are in
-their standard format, and the nix configuration just uses those. The biggest
-example is emacs, which has both its [[file:user/editor/emacs/config.org][literate configuration file]] and
-[[file:user/editor/init.el][resulting emacs lisp configuration file]] available
-in plain text.
+Here lies my former dotfiles from prior to the NixOS enlightenment. Abandon all
+hope, ye who enter here.
