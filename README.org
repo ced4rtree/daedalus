@@ -1,5 +1,8 @@
 * My NixOS Configuration
 
+Daedalus was a wise, skilled craftsman in Greek mythology, much like how I like
+to think of my dotfiles (though admittedly, they're likely not quite as sharp).
+
 [[./images/screenshot.png]]
 
 To test my dots on a NixOS system, you can just run ~nix run github:ced4rtree/dotfiles~.
@@ -16,15 +19,18 @@ dotfiles
 │   ├── core # things that are required for or happen during the bootup sequence
 │   └── userspace # things that the user directly interfaces with
 └── user # directory for my Home Manager config
-    ├── default.nix # imports the other directories here & declares desired packages
-    ├── bar      # configuration for whatever bar I feel like using
-    ├── editor   # configuration for any editors I want to use
-    ├── files    # direct file installations (e.g. wallpaper)
-    ├── launcher # configuration for whatever launcher I feel like using
-    ├── programs # configuration for miscellaneous programs, e.g. qutebrowser, etc.
-    ├── shell    # configuration for whatever shell I feel like using
-    ├── terminal # configuration for whatever terminal I feel like using
-    └── wm       # configuration for whatever window manager I feel like using
+    ├── bar           # config for whatever bar I feel like using
+    ├── editor        # config for any editors I want to use
+    ├── files         # direct file installations (e.g. my profile picture)
+    ├── idle          # config for idle daemons
+    ├── launcher      # config for whatever launcher I feel like using
+    ├── lock          # config for lock screen applications
+    ├── notifications # config for notification daemons
+    ├── programs      # config for miscellaneous programs, e.g. qutebrowser, etc.
+    ├── shell         # config for whatever shell I feel like using
+    ├── terminal      # config for whatever terminal I feel like using
+    ├── wallpaper     # config for whatever terminal I feel like using
+    └── wm            # config for whatever window manager I feel like using
 #+END_EXAMPLE
    
 ** Normal Dotfiles Where?
