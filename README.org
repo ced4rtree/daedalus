@@ -9,7 +9,7 @@ To test my dots on a NixOS system, you can just run ~nix run github:ced4rtree/do
 
 ** Structure
 #+BEGIN_EXAMPLE
-dotfiles
+daedalus
 ├── flake.nix # Root file declaring my configuration
 ├── flake.lock # lock file keeping track of the versions used for my inputs
 ├── common # directory containing modules used globally throughout the config
