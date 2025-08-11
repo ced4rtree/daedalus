@@ -2,6 +2,8 @@
   options.daedalus.home.bar.waybar.enable = lib.mkEnableOption "waybar";
 
   config = lib.mkIf config.daedalus.home.bar.waybar.enable {
+    services.playerctld.enable = true;
+
     stylix.targets.waybar.addCss = false;
 
     home.packages = with pkgs; [
