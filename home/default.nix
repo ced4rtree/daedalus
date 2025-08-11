@@ -23,6 +23,7 @@
 
   # desktop configuration
   daedalus.home = {
+    stylix.enable = true;
     bar.waybar.enable = true;
     editor.emacs.enable = true;
     wallpaper.swww.enable = true;

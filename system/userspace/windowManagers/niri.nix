@@ -1,3 +1,4 @@
 { config, pkgs, lib, ... }: {
-  programs.niri.enable = true;
+  options.daedalus.wm.niri.enable = lib.mkEnableOption "niri";
+  config.programs.niri.enable = config.daedalus.wm.niri.enable;
 }

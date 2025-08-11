@@ -1,4 +1,8 @@
 { config, pkgs, lib, ... }: {
-  services.upower.enable = true;
-  services.power-profiles-daemon.enable = true;
+  options.daedalus.upower.enable = lib.mkEnableOption "upower";
+
+  config.services = lib.mkIf config.daedalus.upower.enable {
+    upower.enable = true;
+    power-profiles-daemon.enable = true;
+  };
 }

@@ -6,7 +6,12 @@ isHomeManager: { config, lib, pkgs, ... }: let
     light = "candy-icons";
   };
 in {
-  stylix = {
+  options.daedalus.stylix.enable = lib.mkEnableOption "stylix";
+  options.daedalus.home.stylix.enable = lib.mkEnableOption "stylix";
+
+  config.stylix = lib.mkIf
+    ((config.daedalus.stylix.enable && !isHomeManager)
+     || (config.daedalus.home.stylix.enable && isHomeManager)) {
     enable = true;
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/synth-midnight-dark.yaml";

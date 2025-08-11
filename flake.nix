@@ -20,7 +20,6 @@
     };
   };
 
-
   outputs = { self, nixpkgs, home-manager, nixvim, stylix, ... }@inputs: let
     lib = nixpkgs.lib;
     system = "x86_64-linux";
@@ -36,8 +35,11 @@
     };
   in {
     nixosConfigurations = {
-      laptop = lib.nixosSystem {
-        inherit system;
+      icarus = lib.nixosSystem {
+        inherit system pkgs;
+        specialArgs = {
+          mylib = (import ./lib { inherit lib; });
+        };
         modules = [
           stylix.nixosModules.stylix
           (import ./common/stylix.nix false)
@@ -49,11 +51,14 @@
     homeConfigurations = {
       "cedar" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
+        extraSpecialArgs = {
+          mylib = (import ./lib { inherit lib; });
+        };
         modules = [
-          nixvim.homeManagerModules.nixvim
+          nixvim.homeModules.nixvim
           stylix.homeModules.stylix
           (import ./common/stylix.nix true)
-          ./user
+          ./home
         ];
       };
     };

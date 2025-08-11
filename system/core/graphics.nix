@@ -1,31 +1,34 @@
 { config, lib, pkgs, ... }: {
-  hardware.graphics = {
-    enable = true;
-    # driSupport = true;
-    enable32Bit = true;
-    # driSupport32Bit = true;
-  };
+  options.daedalus.graphics.enable = lib.mkEnableOption "graphics";
 
-  # programs.xwayland.enable = true;
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    open = true;
-    powerManagement = {
-      enable = false;
-      finegrained = false;
+  config = lib.mkIf config.daedalus.graphics.enable {
+    hardware.graphics = {
+      enable = true;
+      enable32Bit = true;
     };
-    nvidiaSettings = true;
 
-    prime = {
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
+    environment.sessionVariables.NIXOS_OZONE_WL =
+      if config.daedalus.wm.xorg.enable
+      then "1"
+      else "0";
 
-      offload.enable = true;
+    services.xserver.videoDrivers = [ "nvidia" ];
+
+    hardware.nvidia = {
+      modesetting.enable = true;
+      open = true;
+      powerManagement = {
+        enable = false;
+        finegrained = false;
+      };
+      nvidiaSettings = true;
+
+      prime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+
+        offload.enable = true;
+      };
     };
   };
 }

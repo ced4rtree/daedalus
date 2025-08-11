@@ -1,5 +1,3 @@
-{ config, lib, pkgs, ... }: {
-  imports = [
-    ./hyprland-uwsm.nix
-  ];
+{ config, lib, pkgs, mylib, ... }: {
+  imports = mylib.scanPaths ./.;
 }

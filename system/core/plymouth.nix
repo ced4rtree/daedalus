@@ -1,5 +1,7 @@
 { config, lib, pkgs, ... }: {
-  boot = {
+  options.daedalus.plymouth.enable = lib.mkEnableOption "plymouth";
+
+  config.boot = lib.mkIf config.daedalus.plymouth.enable {
     plymouth.enable = true;
 
     # silent boot
