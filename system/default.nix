@@ -4,7 +4,7 @@
     ./userspace
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" "pipe-operators" ];
 
   networking.hostName = "muh-laptop";
   networking.networkmanager.enable = true;
@@ -38,6 +38,8 @@
     gnugrep
     ripgrep
     wget
+    openssh
+    unzip
     nh
     doas-sudo-shim
   ];
