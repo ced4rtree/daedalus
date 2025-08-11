@@ -14,7 +14,7 @@
 
     services.xserver.videoDrivers = [ "nvidia" ];
 
-    hardware.nvidia = {
+    hardware.nvidia = lib.mkIf config.daedalus.host.nvidia.enable {
       modesetting.enable = true;
       open = true;
       powerManagement = {
@@ -23,7 +23,7 @@
       };
       nvidiaSettings = true;
 
-      prime = {
+      prime = lib.mkIf config.daedalus.host.isLaptop {
         intelBusId = "PCI:0:2:0";
         nvidiaBusId = "PCI:1:0:0";
 

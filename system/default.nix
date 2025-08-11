@@ -4,7 +4,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" "pipe-operators" ];
   nix.settings.warn-dirty = false;
 
-  networking.hostName = "icarus";
+  networking.hostName = config.daedalus.host.hostname;
   networking.networkmanager.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -13,7 +13,6 @@
     description = "Cedar";
     extraGroups = [ "networkmanager" "wheel" "input" "video" ];
     initialPassword = "pass";
-    packages = with pkgs; [];
   };
 
   # Full system module declaration

@@ -42,6 +42,7 @@
       };
       modules = [
         ./hosts/${hostname}
+        ./hosts/host-spec.nix
         ./system
         stylix.nixosModules.stylix
         (import ./common/stylix.nix false)
@@ -51,6 +52,7 @@
     nixosConfigurations =
       ./hosts
         |> builtins.readDir
+        |> lib.filterAttrs (file: type: type == "directory")
         |> builtins.attrNames
         |> map (host: {
           name = host;
