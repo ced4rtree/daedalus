@@ -33,20 +33,30 @@
       ];
       config.allowUnfree = true;
     };
-  in {
-    nixosConfigurations = {
-      icarus = lib.nixosSystem {
-        inherit system pkgs;
-        specialArgs = {
-          mylib = (import ./lib { inherit lib; });
-        };
-        modules = [
-          stylix.nixosModules.stylix
-          (import ./common/stylix.nix false)
-          ./system
-        ];
+
+    generateHost = hostname: lib.nixosSystem {
+      inherit system pkgs;
+      specialArgs = {
+        mylib = (import ./lib { inherit lib; });
+        inherit hostname;
       };
+      modules = [
+        ./hosts/${hostname}
+        ./system
+        stylix.nixosModules.stylix
+        (import ./common/stylix.nix false)
+      ];
     };
+  in {
+    nixosConfigurations =
+      ./hosts
+        |> builtins.readDir
+        |> builtins.attrNames
+        |> map (host: {
+          name = host;
+          value = generateHost host;
+        })
+        |> builtins.listToAttrs;
 
     homeConfigurations = {
       "cedar" = home-manager.lib.homeManagerConfiguration {
