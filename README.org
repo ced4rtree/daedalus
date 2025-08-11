@@ -35,7 +35,7 @@ dotfiles
    
 ** Normal Dotfiles Where?
 For anybody who doesn't know how to (or want to) read or use nix, a copy of my
-old dotfiles in standard form are kept under the ~.archive~ folder, so anybody
+old dotfiles in standard form are kept under the ~archive~ branch, so anybody
 who wants to learn from them still can.
 
 Keep in mind, there are still some programs I use whose source files are in
