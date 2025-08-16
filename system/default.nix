@@ -1,9 +1,6 @@
 { config, pkgs, self, mylib, ... }: {
   imports = mylib.scanPaths ./.;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" "pipe-operators" ];
-  nix.settings.warn-dirty = false;
-
   networking.hostName = config.daedalus.host.hostname;
   networking.networkmanager.enable = true;
 
