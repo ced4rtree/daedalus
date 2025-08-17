@@ -8,7 +8,6 @@
 
 window#waybar {
     background-color: @base;
-    /* background-color: rgba(0, 0, 0, 0); */
     color: @base;
 }
 
@@ -101,7 +100,7 @@ button {
 }
 
 #battery.critical:not(.charging) {
-    background-color: @red;
+    background-color: @green;
     animation-name: low-battery-blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -110,8 +109,8 @@ button {
 }
 
 @keyframes low-battery-blink {
-    from {background-color: @red;}
-    to {background-color: #FFFFFF;}
+    from {background-color: @green;}
+    to {background-color: @red;}
 }
 
 #cpu {

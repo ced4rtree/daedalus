@@ -120,6 +120,7 @@
             format-plugged = "{capacity}% ";
             format-alt = format;
             format-icons = ["" "" "" "" ""];
+            interval = 5;
           };
 
           "power-profiles-daemon" = {
