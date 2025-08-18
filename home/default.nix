@@ -33,6 +33,7 @@
     wm.hyprland.enable = true;
     idle.hypridle.enable = true;
     lock.hyprlock.enable = true;
+    notifications.mako.enable = true;
 
     programs = {
       cli = {
