@@ -9,7 +9,6 @@
       grim
       sway-contrib.grimshot
       brightnessctl
-      app2unit
     ];
 
     wayland.windowManager.hyprland = {
@@ -22,7 +21,7 @@
       
       settings = {
         exec-once = [
-          "app2unit -- dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         ];
 
         env = [
@@ -133,9 +132,9 @@
 
         bind = [
           # APP BINDS
-          "SUPER,return,exec,app2unit -- foot"
-          "SUPER,E,exec,app2unit -- emacsclient -c -a 'emacs'"
-          "SUPERSHIFT,escape,exec,app2unit -- pkill Hyprland"
+          "SUPER,return,exec,foot"
+          "SUPER,E,exec,emacsclient -c -a 'emacs'"
+          "SUPERSHIFT,escape,exec,pkill Hyprland"
 
           # GENERAL WINDOWS OPERATIONS
           "SUPER,space,togglefloating,"
@@ -144,7 +143,7 @@
           "SUPER,R,exec,fuzzel"
           "SUPER,M,fullscreen,"
           "SUPER,Escape,exec,swaylock -f -e -l -L -s fill"
-          "CTRLSUPER,Escape,exec,app2unit -- swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
+          "CTRLSUPER,Escape,exec,swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
           "SUPERSHIFT,Q,killactive,"
 
           # FOCUS WORKSPACES
@@ -192,8 +191,8 @@
           "SUPER,left,exec,app2unit -- mpc prev"
 
           # SCREENSHOTS
-          "SUPER,S,exec,app2unit -- grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
-          "SUPERSHIFT,S,exec,app2unit -- grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+          "SUPER,S,exec,grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
+          "SUPERSHIFT,S,exec,grimshot save screen ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
 
           # BRIGHTNESS CONTROL
           ",XF86MonBrightnessUp,exec,brightnessctl set +10%"
@@ -214,8 +213,8 @@
           "SUPERSHIFT,J,resizeactive,0 20"
 
           # AUDIO CONTROL
-          ",XF86AudioRaiseVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ +5%"
-          ",XF86AudioLowerVolume,exec,app2unit -- pactl set-sink-volume @DEFAULT_SINK@ -5%"
+          ",XF86AudioRaiseVolume,exec,pactl set-sink-volume @DEFAULT_SINK@ +5%"
+          ",XF86AudioLowerVolume,exec,pactl set-sink-volume @DEFAULT_SINK@ -5%"
         ];
       };
     };
