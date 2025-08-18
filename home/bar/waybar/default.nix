@@ -204,18 +204,13 @@
           "custom/weather" = let
             weather-script = pkgs.stdenv.mkDerivation {
               name = "weather-script";
-              propagatedBuildInputs = [
-                (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
-                  pyquery
-                ]))
-              ];
               dontUnpack = true;
-              installPhase = "install -Dm755 ${./weather.py} $out/bin/weather.py";
+              installPhase = "install -Dm755 ${./weather.sh} $out/bin/weather.sh";
             };
           in {
-            exec = "${weather-script}/bin/weather.py";
-            restart-interval = 300;
-            return-type = "json";
+            exec = "${weather-script}/bin/weather.sh";
+            restart-interval = (3 * 60 * 60); # every 3 hours
+            return-type = "text";
             on-click = "xdg-open https://weather.com/en-IN/weather/today/l/$location_id";
           };
         };
