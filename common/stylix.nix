@@ -26,8 +26,8 @@ in {
     };
 
     opacity = {
-      terminal = 0.65; 
-      applications = 0.65;
+      terminal = 0.45;
+      applications = 0.45;
     };
 
     fonts = let
