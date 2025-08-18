@@ -48,6 +48,7 @@
 
       internet = {
         qutebrowser.enable = true;
+        nyxt.enable = true;
         discord.enable = true;
       };
 
