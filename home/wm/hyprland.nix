@@ -97,7 +97,7 @@
 
           animation = let
             animationDuration = "3";
-            borderDuration = "4.5";
+            borderDuration = "3";
           in [
             "windows, 1, ${animationDuration}, md3_decel, popin 60%"
             "windowsIn, 1, ${animationDuration}, overshot, popin 60%"
@@ -108,7 +108,7 @@
             "layersOut, 1, ${animationDuration}, menu_decel, slide bottom"
             "fadeLayersIn, 1, ${animationDuration}, menu_decel"
             "fadeLayersOut, 1, ${animationDuration}, menu_accel"
-            "workspaces, 1, ${animationDuration}, default, slide"
+            "workspaces, 1, ${animationDuration}, hyprnostretch, slide"
             "specialWorkspace, 1, ${animationDuration}, md3_decel, slidevert"
           ];
         };
@@ -129,6 +129,10 @@
         dwindle = {
           force_split = 2;
         };
+
+        layerrule = [
+          "animation slide right, notifications"
+        ];
 
         bind = [
           # APP BINDS
@@ -182,13 +186,13 @@
           "SUPERCONTROL,k,swapwindow,u"
           "SUPERCONTROL,j,swapwindow,d"
 
-          ",XF86AudioNext,exec,app2unit -- mpc next"
-          ",XF86AudioPrev,exec,app2unit -- mpc prev"
-          "SUPER,down,exec,app2unit -- mpc toggle"
-          "SUPER,up,exec,app2unit -- mpc toggle"
-          ",XF86AudioPlay,exec,app2unit -- mpc toggle"
-          "SUPER,right,exec,app2unit -- mpc next"
-          "SUPER,left,exec,app2unit -- mpc prev"
+          ",XF86AudioNext,exec,emacsclient -e '(emms-next)'"
+          "SUPER,right,exec,emacsclient -e '(emms-next)'"
+          ",XF86AudioPrev,exec,emacsclient -e '(emms-previous)'"
+          "SUPER,left,exec,emacsclient -e '(emms-previous)'"
+          "SUPER,down,exec,emacsclient -e '(emms-pause)'"
+          "SUPER,up,exec,emacsclient -e '(emms-pause)'"
+          ",XF86AudioPlay,exec,emacsclient -e '(emms-pause)'"
 
           # SCREENSHOTS
           "SUPER,S,exec,grimshot save area ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png"
