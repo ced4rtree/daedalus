@@ -35,8 +35,8 @@
 
         input = {
           kb_layout = "us";
-          # kb_options = "ctrl:nocaps";
-          kb_options = "caps:escape";
+          kb_options = "ctrl:nocaps";
+          # kb_options = "caps:escape";
           kb_rules = "evdev";
           numlock_by_default = true;
           follow_mouse = 2;
