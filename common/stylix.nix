@@ -30,14 +30,19 @@ in {
       applications = 0.65;
     };
 
-    fonts = {
-      serif = config.stylix.fonts.monospace;
-      sansSerif = config.stylix.fonts.monospace;
-      monospace = {
-        package = pkgs.nerd-fonts.terminess-ttf;
-        name = "Iosevka Nerd Font";
+    fonts = let
+      package = pkgs.nerd-fonts.iosevka;
+      name = "Iosevka Nerd Font";
+    in {
+      serif = {
+        inherit package;
+        name = name + " Propo";
       };
-
+      sansSerif = config.stylix.fonts.serif;
+      monospace = {
+        inherit package;
+        name = name + " Mono";
+      };
       emoji = {
         package = pkgs.noto-fonts-emoji;
         name = "Noto Color Emoji";

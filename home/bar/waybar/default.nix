@@ -4,7 +4,10 @@
   config = lib.mkIf config.daedalus.home.bar.waybar.enable {
     services.playerctld.enable = true;
 
-    stylix.targets.waybar.addCss = false;
+    stylix.targets.waybar = {
+      addCss = false;
+      font = "sansSerif";
+    };
 
     home.packages = with pkgs; [
       cava
@@ -72,8 +75,8 @@
           "idle_inhibitor" = {
             format = "{icon}";
             format-icons = {
-              "activated" = " ";
-              "deactivated" = " ";
+              "activated" = "";
+              "deactivated" = "";
             };
           };
 
@@ -88,12 +91,12 @@
           };
 
           "cpu" = {
-            format = "{usage}%  ";
+            format = "{usage}% ";
             tooltip = false;
           };
 
           "memory" = {
-            format = "{}%  ";
+            format = "{}% ";
           };
 
           "temperature" = {
@@ -109,7 +112,7 @@
           };
 
           "battery" = let
-            format = "{capacity}% {icon} ";
+            format = "{capacity}% {icon}";
           in {
             states = {
               warning = 30;
@@ -125,14 +128,14 @@
 
           "power-profiles-daemon" = {
             format-icons = {
-              power-saver = "󰌪 ";
-              balanced = " ";
-              performance = "󰓅 ";
+              power-saver = "󰌪";
+              balanced = "";
+              performance = "󰓅";
             };
           };
 
           "network" = {
-            format-wifi = "{signalStrength}%  ";
+            format-wifi = "{signalStrength}% ";
             format-ethernet = "{ipaddr}/{cidr}";
             tooltip-format = "{ifname}: {essid} ({ipaddr}/{cidr})";
             format-linked = "{ifname} (No IP)";
@@ -149,19 +152,19 @@
             format-source = "{volume}%";
             format-source-muted = "";
             format-icons = {
-              headphone = " ";
-              hands-free = " ";
-              headset = " ";
+              headphone = "";
+              hands-free = "";
+              headset = "";
               phone = "";
               portable = "";
               car = "";
-              default = ["" "" " "];
+              default = ["" "" ""];
             };
             on-click = "pavucontrol";
           };
 
           "mpd" = {
-            format = "{artist} - {title}  ";
+            format = "{artist} - {title} ";
             format-paused = "{artist} - {title} ";
           };
 
@@ -171,7 +174,7 @@
             dynamic-order = ["artist" "title"];
             player-icons = {
               default = "▶";
-              emms = " ";
+              emms = "";
             };
             status-icons = {
               paused = "⏸";
