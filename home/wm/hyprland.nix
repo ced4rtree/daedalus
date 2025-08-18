@@ -66,19 +66,19 @@
         };
 
         decoration = {
-          rounding = 0;
+          rounding = 8;
           active_opacity = 1;
           inactive_opacity = 1;
           blur = {
             enabled = true;
-            size = 6;
-            passes = 1;
+            size = 10;
+            passes = 2;
           };
         };
 
         # https://github.com/anotherhadi/nixy/blob/main/home/system/hyprland/animations.nix
         animations = {
-          enabled = false;
+          enabled = true;
           bezier = [
             "linear, 0, 0, 1, 1"
             "md3_standard, 0.2, 0, 0, 1"
@@ -97,19 +97,19 @@
           ];
 
           animation = let
-            animationDuration = "2.5";
-            borderDuration = "6";
+            animationDuration = "3";
+            borderDuration = "4.5";
           in [
             "windows, 1, ${animationDuration}, md3_decel, popin 60%"
-            "windowsIn, 1, ${animationDuration}, md3_decel, popin 60%"
-            "windowsOut, 1, ${animationDuration}, md3_accel, popin 60%"
+            "windowsIn, 1, ${animationDuration}, overshot, popin 60%"
+            "windowsOut, 1, ${animationDuration}, md3_accel, popin"
             "border, 1, ${borderDuration}, default"
             "fade, 1, ${animationDuration}, md3_decel"
-            "layersIn, 1, ${animationDuration}, menu_decel, slide"
-            "layersOut, 1, ${animationDuration}, menu_accel"
+            "layersIn, 1, ${animationDuration}, menu_decel, slide bottom"
+            "layersOut, 1, ${animationDuration}, menu_decel, slide bottom"
             "fadeLayersIn, 1, ${animationDuration}, menu_decel"
             "fadeLayersOut, 1, ${animationDuration}, menu_accel"
-            "workspaces, 1, ${animationDuration}, menu_decel, slide"
+            "workspaces, 1, ${animationDuration}, default, slide"
             "specialWorkspace, 1, ${animationDuration}, md3_decel, slidevert"
           ];
         };
