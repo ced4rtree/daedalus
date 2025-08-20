@@ -1,7 +1,11 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, inputs, ... }: {
   options.daedalus.home.editor.neovim.enable = lib.mkEnableOption "neovim" // {
     default = true;
   };
+
+  imports = [
+    inputs.nixvim.homeModules.nixvim
+  ];
 
   config = lib.mkIf config.daedalus.home.editor.neovim.enable {
     home.packages = with pkgs; [

@@ -65,9 +65,9 @@
         inherit pkgs;
         extraSpecialArgs = {
           mylib = (import ./lib { inherit lib; });
+          inherit inputs;
         };
         modules = [
-          nixvim.homeModules.nixvim
           stylix.homeModules.stylix
           (import ./common/stylix.nix true)
           ./home
