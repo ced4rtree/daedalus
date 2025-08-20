@@ -3,7 +3,7 @@
 
 with lib;
 
-let cfg = config.services.protonvpn;
+let cfg = config.daedalus.protonvpn;
 in {
   options.daedalus.protonvpn = {
     enable = mkEnableOption "Enable ProtonVPN (using Wireguard)."; 

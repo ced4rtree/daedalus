@@ -26,6 +26,15 @@
     upower.enable = true;
     wm.hyprland.enable = true;
     stylix.enable = true;
+    protonvpn = {
+      enable = true;
+      autostart = false;
+      interface.privateKeyFile = "/root/secrets/protonvpn";
+      endpoint = {
+        publicKey = "HkvZLLmIP39qmzFMCc7JHAquGTlh8Iphfc0WGbdjaQ8=";
+        ip = "89.105.214.98";
+      };
+    };
   };
 
   environment.systemPackages = with pkgs; [
