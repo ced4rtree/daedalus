@@ -19,7 +19,7 @@
     plymouth.enable = true;
     audio.pipewire.enable = true;
     bluetooth.enable = true;
-    security.doas.enable = true;
+    security.sudo.enable = true;
     displayManager = "sddm";
     printing.enable = true;
     shell.zsh.enable = true;
@@ -37,7 +37,6 @@
     openssh
     unzip
     nh
-    doas-sudo-shim
   ];
 
   # Don't change unless you need to
