@@ -15,6 +15,7 @@
         background = {
           blur_passes = 1;
           blur_size = 6;
+          path = "screenshot";
         };
 
         input-field = {
