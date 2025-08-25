@@ -7,7 +7,7 @@
 }
 
 window#waybar {
-    background-color: @base;
+    background-color: rgba(0, 0, 0, 0);
     color: @base;
 }
 
@@ -20,7 +20,6 @@ button {
     border-radius: 0;
 }
 
-#clock,
 #battery,
 #cpu,
 #memory,
@@ -33,15 +32,16 @@ button {
 #custom-media,
 #tray,
 #mode,
-#idle_inhibitor,
 #scratchpad,
-#workspaces,
 #mpd,
 #mpris,
 #cava,
-#power-profiles-daemon,
 #custom-weather {
-    padding: 1px 7px;
+    background-color: @base;
+    border: 1px solid;
+    padding: 3px 8px;
+    border-radius: 10px;
+    margin: 0px 4px 6px 4px;
 }
 
 .modules-left {
@@ -86,21 +86,50 @@ button {
     padding-top: 1px;
 }
 
-#clock {
-    padding-right: 4px;
-}
-
 #clock, #power-profiles-daemon, #idle_inhibitor {
+    background-color: @base;
+    border-top: 1px solid @text;
+    border-bottom: 1px solid @text;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-bottom: 6px;
     background-color: @base;
     color: @text;
 }
 
+#clock {
+    margin-left: 4px;
+    padding-left: 8px;
+    padding-right: 4px;
+    border-radius: 10px 0px 0px 10px;
+    border-left: 1px solid @text;
+    border-top: 1px solid @text;
+    border-bottom: 1px solid @text;
+}
+
+#idle_inhibitor {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+#power-profiles-daemon {
+    margin-right: 0px;
+    padding-right: 8px;
+    padding-left: 4px;
+    border-radius: 0px 10px 10px 0px;
+    border-right: 1px solid @text;
+    border-top: 1px solid @text;
+    border-bottom: 1px solid @text;
+}
+
 #battery {
-    background-color: @green;
+    border-color: @green;
+    color: @green;
 }
 
 #battery.critical:not(.charging) {
-    background-color: @green;
+    border-color: @green;
+    color: @green;
     animation-name: low-battery-blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -109,36 +138,49 @@ button {
 }
 
 @keyframes low-battery-blink {
-    from {background-color: @green;}
-    to {background-color: @red;}
+    from {
+        border-color: @green;
+        color: @green;
+    }
+    to {
+        border-color: @red;
+        color: @red;
+    }
 }
 
 #cpu {
-    background-color: @blue;
+    border-color: @blue;
+    color: @blue;
 }
 
 #memory {
-    background-color: @magenta;
+    border-color: @magenta;
+    color: @magenta;
 }
 
 #backlight {
-    background-color: @yellow;
+    border-color: @yellow;
+    color: @yellow;
 }
 
 #network {
-    background-color: @orange;
+    border-color: @orange;
+    color: @orange;
 }
 
 #network.disconnected {
-    background-color: @orange;
+    border-color: @orange;
+    color: @orange;
 }
 
 #pulseaudio, #mpd, #cava, #mpris {
-    background-color: @magenta;
+    border-color: @magenta;
+    color: @magenta;
 }
 
 #temperature {
-    background-color: @red;
+    border-color: @red;
+    color: @red;
 }
 
 #tray > .passive {
@@ -149,6 +191,12 @@ button {
     -gtk-icon-effect: highlight;
 }
 
+#tray {
+    background-color: transparent;
+    border-width: 0px;
+}
+
 #custom-weather {
-    background-color: @blue;
+    border-color: @blue;
+    color: @blue;
 }
