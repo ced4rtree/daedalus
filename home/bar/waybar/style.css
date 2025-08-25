@@ -64,13 +64,13 @@ button {
 }
 
 #workspaces button.active {
-    color: @text;
+    color: @blue;
     border-bottom: 2px solid @blue
 }
 
 #workspaces button.urgent {
     border-bottom: 1px solid @red;
-    color: @text;
+    color: @blue;
 }
 
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
@@ -82,7 +82,8 @@ button {
 
 #workspaces button:not(.active):hover {
     border-bottom: 1px solid @magenta;
-    transition: 0s;
+    color: @magenta;
+    transition: 0.2s;
     padding-top: 1px;
 }
 
