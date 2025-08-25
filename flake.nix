@@ -28,7 +28,7 @@
       overlays = [
         (import (builtins.fetchTarball {
           url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-          sha256 = "sha256:09zzcpygk9153b2gvsrmi9yizskgk40m4yh1yx221637avzka7yg";
+          sha256 = "sha256:0vvdzbklz7qwmdjwwxn4pzv99ab3q62a574sa1q124cr560vghwq";
         }))
       ];
       config.allowUnfree = true;
