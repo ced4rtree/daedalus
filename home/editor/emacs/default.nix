@@ -5,7 +5,7 @@
     emacs = pkgs.emacsWithPackagesFromUsePackage {
       config = ./init.el;
       defaultInitFile = (pkgs.writeText "default.el" ((builtins.readFile ./init.el) + ''
-        (add-to-list 'default-frame-alist '(font . "${config.stylix.fonts.monospace.name}-${
+        (add-to-list 'default-frame-alist '(font . "${config.stylix.fonts.serif.name}-${
           toString (config.stylix.fonts.sizes.terminal * 1.0)
         }"))
         (add-to-list 'default-frame-alist '(alpha-background . ${
