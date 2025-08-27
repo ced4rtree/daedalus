@@ -13,7 +13,7 @@ background: {
     owner = "CMOISDEAD";
     repo = "sddm-theme-corners";
     rev = "main";
-    hash = "sha256-CPK3kbc8lroPU8MAeNP8JSStzDCKCvAHhj6yQ1fWKkY=";
+    hash = "sha256-Ip13yzQWgiaBhoFk3CXgx6psD78/4X/vpNO0RNIRQYw=";
   };
 
   dontWrapQtApps = true;
@@ -35,7 +35,7 @@ background: {
     substituteInPlace $out/share/sddm/themes/corners/theme.conf \
       --replace-fail 'FontFamily="Atkinson Hyperlegible"' 'FontFamily="${font}"' \
       --replace-fail 'FontSize=9' 'FontSize=${fontSize}' \
-      --replace-fail 'BgSource="backgrounds/glacier.png"' 'BgSource="${background}"'
+      --replace-fail 'BgSource="backgrounds/babilon.png"' 'BgSource="${background}"'
 
     runHook postInstall
   '';
