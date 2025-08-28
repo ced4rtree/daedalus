@@ -1,28 +1,20 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, inputs, ... }: {
   options.daedalus.home.programs.internet.discord.enable = lib.mkEnableOption "discord";
 
-  config = lib.mkIf config.daedalus.home.programs.internet.discord.enable {
-    # TODO: use nixcord instead
-    programs.vesktop = {
-      enable = true;
-      settings = {
-        "FakeNitro" = {
-          enabled = true;
-          enableEmojiBypass = true;
-          emojiSize = 48;
-          transformEmojis = true;
-          enableStickerBypass = true;
-          stickerSize = 160;
-          transformStickers = true;
-          transformCompoundSentence = false;
-          enableStreamQualityBypass = true;
-          useHyperLinks = true;
-          hyperLinkText = "{{NAME}}";
-          disableEmbedPermissionCheck = false;
-        };
+  imports = [
+    inputs.nixcord.homeModules.nixcord
+  ];
 
-        "YoutubeAdblock" = {
-          enabled = true;
+  config = lib.mkIf config.daedalus.home.programs.internet.discord.enable {
+    programs.nixcord = {
+      enable = true;
+      discord.enable = false;
+      vesktop.enable = true;
+      config = {
+        useQuickCss = true;
+        plugins = {
+          fakeNitro.enable = true;
+          youtubeAdblock.enable = true;
         };
       };
     };
