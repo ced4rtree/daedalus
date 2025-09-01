@@ -24,7 +24,7 @@
     printing.enable = true;
     shell.zsh.enable = true;
     upower.enable = true;
-    wm.hyprland.enable = true;
+    wm.niri.enable = true;
     stylix.enable = true;
     protonvpn = {
       enable = true;

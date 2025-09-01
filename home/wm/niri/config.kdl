@@ -5,7 +5,7 @@ environment {
 input {
     keyboard {
         xkb {
-            options "caps:escape"
+            options "ctrl:nocaps"
         }
 
         repeat-delay 200
@@ -54,16 +54,15 @@ layout {
 
     focus-ring {
         off
-        width 2
-        active-gradient from="#8caaee" to="#ca9eed" angle=45
-        inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
     }
 
     border {
         width 2
-        active-gradient from="#8caaee" to="#ca9eed" angle=45
-        inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
-        urgent-color "#9b0000"
+        // weird angle is approximately atan(1080/1920) to match the angle to
+        // the screen diagonal
+        active-gradient from="@blue" to="@magenta" angle=29
+        inactive-color "@gray"
+        urgent-color "@red"
     }
 
     shadow {
@@ -103,11 +102,29 @@ window-rule {
     open-floating true
 }
 
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
 binds {
     Mod+Return repeat=false { spawn "foot"; }
     Mod+R repeat=false { spawn "fuzzel"; }
+    Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }
+
     XF86AudioRaiseVolume allow-when-locked=true { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "+5%"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "-5%"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
+
+    XF86AudioNext { spawn "emacsclient" "-e" "'(emms-next)'"; }
+    Mod+Right { spawn "emacsclient" "-e" "'(emms-next)'"; }
+    XF86AudioPrev { spawn "emacsclient" "-e" "'(emms-previous)'"; }
+    Mod+Left { spawn "emacsclient" "-e" "'(emms-previous)'"; }
+    Mod+Up { spawn "emacsclient" "-e" "'(emms-pause)'"; }
+    Mod+Down { spawn "emacsclient" "-e" "'(emms-pause)'"; }
+    XF86AudioPlay { spawn "emacsclient" "-e" "'(emms-pause)'"; }
 
     Mod+O repeat=false { toggle-overview; }
 
@@ -217,6 +234,4 @@ binds {
     Mod+Shift+Escape { quit; }
 
     Mod+Shift+P { power-off-monitors; }
-
-    Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }
 }

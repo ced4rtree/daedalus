@@ -56,7 +56,13 @@
           position = "bottom";
           height = 10;
 
-          modules-left = ["hyprland/workspaces" "hyprland/window"];
+          modules-left = let
+            wm = if config.daedalus.home.wm.hyprland.enable
+                 then "hyprland"
+                 else if config.daedalus.home.wm.niri.enable
+                 then "niri"
+                 else "";
+          in ["${wm}/workspaces" "${wm}/window"];
           modules-right = [
             "temperature"
             "network"
