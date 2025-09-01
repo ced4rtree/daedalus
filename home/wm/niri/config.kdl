@@ -118,13 +118,13 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
 
-    XF86AudioNext { spawn "emacsclient" "-e" "'(emms-next)'"; }
-    Mod+Right { spawn "emacsclient" "-e" "'(emms-next)'"; }
-    XF86AudioPrev { spawn "emacsclient" "-e" "'(emms-previous)'"; }
-    Mod+Left { spawn "emacsclient" "-e" "'(emms-previous)'"; }
-    Mod+Up { spawn "emacsclient" "-e" "'(emms-pause)'"; }
-    Mod+Down { spawn "emacsclient" "-e" "'(emms-pause)'"; }
-    XF86AudioPlay { spawn "emacsclient" "-e" "'(emms-pause)'"; }
+    XF86AudioNext { spawn "emacsclient" "-e" "(emms-next)"; }
+    Mod+Right { spawn "emacsclient" "-e" "(emms-next)"; }
+    XF86AudioPrev { spawn "emacsclient" "-e" "(emms-previous)"; }
+    Mod+Left { spawn "emacsclient" "-e" "(emms-previous)"; }
+    Mod+Up { spawn "emacsclient" "-e" "(emms-pause)"; }
+    Mod+Down { spawn "emacsclient" "-e" "(emms-pause)"; }
+    XF86AudioPlay { spawn "emacsclient" "-e" "(emms-pause)"; }
 
     Mod+O repeat=false { toggle-overview; }
 
