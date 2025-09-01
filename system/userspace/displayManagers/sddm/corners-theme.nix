@@ -1,4 +1,4 @@
-background: {
+{ background, colors } : {
   lib,
   stdenvNoCC,
   fetchFromGitHub,
@@ -35,7 +35,10 @@ background: {
     substituteInPlace $out/share/sddm/themes/corners/theme.conf \
       --replace-fail 'FontFamily="Atkinson Hyperlegible"' 'FontFamily="${font}"' \
       --replace-fail 'FontSize=9' 'FontSize=${fontSize}' \
-      --replace-fail 'BgSource="backgrounds/babilon.png"' 'BgSource="${background}"'
+      --replace-fail 'BgSource="backgrounds/babilon.png"' 'BgSource="${background}"' \
+      --replace-fail '#d4a017' '${colors.blue}' \
+      --replace-fail '#D4A017' '${colors.blue}' \
+      --replace-fail '#d4af37' '${colors.blue}'
 
     runHook postInstall
   '';
