@@ -18,6 +18,7 @@ input {
         tap
         natural-scroll
         scroll-method "two-finger"
+        scroll-factor 0.4
     }
 
     mouse {
