@@ -25,11 +25,6 @@ in {
       size = 32;
     };
 
-    opacity = {
-      terminal = 0.7;
-      applications = 0.7;
-    };
-
     fonts = let
       package = pkgs.nerd-fonts.iosevka;
       name = "Iosevka Nerd Font";
