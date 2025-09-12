@@ -22,7 +22,7 @@
     editor.emacs.enable = true;
     wallpaper.swww.enable = true;
     launcher.fuzzel.enable = true;
-    shell.zsh.enable = true;
+    shell.fish.enable = true;
     terminal.foot.enable = true;
     wm.niri.enable = true;
     idle.hypridle.enable = true;

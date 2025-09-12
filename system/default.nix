@@ -22,7 +22,7 @@
     security.sudo.enable = true;
     displayManager = "sddm";
     printing.enable = true;
-    shell.zsh.enable = true;
+    shell.fish.enable = true;
     upower.enable = true;
     wm.niri.enable = true;
     stylix.enable = true;
