@@ -14,7 +14,7 @@ in {
      || (config.daedalus.home.stylix.enable && isHomeManager)) {
     enable = true;
 
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/synth-midnight-dark.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark.yaml";
     polarity = "dark";
 
     inherit (if isHomeManager then icons else {});
