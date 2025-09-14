@@ -19,7 +19,10 @@
   daedalus.home = {
     stylix.enable = true;
     bar.waybar.enable = true;
-    editor.emacs.enable = true;
+    editor.emacs = {
+      enable = true;
+      flavor = "doom";
+    };
     wallpaper.swww.enable = true;
     launcher.fuzzel.enable = true;
     shell.fish.enable = true;
