@@ -68,7 +68,7 @@
 
     # misc
     htop
-    floorp
+    floorp-bin
     gh
     mpv
     freetube
@@ -79,7 +79,6 @@
     gimp
     xfce.thunar
     isync
-    lutris
     pass
     drawio
     ispell
