@@ -49,3 +49,5 @@
 ;; (unpin! t)
 
 (package! emms)
+(package! colorful-mode)
+(package! rainbow-delimiters)

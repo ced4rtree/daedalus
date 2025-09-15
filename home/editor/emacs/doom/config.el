@@ -131,3 +131,14 @@ its arguments, even if NAME is already an existing tab."
   (map! :map dirvish-mode-map
         (:when (not (modulep! :editor evil)))
         "f" 'dired-find-file))
+
+;; pretty rainbows
+(use-package! colorful-mode
+  :custom
+  (colorful-only-strings 'only-prog)
+  (css-fontify-colors nil)
+  :config
+  (global-colorful-mode t)
+  (add-to-list 'global-colorful-modes 'helpful-mode))
+(use-package! rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
