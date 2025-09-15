@@ -20,8 +20,8 @@ in {
       base00 = "#282c34";
       base01 = "#1c1f24";
       base02 = "#202328";
-      base03 = "#23272e";
-      base04 = "#3f444a";
+      base03 = "#3f444a";
+      base04 = "#5B6268";
       base05 = "#BBC2CF";
       base06 = "#9ca0a4";
       base07 = "#DFDFDF";
