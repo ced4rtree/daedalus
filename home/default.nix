@@ -18,7 +18,7 @@
   # desktop configuration
   daedalus.home = {
     stylix.enable = true;
-    bar.waybar.enable = true;
+    bar.waybar.enable = false; # replaced by noctalia-shell
     editor.emacs = {
       enable = true;
       flavor = "doom";
@@ -29,8 +29,9 @@
     terminal.foot.enable = true;
     wm.niri.enable = true;
     idle.hypridle.enable = true;
-    lock.hyprlock.enable = true;
-    notifications.mako.enable = true;
+    lock.hyprlock.enable = false; # replaced by noctalia-shell
+    desktop-shell.noctalia.enable = true;
+    notifications.mako.enable = false; # replaced by noctalia-shell
 
     programs = {
       cli = {

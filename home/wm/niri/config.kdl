@@ -110,7 +110,7 @@ window-rule {
 
 binds {
     Mod+Return repeat=false { spawn "foot"; }
-    Mod+R repeat=false { spawn "fuzzel"; }
+    Mod+R repeat=false { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
     Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "+5%"; }
@@ -235,4 +235,18 @@ binds {
     Mod+Shift+Escape { quit; }
 
     Mod+Shift+P { power-off-monitors; }
+}
+
+// noctalia shell stuff
+debug {
+  honor-xdg-activation-with-invalid-serial
+}
+
+layer-rule {
+    match namespace="^quickshell-wallpaper$"
+}
+
+layer-rule {
+    match namespace="^quickshell-overview$"
+    place-within-backdrop true
 }
