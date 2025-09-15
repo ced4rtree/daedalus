@@ -2,7 +2,7 @@
   options.daedalus.home.wm.niri.enable = lib.mkEnableOption "niri";
 
   config = lib.mkIf config.daedalus.home.wm.niri.enable {
-    home.file.".config/niri/config.kdl".text = lib.replaceStrings
+    xdg.configFile."niri/config.kdl".text = lib.replaceStrings
       [ "@blue" "@magenta" "@red" "@gray" ]
       (with config.lib.stylix.colors; [
         withHashtag.blue
