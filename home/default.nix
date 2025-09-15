@@ -52,7 +52,7 @@
       };
 
       music = {
-        mpd.enable = false;
+        mpd.enable = true;
         mpris.enable = true;
       };
     };
