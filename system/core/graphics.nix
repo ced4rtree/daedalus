@@ -5,6 +5,14 @@
     hardware.graphics = {
       enable = true;
       enable32Bit = true;
+      extraPackages = lib.optional
+        config.daedalus.host.nvidia.enable
+        pkgs.nvidia-vaapi-driver;
+    };
+
+    environment.variables = {
+      NVD_BACKEND = "direct";
+      LIBVA_DRIVER_NAME = "nvidia";
     };
 
     environment.sessionVariables.NIXOS_OZONE_WL =
