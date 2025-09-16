@@ -6,6 +6,9 @@
   ];
 
   config = lib.mkIf config.daedalus.home.programs.internet.discord.enable {
+    # stylix makes vesktop pretty unreadable
+    stylix.targets.nixcord.enable = false;
+
     programs.nixcord = {
       enable = true;
       discord.enable = false;
