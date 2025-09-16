@@ -51,3 +51,4 @@
 (package! emms)
 (package! colorful-mode)
 (package! rainbow-delimiters)
+(package! eglot-java)

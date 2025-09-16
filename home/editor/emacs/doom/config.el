@@ -142,3 +142,9 @@ its arguments, even if NAME is already an existing tab."
   (add-to-list 'global-colorful-modes 'helpful-mode))
 (use-package! rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package! eglot-java
+  :defer t
+  :hook (eglot-managed . (lambda () (when (or (string= major-mode "java-mode")
+                                              (string= major-mode "java-ts-mode"))
+                                      (eglot-java-mode t)))))
