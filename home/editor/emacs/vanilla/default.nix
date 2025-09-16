@@ -71,6 +71,6 @@
   in lib.mkIf (cfg.enable && cfg.flavor == "vanilla") {
     programs.emacs.package = emacs;
     services.emacs.package = emacs;
-    xdg.configFile.".config/emacs/early-init.el".source = ./early-init.el;
+    xdg.configFile."emacs/early-init.el".source = ./early-init.el;
   };
 }
