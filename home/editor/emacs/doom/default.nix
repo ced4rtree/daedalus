@@ -19,7 +19,8 @@
     emacsPkg = pkgs.emacs.pkgs.overrideScope (self: super: {
       emacs = pkgs.emacs30-pgtk;
     });
-    myemacs = emacsPkg.withPackages (epkgs: with epkgs; [
+    emacs = emacsPkg.withPackages (epkgs: with epkgs; [
+      vterm
       tree-sitter
       tree-sitter-langs
       (treesit-grammars.with-grammars (grammars: with grammars; [
