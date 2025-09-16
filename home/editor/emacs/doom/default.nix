@@ -40,10 +40,21 @@
       hash = "sha256-qfoBM8/s5cqyJKZykEoLws8J+AZZ25jL7z0MLS0Rdg0=";
     };
 
-    xdg.configFile."doom".source = ./.;
+    xdg.configFile."doom" = {
+      source = ./.;
+      onChange = "${pkgs.writeShellScript "doom-change" ''
+        #!${pkgs.bash}/bin/bash
+        export PATH="${pkgs.git}/bin:${emacs}/bin:$PATH"
+        if [ -z "$DOOMLOCALDIR" ]; then
+          $HOME/.config/emacs/bin/doom install
+        else
+          $HOME/.config/emacs/bin/doom sync
+        fi
+      ''}";
+    };
 
-    programs.emacs.package = myemacs;
-    services.emacs.package = myemacs;
+    programs.emacs.package = emacs;
+    services.emacs.package = emacs;
 
     systemd.user.sessionVariables = {
       DOOMLOCALDIR = "$HOME/.local/share/doomemacs";
