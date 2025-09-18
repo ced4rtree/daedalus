@@ -148,3 +148,24 @@ its arguments, even if NAME is already an existing tab."
   :hook (eglot-managed . (lambda () (when (or (string= major-mode "java-mode")
                                               (string= major-mode "java-ts-mode"))
                                       (eglot-java-mode t)))))
+
+;; email
+(after! auth-source
+  (defun efs/lookup-password (&rest keys)
+    "Lookup a password from ~/.authinfo.gpg using KEYS to index the desired password.
+
+  e.g. (efs/lookup-password :host \"example.com\" :user \"user\"), which
+  will find the password for user@example.com"
+
+    (let ((result (apply #'auth-source-search keys)))
+      (when result
+        (funcall (plist-get (car result) :secret))))))
+
+(load-file (concat doom-local-dir "emails.el"))
+(defun cedar/open-mu4e-in-tab ()
+  "Open mu4e in a new tab. See cedar/open-name-in-tab."
+  (interactive)
+  (cedar/open-name-in-tab "MU4E (Mail)" nil #'=mu4e))
+(map! :leader
+      "M M" #'cedar/open-mu4e-in-tab
+      "o m" #'cedar/open-mu4e-in-tab)
