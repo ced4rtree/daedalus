@@ -172,3 +172,22 @@ its arguments, even if NAME is already an existing tab."
 (after! mu4e
   (setq mu4e-context-policy 'ask-if-none
         mu4e-compose-context-policy 'always-ask))
+
+;; org agenda/calfw stuff
+(setq org-agenda-files `(,(concat org-directory "/agenda/")))
+(defun cedar/open-agenda-in-tab (view)
+  "Go to an org agenda tab, creating one if it doesn't exist.
+
+The parameter VIEW is used to determine whether the tab should open to
+org-agenda or calfw, and can be set to the symbol of either either
+agenda or calendar.
+
+Example: (cedar/open-agenda-in-tab \='calendar)"
+  (interactive)
+  (let* ((agenda-view (if (equal view 'agenda)
+                          #'org-agenda
+                        #'=calendar)))
+    (cedar/open-name-in-tab "Agenda" t agenda-view nil "n")))
+(map! :leader
+      "o a" #'cedar/open-agenda-in-tab
+      "o c" #')
