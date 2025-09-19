@@ -21,6 +21,7 @@
     });
     emacs = emacsPkg.withPackages (epkgs: with epkgs; [
       vterm
+      mu4e
       tree-sitter
       tree-sitter-langs
       (treesit-grammars.with-grammars (grammars: with grammars; [
