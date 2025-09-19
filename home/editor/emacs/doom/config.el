@@ -169,3 +169,6 @@ its arguments, even if NAME is already an existing tab."
 (map! :leader
       "M M" #'cedar/open-mu4e-in-tab
       "o m" #'cedar/open-mu4e-in-tab)
+(after! mu4e
+  (setq mu4e-context-policy 'ask-if-none
+        mu4e-compose-context-policy 'always-ask))
