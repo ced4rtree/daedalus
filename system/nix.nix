@@ -1,4 +1,10 @@
-{ config, ... }: {
+{ lib, inputs, pkgs, config, ... }: {
+  system.userActivationScripts = {
+    splash = {
+      text = "${lib.getExe' inputs.dark-text.packages.${pkgs.system}.default "quickshell"}";
+      deps = [];
+    };
+  };
   nix.settings = {
     substituters = [
       "https://nix-community.cachix.org"

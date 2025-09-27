@@ -34,6 +34,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.quickshell.follows = "quickshell";
     };
+
+    dark-text = {
+      url = "github:vimjoyer/dark-text";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -63,7 +68,7 @@
       inherit system pkgs;
       specialArgs = {
         mylib = (import ./lib { inherit lib; });
-        inherit hostname;
+        inherit inputs hostname;
       };
       modules = [
         ./hosts/${hostname}

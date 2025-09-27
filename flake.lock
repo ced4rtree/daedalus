@@ -67,6 +67,26 @@
         "type": "github"
       }
     },
+    "dark-text": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1758991088,
+        "narHash": "sha256-KS2YVAuXqLOvdk/37sk8ugNB9cw1gPyaLts5BC2Vqvw=",
+        "owner": "vimjoyer",
+        "repo": "dark-text",
+        "rev": "c714a8ed77cf245988ccce4d97e330e02df69b07",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vimjoyer",
+        "repo": "dark-text",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -425,6 +445,7 @@
     },
     "root": {
       "inputs": {
+        "dark-text": "dark-text",
         "home-manager": "home-manager",
         "nixcord": "nixcord",
         "nixpkgs": "nixpkgs",
