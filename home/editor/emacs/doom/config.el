@@ -192,3 +192,4 @@ Example: (cedar/open-agenda-in-tab \='calendar)"
 (map! :leader
       "o a" (cmd! (cedar/open-agenda-in-tab 'agenda))
       "o c" (cmd! (cedar/open-agenda-in-tab 'calendar)))
+(add-hook! cfw:calendar-mode (setq-local truncate-string-ellipsis ">"))
