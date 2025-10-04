@@ -58,6 +58,12 @@
     };
   };
 
+  home.activation = {
+    splash = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      TEXT="Home-Manager Rebuilt" run ${lib.getExe' inputs.dark-text.packages.${pkgs.system}.default "dark-text"}
+    '';
+  };
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
