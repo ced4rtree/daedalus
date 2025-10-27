@@ -35,6 +35,11 @@
       inputs.quickshell.follows = "quickshell";
     };
 
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     dark-text = {
       url = "github:vimjoyer/dark-text";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,7 +63,7 @@
       overlays = [
         (import (builtins.fetchTarball {
           url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-          sha256 = "sha256:18dv8cr4bd05wc07my4ibdryby3mb48b58iw6k45ajh5ay6sh75n";
+          sha256 = "sha256:0nqy59yynz39rdqf49axxp8yjksixayccbr5q1wnv6vfapb9m2ik";
         }))
       ];
       config.allowUnfree = true;

@@ -62,27 +62,25 @@
         privacy-badger
         facebook-container
         (buildFirefoxXpiAddon {
-          pname = "authenticator";
+          pname = "auth-helper";
           version = "8.0.2";
-          addonId = "{15e21950-869e-4e18-8a6e-8334a3d7d4eb}";
+          addonId = "authenticator@mymindstorm";
           url = "https://addons.mozilla.org/firefox/downloads/file/4353166/auth_helper-8.0.2.xpi";
-          sha256 = "sha256:0qiah54923q9a4n3y8kplap7zkq5rq6v18gyjy2lrprpfaa93ayv";
-          meta = with lib; {
-            homepage = "https://github.com/Authenticator-Extension/Authenticator";
-            description = "Authenticator generates two-factor authentication codes in your browser.";
-            license = licenses.mit;
-            platforms = platforms.all;
-            mozPermissions = [
-              "activeTab"
-              "storage"
-              "identity"
-              "alarms"
-              "scripting"
-              "http://*/*"
-              "https://*/*"
-              "file:///*"
-            ];
-          };
+          sha256 = "dbab91947237df4c8597fea1b00dce05cf7faea277223f2c51090f9148812a62";
+          meta = with lib;
+            {
+              homepage = "https://github.com/Authenticator-Extension/Authenticator";
+              description = "Authenticator generates 2-Step Verification codes in your browser.";
+              license = licenses.mit;
+              mozPermissions = [
+                "activeTab"
+                "storage"
+                "identity"
+                "alarms"
+                "scripting"
+              ];
+              platforms = platforms.all;
+            };
         })
       ];
     };

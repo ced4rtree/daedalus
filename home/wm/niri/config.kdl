@@ -21,6 +21,8 @@ input {
         scroll-factor 0.4
     }
 
+    mod-key "Alt"
+
     mouse {
     }
 
@@ -104,7 +106,7 @@ window-rule {
 }
 
 window-rule {
-    geometry-corner-radius 8
+    geometry-corner-radius 0
     clip-to-geometry true
 }
 

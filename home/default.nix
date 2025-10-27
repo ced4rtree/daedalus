@@ -1,4 +1,4 @@
-{ config, lib, pkgs, mylib, ... }: {
+{ config, lib, pkgs, mylib, inputs, ... }: {
   home.username = "cedar";
   home.homeDirectory = "/home/cedar";
 
@@ -23,7 +23,7 @@
       enable = true;
       flavor = "doom";
     };
-    wallpaper.swww.enable = true;
+    # wallpaper.swww.enable = true; # replaced by noctalia-shell
     launcher.fuzzel.enable = true;
     shell.fish.enable = true;
     terminal.foot.enable = true;
@@ -46,9 +46,8 @@
       };
 
       internet = {
-        qutebrowser.enable = true;
-        nyxt.enable = false;
         discord.enable = true;
+        firefox.enable = true;
       };
 
       music = {
@@ -60,7 +59,7 @@
 
   home.activation = {
     splash = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      TEXT="Home-Manager Rebuilt" run ${lib.getExe' inputs.dark-text.packages.${pkgs.system}.default "dark-text"}
+      run ${lib.getExe inputs.dark-text.packages.${pkgs.system}.default} --duration 3000 --text "Home-Manager Rebuilt"
     '';
   };
 
