@@ -1,0 +1,16 @@
+{
+    "mError": "ERROR",
+    "mOnError": "ON_ERROR",
+    "mOnPrimary": "ON_PRIMARY",
+    "mOnSecondary": "ON_SECONDARY",
+    "mOnSurface": "ON_SURFACE",
+    "mOnSurfaceVariant": "ON_SURFACE_VARIANT",
+    "mOnTertiary": "ON_TERTIARY",
+    "mOutline": "OUTLINE",
+    "mPrimary": "PRIMARY",
+    "mSecondary": "SECONDARY",
+    "mShadow": "SHADOW",
+    "mSurface": "SURFACE",
+    "mSurfaceVariant": "SURFACE_VARIANT",
+    "mTertiary": "TERTIARY"
+}

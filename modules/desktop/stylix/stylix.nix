@@ -50,6 +50,8 @@ let
 
       sizes.terminal = 15;
     };
+
+    image = ./wallpaper.jpg;
   };
 in {
   flake.modules.nixos.stylix = { config, pkgs, inputs, ... }: {
