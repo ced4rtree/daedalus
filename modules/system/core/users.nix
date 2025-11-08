@@ -1,14 +1,19 @@
-{ config, ... }: {
-  flake.modules.nixos.users = {
-    users.users.${config.daedalus.username} = {
+{ config, ... }: let
+  username = config.daedalus.username;
+in {
+  flake.modules.nixos.users = { config, ... }: {
+    sops.secrets.password.neededForUsers = true;
+    users.users.${username} = {
       isNormalUser = true;
       extraGroups = [ "networkmanager" "wheel" "input" "video" ];
-      initialPassword = "pass";
+      hashedPasswordFile = config.sops.secrets.password.path;
     };
   };
 
   flake.modules.homeManager.users = {
-    home.username = config.daedalus.username;
-    home.homeDirectory = "/home/" + config.daedalus.username;
+    home = {
+      inherit username;
+      homeDirectory = "/home/${username}";
+    };
   };
 }
