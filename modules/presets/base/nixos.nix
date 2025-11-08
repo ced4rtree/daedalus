@@ -1,5 +1,5 @@
-{ config, lib, pkgs, ... }: {
-  flake.modules.nixos.base = {
+{ config, lib, ... }: {
+  flake.modules.nixos.base = { pkgs, ... }: {
     imports = with config.flake.modules.nixos; [
       grub
       graphics
@@ -12,6 +12,7 @@
       upower
       protonvpn
       nix
+      networkManager
     ] ++ lib.attrVals (import ./_commonModules.nix) config.flake.modules.nixos;
 
     daedalus.protonvpn = {
@@ -32,7 +33,6 @@
       wget
       openssh
       unzip
-      nh
     ];
   };
 }

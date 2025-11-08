@@ -1,4 +1,6 @@
-{
+{ config, ... }: let
+  username = config.daedalus.username;
+in {
   flake.modules.nixos.pipewire = { config, lib, pkgs, ... }: {
     environment.systemPackages = with pkgs; [
       pulseaudio
@@ -18,9 +20,9 @@
       audio.enable = true;
     };
 
-    users.users.${config.daedalus.username}.extraGroups = [ "pipewire" "audio" ];
+    users.users.${username}.extraGroups = [ "pipewire" "audio" ];
 
-    services.pipewire.wireplumber.extraConfig = lib.mkIf config.daedalus.bluetooth.enable {
+    services.pipewire.wireplumber.extraConfig = lib.mkIf config.hardware.bluetooth.enable {
       "monitor.bluez.properties" = {
         "bluez5.enable-sbc-xq" = true;
         "bluez5.enable-msbc" = true;

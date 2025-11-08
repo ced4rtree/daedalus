@@ -4,4 +4,5 @@
   "stylix"
   "desktopPrograms"
   "users"
+  "splash"
 ]

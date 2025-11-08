@@ -1,6 +1,8 @@
 {
   flake.modules.nixos.upower = {
-    upower.enable = true;
-    power-profiles-daemon.enable = true;
+    services = {
+      upower.enable = true;
+      power-profiles-daemon.enable = true;
+    };
   };
 }

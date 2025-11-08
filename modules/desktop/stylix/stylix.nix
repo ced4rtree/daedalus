@@ -57,7 +57,7 @@ in {
       inputs.stylix.nixosModules.stylix
     ];
     config = {
-      inherit (stylix { inherit config pkgs; });
+      stylix = stylix { inherit config pkgs; };
     };
   };
 
@@ -66,7 +66,7 @@ in {
       inputs.stylix.homeModules.stylix
     ];
     config = {
-      inherit (stylix { inherit config pkgs; });
+      stylix = stylix { inherit config pkgs; };
     };
   };
 }

@@ -1,13 +1,8 @@
-{
-  flake.modules.nixos.virt-manager = { config, pkgs, ... }: {
-    virtualisation.libvirtd.qemu.ovmf.packages = [
-      pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd # AAVMF
-      pkgs.OVMF.fd
-    ];
-
+{ config, ... }: {
+  flake.modules.nixos.virt-manager = { pkgs, ... }: {
     virtualisation.libvirtd.enable = true;
     programs.virt-manager.enable = true;
-    users.users.${config.settings.username}.extraGroups = [ "libvirtd" ];
+    users.users.${config.daedalus.username}.extraGroups = [ "libvirtd" ];
   };
 
   flake.modules.homeManager.virt-manager = {

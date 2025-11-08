@@ -5,8 +5,9 @@
       default = "cedar";
       type = lib.types.str;
     };
-    nvidia.enable = lib.mkEnableOption "nvidia";
-    isLaptop = lib.mkEnableOption "isLaptop";
-    bluetooth.enable = lib.mkEnableOption "bluetooth";
+    isLaptop = lib.mkOption {
+      description = "Whether or not the host is a laptop";
+      type = lib.types.boolean;
+    };
   };
 }

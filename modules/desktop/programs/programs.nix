@@ -1,5 +1,7 @@
-{ config, ... }: {
-  flake.modules.homeManager.desktopPrograms = {
+{ config, ... }: let
+  sharedModules = [ "virt-manager" ];
+in {
+  flake.modules.homeManager.desktopPrograms = { lib, ... }: {
     imports = with config.flake.modules.homeManager; [
       # misc
       batsignal
@@ -18,9 +20,12 @@
       # cli
       gpg
       direnv
+    ] ++ lib.attrVals sharedModules config.flake.modules.homeManager;
+  };
 
-      # virtualization
-      virt-manager
-    ];
+  flake.modules.nixos.desktopPrograms = { lib, ... }: {
+    imports = with config.flake.modules.nixos; [
+      nh
+    ] ++ lib.attrVals sharedModules config.flake.modules.nixos;
   };
 }

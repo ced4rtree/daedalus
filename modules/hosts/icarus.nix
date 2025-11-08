@@ -1,13 +1,10 @@
-{
-  flake.modules.nixos.icarus = { config, lib, pkgs, modulesPath, ... }: {
-    daedalus = {
-      nvidia.enable = true;
-      isLaptop = true;
-      bluetooth.enable = true;
-    };
-
+{ config, ... }: {
+  flake.modules.nixos.icarus = { lib, pkgs, modulesPath, ... }: {
     # hardware configuration
-    imports = [
+    imports = with config.flake.modules.nixos; [
+      nvidia
+      nvidiaPrime
+      bluetooth
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
