@@ -5,4 +5,5 @@
   "desktopPrograms"
   "users"
   "splash"
+  "sops"
 ]
