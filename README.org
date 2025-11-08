@@ -3,9 +3,7 @@
 Daedalus was a wise, skilled craftsman in Greek mythology, much like how I like
 to think of my dotfiles (though admittedly, they're likely not quite as sharp).
 
-[[./images/screenshot.png]]
-
-To test my dots on a NixOS system, you can just run ~nix run github:ced4rtree/dotfiles~.
+[[./screenshot.png]]
 
 ** Structure
 #+BEGIN_EXAMPLE

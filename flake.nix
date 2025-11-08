@@ -1,5 +1,8 @@
 {
-  description = "Ced4rtree NixOS Configuration";
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake
+      { inherit inputs; }
+      (inputs.import-tree ./modules);
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
@@ -8,6 +11,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
+    import-tree.url = "github:vic/import-tree";
 
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -43,71 +50,6 @@
     dark-text = {
       url = "github:vimjoyer/dark-text";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    nixvim,
-    stylix,
-    quickshell,
-    noctalia-shell,
-    ...
-  }@inputs: let
-    lib = nixpkgs.lib;
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      overlays = [
-        (import (builtins.fetchTarball {
-          url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-          sha256 = "sha256:0nqy59yynz39rdqf49axxp8yjksixayccbr5q1wnv6vfapb9m2ik";
-        }))
-      ];
-      config.allowUnfree = true;
-    };
-
-    generateHost = hostname: lib.nixosSystem {
-      inherit system pkgs;
-      specialArgs = {
-        mylib = (import ./lib { inherit lib; });
-        inherit inputs hostname;
-      };
-      modules = [
-        ./hosts/${hostname}
-        ./hosts/host-spec.nix
-        ./system
-        stylix.nixosModules.stylix
-        (import ./common/stylix.nix false)
-      ];
-    };
-  in {
-    nixosConfigurations =
-      ./hosts
-        |> builtins.readDir
-        |> lib.filterAttrs (file: type: type == "directory")
-        |> builtins.attrNames
-        |> map (host: {
-          name = host;
-          value = generateHost host;
-        })
-        |> builtins.listToAttrs;
-
-    homeConfigurations = {
-      "cedar" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = {
-          mylib = (import ./lib { inherit lib; });
-          inherit inputs;
-        };
-        modules = [
-          stylix.homeModules.stylix
-          (import ./common/stylix.nix true)
-          ./home
-        ];
-      };
     };
   };
 }
