@@ -87,6 +87,8 @@ layout {
     tab-indicator {
         gap 1
     }
+
+    background-color "transparent"
 }
 
 spawn-at-startup "xwayland-satellite"
@@ -250,11 +252,15 @@ debug {
   honor-xdg-activation-with-invalid-serial
 }
 
+// Set the regular wallpaper on the backdrop.
 layer-rule {
-    match namespace="^quickshell-wallpaper$"
+  match namespace="^noctalia-wallpaper*"
+  place-within-backdrop true
 }
 
-layer-rule {
-    match namespace="^quickshell-overview$"
-    place-within-backdrop true
+// Optionally, disable the workspace shadows in the overview.
+overview {
+  workspace-shadow {
+    off
+  }
 }
