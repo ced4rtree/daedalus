@@ -1,10 +1,14 @@
 { config, ... }: let
   username = config.daedalus.username;
 in {
+  flake.modules.nixos.noctalia = {
+    programs.gpu-screen-recorder.enable = true;
+  };
+
   flake.modules.homeManager.noctalia = { lib, pkgs, inputs, config, ...}: {
     home.packages = with inputs; [
-      quickshell.packages.${pkgs.system}.default
-      noctalia-shell.packages.${pkgs.system}.default
+      quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
+      noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default
     ] ++ (with pkgs; [
       # deps
       wlsunset
@@ -90,7 +94,7 @@ in {
         Type = "simple";
         ExecStart = "${pkgs.writeShellScript "noctalia-shell" ''
           #!${pkgs.bash}/bin/bash
-          ${lib.getExe inputs.noctalia-shell.packages.${pkgs.system}.default}
+          ${lib.getExe inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default}
         ''}";
       };
     };
