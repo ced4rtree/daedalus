@@ -1,75 +1,360 @@
 { config, ... }: let
   username = config.daedalus.username;
 in {
-  flake.modules.nixos.noctalia = {
-    programs.gpu-screen-recorder.enable = true;
-  };
-
   flake.modules.homeManager.noctalia = { lib, pkgs, inputs, config, ...}: {
-    home.packages = with inputs; [
-      quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default
-      noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ] ++ (with pkgs; [
-      # deps
-      wlsunset
-      brightnessctl
-      ddcutil
-      cliphist
-      cava
-    ]);
+    imports = [ inputs.noctalia-shell.homeModules.default ];
+
+    programs.noctalia-shell = {
+      enable = true;
+      settings = {
+        settingsVersion = 20;
+        setupCompleted = true;
+        bar = {
+          position = "bottom";
+          backgroundOpacity = 1;
+          monitors = [ ];
+          density = "default";
+          showCapsule = true;
+          floating = false;
+          marginVertical = 0.31;
+          marginHorizontal = 0.25;
+          outerCorners = true;
+          exclusive = true;
+          widgets = {
+            left = [
+              {
+                id = "SystemMonitor";
+                showCpuTemp = true;
+                showCpuUsage = true;
+                showDiskUsage = false;
+                showMemoryAsPercent = false;
+                showMemoryUsage = true;
+                showNetworkStats = true;
+              }
+              {
+                id = "MediaMini";
+                hideMode = "hidden";
+                maxWidth = 145;
+                scrollingMode = "hover";
+                showAlbumArt = false;
+                showVisualizer = true;
+                useFixedWidth = false;
+                visualizerType = "wave";
+              }
+              {
+                id = "ActiveWindow";
+                colorizeIcons = false;
+                hideMode = "hidden";
+                maxWidth = 145;
+                scrollingMode = "hover";
+                showIcon = true;
+                useFixedWidth = false;
+              }
+            ];
+            center = [
+                {
+                  id = "Workspace";
+                  hideUnoccupied = false;
+                  labelMode = "none";
+                }
+                {
+                  id = "Taskbar";
+                  colorizeIcons = false;
+                  hideMode = "hidden";
+                  onlyActiveWorkspaces = false;
+                  onlySameOutput = true;
+                }
+            ];
+            right = [
+                {
+                  id = "ScreenRecorder";
+                }
+                {
+                    blacklist = [];
+                    colorizeIcons = false;
+                    id = "Tray";
+                }
+                {
+                  hideWhenZero = true;
+                  id = "NotificationHistory";
+                  showUnreadBadge = true;
+                }
+                {
+                  displayMode = "onhover";
+                  id = "WiFi";
+                }
+                {
+                  displayMode = "onhover";
+                  id = "Bluetooth";
+                }
+                {
+                  displayMode = "alwaysShow";
+                  id = "Battery";
+                  warningThreshold = 15;
+                }
+                {
+                  displayMode = "alwaysShow";
+                  id = "Volume";
+                }
+                {
+                  displayMode = "alwaysShow";
+                  id = "Brightness";
+                }
+                {
+                  customFont = "";
+                  formatHorizontal = "h:mm AP ddd, MMM dd";
+                  formatVertical = "HH mm - dd MM";
+                  id = "Clock";
+                  useCustomFont = false;
+                  usePrimaryColor = true;
+                }
+                {
+                  id = "PowerProfile";
+                }
+                {
+                  id = "KeepAwake";
+                }
+                {
+                  customIconPath = "";
+                  icon = "noctalia";
+                  id = "ControlCenter";
+                  useDistroLogo = true;
+                }
+                {
+                    id = "SessionMenu";
+                }
+            ];
+          };
+        };
+        general = {
+          avatarImage = "/home/${username}/.face.icon";
+          dimDesktop = true;
+          showScreenCorners = true;
+          forceBlackScreenCorners = false;
+          scaleRatio = 1;
+          radiusRatio = 0.5;
+          screenRadiusRatio = 0.58;
+          animationSpeed = 1;
+          animationDisabled = false;
+          compactLockScreen = false;
+          lockOnSuspend = true;
+          enableShadows = true;
+          shadowDirection = "bottom_right";
+          shadowOffsetX = 2;
+          shadowOffsetY = 3;
+          language = "";
+        };
+        ui = {
+          fontDefault = config.stylix.fonts.sansSerif.name;
+          fontFixed = config.stylix.fonts.monospace.name;
+          fontDefaultScale = 1;
+          fontFixedScale = 1;
+          tooltipsEnabled = true;
+          panelsAttachedToBar = true;
+          settingsPanelAttachToBar = false;
+        };
+        location = {
+          name = "LOCATION";
+          weatherEnabled = true;
+          useFahrenheit = true;
+          use12hourFormat = true;
+          showWeekNumberInCalendar = false;
+          showCalendarEvents = true;
+          showCalendarWeather = true;
+          analogClockInCalendar = false;
+          firstDayOfWeek = -1;
+        };
+        screenRecorder = {
+          directory = "/home/${username}/Videos";
+          frameRate = 60;
+          audioCodec = "opus";
+          videoCodec = "h264";
+          quality = "very_high";
+          colorRange = "limited";
+          showCursor = true;
+          audioSource = "default_output";
+          videoSource = "portal";
+        };
+        wallpaper = {
+          enabled = true;
+          overviewEnabled = false;
+          directory = builtins.dirOf config.stylix.image;
+          enableMultiMonitorDirectories = false;
+          recursiveSearch = false;
+          setWallpaperOnAllMonitors = true;
+          defaultWallpaper = config.stylix.image;
+          fillMode = "crop";
+          fillColor = "#000000";
+          randomEnabled = false;
+          randomIntervalSec = 300;
+          transitionDuration = 1500;
+          transitionType = "random";
+          transitionEdgeSmoothness = 0.05;
+          monitors = [ ];
+          panelPosition = "follow_bar";
+        };
+        appLauncher = {
+          enableClipboardHistory = true;
+          position = "center";
+          backgroundOpacity = 0.75;
+          pinnedExecs = [ ];
+          useApp2Unit = false;
+          sortByMostUsed = true;
+          terminalCommand = "foot -e";
+          customLaunchPrefixEnabled = false;
+          customLaunchPrefix = "";
+        };
+        controlCenter = {
+          position = "close_to_bar_button";
+          shortcuts = {
+            left = [
+              {
+                id = "WiFi";
+              }
+              {
+                id = "Bluetooth";
+              }
+              {
+                id = "ScreenRecorder";
+              }
+              {
+                id = "WallpaperSelector";
+              }
+            ];
+            right = [
+              {
+                id = "Notifications";
+              }
+              {
+                id = "PowerProfile";
+              }
+              {
+                id = "KeepAwake";
+              }
+              {
+                id = "NightLight";
+              }
+            ];
+          };
+          cards = [
+            {
+              enabled = true;
+              id = "profile-card";
+            }
+            {
+              enabled = true;
+              id = "shortcuts-card";
+            }
+            {
+              enabled = true;
+              id = "audio-card";
+            }
+            {
+              enabled = true;
+              id = "weather-card";
+            }
+            {
+              enabled = true;
+              id = "media-sysmon-card";
+            }
+          ];
+        };
+        dock = {
+          enabled = false;
+          displayMode = "always_visible";
+          backgroundOpacity = 1;
+          floatingRatio = 1;
+          size = 1;
+          onlySameOutput = true;
+          monitors = [ ];
+          pinnedApps = [ ];
+          colorizeIcons = false;
+        };
+        network = {
+          wifiEnabled = true;
+        };
+        notifications = {
+          enabled = true;
+          doNotDisturb = false;
+          monitors = [ "eDP-1" ];
+          location = "top_right";
+          overlayLayer = true;
+          backgroundOpacity = 1;
+          respectExpireTimeout = false;
+          lowUrgencyDuration = 3;
+          normalUrgencyDuration = 8;
+          criticalUrgencyDuration = 15;
+        };
+        osd = {
+          enabled = true;
+          location = "top_right";
+          monitors = [ ];
+          autoHideMs = 2000;
+          overlayLayer = true;
+        };
+        audio = {
+          volumeStep = 5;
+          volumeOverdrive = false;
+          cavaFrameRate = 30;
+          visualizerType = "mirrored";
+          mprisBlacklist = [ ];
+          preferredPlayer = "";
+        };
+        brightness = {
+          brightnessStep = 5;
+          enforceMinimum = true;
+          enableDdcSupport = false;
+        };
+        colorSchemes = {
+          useWallpaperColors = false;
+          predefinedScheme = "Noctalia (default)";
+          darkMode = true;
+          schedulingMode = "off";
+          manualSunrise = "06:30";
+          manualSunset = "18:30";
+          matugenSchemeType = "scheme-fruit-salad";
+          generateTemplatesForPredefined = true;
+        };
+        nightLight = {
+          enabled = false;
+          forced = false;
+          autoSchedule = true;
+          nightTemp = "4000";
+          dayTemp = "6500";
+          manualSunrise = "06:30";
+          manualSunset = "18:30";
+        };
+        hooks = {
+          enabled = false;
+          wallpaperChange = "";
+          darkModeChange = "";
+        };
+        battery = {
+          chargingMode = 0;
+        };
+      };
+
+      colors = with config.lib.stylix.colors.withHashtag; {
+        mPrimary = base0D;
+        mOnPrimary = base03;
+        mSecondary = base0E;
+        mOnSecondary = base03;
+        mTertiary = base0B;
+        mOnTertiary = base03;
+        mError = base08;
+        mOnError = base03;
+        mSurface = base00;
+        mOnSurface = base07;
+        mSurfaceVariant = base02;
+        mOnSurfaceVariant = base07;
+        mOutline = base04;
+        mShadow = base03;
+        mHover = base0E;
+        mOnHover = base03;
+      };
+    };
 
     sops.secrets.noctalia_location = { };
-
-    xdg.configFile."noctalia/colors.json" = {
-      text = builtins.replaceStrings
-        [
-          "ERROR"
-          "ON_ERROR"
-          "ON_PRIMARY"
-          "ON_SECONDARY"
-          "ON_SURFACE"
-          "ON_SURFACE_VARIANT"
-          "ON_TERTIARY"
-          "OUTLINE"
-          "PRIMARY"
-          "SECONDARY"
-          "SHADOW"
-          "SURFACE"
-          "SURFACE_VARIANT"
-          "TERTIARY"
-        ]
-        (with config.lib.stylix.colors.withHashtag; [
-          base08 # error
-          base03 # onError
-          base03 # onPrimary
-          base03 # onSecondary
-          base07 # onSurface
-          base05 # onSurfaceVariant
-          base03 # onTertiary
-          base04 # outline
-          base0D # primary
-          base0E # secondary
-          base03 # shadow
-          base00 # surface
-          base06 # surfaceVariant
-          base0E # tertiary
-        ])
-        (builtins.readFile ./colors.json);
-      force = true;
-    };
-    xdg.configFile."noctalia/settings.json" = {
-      text = let
-        videoDirectory = "/home/${username}/Videos";
-        font = config.stylix.fonts.sansSerif.name;
-        wallpaper = config.stylix.image;
-        wallpaperDir = builtins.dirOf wallpaper;
-        avatarImage = "/home/${username}/.face.icon";
-      in builtins.replaceStrings
-        [ "VIDEO_DIRECTORY" "FONT" "WALLPAPER_DIRECTORY" "WALLPAPER_FILE" "AVATAR_IMAGE" ]
-        [ videoDirectory font wallpaperDir wallpaper avatarImage ]
-        (builtins.readFile ./settings.json);
-      force = true;
-    };
 
     # Hack to replace the string LOCATION with my actual location in
     # ~/.config/noctalia/settings.json while maintaining purity.
@@ -81,22 +366,9 @@ in {
       '';
     };
 
-    systemd.user.services.noctalia-shell = {
-      Unit = {
-        Description = "Run Noctalia Shell";
-        After = "graphical-session.target";
-        BindsTo = "graphical-session.target";
-        PartOf = "graphical-session.target";
-        Requisite = "graphical-session.target";
-      };
-      Install.WantedBy = [ "graphical-session.target" ];
-      Service = {
-        Type = "simple";
-        ExecStart = "${pkgs.writeShellScript "noctalia-shell" ''
-          #!${pkgs.bash}/bin/bash
-          ${lib.getExe inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default}
-        ''}";
-      };
-    };
+    xdg.configFile."noctalia/settings.json".force = true;
+    xdg.configFile."noctalia/colors.json".force = true;
+
+    programs.noctalia-shell.systemd.enable = true;
   };
 }
