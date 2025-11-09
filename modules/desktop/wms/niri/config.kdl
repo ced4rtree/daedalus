@@ -21,7 +21,7 @@ input {
         scroll-factor 0.4
     }
 
-    mod-key "Alt"
+    mod-key "Super"
 
     mouse {
     }
