@@ -3,12 +3,11 @@
     imports =
       lib.attrVals (import ./_commonModules.nix) config.flake.modules.homeManager
       ++ (with config.flake.modules.homeManager; [
-      foot
-      hypridle
-      files
-      doomEmacs
-      neovim
-      noctalia
+        foot
+        hypridle
+        files
+        doomEmacs
+        neovim
       ]);
 
     home.stateVersion = "25.05";
