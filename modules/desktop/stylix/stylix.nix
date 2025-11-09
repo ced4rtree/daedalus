@@ -7,7 +7,7 @@ let
       # https://github.com/doomemacs/themes/blob/master/themes/doom-one-theme.el
       base00 = "#282c34";
       base01 = "#1c1f24";
-      base02 = "#202328";
+      base02 = "#21242b";
       base03 = "#3f444a";
       base04 = "#5B6268";
       base05 = "#BBC2CF";
