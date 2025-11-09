@@ -72,6 +72,15 @@
     imports = [ config.flake.modules.homeManager.emacsBase ];
     programs.emacs.package = emacs;
     services.emacs.package = emacs;
+
+    # install my email config, which is stored as an age encrypted secret
+    sops.secrets."emails.el" = {
+      path = "/home/${config.daedalus.username}/.config/emacs/emails.el";
+      sopsFile = ./emails.el.age;
+      format = "binary";
+    };
+    systemd.user.services.emacs.unitConfig.After = [ "sops-nix.service" ];
+
     xdg.configFile."emacs/early-init.el".source = ./early-init.el;
   };
 }

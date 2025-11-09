@@ -59,6 +59,14 @@
     programs.emacs.package = emacs;
     services.emacs.package = emacs;
 
+    # install my email config, which is stored as an age encrypted secret
+    sops.secrets."emails.el" = {
+      path = "/home/${config.daedalus.username}/.local/share/doomemacs/emails.el";
+      sopsFile = ./emails.el.age;
+      format = "binary";
+    };
+    systemd.user.services.emacs.unitConfig.After = [ "sops-nix.service" ];
+
     systemd.user.sessionVariables = {
       DOOMLOCALDIR = "$HOME/.local/share/doomemacs";
       DOOMPROFILELOADFILE = "$HOME/.local/share/doomemacs/profiles/load.el";
