@@ -6,5 +6,4 @@
   "users"
   "splash"
   "sops"
-  "noctalia"
 ]

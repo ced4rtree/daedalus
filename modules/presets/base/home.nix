@@ -8,6 +8,7 @@
         files
         doomEmacs
         neovim
+        noctalia
       ]);
 
     home.stateVersion = "25.05";
