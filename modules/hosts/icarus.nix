@@ -4,6 +4,7 @@
     imports = with config.flake.modules.nixos; [
       nvidia
       nvidiaPrime
+      intel-dGPU
       bluetooth
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
