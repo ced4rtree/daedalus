@@ -3,9 +3,7 @@ let
     enable = true;
 
     base16Scheme = {
-      # doom-one theme
-      # https://github.com/doomemacs/themes/blob/master/themes/doom-one-theme.el
-      base00 = "#282c34";
+      base00 = "#000000";
       base01 = "#1c1f24";
       base02 = "#21242b";
       base03 = "#3f444a";
@@ -13,13 +11,13 @@ let
       base05 = "#BBC2CF";
       base06 = "#9ca0a4";
       base07 = "#DFDFDF";
-      base08 = "#ff6c6b";
-      base09 = "#da8548";
-      base0A = "#ECBE7B";
-      base0B = "#98be65";
-      base0C = "#46D9FF";
-      base0D = "#51AFEF";
-      base0E = "#c678dd";
+      base08 = "#f966a1";
+      base09 = "#f9ab66";
+      base0A = "#edd078";
+      base0B = "#b5c77d";
+      base0C = "#6dd3c0";
+      base0D = "#7fc6f7";
+      base0E = "#d194fc";
       base0F = "#de7e52"; # i made this one up
     };
     polarity = "dark";
@@ -31,8 +29,8 @@ let
     };
 
     fonts = let
-      package = pkgs.nerd-fonts.iosevka;
-      name = "Iosevka Nerd Font";
+      package = pkgs.nerd-fonts.monaspace;
+      name = "MonaspiceNe Nerd Font";
     in {
       serif = {
         inherit package;
@@ -48,7 +46,12 @@ let
         name = "Noto Color Emoji";
       };
 
-      sizes.terminal = 15;
+      sizes.terminal = 12;
+    };
+
+    opacity = {
+      terminal = 0.7;
+      desktop = 0.7;
     };
 
     image = ./wallpaper.jpg;
