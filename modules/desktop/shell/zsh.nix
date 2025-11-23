@@ -52,7 +52,7 @@
         fi
         _comp_options+=(globdots)
 
-        krabby random | awk 'NR>1 { print $0 }'
+        fastfetch
       '';
     };
   };

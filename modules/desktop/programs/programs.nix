@@ -20,6 +20,7 @@ in {
       # cli
       gpg
       direnv
+      fastfetch
     ] ++ lib.attrVals sharedModules config.flake.modules.homeManager;
   };
 
