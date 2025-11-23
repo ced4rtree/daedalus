@@ -1,6 +1,6 @@
 [
-  "fish"
   "hyprland"
+  "zsh"
   "stylix"
   "desktopPrograms"
   "users"
