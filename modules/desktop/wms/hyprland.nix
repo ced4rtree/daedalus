@@ -36,8 +36,8 @@
 
         input = {
           kb_layout = "us";
-          kb_options = "ctrl:nocaps";
-          # kb_options = "caps:escape";
+          # kb_options = "ctrl:nocaps";
+          kb_options = "caps:escape";
           kb_rules = "evdev";
           numlock_by_default = true;
           repeat_delay = 250;
@@ -54,6 +54,15 @@
             scroll_factor = 0.4;
             disable_while_typing = true;
           };
+        };
+
+        cursor = {
+          warp_on_change_workspace = 1;
+        };
+
+        ecosystem = {
+          no_update_news = true;
+          no_donation_nag = true;
         };
 
         general = {
@@ -74,7 +83,7 @@
           inactive_opacity = 1;
           blur = {
             enabled = true;
-            size = 10;
+            size = 4;
             passes = 2;
           };
         };
@@ -144,10 +153,10 @@
           "SUPER,space,togglefloating,"
           "SUPER,G,togglegroup,"
           "SUPER,C,changegroupactive,"
-          "SUPER,R,exec,fuzzel"
-          "SUPER,M,fullscreen,"
-          "SUPER,Escape,exec,swaylock -f -e -l -L -s fill"
-          "CTRLSUPER,Escape,exec,swaylock -f -e -l -L -s fill; sleep 1; loginctl suspend"
+          "SUPER,R,exec,noctalia-shell ipc call launcher toggle"
+          "SUPER,F,fullscreen,"
+          "SUPER,Escape,exec,noctalia-shell ipc call lockScreen lock"
+          "CTRLSUPER,Escape,exec,noctalia-shell ipc call lockScreen lock; sleep 1; loginctl suspend"
           "SUPERSHIFT,Q,killactive,"
 
           # FOCUS WORKSPACES

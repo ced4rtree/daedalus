@@ -1,6 +1,6 @@
 [
-  "niri"
   "fish"
+  "hyprland"
   "stylix"
   "desktopPrograms"
   "users"
