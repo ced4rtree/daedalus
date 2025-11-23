@@ -21,8 +21,8 @@
 
     import-tree.url = "github:vic/import-tree";
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
+    nvf = {
+      url = "github:ced4rtree/nvf/feature/transparent-base16";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
