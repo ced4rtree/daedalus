@@ -1,18 +1,16 @@
-{
-  flake.modules.nixos.zsh = { config, pkgs, ... }: {
+{ config, ... }: let
+  topConfig = config;
+in {
+  flake.modules.nixos.zsh = { pkgs, ... }: {
     programs.zsh.enable = true;
     programs.zsh.syntaxHighlighting.enable = true;
     environment.shells = [ pkgs.zsh ];
-    users.users.${config.daedalus.username}.shell = pkgs.zsh;
+    users.users.${topConfig.daedalus.username}.shell = pkgs.zsh;
   };
 
   flake.modules.homeManager.zsh = { config, pkgs, ... }: {
     imports = [
-      config.flake.modules.homeManager.starship
-    ];
-
-    home.packages = with pkgs; [
-      krabby
+      topConfig.flake.modules.homeManager.starship
     ];
 
     programs.zsh = {
