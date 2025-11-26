@@ -256,7 +256,12 @@
               };
             };
           };
-          fidget-nvim.enable = true;
+          fidget-nvim = {
+            enable = true;
+            setupOpts = {
+              progress.display.render_limit = 5;
+            };
+          };
           rainbow-delimiters.enable = true;
         };
       };
