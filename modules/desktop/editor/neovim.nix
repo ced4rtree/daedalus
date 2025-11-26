@@ -125,7 +125,15 @@
           enable = true;
           theme = "base16";
         };
-        telescope.enable = true;
+        telescope = {
+          enable = true;
+          extensions = [
+            {
+              name = "file_browser";
+              packages = [ pkgs.vimPlugins.telescope-file-browser-nvim ];
+            }
+          ];
+        };
 
         terminal.toggleterm = {
           enable = true;
