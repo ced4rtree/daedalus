@@ -46,6 +46,18 @@
             action = ":w<CR>";
             desc = "Save file";
           }
+          {
+            key = "<leader>.";
+            mode = [ "n" "v" ];
+            action = ":Telescope file_browser path=%:p:h select_buffer=true<CR>";
+            desc = "Find files in cwd [Telescope]";
+          }
+          {
+            key = "<leader>pf";
+            mode = [ "n" "v" ];
+            action = ":Telescope find_files<CR>";
+            desc = "Find file [Telescope]";
+          }
 
           # buffer bindings
           {
