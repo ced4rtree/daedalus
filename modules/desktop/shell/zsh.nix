@@ -8,7 +8,7 @@ in {
     users.users.${topConfig.daedalus.username}.shell = pkgs.zsh;
   };
 
-  flake.modules.homeManager.zsh = { config, pkgs, ... }: {
+  flake.modules.homeManager.zsh = { config, pkgs, lib, ... }: {
     imports = [
       topConfig.flake.modules.homeManager.starship
     ];
@@ -50,7 +50,8 @@ in {
         fi
         _comp_options+=(globdots)
 
-        fastfetch
+        # call my patched version of microfetch
+        ${lib.getExe topConfig.flake.packages.${pkgs.stdenv.hostPlatform.system}.microfetch}
       '';
     };
   };

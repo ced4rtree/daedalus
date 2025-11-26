@@ -1,0 +1,42 @@
+diff --git a/src/main.rs b/src/main.rs
+index 41a1818..249140a 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -64,19 +64,24 @@ fn print_system_info(fields: &Fields) -> Result<(), Box<dyn std::error::Error>>
+         colors,
+     } = fields;
+ 
+-    let cyan = COLORS.cyan;
+-    let blue = COLORS.blue;
+-    let reset = COLORS.reset;
+-    let system_info = format!("
+-    {cyan}     ▟█▖    {blue}▝█▙ ▗█▛          {user_info} ~{reset}
+-    {cyan}  ▗▄▄▟██▄▄▄▄▄{blue}▝█▙█▛  {cyan}▖        {cyan}  {blue}System{reset}        {os_name}
+-    {cyan}  ▀▀▀▀▀▀▀▀▀▀▀▘{blue}▝██  {cyan}▟█▖       {cyan}  {blue}Kernel{reset}        {kernel_version}
+-    {blue}     ▟█▛       {blue}▝█▘{cyan}▟█▛        {cyan}  {blue}Shell{reset}         {shell}
+-    {blue}▟█████▛          {cyan}▟█████▛     {cyan}  {blue}Uptime{reset}        {uptime}
+-    {blue}   ▟█▛{cyan}▗█▖       {cyan}▟█▛          {cyan}  {blue}Desktop{reset}       {desktop}
+-    {blue}  ▝█▛  {cyan}██▖{blue}▗▄▄▄▄▄▄▄▄▄▄▄       {cyan}  {blue}Memory{reset}        {memory_usage}
+-    {blue}   ▝  {cyan}▟█▜█▖{blue}▀▀▀▀▀██▛▀▀▘       {cyan}󱥎  {blue}Storage (/){reset}   {storage}
+-    {cyan}     ▟█▘ ▜█▖    {blue}▝█▛          {cyan}  {blue}Colors{reset}        {colors}\n");
++  let reset = COLORS.reset;
++  let blue = COLORS.blue;
++  let cyan = COLORS.cyan;
++  let green = COLORS.green;
++  let yellow = COLORS.yellow;
++  let red = COLORS.red;
++  let magenta = COLORS.magenta;
++
++  let system_info = format!("
++    {red}     ▟█▖    {green}▝█▙ ▗█▛         {user_info} ~{reset}
++    {red}  ▗▄▄▟██▄▄▄▄▄{green}▝█▙█▛  {blue}▖       {cyan}  {blue}System{reset}        {os_name}
++    {red}  ▀▀▀▀▀▀▀▀▀▀▀▘{green}▝██  {blue}▟█▖      {cyan}  {blue}Kernel{reset}        {kernel_version}
++    {yellow}     ▟█▛       {green}▝█▘{blue}▟█▛       {cyan}  {blue}Shell{reset}         {shell}
++    {yellow}▟█████▛          {blue}▟█████▛    {cyan}  {blue}Uptime{reset}        {uptime}
++    {yellow}   ▟█▛{magenta}▗█▖       {blue}▟█▛         {cyan}  {blue}Desktop{reset}       {desktop}
++    {yellow}  ▝█▛  {magenta}██▖{cyan}▗▄▄▄▄▄▄▄▄▄▄▄      {cyan}  {blue}Memory{reset}        {memory_usage}
++    {yellow}   ▝  {magenta}▟█▜█▖{cyan}▀▀▀▀▀██▛▀▀▘      {cyan}󱥎  {blue}Storage (/){reset}   {storage}
++    {magenta}     ▟█▘ ▜█▖    {cyan}▝█▛         {cyan}  {blue}Colors{reset}        {colors}\n");
+ 
+     Ok(stdout().write_all(system_info.as_bytes())?)
+ }

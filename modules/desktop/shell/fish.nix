@@ -5,7 +5,7 @@
     users.users.${config.daedalus.username}.shell = pkgs.fish;
   };
 
-  flake.modules.homeManager.fish = { pkgs, ... }: let
+  flake.modules.homeManager.fish = { pkgs, lib, ... }: let
     catppuccin-fish = pkgs.fetchFromGitHub {
       owner = "catppuccin";
       repo = "fish";
@@ -29,7 +29,8 @@
         fish_config theme choose "Catppuccin Mocha"
 
         if status is-interactive
-          fastfetch
+          # call my patched version of microfetch
+          ${lib.getExe config.flake.packages.${pkgs.stdenv.hostPlatform.system}.microfetch}
         end
       '';
     };
