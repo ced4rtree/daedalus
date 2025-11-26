@@ -40,7 +40,7 @@
       owner = "doomemacs";
       repo = "doomemacs";
       rev = "master";
-      hash = "sha256-qfoBM8/s5cqyJKZykEoLws8J+AZZ25jL7z0MLS0Rdg0=";
+      hash = "sha256-R3I8NErGSCd6kSTUBNe7SNcRDUtJ1xl8zvD13C6SrRg=";
     };
 
     xdg.configFile."doom" = {
