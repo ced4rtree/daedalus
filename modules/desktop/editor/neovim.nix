@@ -73,6 +73,14 @@
             desc = "Go to next buffer";
           }
 
+          # git
+          {
+            key = "<leader>gg";
+            mode = [ "n" "v" ];
+            action = ":Neogit<CR>";
+            desc = "Git Status [Neogit]";
+          }
+
           # window bindings
           {
             key = "<leader>ww";
