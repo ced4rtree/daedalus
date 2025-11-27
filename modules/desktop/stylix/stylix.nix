@@ -1,25 +1,26 @@
 let
-  stylix = { config, pkgs }: {
+  colors = {
+    base00 = "#000000";
+    base01 = "#1c1f24";
+    base02 = "#21242b";
+    base03 = "#3f444a";
+    base04 = "#5B6268";
+    base05 = "#BBC2CF";
+    base06 = "#9ca0a4";
+    base07 = "#DFDFDF";
+    base08 = "#f966a1";
+    base09 = "#f9ab66";
+    base0A = "#edd078";
+    base0B = "#b5c77d";
+    base0C = "#6dd3c0";
+    base0D = "#7fc6f7";
+    base0E = "#d194fc";
+    base0F = "#de7e52"; # i made this one up
+  };
+  stylix = pkgs: {
     enable = true;
 
-    base16Scheme = {
-      base00 = "#000000";
-      base01 = "#1c1f24";
-      base02 = "#21242b";
-      base03 = "#3f444a";
-      base04 = "#5B6268";
-      base05 = "#BBC2CF";
-      base06 = "#9ca0a4";
-      base07 = "#DFDFDF";
-      base08 = "#f966a1";
-      base09 = "#f9ab66";
-      base0A = "#edd078";
-      base0B = "#b5c77d";
-      base0C = "#6dd3c0";
-      base0D = "#7fc6f7";
-      base0E = "#d194fc";
-      base0F = "#de7e52"; # i made this one up
-    };
+    base16Scheme = colors;
     polarity = "dark";
 
     cursor = {
@@ -31,12 +32,13 @@ let
     fonts = let
       package = pkgs.nerd-fonts.monaspace;
       name = "MonaspiceNe Nerd Font";
-    in {
       serif = {
         inherit package;
         name = name + " Propo";
       };
-      sansSerif = config.stylix.fonts.serif;
+    in {
+      inherit serif;
+      sansSerif = serif;
       monospace = {
         inherit package;
         name = name + " Mono";
@@ -56,22 +58,20 @@ let
 
     image = ./wallpaper.jpg;
   };
-in {
-  flake.modules.nixos.stylix = { config, pkgs, inputs, ... }: {
+in { inputs, pkgs, lib, ... }: {
+  flake.modules.nixos.stylix = { pkgs, ... }: {
     imports = [
       inputs.stylix.nixosModules.stylix
     ];
-    config = {
-      stylix = stylix { inherit config pkgs; };
-    };
+    stylix = stylix pkgs;
   };
 
-  flake.modules.homeManager.stylix = { config, pkgs, inputs, ... }: {
+  flake.modules.homeManager.stylix = { pkgs, ... }: {
     imports = [
       inputs.stylix.homeModules.stylix
     ];
-    config = {
-      stylix = stylix { inherit config pkgs; };
-    };
+    stylix = stylix pkgs;
   };
+
+  flake.lib.colors = ((inputs.stylix.inputs.base16.lib { inherit pkgs lib; }).mkSchemeAttrs colors);
 }
