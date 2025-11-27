@@ -6,8 +6,7 @@
         colors = config.lib.stylix.colors.withHashtag;
       in {
         format =
-          ''[](${colors.red})''
-          + "$python"
+          "[](${colors.red})"
           + "$username"
           + ''[](bg:${colors.green} fg:${colors.red})''
           + "$directory"
@@ -16,6 +15,7 @@
           + "$git_status"
           + ''[](fg:${colors.cyan} bg:${colors.blue})''
           + "$c"
+          + "$python"
           + "$elixir"
           + "$elm"
           + "$golang"
@@ -33,6 +33,14 @@
 
         command_timeout = 5000;
         add_newline = true;
+
+        os = {
+          disabled = false;
+          symbols = {
+            "NixOS" = "";
+          };
+          style = "";
+        };
 
         username = {
           show_always = true;
