@@ -9,6 +9,7 @@
         doomEmacs
         neovim
         noctalia
+        fuzzel
       ]);
 
     home.stateVersion = "25.05";

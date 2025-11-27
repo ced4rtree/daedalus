@@ -108,7 +108,7 @@ window-rule {
 
 binds {
     Mod+Return repeat=false { spawn "foot"; }
-    Mod+R repeat=false { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    Mod+R repeat=false { spawn "fuzzel"; }
     Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "+5%"; }
