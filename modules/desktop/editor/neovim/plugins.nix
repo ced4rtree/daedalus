@@ -87,6 +87,17 @@ in {
       utility = {
         direnv.enable = true;
         sleuth.enable = true;
+        yanky-nvim = {
+          enable = true;
+          setupOpts = {
+            ring.storage = "sqlite";
+            highlight = {
+              on_put = true;
+              on_yank = true;
+              timer = 500;
+            };
+          };
+        };
       };
 
       pluginRC.indent-blankline-init = let
@@ -130,7 +141,6 @@ in {
           };
         };
         rainbow-delimiters.enable = true;
-
       };
     };
   };
