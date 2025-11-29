@@ -196,13 +196,13 @@
         key = "=p";
         action = "<Plug>(YankyPutAfterFilter)";
         desc = "Put after applying a filter";
-        mode = [ "n" "v" ];
+        mode = [ "n" ];
       }
       {
         key = "=P";
         action = "<Plug>(YankyPutBeforeFilter)";
         desc = "Put before applying a filter";
-        mode = [ "n" "v" ];
+        mode = [ "n" ];
       }
     ];
   };
