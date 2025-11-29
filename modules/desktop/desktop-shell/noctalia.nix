@@ -176,7 +176,7 @@ in {
           videoSource = "portal";
         };
         wallpaper = {
-          enabled = true;
+          enabled = false;
           overviewEnabled = false;
           directory = builtins.dirOf config.stylix.image;
           enableMultiMonitorDirectories = false;
