@@ -200,7 +200,7 @@ in {
           pinnedExecs = [ ];
           useApp2Unit = false;
           sortByMostUsed = true;
-          terminalCommand = "foot -e";
+          terminalCommand = "kitty -e";
           customLaunchPrefixEnabled = false;
           customLaunchPrefix = "";
         };

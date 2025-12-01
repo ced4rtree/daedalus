@@ -5,7 +5,7 @@
       settings = {
         main = {
           fields = "filename,name,generic,keywords,comment,categories";
-          terminal = "footclient -e";
+          terminal = "kitty -e";
           anchor = "center";
           width = 75;
         };
