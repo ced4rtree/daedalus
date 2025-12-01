@@ -1,11 +1,11 @@
-{ config, lib, pkgs, inputs, ... }: let
+{ config, lib, inputs, ... }: let
   system = "x86_64-linux";
 
   pkgs = import inputs.nixpkgs {
     overlays = [
       (import (builtins.fetchTarball {
         url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-        sha256 = "sha256:0gb8v5cbnhskgkhwyz1xp94prxzzxabys6b24f7cm36lf7whjm64";
+        sha256 = "sha256:0s54smhaq6rw660qdwya07i8cpvziw11j9qax86sk2fhdlj3dnzj";
       }))
     ];
     config.allowUnfree = true;
