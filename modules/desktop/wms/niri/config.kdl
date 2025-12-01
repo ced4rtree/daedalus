@@ -107,7 +107,7 @@ window-rule {
 }
 
 binds {
-    Mod+Return repeat=false { spawn "kitty"; }
+    Mod+Return repeat=false { spawn "@terminal"; }
     Mod+R repeat=false { spawn "fuzzel"; }
     Mod+E { spawn "emacsclient" "-c" "-a" "emacs"; }
 

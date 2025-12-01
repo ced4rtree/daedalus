@@ -200,7 +200,7 @@ in {
           pinnedExecs = [ ];
           useApp2Unit = false;
           sortByMostUsed = true;
-          terminalCommand = "kitty -e";
+          terminalCommand = "${config.daedalus.terminalCommand} -e ";
           customLaunchPrefixEnabled = false;
           customLaunchPrefix = "";
         };

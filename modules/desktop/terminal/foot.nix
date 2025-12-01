@@ -1,5 +1,9 @@
-{
+{ config, ... }: {
   flake.modules.homeManager.foot = {
+    imports = [ config.flake.modules.homeManager.terminalOption ];
+
+    daedalus.terminalCommand = "foot";
+
     programs.foot = {
       enable = true;
       settings = {

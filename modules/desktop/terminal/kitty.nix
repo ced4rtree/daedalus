@@ -1,5 +1,11 @@
-{
+{ config, ... }: let
+  terminalModule = config.flake.modules.homeManager.terminalOption;
+in {
   flake.modules.homeManager.kitty = { config, ... }: {
+    imports = [ terminalModule ];
+
+    daedalus.terminalCommand = "kitty";
+
     programs.kitty = {
       enable = true;
       settings = {
