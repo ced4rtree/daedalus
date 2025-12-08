@@ -31,7 +31,7 @@ let
 
     fonts = let
       package = pkgs.nerd-fonts.monaspace;
-      name = "MonaspiceNe Nerd Font";
+      name = "Iosevka Nerd Font";
       serif = {
         inherit package;
         name = name + " Propo";
