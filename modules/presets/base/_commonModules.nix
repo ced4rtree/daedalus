@@ -1,6 +1,6 @@
 [
   "hyprland"
-  "bash"
+  "zsh"
   "stylix"
   "desktopPrograms"
   "users"
