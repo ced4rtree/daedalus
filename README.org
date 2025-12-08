@@ -5,30 +5,22 @@ to think of my dotfiles (though admittedly, they're likely not quite as sharp).
 
 [[./screenshot.png]]
 
-** Structure
+** Flake-parts
+
+This configuration is an example of the
+[dendritic](https://dendrix.oeiuwq.com/) pattern in nix. Every file is loaded,
+and every file defines a module. The file structure is explained more
+thoroughly below.
+
 #+BEGIN_EXAMPLE
 daedalus
-├── flake.nix # Root file declaring my configuration
-├── flake.lock # lock file keeping track of the versions used for my inputs
-├── common # directory containing modules used globally throughout the config
-│   ├── stylix.nix # configuration for stylix (automatic theme manager for nix)
-├── system # directory for global system configuration settings
-│   ├── default.nix # imports the other two dirs and declares some other miscellaneous settings
-│   ├── core # things that are required for or happen during the bootup sequence
-│   └── userspace # things that the user directly interfaces with
-└── user # directory for my Home Manager config
-    ├── bar           # config for whatever bar I feel like using
-    ├── editor        # config for any editors I want to use
-    ├── files         # direct file installations (e.g. my profile picture)
-    ├── idle          # config for idle daemons
-    ├── launcher      # config for whatever launcher I feel like using
-    ├── lock          # config for lock screen applications
-    ├── notifications # config for notification daemons
-    ├── programs      # config for miscellaneous programs, e.g. qutebrowser, etc.
-    ├── shell         # config for whatever shell I feel like using
-    ├── terminal      # config for whatever terminal I feel like using
-    ├── wallpaper     # config for whatever terminal I feel like using
-    └── wm            # config for whatever window manager I feel like using
+├── flake.nix # the root flake used to define system outputs
+└── modules
+    ├── configuration.nix # the primary file that defines the system and home configs
+    ├── desktop # definitions for various desktop programs. Window managers, terminals, etc.
+    ├── hosts   # extra configurations for specific hosts. Define filesystems, hardware imports
+    ├── presets # bundles of presets to use for different computer use cases
+    └── system  # definitions for various system level programs, like the bootloader and audio
 #+END_EXAMPLE
    
 ** Normal Dotfiles Where?
