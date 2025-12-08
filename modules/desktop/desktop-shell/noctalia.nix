@@ -52,18 +52,13 @@ in {
               }
             ];
             center = [
-                {
-                  id = "Workspace";
-                  hideUnoccupied = false;
-                  labelMode = "none";
-                }
-                {
-                  id = "Taskbar";
-                  colorizeIcons = false;
-                  hideMode = "hidden";
-                  onlyActiveWorkspaces = false;
-                  onlySameOutput = true;
-                }
+              {
+                id = "TaskbarGrouped";
+                colorizeIcons = false;
+                hideUnoccupied = false;
+                labelMode = "index";
+                showLabelsOnlyWhenOccupied = false;
+              }
             ];
             right = [
                 {
