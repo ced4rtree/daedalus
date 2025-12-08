@@ -8,7 +8,7 @@ to think of my dotfiles (though admittedly, they're likely not quite as sharp).
 ** Flake-parts
 
 This configuration is an example of the
-[dendritic][https://dendrix.oeiuwq.com/] pattern in nix. Every file is loaded,
+[[dendritic][https://dendrix.oeiuwq.com/]] pattern in nix. Every file is loaded,
 and every file defines a module. The file structure is explained more
 thoroughly below.
 
