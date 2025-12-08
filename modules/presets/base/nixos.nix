@@ -14,6 +14,7 @@
       nix
       networkManager
       timeZone
+      kernel
     ] ++ lib.attrVals (import ./_commonModules.nix) config.flake.modules.nixos;
 
     daedalus.protonvpn = {
