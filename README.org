@@ -17,10 +17,10 @@ daedalus
 ├── flake.nix # the root flake used to define system outputs
 └── modules
     ├── configuration.nix # the primary file that defines the system and home configs
-    ├── desktop # definitions for various desktop programs. Window managers, terminals, etc.
-    ├── hosts   # extra configurations for specific hosts. Define filesystems, hardware imports
-    ├── presets # bundles of presets to use for different computer use cases
-    └── system  # definitions for various system level programs, like the bootloader and audio
+    ├── desktop/ # definitions for various desktop programs. Window managers, terminals, etc.
+    ├── hosts/   # extra configurations for specific hosts. Define filesystems, hardware imports
+    ├── presets/ # bundles of presets to use for different computer use cases
+    └── system/  # definitions for various system level programs, like the bootloader and audio
 #+END_EXAMPLE
    
 ** Normal Dotfiles Where?
