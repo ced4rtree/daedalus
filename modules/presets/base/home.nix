@@ -3,7 +3,7 @@
     imports =
       lib.attrVals (import ./_commonModules.nix) config.flake.modules.homeManager
       ++ (with config.flake.modules.homeManager; [
-        ghostty
+        kitty
         hypridle
         files
         doomEmacs
