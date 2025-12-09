@@ -5,7 +5,7 @@
     overlays = [
       (import (builtins.fetchTarball {
         url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-        sha256 = "sha256:0s54smhaq6rw660qdwya07i8cpvziw11j9qax86sk2fhdlj3dnzj";
+        sha256 = "sha256:1s1661bd3ljlyvcwa89q21vr1njlkwx7x5zlryd044rprdf5crnq";
       }))
     ];
     config.allowUnfree = true;
@@ -34,14 +34,16 @@ in {
 
   flake.nixosConfigurations = {
     icarus = mkNixos "icarus";
+    alexandria = mkNixos "alexandria";
   };
 
   flake.homeConfigurations = {
     ${config.daedalus.username} = inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
       extraSpecialArgs = { inherit inputs; };
-      modules = [
-        config.flake.modules.homeManager.base
+      modules = with config.flake.modules.homeManager; [
+        base
+        desktop
       ];
     };
   };

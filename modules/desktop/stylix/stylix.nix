@@ -30,7 +30,7 @@ let
     };
 
     fonts = let
-      package = pkgs.nerd-fonts.monaspace;
+      package = pkgs.nerd-fonts.iosevka;
       name = "Iosevka Nerd Font";
       serif = {
         inherit package;

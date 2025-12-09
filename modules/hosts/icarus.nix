@@ -6,8 +6,11 @@
       nvidiaPrime
       intel-dGPU
       bluetooth
+      desktop
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
+
+    daedalus.efi.enable = true;
 
     boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "uas" "sd_mod" ];
     boot.initrd.kernelModules = [ ];

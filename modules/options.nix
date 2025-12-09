@@ -5,9 +5,5 @@
       default = "cedar";
       type = lib.types.str;
     };
-    isLaptop = lib.mkOption {
-      description = "Whether or not the host is a laptop";
-      type = lib.types.boolean;
-    };
   };
 }

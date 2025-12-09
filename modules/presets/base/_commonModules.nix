@@ -1,10 +1,5 @@
 [
-  "hyprland"
-  "zsh"
-  "stylix"
-  "desktopPrograms"
-  "users"
-  "splash"
   "sops"
-  "gnome-polkit"
+  "stylix"
+  "users"
 ]

@@ -1,14 +1,14 @@
-{ config, ... }: {
-  flake.modules.nixos.grub = { pkgs, ... }: {
+{
+  flake.modules.nixos.grub = { config, pkgs, lib, ... }: {
     stylix.targets.grub.enable = false;
 
     boot.loader = {
       systemd-boot.enable = false;
-      efi.canTouchEfiVariables = true;
+      efi.canTouchEfiVariables = config.daedalus.efi.enable;
 
       grub = {
         enable = true;
-        efiSupport = true;
+        efiSupport = config.daedalus.efi.enable;
         devices = [ "nodev" ];
 
         theme = pkgs.stdenv.mkDerivation {
@@ -22,7 +22,7 @@
           };
           installPhase = ''
           cp -r ./CyberRe $out/
-        '';
+          '';
         };
 
         extraEntries = ''
