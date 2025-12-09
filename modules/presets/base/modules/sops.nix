@@ -1,6 +1,6 @@
 { inputs, config, ... }: let
   sops = {
-    defaultSopsFile = ../secrets/secrets.yaml;
+    defaultSopsFile = ../../../../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
     age.keyFile = "/home/${config.daedalus.username}/.config/sops/age/keys.txt";
   };

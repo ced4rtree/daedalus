@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   flake.modules.nixos.nix = {
     nix.settings = {
       substituters = [
@@ -16,6 +16,11 @@
       ];
 
       warn-dirty = false;
+    };
+
+    programs.nh = {
+      enable = true;
+      flake = "/home/" + config.daedalus.username + "/.dotfiles";
     };
   };
 }
