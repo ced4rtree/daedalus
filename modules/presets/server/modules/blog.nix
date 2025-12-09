@@ -35,27 +35,21 @@
         proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
       '';
 
-      virtualHosts = let
-        base = locations: {
-          inherit locations;
-
-          forceSSL = true;
-          enableACME = true;
-        };
-        proxy = port: base {
-          "/".proxyPass = "http://127.0.0.1:" + toString(port) + "/";
-        };
-      in {
-        "cebar.xyz" = proxy 3000 // {
-          default = true;
-          enableACME = true;
-          forceSSL = true;
-          root = "${inputs.cebar-xyz.packages.${pkgs.stdenv.hostPlatform.system}.default}/";
-        };
+      virtualHosts."cebar.xyz" = {
+        default = true;
+        enableACME = true;
+        forceSSL = true;
+        root = "${inputs.cebar-xyz.packages.${pkgs.stdenv.hostPlatform.system}.default}/";
+        extraConfig = ''
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+          add_header X-Frame-Options "SAMEORIGIN";
+          add_header X-Content-Type-Options "nosniff";
+          add_header X-XSS-Protection "1; mode=block";
+        '';
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ 80 443 3000 ];
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
 
     security.acme = {
       # Accept the CA’s terms of service. The default provider is Let’s Encrypt, you can find their ToS at https://letsencrypt.org/repository/. 
