@@ -4,7 +4,7 @@
       enable = true;
 
       recommendedGzipSettings = true;
-      recommendedOptimisations = true;
+      recommendedOptimisation = true;
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
 
