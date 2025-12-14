@@ -121,6 +121,7 @@
       ];
     });
   };
+
   flake.modules.homeManager.doomEmacs = { pkgs, nixpkgs, inputs, ... }: let
     inherit (config.flake.packages.${pkgs.stdenv.hostPlatform.system}) doomEmacs;
   in {
