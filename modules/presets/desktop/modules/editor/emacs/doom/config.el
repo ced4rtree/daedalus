@@ -137,6 +137,7 @@ its arguments, even if NAME is already an existing tab."
 (use-package! rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+;; java lsp support
 (use-package! eglot-java
   :defer t
   :hook (eglot-managed . (lambda () (when (or (string= major-mode "java-mode")

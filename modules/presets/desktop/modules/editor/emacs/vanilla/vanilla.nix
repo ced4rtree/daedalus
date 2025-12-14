@@ -1,86 +1,71 @@
-{ config, ... }: {
+{ config, inputs, ... }: {
   flake.modules.homeManager.vanillaEmacs = { pkgs, ... }: let
-    emacs = pkgs.emacsWithPackagesFromUsePackage {
-      config = ./init.el;
-      defaultInitFile = (pkgs.writeText "default.el" ((builtins.readFile ./init.el) + ''
-        (add-to-list 'default-frame-alist '(font . "${config.stylix.fonts.serif.name}-${
-          toString (config.stylix.fonts.sizes.terminal * 1.0)
-        }"))
-        (add-to-list 'default-frame-alist '(alpha-background . ${
-          toString (builtins.ceil (config.stylix.opacity.applications * 100))
-        }))
-        (require 'base16-stylix-theme)
-        (setq base16-theme-256-color-source 'colors)
-        (load-theme 'base16-stylix t)
-      ''));
-      alwaysEnsure = true;
-      alwaysTangle = true;
-      package = pkgs.emacs-unstable-pgtk;
-      extraEmacsPackages = epkgs: [
-        epkgs.mu4e
-        (epkgs.trivialBuild (
-          with config.lib.stylix.colors.withHashtag;
-          {
-            pname = "base16-stylix-theme";
-            version = "0.1.0";
-            src = pkgs.writeText "base16-stylix-theme.el" ''
-              (require 'base16-theme)
-
-              (defvar base16-stylix-theme-colors
-                '(:base00 "${base00}"
-                  :base01 "${base01}"
-                  :base02 "${base02}"
-                  :base03 "${base03}"
-                  :base04 "${base04}"
-                  :base05 "${base05}"
-                  :base06 "${base06}"
-                  :base07 "${base07}"
-                  :base08 "${base08}"
-                  :base09 "${base09}"
-                  :base0A "${base0A}"
-                  :base0B "${base0B}"
-                  :base0C "${base0C}"
-                  :base0D "${base0D}"
-                  :base0E "${base0E}"
-                  :base0F "${base0F}")
-                "All colors for Base16 stylix are defined here.")
-
-              ;; Define the theme
-              (deftheme base16-stylix)
-
-              ;; Add all the faces to the theme
-              (base16-theme-define 'base16-stylix base16-stylix-theme-colors)
-
-              ;; Mark the theme as provided
-              (provide-theme 'base16-stylix)
-
-              ;; Add path to theme to theme-path
-              (add-to-list 'custom-theme-load-path
-                  (file-name-directory
-                      (file-truename load-file-name)))
-
-              (provide 'base16-stylix-theme)
-            '';
-            packageRequires = [ epkgs.base16-theme ];
-          }
-        ))
-      ];
-    };
-
-    cfg = config.daedalus.emacs;
+    inherit (config.flake.packages.${pkgs.stdenv.hostPlatform.system}) vanillaEmacs;
   in {
     imports = [ config.flake.modules.homeManager.emacsBase ];
-    programs.emacs.package = emacs;
-    services.emacs.package = emacs;
+
+    programs.emacs.package = vanillaEmacs;
+    services.emacs.package = vanillaEmacs;
 
     # install my email config, which is stored as an age encrypted secret
     sops.secrets."emails.el" = {
-      path = "/home/${config.daedalus.username}/.config/emacs/emails.el";
+      path = "/home/${config.daedalus.username}/.local/share/emacs/emails.el";
       sopsFile = ./emails.el.age;
       format = "binary";
     };
     systemd.user.services.emacs.unitConfig.After = [ "sops-nix.service" ];
+  };
 
-    xdg.configFile."emacs/early-init.el".source = ./early-init.el;
+  perSystem = { pkgs, self', system, ... }: {
+    packages.vanillaEmacs = let
+      configDir = let
+        inherit (config.flake.lib.stylix) opacity fonts;
+        theme = ''
+          ;; font
+          (add-to-list 'default-frame-alist '(font . \"${fonts.monospace.name}-${toString fonts.sizes.terminal}\"))
+  
+          ;; opacity
+          (add-to-list 'default-frame-alist '(alpha-background . ${
+            toString (builtins.ceil (opacity.terminal * 100))
+          }))
+  
+          ;; color scheme
+          (require 'base16-stylix-theme)
+          (setq base16-theme-256-color-source 'colors)
+          (load-theme 'base16-stylix t)
+        '';
+      in (pkgs.stdenv.mkDerivation {
+        src = ./.;
+        name = "configDir";
+        patchPhase = ''
+          echo "${theme}" >> init.el
+        '';
+
+        installPhase = ''
+          mkdir -p $out
+          cp * $out
+        '';
+      }).outPath;
+    in inputs.wrappers.lib.wrapPackage {
+      inherit pkgs;
+      package = self'.packages.vanillaEmacsUnwrapped;
+      flags = {
+        "--init-directory" = configDir;
+      };
+    };
+
+    packages.vanillaEmacsUnwrapped = let
+      lib = inputs.emacs-overlay.lib.${pkgs.stdenv.hostPlatform.system};
+      inherit (config.flake.lib.stylix) fonts opacity;
+    in lib.emacsWithPackagesFromUsePackage {
+      config = ./init.el;
+      alwaysEnsure = true;
+      alwaysTangle = true;
+      package = inputs.emacs-overlay.packages.${system}.emacs-unstable-pgtk;
+      extraEmacsPackages = epkgs: [
+        epkgs.mu4e
+        config.flake.packages.${pkgs.stdenv.hostPlatform.system}.emacs-base16-theme
+      ];
+    };
   };
 }

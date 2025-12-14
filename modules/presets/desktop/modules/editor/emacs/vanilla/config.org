@@ -6,6 +6,7 @@
 * Table of Contents :TOC:
 - [[#setup][Setup]]
   - [[#lexical-binding][Lexical Binding]]
+  - [[#set-user-emacs-directory][Set ~user-emacs-directory~]]
   - [[#use-package-initialization][Use-Package Initialization]]
   - [[#melpa][Melpa]]
 - [[#miscellaneous-settings][Miscellaneous Settings]]
@@ -69,6 +70,14 @@ opportunities for optimization.
   ;; -*- lexical-binding: t -*-
 #+end_src
 
+** Set ~user-emacs-directory~
+This config is loaded into the read-only nix store, so emacs won't be able to
+write to it. Instead, we'll have emacs write elsewhere.
+
+#+begin_src emacs-lisp
+  (setq user-emacs-directory "~/.local/share/emacs/") ;
+#+end_src
+
 ** Use-Package Initialization
 Use package is a declarative package manager for emacs. The lines below allow
 you to declare a package dependency without having to use =:ensure t= to
@@ -84,6 +93,7 @@ Melpa is an external package archive for emacs that is far more expansive the on
 
 #+begin_src emacs-lisp
   (require 'package)
+  (setq package-user-dir (concat user-emacs-directory "packages"))
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (package-initialize)
 #+end_src
@@ -779,7 +789,7 @@ Maildir Utils 4 Emacs. This allows you to send, receive, reply to, and view emai
                    :name "Inbox"
                    :key ?i
                    :favorite t))
-    (load (concat user-emacs-directory "emails.el")) ;; where all my private info is stored
+    (load "~/.local/share/emacs/emails.el") ;; where all my private info is stored
 #+end_src
 
 *** MU4E Tab Bar Integration
