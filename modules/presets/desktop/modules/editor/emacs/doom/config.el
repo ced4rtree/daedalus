@@ -1,11 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; font
-(setq doom-font (font-spec :family "Iosevka Nerd Font Propo" :size 18))
-
-;; theme
-(setq doom-theme 'doom-one)
-
 ;; line numbers
 (setq display-line-numbers-type t)
 
@@ -166,9 +160,7 @@ its arguments, even if NAME is already an existing tab."
   "Open mu4e in a new tab. See cedar/open-name-in-tab."
   (interactive)
   (cedar/open-name-in-tab "MU4E (Mail)" nil #'=mu4e))
-(map! :leader
-      "M M" #'cedar/open-mu4e-in-tab
-      "o m" #'cedar/open-mu4e-in-tab)
+(map! :leader "o m" #'cedar/open-mu4e-in-tab)
 (after! mu4e
   (setq mu4e-context-policy 'ask-if-none
         mu4e-compose-context-policy 'always-ask))

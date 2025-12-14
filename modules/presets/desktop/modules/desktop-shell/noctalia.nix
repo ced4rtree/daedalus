@@ -11,7 +11,7 @@ in {
         setupCompleted = true;
         bar = {
           position = "bottom";
-          backgroundOpacity = 1;
+          backgroundOpacity = lib.mkForce 1;
           monitors = [ ];
           density = "default";
           showCapsule = true;
@@ -191,7 +191,6 @@ in {
         appLauncher = {
           enableClipboardHistory = true;
           position = "center";
-          backgroundOpacity = 0.75;
           pinnedExecs = [ ];
           useApp2Unit = false;
           sortByMostUsed = true;
@@ -257,7 +256,6 @@ in {
         dock = {
           enabled = false;
           displayMode = "always_visible";
-          backgroundOpacity = 1;
           floatingRatio = 1;
           size = 1;
           onlySameOutput = true;
@@ -274,7 +272,6 @@ in {
           monitors = [ "eDP-1" ];
           location = "top_right";
           overlayLayer = true;
-          backgroundOpacity = 1;
           respectExpireTimeout = false;
           lowUrgencyDuration = 3;
           normalUrgencyDuration = 8;
@@ -330,22 +327,8 @@ in {
       };
 
       colors = with config.lib.stylix.colors.withHashtag; {
-        mPrimary = base0D;
-        mOnPrimary = base03;
-        mSecondary = base0E;
-        mOnSecondary = base03;
-        mTertiary = base0B;
-        mOnTertiary = base03;
-        mError = base08;
-        mOnError = base03;
-        mSurface = base00;
-        mOnSurface = base07;
-        mSurfaceVariant = base02;
-        mOnSurfaceVariant = base07;
-        mOutline = base04;
-        mShadow = base03;
-        mHover = base0E;
-        mOnHover = base03;
+        mPrimary = lib.mkForce base0D;
+        mSecondary = lib.mkForce base0E;
       };
     };
 

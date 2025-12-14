@@ -5,7 +5,7 @@
       name = "base16-pro-max";
       transparent = true;
       base16-colors = {
-        inherit (config.flake.lib.colors.withHashtag)
+        inherit (config.flake.lib.stylix.colors.withHashtag)
         base00
         base01
         base02

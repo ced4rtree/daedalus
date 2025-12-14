@@ -102,7 +102,7 @@ in {
 
       pluginRC.indent-blankline-init = let
         inherit (inputs.nvf.lib.nvim.dag) entryBefore;
-        colors = topConfig.flake.lib.colors.withHashtag;
+        colors = topConfig.flake.lib.stylix.colors.withHashtag;
       in entryBefore ["indent-blankline"] ''
           local hooks = require "ibl.hooks"
           -- create the highlight groups in the highlight setup hook, so they are reset

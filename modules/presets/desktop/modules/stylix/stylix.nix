@@ -17,11 +17,40 @@ let
     base0E = "#d194fc";
     base0F = "#de7e52"; # i made this one up
   };
+
+  opacity = {
+    terminal = 0.7;
+  };
+
+  fonts = pkgs: let
+    package = pkgs.nerd-fonts.iosevka;
+    name = "Iosevka Nerd Font";
+    serif = {
+      inherit package;
+      name = name + " Propo";
+    };
+  in {
+    inherit serif;
+    sansSerif = serif;
+    monospace = {
+      inherit package;
+      name = name + " Mono";
+    };
+    emoji = {
+      package = pkgs.noto-fonts-color-emoji;
+      name = "Noto Color Emoji";
+    };
+
+    sizes.terminal = 12;
+  };
+
   stylix = pkgs: {
     enable = true;
 
     base16Scheme = colors;
     polarity = "dark";
+
+    fonts = fonts pkgs;
 
     cursor = {
       package = pkgs.nordzy-cursor-theme;
@@ -29,32 +58,7 @@ let
       size = 32;
     };
 
-    fonts = let
-      package = pkgs.nerd-fonts.iosevka;
-      name = "Iosevka Nerd Font";
-      serif = {
-        inherit package;
-        name = name + " Propo";
-      };
-    in {
-      inherit serif;
-      sansSerif = serif;
-      monospace = {
-        inherit package;
-        name = name + " Mono";
-      };
-      emoji = {
-        package = pkgs.noto-fonts-color-emoji;
-        name = "Noto Color Emoji";
-      };
-
-      sizes.terminal = 12;
-    };
-
-    opacity = {
-      terminal = 0.7;
-      desktop = 0.7;
-    };
+    inherit opacity;
 
     image = ./wallpaper.jpg;
   };
@@ -73,5 +77,9 @@ in { inputs, pkgs, lib, ... }: {
     stylix = stylix pkgs;
   };
 
-  flake.lib.colors = ((inputs.stylix.inputs.base16.lib { inherit pkgs lib; }).mkSchemeAttrs colors);
+  flake.lib.stylix = {
+    colors = ((inputs.stylix.inputs.base16.lib { inherit pkgs lib; }).mkSchemeAttrs colors);
+    inherit opacity;
+    fonts = fonts pkgs;
+  };
 }
