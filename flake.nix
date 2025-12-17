@@ -5,7 +5,6 @@
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 
   inputs = {
-    allfollow.url = "github:spikespaz/allfollow";
     cebar-xyz.url = "git+https://github.com/ced4rtree/cebar.xyz";
     dark-text.url = "github:vimjoyer/dark-text";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
@@ -19,7 +18,7 @@
     import-tree.url = "github:vic/import-tree";
     nix-doom-emacs-unstraightened.url = "github:marienz/nix-doom-emacs-unstraightened";
     nixcord.url = "github:KaylorBen/nixcord";
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-lib.follows = "nixpkgs";
     noctalia-shell.url = "github:noctalia-dev/noctalia-shell";
     nvf.url = "github:ced4rtree/nvf/feature/transparent-base16";
