@@ -1,5 +1,8 @@
 { config, inputs, ... }: {
-  flake-file.inputs.nix-doom-emacs-unstraightened.url = "github:marienz/nix-doom-emacs-unstraightened";
+  flake-file.inputs.nix-doom-emacs-unstraightened = {
+    url = "github:marienz/nix-doom-emacs-unstraightened";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   perSystem = { pkgs, self', system, ... }: {
     packages.tree-sitter-doxygen = pkgs.stdenv.mkDerivation {

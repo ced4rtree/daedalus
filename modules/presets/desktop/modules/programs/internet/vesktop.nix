@@ -1,5 +1,8 @@
 { config, ... }: {
-  flake-file.inputs.nixcord.url = "github:KaylorBen/nixcord";
+  flake-file.inputs.nixcord = {
+    url = "github:KaylorBen/nixcord";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   flake.modules.homeManager.discord = { inputs, ... }: {
     # stylix makes vesktop pretty unreadable

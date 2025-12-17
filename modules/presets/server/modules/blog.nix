@@ -1,5 +1,8 @@
 {
-  flake-file.inputs.cebar-xyz.url = "git+https://github.com/ced4rtree/cebar.xyz";
+  flake-file.inputs.cebar-xyz = {
+    url = "git+https://github.com/ced4rtree/cebar.xyz";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   flake.modules.nixos.blog = { inputs, pkgs, ... }: {
     services.nginx = {

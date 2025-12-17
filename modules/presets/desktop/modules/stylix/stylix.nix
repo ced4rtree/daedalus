@@ -63,7 +63,10 @@ let
     image = ./wallpaper.jpg;
   };
 in { inputs, pkgs, lib, ... }: {
-  flake-file.inputs.stylix.url = "github:danth/stylix";
+  flake-file.inputs.stylix = {
+    url = "github:danth/stylix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   flake.modules.nixos.stylix = { pkgs, ... }: {
     imports = [

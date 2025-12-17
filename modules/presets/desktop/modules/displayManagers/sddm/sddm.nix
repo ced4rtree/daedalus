@@ -1,5 +1,8 @@
 {
-  flake-file.inputs.silent-sddm.url = "github:uiriansan/SilentSDDM";
+  flake-file.inputs.silent-sddm = {
+    url = "github:uiriansan/SilentSDDM";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   flake.modules.nixos.sddm = { config, lib, pkgs, inputs, ... }: let
     #sddm-theme = pkgs.callPackage (import ./_corners-theme.nix {

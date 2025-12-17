@@ -1,7 +1,10 @@
 { config, ... }: let
   username = config.daedalus.username;
 in {
-  flake-file.inputs.noctalia-shell.url = "github:noctalia-dev/noctalia-shell";
+  flake-file.inputs.noctalia-shell = {
+    url = "github:noctalia-dev/noctalia-shell";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   flake.modules.homeManager.noctalia = { lib, pkgs, inputs, config, ...}: {
     imports = [ inputs.noctalia-shell.homeModules.default ];
