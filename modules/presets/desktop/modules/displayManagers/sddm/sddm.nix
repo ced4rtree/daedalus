@@ -1,4 +1,6 @@
 {
+  flake-file.inputs.silent-sddm.url = "github:uiriansan/SilentSDDM";
+
   flake.modules.nixos.sddm = { config, lib, pkgs, inputs, ... }: let
     #sddm-theme = pkgs.callPackage (import ./_corners-theme.nix {
     #background = ./background.jpg;

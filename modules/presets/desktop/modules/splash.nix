@@ -1,4 +1,6 @@
 {
+    flake-file.inputs.dark-text.url = "github:vimjoyer/dark-text";
+
   flake.modules.nixos.splash = { lib, inputs, pkgs, ... }: {
     system.userActivationScripts = {
       splash = {

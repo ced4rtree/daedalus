@@ -1,4 +1,6 @@
 { config, ... }: {
+  flake-file.inputs.emacs-overlay.url = "github:nix-community/emacs-overlay";
+
   flake.modules.homeManager.emacsBase = { lib, pkgs, nixpkgs, ... }: {
     home.packages = with pkgs; [
       mu

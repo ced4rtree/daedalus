@@ -1,4 +1,6 @@
 {
+  flake-file.inputs.cebar-xyz.url = "git+https://github.com/ced4rtree/cebar.xyz";
+
   flake.modules.nixos.blog = { inputs, pkgs, ... }: {
     services.nginx = {
       enable = true;
