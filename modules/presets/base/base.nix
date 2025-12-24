@@ -8,7 +8,10 @@
       timeZone
       kernel
       hostOptions
-    ] ++ lib.attrVals (import ./_commonModules.nix) config.flake.modules.nixos;
+      sops
+      stylix
+      users
+    ];
 
     environment.systemPackages = with pkgs; [
       neovim

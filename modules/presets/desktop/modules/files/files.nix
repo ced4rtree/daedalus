@@ -1,6 +1,6 @@
 { config, ... }: {
-  flake.modules.homeManager.files = {
-    home.file.".face.icon".source = ./.face.icon;
+  flake.modules.nixos.files = {
+    hj.files.".face.icon".source = ./.face.icon;
 
     sops.secrets.".mbsyncrc" = {
       sopsFile = ./.mbsyncrc.age;

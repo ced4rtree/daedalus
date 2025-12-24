@@ -1,11 +1,10 @@
 { config, inputs, ... }: {
-  flake.modules.homeManager.vanillaEmacs = { pkgs, ... }: let
-    inherit (config.flake.packages.${pkgs.stdenv.hostPlatform.system}) vanillaEmacs;
+  flake.modules.nixos.vanillaEmacs = { pkgs, ... }: let
+    inherit (config.flake.packages.${pkgs.stdenv.hostPlatform.system}) vanilla-emacs;
   in {
     imports = [ config.flake.modules.homeManager.emacsBase ];
 
-    programs.emacs.package = vanillaEmacs;
-    services.emacs.package = vanillaEmacs;
+    services.emacs.package = vanilla-emacs;
 
     # install my email config, which is stored as an age encrypted secret
     sops.secrets."emails.el" = {
@@ -13,11 +12,10 @@
       sopsFile = ./emails.el.age;
       format = "binary";
     };
-    systemd.user.services.emacs.unitConfig.After = [ "sops-nix.service" ];
   };
 
   perSystem = { pkgs, self', system, ... }: {
-    packages.vanillaEmacs = let
+    packages.vanilla-emacs = let
       configDir = let
         inherit (config.flake.lib.stylix) opacity fonts;
         theme = ''
@@ -48,13 +46,13 @@
       }).outPath;
     in inputs.wrappers.lib.wrapPackage {
       inherit pkgs;
-      package = self'.packages.vanillaEmacsUnwrapped;
+      package = self'.packages.vanilla-emacs-unwrapped;
       flags = {
         "--init-directory" = configDir;
       };
     };
 
-    packages.vanillaEmacsUnwrapped = let
+    packages.vanilla-emacs-unwrapped = let
       lib = inputs.emacs-overlay.lib.${pkgs.stdenv.hostPlatform.system};
       inherit (config.flake.lib.stylix) fonts opacity;
     in lib.emacsWithPackagesFromUsePackage {

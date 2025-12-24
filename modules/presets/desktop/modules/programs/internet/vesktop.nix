@@ -1,28 +1,35 @@
 { config, ... }: {
-  flake-file.inputs.nixcord = {
-    url = "github:KaylorBen/nixcord";
-    inputs.nixpkgs.follows = "nixpkgs";
+  flake.modules.nixos.discord = { pkgs, ... }: {
+    hj.packages = [ pkgs.vesktop ];
   };
 
-  flake.modules.homeManager.discord = { inputs, ... }: {
-    # stylix makes vesktop pretty unreadable
-    stylix.targets.nixcord.enable = false;
+  # TODO A PR to nixcord that supports a hjem module should be possible, but
+  # nixcord only supports home manager at the moment
 
-    imports = [
-      inputs.nixcord.homeModules.nixcord
-    ];
+  # flake-file.inputs.nixcord = {
+  #   url = "github:KaylorBen/nixcord";
+  #   inputs.nixpkgs.follows = "nixpkgs";
+  # };
 
-    programs.nixcord = {
-      enable = true;
-      discord.enable = false;
-      vesktop.enable = true;
-      config = {
-        useQuickCss = true;
-        plugins = {
-          fakeNitro.enable = true;
-          youtubeAdblock.enable = true;
-        };
-      };
-    };
-  };
+  # flake.modules.homeManager.discord = { inputs, ... }: {
+  #   # stylix makes vesktop pretty unreadable
+  #   stylix.targets.nixcord.enable = false;
+
+  #   imports = [
+  #     inputs.nixcord.homeModules.nixcord
+  #   ];
+
+  #   programs.nixcord = {
+  #     enable = true;
+  #     discord.enable = false;
+  #     vesktop.enable = true;
+  #     config = {
+  #       useQuickCss = true;
+  #       plugins = {
+  #         fakeNitro.enable = true;
+  #         youtubeAdblock.enable = true;
+  #       };
+  #     };
+  #   };
+  # };
 }

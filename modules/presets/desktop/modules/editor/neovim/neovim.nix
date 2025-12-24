@@ -7,6 +7,12 @@ in {
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
+  flake.modules.nixos.neovim = { pkgs, inputs, lib, config, ... }: let
+    inherit (pkgs.stdenv.hostPlatform) system;
+  in {
+    hj.packages = [ topConfig.flake.packages.${system}.nvf ];
+  };
+
   perSystem = { pkgs, ... }: {
     packages.nvf = (inputs.nvf.lib.neovimConfiguration {
       inherit pkgs;
@@ -17,11 +23,5 @@ in {
         theme
       ];
     }).neovim;
-  };
-
-  flake.modules.homeManager.neovim = { pkgs, inputs, lib, config, ... }: let
-    system = pkgs.stdenv.hostPlatform.system;
-  in {
-    home.packages = [ topConfig.flake.packages.${system}.nvf ];
   };
 }

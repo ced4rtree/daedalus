@@ -1,5 +1,0 @@
-[
-  "sops"
-  "stylix"
-  "users"
-]

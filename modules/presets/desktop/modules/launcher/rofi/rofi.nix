@@ -1,12 +1,15 @@
-{
-  flake.modules.homeManager.rofi = { pkgs, ... }: {
-    programs.rofi = {
-      enable = true;
-      cycle = true;
-      font = "Mono 12";
-      modes = [ "drun" "emoji" ];
-      theme = ./theme.rasi;
-      package = pkgs.rofi-wayland;
-    };
+{ config, inputs, ... }: {
+  flake.modules.nixos.rofi = { pkgs, ... }: {
+    hj.packages = [ config.flake.packages.${pkgs.stdenv.hostPlatform.system}.rofi ];
+  };
+
+  perSystem = { pkgs, ... }: {
+    packages.rofi = (inputs.wrappers.wrapperModules.rofi.apply {
+      inherit pkgs;
+      settings = {
+        font = "${config.flake.lib.stylix.fonts.sansSerif.name} ${toString config.flake.lib.stylix.fonts.sizes.desktop}";
+      };
+      theme = "${./theme.rasi}";
+    }).wrapper;
   };
 }

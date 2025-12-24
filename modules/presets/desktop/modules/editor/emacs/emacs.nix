@@ -4,8 +4,8 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  flake.modules.homeManager.emacsBase = { lib, pkgs, nixpkgs, ... }: {
-    home.packages = with pkgs; [
+  flake.modules.nixos.emacsBase = { lib, pkgs, nixpkgs, ... }: {
+    hj.packages = with pkgs; [
       mu
       python312Packages.mutagen
     ];
@@ -13,12 +13,8 @@
     services.emacs = {
       enable = true;
       defaultEditor = true;
+      startWithGraphical = true;
     };
-
-    programs.emacs.enable = true;
-
-    # I have to add all the stylix stuff manually because the font behaves weird
-    stylix.targets.emacs.enable = false;
   };
 
   perSystem = { pkgs, ... }: {

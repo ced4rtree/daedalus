@@ -4,7 +4,7 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  flake.modules.homeManager.firefox = { config, lib, pkgs, inputs, ... }: {
+  flake.modules.nixos.firefox = { config, lib, pkgs, inputs, ... }: {
     stylix.targets.firefox.profileNames = [
       "default"
     ];

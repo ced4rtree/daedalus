@@ -52,3 +52,4 @@
 (package! colorful-mode)
 (package! rainbow-delimiters)
 (package! eglot-java)
+(package! nerd-icons-dired)

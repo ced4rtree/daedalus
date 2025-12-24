@@ -186,3 +186,14 @@ Example: (cedar/open-agenda-in-tab \='calendar)"
       "o a" (cmd! (cedar/open-agenda-in-tab 'agenda))
       "o c" (cmd! (cedar/open-agenda-in-tab 'calendar)))
 (add-hook! cfw:calendar-mode (setq-local truncate-string-ellipsis ">"))
+
+;; dired
+(use-package! dired
+  :bind (:map dired-mode-map
+         ("f" . dired-find-file)
+         ("b" . dired-up-directory)
+         ("n" . dired-next-line)
+         ("p" . dired-previous-line)))
+(use-package! nerd-icons-dired
+  :after dired
+  :hook (dired-mode . nerd-icons-dired-mode))

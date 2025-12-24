@@ -1,16 +1,16 @@
 { config, ... }: let
-  sharedModules = [ "virt-manager" ];
 in {
-  flake.modules.homeManager.desktopPrograms = { lib, ... }: {
-    imports = with config.flake.modules.homeManager; [
+  flake.modules.nixos.desktopPrograms = { lib, pkgs, ... }: {
+    imports = with config.flake.modules.nixos; [
       # misc
       batsignal
       homestuck
       xdg
+      virtManager
+      dconf
 
       # music
       mpd
-      mpris
 
       # internet
       # firefox
@@ -20,11 +20,6 @@ in {
       # cli
       gpg
       direnv
-      fastfetch
-    ] ++ lib.attrVals sharedModules config.flake.modules.homeManager;
-  };
-
-  flake.modules.nixos.desktopPrograms = { lib, ... }: {
-    imports = lib.attrVals sharedModules config.flake.modules.nixos;
+    ];
   };
 }

@@ -20,6 +20,9 @@ let
 
   opacity = {
     terminal = 0.7;
+    desktop = 1.0;
+    applications = 1.0;
+    popups = 0.7;
   };
 
   fonts = pkgs: let
@@ -41,8 +44,15 @@ let
       name = "Noto Color Emoji";
     };
 
-    sizes.terminal = 12;
+    sizes = {
+      terminal = 12;
+      desktop = 10;
+      applications = 12;
+      popups = 10;
+    };
   };
+
+  image = ./wallpaper.jpg;
 
   stylix = pkgs: {
     enable = true;
@@ -58,9 +68,7 @@ let
       size = 32;
     };
 
-    inherit opacity;
-
-    image = ./wallpaper.jpg;
+    inherit opacity image;
   };
 in { inputs, pkgs, lib, ... }: {
   flake-file.inputs.stylix = {
@@ -82,9 +90,12 @@ in { inputs, pkgs, lib, ... }: {
     stylix = stylix pkgs;
   };
 
-  flake.lib.stylix = {
-    colors = ((inputs.stylix.inputs.base16.lib { inherit pkgs lib; }).mkSchemeAttrs colors);
-    inherit opacity;
+  flake.lib.stylix = let
+    createColorsFrom = pkgs: ((inputs.stylix.inputs.base16.lib { inherit pkgs lib; }).mkSchemeAttrs colors);
+  in {
+    inherit createColorsFrom;
+    colors = createColorsFrom pkgs;
+    inherit opacity image;
     fonts = fonts pkgs;
   };
 }

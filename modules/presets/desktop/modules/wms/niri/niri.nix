@@ -1,25 +1,49 @@
-{
-  flake.modules.nixos.niri = {
-    programs.niri.enable = true;
-  };
+{ inputs, config, ... }: {
+  flake.modules.nixos.niri = { lib, pkgs, ... }: {
+    programs.niri = {
+      enable = true;
+      package = config.flake.packages.${pkgs.stdenv.hostPlatform.system}.niri;
+    };
 
-  flake.modules.homeManager.niri = { config, lib, pkgs, ... }: {
-    xdg.configFile."niri/config.kdl".text = lib.replaceStrings
-      [ "@blue" "@magenta" "@red" "@gray" "@terminal" ]
-      (with config.lib.stylix.colors.withHashtag; [
-        base0D
-        base0E
-        base08
-        base04
-        config.daedalus.terminalCommand
-      ])
+    xdg.configFile."niri/config.kdl".text = 
       (builtins.readFile ./config.kdl);
-    xdg.configFile."niri/niri-portals.conf".source = ./niri-portals.conf;
-    home.packages = with pkgs; [
+
+    xdg.portal.config.niri = {
+      "default" = "gnome;gtk";
+      "org.freedesktop.impl.portal.Access" = "gtk";
+      "org.freedesktop.impl.portal.Notification" = "gtk";
+      "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+      "org.freedesktop.impl.portal.FileChooser" = "gtk";
+    };
+
+    hj.packages = with pkgs; [
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome
       gnome-keyring
       xwayland-satellite
     ];
+  };
+
+  perSystem = { pkgs, lib, ... }: let
+    niriConfig = pkgs.writeText
+      "niri-config"
+      (lib.replaceStrings
+        [ "@blue" "@magenta" "@red" "@gray" "@terminal" ]
+        (with config.flake.lib.stylix.colors.withHashtag; [
+          base0D
+          base0E
+          base08
+          base04
+          config.daedalus.terminalCommand
+        ])
+        (builtins.readFile ./config.kdl));
+  in {
+    packages.niri = inputs.wrappers.lib.wrapPackage {
+      inherit pkgs;
+      package = pkgs.niri;
+      flags = {
+        "-c" = "${niriConfig}";
+      };
+    };
   };
 }

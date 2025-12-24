@@ -26,10 +26,7 @@
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
       url = "github:hercules-ci/flake-parts";
     };
-    home-manager = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:nix-community/home-manager";
-    };
+    hjem.url = "github:feel-co/hjem";
     import-tree.url = "github:vic/import-tree";
     nix-auto-follow = {
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,10 +35,6 @@
     nix-doom-emacs-unstraightened = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:marienz/nix-doom-emacs-unstraightened";
-    };
-    nixcord = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:KaylorBen/nixcord";
     };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-lib.follows = "nixpkgs";

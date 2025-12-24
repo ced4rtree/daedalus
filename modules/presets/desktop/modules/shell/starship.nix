@@ -1,12 +1,9 @@
-{
-  flake.modules.homeManager.starship = { config, ... }: {
-    programs.starship = {
-      enable = true;
-      settings = let
-        colors = config.lib.stylix.colors.withHashtag;
-      in {
-        format =
-          "[](${colors.red})"
+{ inputs, config, ... }: {
+  perSystem = { pkgs, lib, ... }: let
+    colors = config.flake.lib.stylix.colors.withHashtag;
+    starshipConfig = (pkgs.formats.toml { }).generate "starship.toml" {
+      format =
+        "[](${colors.red})"
           + "$username"
           + ''[](bg:${colors.green} fg:${colors.red})''
           + "$directory"
@@ -31,131 +28,161 @@
           + "$line_break"
           + "$character";
 
-        command_timeout = 5000;
-        add_newline = true;
+      command_timeout = 5000;
+      add_newline = true;
 
-        os = {
-          disabled = false;
-          symbols = {
-            "NixOS" = "";
-          };
-          style = "";
+      os = {
+        disabled = false;
+        symbols = {
+          "NixOS" = "";
         };
+        style = "";
+      };
 
-        username = {
-          show_always = true;
-          style_user = "bg:${colors.red} fg:${colors.base00}";
-          style_root = "bg:${colors.red}";
-          format = "[$user ]($style)";
-        };
+      username = {
+        show_always = true;
+        style_user = "bg:${colors.red} fg:${colors.base00}";
+        style_root = "bg:${colors.red}";
+        format = "[$user ]($style)";
+      };
 
-        directory = {
-          style = "bg:${colors.green} fg:${colors.base00}";
-          format = "[ $path ]($style)";
-          truncation_length = 3;
-          truncation_symbol = "../";
+      directory = {
+        style = "bg:${colors.green} fg:${colors.base00}";
+        format = "[ $path ]($style)";
+        truncation_length = 3;
+        truncation_symbol = "../";
 
-          substitutions = {
-            "Documents" = " ";
-            "Downloads" = " ";
-            "Music" = " ";
-            "Pictures" = " ";
-          };
-        };
-
-        c = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        elixir = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        elm = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        git_branch = {
-          symbol = "";
-          style = "bg:${colors.cyan} fg:${colors.base00}";
-          format = "[ $symbol $branch ]($style)";
-        };
-
-        git_status = {
-          style = "bg:${colors.cyan} fg:${colors.base00}";
-          format = "[$all_status$ahead_behind ]($style)";
-        };
-
-        golang = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        haskell = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        java = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        julia = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        nodejs = {
-          symbol = "";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        nim = {
-          symbol = " ";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        python = {
-          style = "bg:#3B4252";
-          format = "[(\($virtualenv\) )]($style)";
-        };
-
-        rust = {
-          symbol = "";
-          style = "bg:${colors.blue} fg:${colors.base00}";
-          format = "[ $symbol ($version) ]($style)";
-        };
-
-        time = {
-          disabled = false;
-          time_format = "%R"; # Hour:Minute Format
-          style = "bg:${colors.magenta} fg:${colors.base00}";
-          format = "[ $time ]($style)";
-        };
-
-        character = {
-          format = "$symbol";
-          success_symbol = " 󱞩 ";
-          error_symbol = " 󱞩 ";
-          vimcmd_symbol = " 󱞩 ";
-          vimcmd_replace_one_symbol = " 󱞩 ";
-          vimcmd_replace_symbol = " 󱞩 ";
-          vimcmd_visual_symbol = " 󱞩 ";
+        substitutions = {
+          "Documents" = " ";
+          "Downloads" = " ";
+          "Music" = " ";
+          "Pictures" = " ";
         };
       };
+
+      c = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      elixir = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      elm = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      git_branch = {
+        symbol = "";
+        style = "bg:${colors.cyan} fg:${colors.base00}";
+        format = "[ $symbol $branch ]($style)";
+      };
+
+      git_status = {
+        style = "bg:${colors.cyan} fg:${colors.base00}";
+        format = "[$all_status$ahead_behind ]($style)";
+      };
+
+      golang = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      haskell = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      java = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      julia = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      nodejs = {
+        symbol = "";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      nim = {
+        symbol = " ";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      python = {
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[(\($virtualenv\) )]($style)";
+      };
+
+      rust = {
+        symbol = "";
+        style = "bg:${colors.blue} fg:${colors.base00}";
+        format = "[ $symbol ($version) ]($style)";
+      };
+
+      time = {
+        disabled = false;
+        time_format = "%R"; # Hour:Minute Format
+        style = "bg:${colors.magenta} fg:${colors.base00}";
+        format = "[ $time ]($style)";
+      };
+
+      character = {
+        format = "$symbol";
+        success_symbol = " 󱞩 ";
+        error_symbol = " 󱞩 ";
+        vimcmd_symbol = " 󱞩 ";
+        vimcmd_replace_one_symbol = " 󱞩 ";
+        vimcmd_replace_symbol = " 󱞩 ";
+        vimcmd_visual_symbol = " 󱞩 ";
+      };
+    };
+  in {
+    packages.starship = inputs.wrappers.lib.wrapPackage {
+      inherit pkgs;
+      package = pkgs.starship;
+      env.STARSHIP_CONFIG = "${starshipConfig}";
+
+      # starship reads STARSHIP_CONFIG at runtime rather than when the init call
+      # is made, so this hack replaces calls to the starship binary with calls
+      # to this starship wrapper
+      preHook = let
+        starshipExe = lib.getExe pkgs.starship;
+        sedCmdUnquoted = ''sed 's/$STARSHIP_PATH/$WRAPPER_PATH/g' '';
+        sedCmdQuoted = ''sed "s/$STARSHIP_PATH/$WRAPPER_PATH/g"'';
+      in ''
+        if [[ "''\${1:-}" == "init" ]]; then
+          STARSHIP_PATH='${lib.escape [ "/" ] "${starshipExe}"}'
+          WRAPPER_PATH="$(echo "''\${BASH_SOURCE[0]}" | sed 's/\//\\\//g')"
+
+          case "$2" in
+            fish)
+              echo "source (${starshipExe} init fish --print-full-init | ${sedCmdUnquoted} | psub)"
+              ;;
+            *)
+              ${starshipExe} init "$2" | ${sedCmdQuoted}
+              ;;
+          esac
+
+          exit 0
+        fi
+      '';
     };
   };
 }

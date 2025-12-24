@@ -1,8 +1,7 @@
-{
-  flake.modules.homeManager.fastfetch = { config, ... }: {
-    programs.fastfetch = {
-      enable = true;
-      settings = {
+{ config, inputs, ... }: {
+  perSystem = { pkgs, lib, ... }: {
+    packages.fastfetch = let
+      fastfetchConf = lib.generators.toJSON { } {
         logo = {
           source = "${./logo.txt}";
           type = "file";
@@ -34,81 +33,13 @@
           "disk"
           "break"
           "colors"
-          # "Break"
-          # "Battery"
-          # "BIOS"
-          # "Bluetooth"
-          # "Bluetooth Radio"
-          # "Board"
-          # "Boot Manager"
-          # "Brightness"
-          # "BTRFS"
-          # "Camera"
-          # "Chassis"
-          # "CPU"
-          # "CPU Cache"
-          # "CPU Usage"
-          # "Colors"
-          # "Command"
-          # "Cursor"
-          # "Custom"
-          # "Date Time"
-          # "Display"
-          # "Disk"
-          # "DiskIO"
-          # "Desktop Environment"
-          # "DNS"
-          # "Editor"
-          # "Font"
-          # "Gamepad"
-          # "GPU"
-          # "Host"
-          # "Icons"
-          # "Init System"
-          # "Kernel"
-          # "Keyboard"
-          # "Login Manager"
-          # "Local IP"
-          # "Loadavg"
-          # "Locale"
-          # "Media"
-          # "Memory"
-          # "Mouse"
-          # "Monitor"
-          # "NetIO"
-          # "OpenCL"
-          # "OpenGL"
-          # "Operating System"
-          # "Packages"
-          # "Physical Disk"
-          # "Physical Memory"
-          # "Player"
-          # "Power Adapter"
-          # "Processes"
-          # "Public IP"
-          # "Separator"
-          # "Shell"
-          # "Sound"
-          # "Swap"
-          # "Terminal"
-          # "Terminal Font"
-          # "Terminal Size"
-          # "Terminal Theme"
-          # "Theme"
-          # "Title"
-          # "TPM"
-          # "Users"
-          # "Uptime"
-          # "Version"
-          # "Vulkan"
-          # "Wallpaper"
-          # "Weather"
-          # "Wi-Fi"
-          # "Window Manager"
-          # "WM Theme"
-          # "Zpool"
         ];
       };
+    in inputs.wrappers.lib.wrapPackage {
+      inherit pkgs;
+      package = pkgs.fastfetch;
+
+      flags."-c" = pkgs.writeText "fastfetch-config.jsonc" fastfetchConf;
     };
   };
 }

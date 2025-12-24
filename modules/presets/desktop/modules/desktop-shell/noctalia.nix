@@ -1,17 +1,27 @@
 { config, ... }: let
-  username = config.daedalus.username;
+  inherit (config.daedalus) username terminalCommand;
+
 in {
   flake-file.inputs.noctalia-shell = {
     url = "github:noctalia-dev/noctalia-shell";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  flake.modules.homeManager.noctalia = { lib, pkgs, inputs, config, ...}: {
-    imports = [ inputs.noctalia-shell.homeModules.default ];
+  flake.modules.nixos.noctalia = { lib, pkgs, inputs, config, ...}: {
+    imports = [ inputs.noctalia-shell.nixosModules.default ];
 
-    programs.noctalia-shell = {
-      enable = true;
-      settings = {
+    services.noctalia-shell.enable = true;
+
+    hj.xdg.cache.files."noctalia/wallpapers.json" = {
+      generator = lib.generators.toJSON { };
+      value = {
+        defaultWallpaper = config.stylix.image;
+      };
+    };
+
+    hj.xdg.config.files."noctalia/config.json" = {
+      generator = lib.generators.toJSON { };
+      value = {
         settingsVersion = 20;
         setupCompleted = true;
         bar = {
@@ -66,63 +76,63 @@ in {
               }
             ];
             right = [
-                {
-                  id = "ScreenRecorder";
-                }
-                {
-                    blacklist = [];
-                    colorizeIcons = false;
-                    id = "Tray";
-                }
-                {
-                  hideWhenZero = true;
-                  id = "NotificationHistory";
-                  showUnreadBadge = true;
-                }
-                {
-                  displayMode = "onhover";
-                  id = "WiFi";
-                }
-                {
-                  displayMode = "onhover";
-                  id = "Bluetooth";
-                }
-                {
-                  displayMode = "alwaysShow";
-                  id = "Battery";
-                  warningThreshold = 15;
-                }
-                {
-                  displayMode = "alwaysShow";
-                  id = "Volume";
-                }
-                {
-                  displayMode = "alwaysShow";
-                  id = "Brightness";
-                }
-                {
-                  customFont = "";
-                  formatHorizontal = "h:mm AP ddd, MMM dd";
-                  formatVertical = "HH mm - dd MM";
-                  id = "Clock";
-                  useCustomFont = false;
-                  usePrimaryColor = true;
-                }
-                {
-                  id = "PowerProfile";
-                }
-                {
-                  id = "KeepAwake";
-                }
-                {
-                  customIconPath = "";
-                  icon = "noctalia";
-                  id = "ControlCenter";
-                  useDistroLogo = true;
-                }
-                {
-                    id = "SessionMenu";
-                }
+              {
+                id = "ScreenRecorder";
+              }
+              {
+                blacklist = [];
+                colorizeIcons = false;
+                id = "Tray";
+              }
+              {
+                hideWhenZero = true;
+                id = "NotificationHistory";
+                showUnreadBadge = true;
+              }
+              {
+                displayMode = "onhover";
+                id = "WiFi";
+              }
+              {
+                displayMode = "onhover";
+                id = "Bluetooth";
+              }
+              {
+                displayMode = "alwaysShow";
+                id = "Battery";
+                warningThreshold = 15;
+              }
+              {
+                displayMode = "alwaysShow";
+                id = "Volume";
+              }
+              {
+                displayMode = "alwaysShow";
+                id = "Brightness";
+              }
+              {
+                customFont = "";
+                formatHorizontal = "h:mm AP ddd, MMM dd";
+                formatVertical = "HH mm - dd MM";
+                id = "Clock";
+                useCustomFont = false;
+                usePrimaryColor = true;
+              }
+              {
+                id = "PowerProfile";
+              }
+              {
+                id = "KeepAwake";
+              }
+              {
+                customIconPath = "";
+                icon = "noctalia";
+                id = "ControlCenter";
+                useDistroLogo = true;
+              }
+              {
+                id = "SessionMenu";
+              }
             ];
           };
         };
@@ -176,13 +186,13 @@ in {
           videoSource = "portal";
         };
         wallpaper = {
-          enabled = false;
+          enabled = true;
           overviewEnabled = false;
-          directory = builtins.dirOf config.stylix.image;
+          directory = "";
+          monitorDirectories = [ ];
           enableMultiMonitorDirectories = false;
           recursiveSearch = false;
           setWallpaperOnAllMonitors = true;
-          defaultWallpaper = config.stylix.image;
           fillMode = "crop";
           fillColor = "#000000";
           randomEnabled = false;
@@ -190,8 +200,18 @@ in {
           transitionDuration = 1500;
           transitionType = "random";
           transitionEdgeSmoothness = 0.05;
-          monitors = [ ];
           panelPosition = "follow_bar";
+          hideWallpaperFilenames = false;
+          useWallhaven = false;
+          wallhavenQuery = "";
+          wallhavenSorting = "relevance";
+          wallhavenOrder = "desc";
+          wallhavenCategories = "111";
+          wallhavenPurity = "100";
+          wallhavenRatios = "";
+          wallhavenResolutionMode = "atleast";
+          wallhavenResolutionWidth = "";
+          wallhavenResolutionHeight = "";
         };
         appLauncher = {
           enableClipboardHistory = true;
@@ -199,7 +219,7 @@ in {
           pinnedExecs = [ ];
           useApp2Unit = false;
           sortByMostUsed = true;
-          terminalCommand = "${config.daedalus.terminalCommand} -e ";
+          terminalCommand = "${terminalCommand} -e ";
           customLaunchPrefixEnabled = false;
           customLaunchPrefix = "";
         };
@@ -330,10 +350,27 @@ in {
           chargingMode = 0;
         };
       };
+    };
 
-      colors = with config.lib.stylix.colors.withHashtag; {
-        mPrimary = lib.mkForce base0D;
-        mSecondary = lib.mkForce base0E;
+    hj.xdg.config.files."noctalia/colors.json" = {
+      generator = lib.generators.toJSON { };
+      value = with config.lib.stylix.colors.withHashtag; {
+        mPrimary = base0D;
+        mOnPrimary = base03;
+        mSecondary = base0E;
+        mOnSecondary = base03;
+        mTertiary = base0B;
+        mOnTertiary = base03;
+        mError = base08;
+        mOnError = base03;
+        mSurface = base00;
+        mOnSurface = base07;
+        mSurfaceVariant = base02;
+        mOnSurfaceVariant = base07;
+        mOutline = base04;
+        mShadow = base03;
+        mHover = base0E;
+        mOnHover = base03;
       };
     };
 
@@ -343,15 +380,16 @@ in {
     # ~/.config/noctalia/settings.json while maintaining purity.
     # Reading from the secrets file during eval is impure.
     # This does make the file a normal file instead of a symlink to the store, but oh well.
-    home.activation = {
-      addNoctaliaLocation = config.lib.dag.entryAfter ["reloadSystemd"] ''
-        run sed -i "s/LOCATION/$(cat ${config.sops.secrets.noctalia_location.path})/" /home/${username}/.config/noctalia/settings.json
-      '';
+    system.userActivationScripts = {
+      addNoctaliaLocation = {
+        text = ''
+          run sed -i \
+          "s/LOCATION/$(cat ${config.sops.secrets.noctalia_location.path})/" \
+          /home/${username}/.config/noctalia/settings.json
+        chown ${username}:users /home/${username}/.config/noctalia/settings.json
+        '';
+        deps = [];
+      };
     };
-
-    xdg.configFile."noctalia/settings.json".force = true;
-    xdg.configFile."noctalia/colors.json".force = true;
-
-    programs.noctalia-shell.systemd.enable = true;
   };
 }

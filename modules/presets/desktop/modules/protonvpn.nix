@@ -80,6 +80,16 @@
       };
     };
 
+    config.daedalus.protonvpn = {
+      enable = true;
+      autostart = false;
+      interface.privateKeyFile = "/root/secrets/protonvpn";
+      endpoint = {
+        publicKey = "HkvZLLmIP39qmzFMCc7JHAquGTlh8Iphfc0WGbdjaQ8=";
+        ip = "89.105.214.98";
+      };
+    };
+
     config.networking.wg-quick.interfaces."${cfg.interface.name}" = {
       autostart = cfg.autostart;
       dns = if cfg.interface.dns.enable then [ cfg.interface.dns.ip ] else [ ];
