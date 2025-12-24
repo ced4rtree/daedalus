@@ -1,6 +1,5 @@
 { config, lib, ... }: let
-  inherit (config.daedalus) username terminalCommand;
-
+  inherit (config.daedalus) username terminal;
 in {
   flake-file.inputs.noctalia-shell = {
     url = "github:noctalia-dev/noctalia-shell";
@@ -223,7 +222,7 @@ in {
           pinnedExecs = [ ];
           useApp2Unit = false;
           sortByMostUsed = true;
-          terminalCommand = "${terminalCommand} -e ";
+          terminalCommand = "${terminal.command} -e ";
           customLaunchPrefixEnabled = false;
           customLaunchPrefix = "";
         };

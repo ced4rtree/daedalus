@@ -1,22 +1,22 @@
 { config, lib, ... }: {
-  options.daedalus.terminal = lib.mkOption {
+  options.daedalus.terminal.program = lib.mkOption {
     # take all files/directories in ./. and use them as allowed options
     type = config.flake.lib.createEnumFromDir {
       dir = ./.;
-      excludedNames = [ "option.nix" ];
+      excludedNames = [ "terminal.nix" ];
     };
     description = "Terminal to configure as default";
     example = "foot";
     readOnly = true;
   };
 
-  options.daedalus.terminalCommand = lib.mkOption {
+  options.daedalus.terminal.command = lib.mkOption {
     type = lib.types.str;
     description = "Command to spawn the terminal";
-    default = config.daedalus.terminal;
+    example = "footclient";
   };
 
   config.flake.modules.nixos.terminal = {
-    imports = [ config.flake.modules.nixos.${config.daedalus.terminal} ];
+    imports = [ config.flake.modules.nixos.${config.daedalus.terminal.program} ];
   };
 }

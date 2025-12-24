@@ -1,4 +1,8 @@
-{ inputs, config, ... }: {
+{ inputs, config, lib, ... }: {
+  daedalus.terminal = lib.mkIf
+    (config.daedalus.terminal.program == "foot")
+    { command = "foot"; };
+
   flake.modules.nixos.foot = { pkgs, ... }: {
     hj.packages = [ config.flake.packages.${pkgs.stdenv.hostPlatform.system}.foot ];
   };

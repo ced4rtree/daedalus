@@ -1,8 +1,8 @@
 { config, lib, ... }: {
   daedalus = {
-    terminal = "kitty";
     windowManager = "hyprland";
     shell = "zsh";
+    terminal.program = "kitty";
     lockscreen.program = "hyprlock";
   };
 

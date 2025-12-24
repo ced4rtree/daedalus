@@ -34,7 +34,7 @@
           base0E
           base08
           base04
-          config.daedalus.terminalCommand
+          config.daedalus.terminal.command
         ])
         (builtins.readFile ./config.kdl));
   in {

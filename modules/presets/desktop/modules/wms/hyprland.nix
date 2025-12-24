@@ -165,7 +165,7 @@
       }
 
       # KEYBINDINGS
-      bind = ${modKey},return,exec,${config.daedalus.terminalCommand}
+      bind = ${modKey},return,exec,${config.daedalus.terminal.command}
       bind = ${modKey},E,exec,emacsclient -c -a 'emacs'
       bind = ${modKey},R,exec,fuzzel
 

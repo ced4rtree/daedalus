@@ -1,4 +1,8 @@
-{ inputs, config, ... }: {
+{ inputs, config, lib, ... }: {
+  daedalus.terminal = lib.mkIf
+    (config.daedalus.terminal.program == "kitty")
+    { command = "kitty"; };
+
   flake.modules.nixos.kitty = { pkgs, ... }: {
     hj.packages = [ config.flake.packages.${pkgs.stdenv.hostPlatform.system}.kitty ];
   };

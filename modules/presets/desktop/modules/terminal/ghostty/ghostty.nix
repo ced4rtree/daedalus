@@ -1,4 +1,8 @@
-{ inputs, config, ... }: {
+{ inputs, config, lib, ... }: {
+  daedalus.terminal = lib.mkIf
+    (config.daedalus.terminal.program == "ghostty")
+    { command = "ghostty"; };
+
   flake.modules.nixos.ghostty = { pkgs, lib, ... }: let
     inherit (config.flake.lib) stylix;
   in {

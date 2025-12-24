@@ -10,7 +10,7 @@
       settings = {
         main = {
           fields = "filename,name,generic,keywords,comment,categories";
-          terminal = "${config.daedalus.terminalCommand} -e";
+          terminal = "${config.daedalus.terminal.command} -e";
           anchor = "center";
           width = 75;
           font = with config.flake.lib.stylix.fonts; "${sansSerif.name}:size=${toString sizes.popups}";
