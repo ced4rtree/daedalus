@@ -24,6 +24,7 @@
       shell
       desktopPrograms
       terminal
+      lockscreen
       
       hypridle
       files
