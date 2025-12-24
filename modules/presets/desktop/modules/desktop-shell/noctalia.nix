@@ -1,4 +1,4 @@
-{ config, ... }: let
+{ config, lib, ... }: let
   inherit (config.daedalus) username terminalCommand;
 
 in {
@@ -6,6 +6,10 @@ in {
     url = "github:noctalia-dev/noctalia-shell";
     inputs.nixpkgs.follows = "nixpkgs";
   };
+
+  daedalus.lockscreen = lib.mkIf
+    (config.daedalus.lockscreen.program == "noctalia-shell")
+    { command = "noctalia-shell ipc call lockScreen lock"; };
 
   flake.modules.nixos.noctalia = { lib, pkgs, inputs, config, ...}: {
     imports = [ inputs.noctalia-shell.nixosModules.default ];

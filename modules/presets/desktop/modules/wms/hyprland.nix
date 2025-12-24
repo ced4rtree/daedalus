@@ -182,8 +182,8 @@
       bind = ${modKey},G,togglegroup,
       bind = ${modKey},C,changegroupactive,
       bind = ${modKey},F,fullscreen,
-      bind = ${modKey},Escape,exec,noctalia-shell ipc call lockScreen lock
-      bind = CTRL${modKey},Escape,exec,noctalia-shell ipc call lockScreen lock; sleep 1; loginctl suspend
+      bind = ${modKey},Escape,exec,${config.daedalus.lockscreen.command}
+      bind = CTRL${modKey},Escape,exec,${config.daedalus.lockscreen.command}; sleep 1; loginctl suspend
       bind = ${modKey}SHIFT,Q,killactive,
 
       # music control

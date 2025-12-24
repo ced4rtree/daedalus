@@ -1,5 +1,5 @@
 { config, inputs, ... }: {
-  flake.modules.nixos.hypridle = { pkgs, ... }: let
+  flake.modules.nixos.hypridle = { pkgs, lib, ... }: let
     hypridle = config.flake.packages.${pkgs.stdenv.hostPlatform.system}.hypridle;
     systemdTarget = "graphical-session.target";
   in {
@@ -18,7 +18,7 @@
       };
 
       serviceConfig = {
-        ExecStart = "${hypridle}";
+        ExecStart = "${lib.getExe hypridle}";
         Restart = "always";
         RestartSec = "10";
       };
@@ -32,7 +32,7 @@
 
       flags."-c" = "${pkgs.writeText "hypridle.conf" (config.flake.lib.generators.toHyprlang { } {
         general = {
-          lock_cmd = "noctalia-shell ipc call lockScreen lock";
+          lock_cmd = config.daedalus.lockscreen.command;
           before_sleep_cmd = "loginctl lock-session";   # lock before suspend.
           after_sleep_cmd = "hyprctl dispatch dpms on"; # to avoid having to press a key twice to turn on the display.
         };

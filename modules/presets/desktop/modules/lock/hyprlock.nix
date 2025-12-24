@@ -1,4 +1,8 @@
-{ config, inputs, ... }: {
+{ config, inputs, lib, ... }: {
+  daedalus.lockscreen = lib.mkIf
+    (config.daedalus.lockscreen.program == "hyprlock")
+    { command = "hyprlock"; };
+  
   flake.modules.nixos.hyprlock = { pkgs, ... }: {
     hj.packages = [ config.flake.packages.${pkgs.stdenv.hostPlatform.system}.hyprlock ];
   };

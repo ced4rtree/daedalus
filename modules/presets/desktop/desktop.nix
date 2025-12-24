@@ -3,6 +3,7 @@
     terminal = "kitty";
     windowManager = "hyprland";
     shell = "zsh";
+    lockscreen.program = "hyprlock";
   };
 
   flake.modules.nixos.desktop = { pkgs, ... }: {
