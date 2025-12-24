@@ -2,6 +2,7 @@
   daedalus = {
     terminal = "kitty";
     windowManager = "hyprland";
+    shell = "zsh";
   };
 
   flake.modules.nixos.desktop = { pkgs, ... }: {
@@ -15,14 +16,14 @@
       upower
       protonvpn
       hjem
-
-      windowManager
-      zsh
-      desktopPrograms
       splash
       gnome-polkit
-      
+
+      windowManager
+      shell
+      desktopPrograms
       terminal
+      
       hypridle
       files
       doomEmacs
