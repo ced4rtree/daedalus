@@ -6,7 +6,10 @@
 
   inputs = {
     cebar-xyz = {
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
       url = "git+https://github.com/ced4rtree/cebar.xyz";
     };
     dark-text = {
@@ -26,7 +29,10 @@
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
       url = "github:hercules-ci/flake-parts";
     };
-    hjem.url = "github:feel-co/hjem";
+    hjem = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:feel-co/hjem";
+    };
     import-tree.url = "github:vic/import-tree";
     nix-auto-follow = {
       inputs.nixpkgs.follows = "nixpkgs";
