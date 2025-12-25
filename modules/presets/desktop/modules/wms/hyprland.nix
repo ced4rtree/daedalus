@@ -38,11 +38,20 @@
     modKey = "SUPER";
     inherit (config.flake.lib.stylix) colors;
   in {
-    packages.hyprland = inputs.wrappers.lib.wrapPackage {
+    packages.hyprland = let
+      generateHyprlang = config.flake.lib.generators.toHyprlang {
+        importantPrefixes = [
+          "$"
+          "bezier"
+          "output"
+          "name"
+        ];
+      };
+    in inputs.wrappers.lib.wrapPackage {
       inherit pkgs;
       package = pkgs.hyprland;
       flags = {
-        "-c" = "${pkgs.writeText "hyprland-config" (config.flake.lib.generators.toHyprlang { } {
+        "-c" = "${pkgs.writeText "hyprland-config" (generateHyprlang {
           exec-once = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP && systemctl --user stop hyprland-session.target && systemctl --user start hyprland-session.target";
           env = [
             "LIBVA_DRIVER_NAME,nvidia"
@@ -141,8 +150,8 @@
             border_size = 2;
 
             # that long decimal is equal to arctan(9/16), i.e. angle of the hypotenuse a 16:9 monitor
-            col.active_border = "rgb(${colors.blue}) rgb(${colors.magenta}) 29.357753542791272deg";
-            col.inactive_border = "rgb(3f444a)";
+            "col.active_border" = "rgb(${colors.blue}) rgb(${colors.magenta}) 29.357753542791272deg";
+            "col.inactive_border" = "rgb(3f444a)";
 
             gaps_in = 5;
             gaps_out = 8;
@@ -152,13 +161,13 @@
           
           group = {
             groupbar = {
-              col.active = "rgb(${colors.blue})";
-              col.inactive = "rgb(${colors.base03})";
+              "col.active" = "rgb(${colors.blue})";
+              "col.inactive" = "rgb(${colors.base03})";
               text_color = "rgb(${colors.base05})";
             };
-            col.border_active = "rgb(${colors.blue})";
-            col.border_inactive = "rgb(${colors.base03})";
-            col.border_locked_active = "rgb(${colors.cyan})";
+            "col.border_active" = "rgb(${colors.blue})";
+            "col.border_inactive" = "rgb(${colors.base03})";
+            "col.border_locked_active" = "rgb(${colors.cyan})";
           };
           
           master = {
