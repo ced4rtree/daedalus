@@ -25,14 +25,14 @@
     };
   };
 
-  perSystem = { pkgs, lib, ... }: {
+  perSystem = { pkgs, lib, system, ... }: {
     packages.hypridle = inputs.wrappers.lib.wrapPackage {
       inherit pkgs;
       package = pkgs.hypridle;
 
       flags."-c" = "${pkgs.writeText "hypridle.conf" (config.flake.lib.generators.toHyprlang { } {
         general = {
-          lock_cmd = config.daedalus.lockscreen.command;
+          lock_cmd = config.daedalus.lockscreen.commandFor system;
           before_sleep_cmd = "loginctl lock-session";   # lock before suspend.
           after_sleep_cmd = "hyprctl dispatch dpms on"; # to avoid having to press a key twice to turn on the display.
         };

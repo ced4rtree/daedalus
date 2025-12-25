@@ -10,8 +10,11 @@ in {
     example = "hyprlock";
   };
 
-  options.daedalus.lockscreen.command = lib.mkOption {
-    type = lib.types.str;
+  options.daedalus.lockscreen.commandFor = let
+    inherit (config.flake.lib) systemSpecific;
+    inherit (lib.types) str;
+  in lib.mkOption {
+    type = systemSpecific str;
     description = "Shell command that will invoke the desktop lock screen";
     example = "noctalia-shell ipc call lockScreen lock";
   };

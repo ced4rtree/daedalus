@@ -34,7 +34,7 @@
     ];
   };
 
-  perSystem = { pkgs, ... }: let
+  perSystem = { pkgs, system, ... }: let
     modKey = "SUPER";
     inherit (config.flake.lib.stylix) colors;
   in {
@@ -202,8 +202,8 @@
             "${modKey},G,togglegroup,"
             "${modKey},C,changegroupactive,"
             "${modKey},F,fullscreen,"
-            "${modKey},Escape,exec,${config.daedalus.lockscreen.command}"
-            "CTRL${modKey},Escape,exec,${config.daedalus.lockscreen.command}; sleep 1; loginctl suspend"
+            "${modKey},Escape,exec,${config.daedalus.lockscreen.commandFor system}"
+            "CTRL${modKey},Escape,exec,${config.daedalus.lockscreen.commandFor system}; sleep 1; loginctl suspend"
             "${modKey}SHIFT,Q,killactive,"
 
             # music control

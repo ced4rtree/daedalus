@@ -38,5 +38,10 @@
     # ]
     createEnumFromDir = { dir, excludedNames ? [ ] }:
       lib.types.enum (filenamesIn { inherit dir excludedNames; });
+
+    # alias for functionTo so that you can describe the purpose of e.g. a
+    # function that returns a different path to an executable based on the
+    # system. A little more descriptive for that specific use case
+    systemSpecific = lib.types.functionTo;
   };
 }

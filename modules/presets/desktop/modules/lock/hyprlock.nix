@@ -1,7 +1,7 @@
-{ config, inputs, lib, ... }: {
+{ config, inputs, lib, pkgs, ... }: {
   daedalus.lockscreen = lib.mkIf
     (config.daedalus.lockscreen.program == "hyprlock")
-    { command = "hyprlock"; };
+    { commandFor = system: "${lib.getExe config.flake.packages.${system}.hyprlock}"; };
   
   flake.modules.nixos.hyprlock = { pkgs, ... }: {
     hj.packages = [ config.flake.packages.${pkgs.stdenv.hostPlatform.system}.hyprlock ];

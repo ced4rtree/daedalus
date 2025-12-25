@@ -8,7 +8,7 @@ in {
 
   daedalus.lockscreen = lib.mkIf
     (config.daedalus.lockscreen.program == "noctalia-shell")
-    { command = "noctalia-shell ipc call lockScreen lock"; };
+    { commandFor = _: "noctalia-shell ipc call lockScreen lock"; };
 
   flake.modules.nixos.noctalia = { lib, pkgs, inputs, config, ...}: {
     imports = [ inputs.noctalia-shell.nixosModules.default ];
