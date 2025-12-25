@@ -1,28 +1,29 @@
 let
   colors = {
-    base00 = "#000000";
-    base01 = "#1c1f24";
-    base02 = "#21242b";
-    base03 = "#3f444a";
-    base04 = "#5B6268";
-    base05 = "#BBC2CF";
-    base06 = "#9ca0a4";
-    base07 = "#DFDFDF";
-    base08 = "#f966a1";
-    base09 = "#f9ab66";
-    base0A = "#edd078";
-    base0B = "#b5c77d";
-    base0C = "#6dd3c0";
-    base0D = "#7fc6f7";
-    base0E = "#d194fc";
-    base0F = "#de7e52"; # i made this one up
+    # ayu-light
+    base00 = "#f8f9fa";
+    base01 = "#edeff1";
+    base02 = "#d2d4d8";
+    base03 = "#a0a6ac";
+    base04 = "#8A9199";
+    base05 = "#5c6166";
+    base06 = "#4e5257";
+    base07 = "#404447";
+    base08 = "#f07171";
+    base09 = "#fa8d3e";
+    base0A = "#f2ae49";
+    base0B = "#6cbf49";
+    base0C = "#4cbf99";
+    base0D = "#399ee6";
+    base0E = "#a37acc";
+    base0F = "#e6ba7e";
   };
 
   opacity = {
-    terminal = 0.7;
+    terminal = 1.0;
     desktop = 1.0;
     applications = 1.0;
-    popups = 0.7;
+    popups = 1.0;
   };
 
   fonts = pkgs: let
