@@ -129,7 +129,7 @@
             
             active_opacity = 1;
             inactive_opacity = 1;
-            rounding = 8;
+            rounding = 0; # was 8
           };
           
           ecosystem = {

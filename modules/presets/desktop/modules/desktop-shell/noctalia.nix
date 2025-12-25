@@ -34,8 +34,8 @@ in {
           density = "default";
           showCapsule = true;
           floating = false;
-          marginVertical = 0.31;
-          marginHorizontal = 0.25;
+          marginVertical = 0.20;
+          marginHorizontal = 0.20;
           outerCorners = true;
           exclusive = true;
           widgets = {
@@ -142,11 +142,11 @@ in {
         general = {
           avatarImage = "/home/${username}/.face.icon";
           dimDesktop = true;
-          showScreenCorners = true;
+          showScreenCorners = false;
           forceBlackScreenCorners = false;
           scaleRatio = 1;
-          radiusRatio = 0.5;
-          screenRadiusRatio = 0.58;
+          radiusRatio = 0;
+          screenRadiusRatio = 0;
           animationSpeed = 1;
           animationDisabled = false;
           compactLockScreen = false;
