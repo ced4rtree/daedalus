@@ -222,7 +222,9 @@ in {
           pinnedExecs = [ ];
           useApp2Unit = false;
           sortByMostUsed = true;
-          terminalCommand = "${terminal.command} -e ";
+          terminalCommand = let
+            inherit (pkgs.stdenv.hostPlatform) system;
+          in "${terminal.commandFor system} -e ";
           customLaunchPrefixEnabled = false;
           customLaunchPrefix = "";
         };

@@ -193,7 +193,7 @@
           ];
 
           bind = [
-            "${modKey},return,exec,${config.daedalus.terminal.command}"
+            "${modKey},return,exec,${config.daedalus.terminal.commandFor system}"
             "${modKey},E,exec,emacsclient -c -a 'emacs'"
             "${modKey},R,exec,fuzzel"
 

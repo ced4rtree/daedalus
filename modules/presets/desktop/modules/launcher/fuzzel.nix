@@ -3,14 +3,14 @@
     hj.packages = [ config.flake.packages.${pkgs.stdenv.hostPlatform.system}.fuzzel ];
   };
 
-  perSystem = { pkgs, lib, ... }: {
+  perSystem = { pkgs, lib, system, ... }: {
     packages.fuzzel = (inputs.wrappers.wrapperModules.fuzzel.apply {
       inherit pkgs;
 
       settings = {
         main = {
           fields = "filename,name,generic,keywords,comment,categories";
-          terminal = "${config.daedalus.terminal.command} -e";
+          terminal = "${config.daedalus.terminal.commandFor system} -e";
           anchor = "center";
           width = 75;
           font = with config.flake.lib.stylix.fonts; "${sansSerif.name}:size=${toString sizes.popups}";

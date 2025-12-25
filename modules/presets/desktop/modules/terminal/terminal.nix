@@ -10,8 +10,11 @@
     readOnly = true;
   };
 
-  options.daedalus.terminal.command = lib.mkOption {
-    type = lib.types.str;
+  options.daedalus.terminal.commandFor = let
+    inherit (config.flake.lib) systemSpecific;
+    inherit (lib.types) str;
+  in lib.mkOption {
+    type = systemSpecific str;
     description = "Command to spawn the terminal";
     example = "footclient";
   };
