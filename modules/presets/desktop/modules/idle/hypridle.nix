@@ -37,24 +37,26 @@
           after_sleep_cmd = "hyprctl dispatch dpms on"; # to avoid having to press a key twice to turn on the display.
         };
 
-        listener = [
+        listener = let
+          brightnessctl = lib.getExe pkgs.brightnessctl;
+        in [
           # decrease monitor brightness
           {
             timeout = 150; # 2.5 min
-            on-timeout = ''brightnessctl -s set $(awk "BEGIN {print $(brightnessctl get)*0.2}")'';
-            on-resume = "brightnessctl -r"; # monitor backlight restore.
+            on-timeout = ''${brightnessctl} -s set $(awk "BEGIN {print $(${brightnessctl} get)*0.2}")'';
+            on-resume = "${brightnessctl} -r"; # monitor backlight restore.
           }
 
           # turn off keyboard backlight and dim screen to black after 5 minutes
           { 
             timeout = 300; # 5min
-            on-timeout = "brightnessctl -sd rgb:kbd_backlight set 0"; # turn off keyboard backlight.
-            on-resume = "brightnessctl -rd rgb:kbd_backlight"; # turn on keyboard backlight.
+            on-timeout = "${brightnessctl} -sd rgb:kbd_backlight set 0"; # turn off keyboard backlight.
+            on-resume = "${brightnessctl} -rd rgb:kbd_backlight"; # turn on keyboard backlight.
           }
           {
             timeout = 300;
-            on-timeout = "brightnessctl set 10"; # (0 is bad on OLED)
-            on-resume = "brightnessctl -r";
+            on-timeout = "${brightnessctl} set 10"; # (0 is bad on OLED)
+            on-resume = "${brightnessctl} -r";
           }
 
           # lock session after 10 minutes
