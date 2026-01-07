@@ -1,3 +1,5 @@
+* Moved: Please see https://codeberg.org/ced4rtree/daedalus
+
 * My NixOS Configuration
 
 Daedalus was a wise, skilled craftsman in Greek mythology, much like how I like
