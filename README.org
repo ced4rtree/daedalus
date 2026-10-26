@@ -1,4 +1,4 @@
-* Moved: Please see https://codeberg.org/ced4rtree/daedalus
+* Moved: Please see https://git.cebar.xyz/ced4rtree/daedalus
 
 * My NixOS Configuration
 
